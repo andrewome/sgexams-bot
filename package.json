@@ -7,7 +7,7 @@
     "test": "npm run build && mocha build/test/**/*.js --recursive --exit",
     "start": "npm run build:live",
     "build": "tsc -p .",
-    "build:live": "nodemon --watch 'src/**/*.ts' --exec ts-node src/app.ts"
+    "build:live": "nodemon src/app.ts"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/andrewome/discord-bad-words-bot#readme",
   "dependencies": {
-    "discord.js": "^11.5.1"
+    "@types/dotenv": "^6.1.1",
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
