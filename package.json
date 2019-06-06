@@ -1,0 +1,35 @@
+{
+  "name": "discord-bad-words-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "npm run build && mocha build/test/**/*.js --recursive --exit",
+    "start": "npm run build:live",
+    "build": "tsc -p .",
+    "build:live": "nodemon --watch 'src/**/*.ts' --exec ts-node src/app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewome/discord-bad-words-bot.git"
+  },
+  "author": "",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/andrewome/discord-bad-words-bot/issues"
+  },
+  "homepage": "https://github.com/andrewome/discord-bad-words-bot#readme",
+  "dependencies": {
+    "discord.js": "^11.5.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.0.5",
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4",
+    "nodemon": "^1.19.1",
+    "ts-node": "^8.2.0",
+    "typescript": "^3.5.1"
+  }
+}
