@@ -4,6 +4,7 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/.vscode
 
 # Runtime data
 pids
@@ -62,3 +63,7 @@ typings/
 
 # compiled js code
 build/
+
+# test js code
+src/driver.ts
+
