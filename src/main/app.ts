@@ -12,10 +12,14 @@ bot.on("message", async (message) => {
         return;
 
     // Check message contents if it contains a bad word >:o
-    let result = await new MessageChecker()
-        .checkMessage(message.content, bannedWords);
-    console.log(result);
-})
+    try {
+        let result = await new MessageChecker()
+            .checkMessage(message.content, bannedWords);
+        console.log(result);
+    } catch (err) {
+        console.log(err);
+    }
+});
 
 bot.on('ready', () => {
   console.log('I am ready!');

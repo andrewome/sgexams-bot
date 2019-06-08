@@ -3,11 +3,11 @@ export class MessageCheckerResult {
     /** Boolean value if message is guilty of using banned words */
     public guilty: boolean;
     /** Array of banned words used */
-    public bannedWordsUsed: string[];
+    public bannedWordsUsed: [string, string][];
     /** Content of the message */
     public content: string;
 
-    constructor(guilty: boolean, bannedWordsUsed: string[], content: string) {
+    constructor(guilty: boolean, bannedWordsUsed: [string, string][], content: string) {
         this.guilty = guilty;
         this.bannedWordsUsed = bannedWordsUsed;
         this.content = content;

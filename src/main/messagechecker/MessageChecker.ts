@@ -1,7 +1,9 @@
 import { DatamuseApi } from "../datamuseapi/DatamuseApi";
 import { MessageCheckerResult } from "./MessageCheckerResult";
+import { DatamuseSpellingQueryResult } from "../datamuseapi/DatamuseSpellingQueryResult";
+import { DatamuseQueryError } from "../errors/DatamuseQueryError";
 
-/** This class checks a message if it contains any banned words*/
+/** This class checks a message if it contains any banned words */
 export class MessageChecker {
     /**
      * This function checks the message for banned words
@@ -11,29 +13,54 @@ export class MessageChecker {
      * 
      * @param  {string} content Content of the message
      * @param  {string[]} bannedWords Array of banned words
-     * @returns Promise
+     * @returns Promise of MessageCheckerResult
      */
     public async checkMessage(content: string, bannedWords: string[]): Promise<MessageCheckerResult> {
         return new Promise<MessageCheckerResult>(async (resolve) => {
             const datamuse = new DatamuseApi();
             let bannedWordsFound = this.checkForBannedWords(content, bannedWords);
-            let contextOfBannedWords: string[] = this.getContextOfBannedWord(content, bannedWordsFound);
+            let contextOfBannedWords = this.getContextOfBannedWord(content, bannedWordsFound);
             
             // Naive check for false positives - no typos. Definitely have room to grow.
             let guilty = false;
-            let actualBannedWords: string[] = [];
-            for(let word of contextOfBannedWords) {
-                let wordsFromDictionary = await datamuse.fetchSimilarSpellings(word);
-                let bestFitWord = wordsFromDictionary[0].word;
-                //console.log(`${word}, ${bestFitWord}`);
-                if(!(bestFitWord === word && !bannedWords.includes(word))) {
+            let bannedWordsUsed: [string, string][] = [];
+            for(let tuple of contextOfBannedWords) {
+                let word = tuple[1];
+                // If it's a perfect match with a banned word, no need to query.
+                if(word == tuple[0]) {
                     guilty = true;
-                    actualBannedWords.push(word);
+                    bannedWordsUsed.push(tuple)
+                } else {
+                    try {
+                        let wordsFromDictionary = await datamuse.checkSpelling(word);
+
+                        // If no results, is not a legitimate word
+                        // Mark it for now
+                        if(wordsFromDictionary.length === 0) {
+                            guilty = true;
+                            bannedWordsUsed.push(tuple);
+                        } else {
+                            let bestFitWord = wordsFromDictionary[0].word;
+
+                            //if it does not match the top result, mark it
+                            if(bestFitWord !== word) {
+                                guilty = true;
+                                bannedWordsUsed.push(tuple);
+                            }
+                        }
+                    } catch (err) {
+                        if (err instanceof DatamuseQueryError) {
+                            throw err;
+                        } else {
+                            console.log(err);
+                            throw new Error("Oops! Something unexpected happened");
+                        }
+                    }
                 }
             };
 
             //create new class and resolve promise
-            const result = new MessageCheckerResult(guilty, actualBannedWords, content);
+            const result = new MessageCheckerResult(guilty, bannedWordsUsed, content);
             resolve(result);
         });
     }
@@ -82,8 +109,8 @@ export class MessageChecker {
      * @param  {string[]} bannedWordsFound Banned words that are found in the content.
      * @returns Set<string> Set of strings
      */
-    public getContextOfBannedWord(content: string, bannedWordsFound: string[]): string[] {
-        let hashSet = new Set<string>();
+    public getContextOfBannedWord(content: string, bannedWordsFound: string[]): [string, string][] {
+        let hashSet = new Set<[string, string]>();
         let lowerCaseContent = content.toLowerCase();
         for(let bannedWord of bannedWordsFound) {
             let length = content.length;
@@ -109,7 +136,7 @@ export class MessageChecker {
                 //console.log(`Start: ${start}, End: ${end}`);
 
                 //Add to hashset
-                hashSet.add(content.substring(start, end+1));
+                hashSet.add([bannedWord, content.substring(start, end+1)]);
 
                 //Move to next substring, if any
                 idx = lowerCaseContent.indexOf(bannedWord, end);

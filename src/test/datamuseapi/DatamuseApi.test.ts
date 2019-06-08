@@ -1,38 +1,29 @@
-import { DatamuseApi } from "../../datamuseapi/DatamuseApi";
+import { DatamuseApi } from "../../main/datamuseapi/DatamuseApi";
 import { should } from 'chai';
 should();
 
 const datamuse = new DatamuseApi();
-const fetchSimilarSpellings = datamuse.fetchSimilarSpellings;
-describe("DatamuseApi test suite", function() {
-    describe("fetchSimilarSpellings test", function() {
-        it("Valid word should be a straight match 1", function() {
+describe("DatamuseApi test suite", () => {
+    describe("fetchSimilarSpellings test", () => {
+        it("Valid word should be a straight match 1", async () => {
             const str = "hello";
-            fetchSimilarSpellings(str)
-                .then(res => {
-                    res.data[0].word.should.be.equals("hello");
-                });
+            let data = await datamuse.checkSpelling(str);
+            data[0].word.should.be.equals("hello");
         });
-        it("Valid word should be a straight match 2", function() {
+        it("Valid word should be a straight match 2", async () => {
             const str = "redundant";
-            fetchSimilarSpellings(str)
-                .then(res => {
-                    res.data[0].word.should.be.equals("redundant");
-                });
+            let data = await datamuse.checkSpelling(str);
+            data[0].word.should.be.equals("redundant");
         });
-        it("Return words should be lowercase regardless of input 1", function() {
+        it("Return words should be lowercase regardless of input 1", async () => {
             const str = "heLLo";
-            fetchSimilarSpellings(str)
-                .then(res => {
-                    res.data[0].word.should.be.equals("hello");
-                });
+            let data = await datamuse.checkSpelling(str);
+            data[0].word.should.be.equals("hello");
         });
-        it("Return words should be lowercase regardless of input 2", function() {
+        it("Return words should be lowercase regardless of input 2", async () => {
             const str = "reduNdAnT";
-            fetchSimilarSpellings(str)
-                .then(res => {
-                    res.data[0].word.should.be.equals("redundant");
-                });
+            let data = await datamuse.checkSpelling(str);
+            data[0].word.should.be.equals("redundant");
         });
     });
-})
+});
