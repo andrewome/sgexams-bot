@@ -1,6 +1,5 @@
 import { DatamuseApi } from "../datamuseapi/DatamuseApi";
 import { MessageCheckerResult } from "./MessageCheckerResult";
-import { DatamuseSpellingQueryResult } from "../datamuseapi/DatamuseSpellingQueryResult";
 import { DatamuseQueryError } from "../errors/DatamuseQueryError";
 
 /** This class checks a message if it contains any banned words */
@@ -25,14 +24,15 @@ export class MessageChecker {
             let guilty = false;
             let bannedWordsUsed: [string, string][] = [];
             for(let tuple of contextOfBannedWords) {
-                let word = tuple[1];
+                let bannedWord = tuple[0];
+                let context = tuple[1];
                 // If it's a perfect match with a banned word, no need to query.
-                if(word == tuple[0]) {
+                if(context == tuple[0]) {
                     guilty = true;
                     bannedWordsUsed.push(tuple)
                 } else {
                     try {
-                        let wordsFromDictionary = await datamuse.checkSpelling(word);
+                        let wordsFromDictionary = await datamuse.checkSpelling(context);
 
                         // If no results, is not a legitimate word
                         // Mark it for now
@@ -40,12 +40,34 @@ export class MessageChecker {
                             guilty = true;
                             bannedWordsUsed.push(tuple);
                         } else {
-                            let bestFitWord = wordsFromDictionary[0].word;
+                            //if it does not match the top few (score threshold >500), mark it
+                            let canBeFound = false;
+                            let idx = 0;
+                            let score;
+                            do {
+                                let bestFitWord = wordsFromDictionary[idx].word;
+                                score = wordsFromDictionary[idx].score;
+                                //if the word matches the context, it is a legitimate word
+                                if(context === bestFitWord) {
+                                    canBeFound = true;
+                                }
+                                
+                                //if I can find words that kinda fit the banned word in question, mark it.
+                                if(bannedWord === bestFitWord) {
+                                    guilty = true;
+                                    bannedWordsUsed.push(tuple);
+                                    canBeFound = true;
+                                }
 
-                            //if it does not match the top result, mark it
-                            if(bestFitWord !== word) {
-                                guilty = true;
+                                bestFitWord = wordsFromDictionary[idx].word;
+                                score = wordsFromDictionary[idx].score;
+                                idx++;
+                            } while(idx < wordsFromDictionary.length || score > 500);
+
+                            //if it does not match the top few (score threshold >500), mark it for now; could be a masked banned word
+                            if(!canBeFound) {
                                 bannedWordsUsed.push(tuple);
+                                guilty = true;
                             }
                         }
                     } catch (err) {
@@ -60,7 +82,7 @@ export class MessageChecker {
             };
 
             //create new class and resolve promise
-            const result = new MessageCheckerResult(guilty, bannedWordsUsed, content);
+            const result = new MessageCheckerResult(guilty, bannedWordsUsed);
             resolve(result);
         });
     }

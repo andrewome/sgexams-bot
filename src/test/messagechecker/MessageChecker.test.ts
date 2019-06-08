@@ -1,9 +1,11 @@
 import { should } from 'chai';
-import { MessageChecker }from "../../main/messagechecker/MessageChecker";
+import { MessageChecker }from "../../main/message/MessageChecker";
 should();
 
 const messageChecker = new MessageChecker();
 describe("MessageChecker test suite", () => {
+
+    /** Test isAlphaNumeric function */
     describe("isAlphaNumeric Tests", () => {
         it("It should return true for 0 to 9", () => {
             for(let i = "0".charCodeAt(0); i <= "9".charCodeAt(0); i++) {
@@ -32,6 +34,7 @@ describe("MessageChecker test suite", () => {
             }
         });
     });
+    /** Test checkForBannedWords function */
     describe("checkForBannedWords test", () => {
         const bannedWords = ["banned", "word"];
         it("Should detect banned word in the test string 1", () => {
@@ -84,6 +87,7 @@ describe("MessageChecker test suite", () => {
         }
         return false;
     }
+    /** Test for getContextOfBannedWord function */
     describe("getContextOfBannedWord test", () => {
         const bannedWords = ["banned", "word"];
         const getOutput = (str: string, bannedWords: string[]): [string, string][] => {
@@ -142,6 +146,7 @@ describe("MessageChecker test suite", () => {
             findTuple(out, ["word", "lolword"]).should.be.true;            
         })
     });
+    /** Test for checkmessage function */
     describe("checkMessage test", async function() {
         //this.timeout(5000)
         const bannedWords = ["coon", "test", "banned", "word"];
@@ -150,7 +155,6 @@ describe("MessageChecker test suite", () => {
             let result = await messageChecker.checkMessage(str, bannedWords);
             result.guilty.should.be.false;
             result.bannedWordsUsed.length.should.be.equals(0);
-            result.content.should.be.equals(str);
         });
         it("Instance of banned words 1", async () => {
             const str = "This is a string with coon";
@@ -158,7 +162,6 @@ describe("MessageChecker test suite", () => {
             result.guilty.should.be.true;
             result.bannedWordsUsed.length.should.be.equals(1);
             findTuple(result.bannedWordsUsed, ["coon", "coon"]).should.be.true;
-            result.content.should.be.equals(str);
         });
         it("Instance of banned words 2", async () => {
             const str = "This is a string with coon and test";
@@ -167,7 +170,6 @@ describe("MessageChecker test suite", () => {
             result.bannedWordsUsed.length.should.be.equals(2);
             findTuple(result.bannedWordsUsed, ["coon", "coon"]).should.be.true;
             findTuple(result.bannedWordsUsed, ["test", "test"]).should.be.true;
-            result.content.should.be.equals(str);
         });
         it("Instance of mixed banned words 3", async () => {
             const str = "This is a string with coon and test and banned and word";
@@ -178,7 +180,6 @@ describe("MessageChecker test suite", () => {
             findTuple(result.bannedWordsUsed, ["test", "test"]).should.be.true;
             findTuple(result.bannedWordsUsed, ["banned", "banned"]).should.be.true;
             findTuple(result.bannedWordsUsed, ["word", "word"]).should.be.true;
-            result.content.should.be.equals(str);
         });
         it("Instance of intentionally masked banned word 1", async () => {
             const str = "This is a string with xXcoonXx";
@@ -186,14 +187,30 @@ describe("MessageChecker test suite", () => {
             result.guilty.should.be.true;
             result.bannedWordsUsed.length.should.be.equals(1);
             findTuple(result.bannedWordsUsed, ["coon", "xXcoonXx"]).should.be.true;
-            result.content.should.be.equals(str);
         });
-        it("Instance of false positive (actual string containing banned word)", async () => {
+        it("Instance of false positive (actual string containing banned word) 1", async () => {
             const str = "This is a string with raccoon";
             let result = await messageChecker.checkMessage(str, bannedWords);
             result.guilty.should.be.false;
             result.bannedWordsUsed.length.should.be.equals(0);
-            result.content.should.be.equals(str);
+        });
+        it("Instance of close words 1", async () => {
+            const str = "This is a string with ban";
+            let result = await messageChecker.checkMessage(str, bannedWords);
+            result.guilty.should.be.true;
+            result.bannedWordsUsed.length.should.be.equals(1);
+        });
+        it("Instance of close words 2", async () => {
+            const str = "This is a string with coons";
+            let result = await messageChecker.checkMessage(str, bannedWords);
+            result.guilty.should.be.true;
+            result.bannedWordsUsed.length.should.be.equals(1);
+        });
+        it("Instance of close words 3", async () => {
+            const str = "This is a string with testing";
+            let result = await messageChecker.checkMessage(str, bannedWords);
+            result.guilty.should.be.true;
+            result.bannedWordsUsed.length.should.be.equals(1);
         });
     });
 });

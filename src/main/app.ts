@@ -1,9 +1,10 @@
 import "./lib/env";
 import { Client } from "discord.js";
-import { MessageChecker } from "./messagechecker/MessageChecker";
+import { MessageChecker } from "./message/MessageChecker";
+import { ResponseFormatter } from "./message/ResponseFormatter";
 
 const bot = new Client();
-const bannedWords: string[] = ["shit", "damn", "nigger", "ching chong"];
+const bannedWords: string[] = ["fuck", "nigger", "nigga", "ching chong", "coon"];
 bot.login(process.env.BOT_TOKEN);
 
 bot.on("message", async (message) => {
@@ -15,7 +16,10 @@ bot.on("message", async (message) => {
     try {
         let result = await new MessageChecker()
             .checkMessage(message.content, bannedWords);
-        console.log(result);
+        
+        if(result.guilty) {
+            new ResponseFormatter(message, result).sendResult();
+        }
     } catch (err) {
         console.log(err);
     }

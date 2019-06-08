@@ -4,12 +4,9 @@ export class MessageCheckerResult {
     public guilty: boolean;
     /** Array of banned words used */
     public bannedWordsUsed: [string, string][];
-    /** Content of the message */
-    public content: string;
 
-    constructor(guilty: boolean, bannedWordsUsed: [string, string][], content: string) {
+    constructor(guilty: boolean, bannedWordsUsed: [string, string][]) {
         this.guilty = guilty;
         this.bannedWordsUsed = bannedWordsUsed;
-        this.content = content;
     }
 }
