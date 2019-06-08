@@ -20,51 +20,50 @@ export class MessageChecker {
             let bannedWordsFound = this.checkForBannedWords(content, bannedWords);
             let contextOfBannedWords = this.getContextOfBannedWord(content, bannedWordsFound);
             
-            // Naive check for false positives - no typos. Definitely have room to grow.
+            //Determine if the contexts of the banned words used was malicious
             let guilty = false;
             let bannedWordsUsed: [string, string][] = [];
             for(let tuple of contextOfBannedWords) {
-                let bannedWord = tuple[0];
-                let context = tuple[1];
+                let bannedWord = tuple[0].toLowerCase();
+                let context = tuple[1].toLowerCase();
+
                 // If it's a perfect match with a banned word, no need to query.
-                if(context == tuple[0]) {
+                if(context === bannedWord) {
                     guilty = true;
                     bannedWordsUsed.push(tuple)
                 } else {
                     try {
-                        let wordsFromDictionary = await datamuse.checkSpelling(context);
+                        let datamuseQueryResults = await datamuse.checkSpelling(context);
 
-                        // If no results, is not a legitimate word
-                        // Mark it for now
-                        if(wordsFromDictionary.length === 0) {
+                        // If no results, is not a legitimate word, mark it.
+                        if(datamuseQueryResults.length === 0) {
                             guilty = true;
                             bannedWordsUsed.push(tuple);
                         } else {
-                            //if it does not match the top few (score threshold >500), mark it
+                            //if it does not match the top few (3 for now), mark it
                             let canBeFound = false;
                             let idx = 0;
                             let score;
                             do {
-                                let bestFitWord = wordsFromDictionary[idx].word;
-                                score = wordsFromDictionary[idx].score;
+                                let bestFitWord = datamuseQueryResults[idx].word;
+                                score = datamuseQueryResults[idx].score;
+
                                 //if the word matches the context, it is a legitimate word
                                 if(context === bestFitWord) {
                                     canBeFound = true;
                                 }
                                 
-                                //if I can find words that kinda fit the banned word in question, mark it.
+                                //if I can find the banned word in the query, mark it.
                                 if(bannedWord === bestFitWord) {
                                     guilty = true;
                                     bannedWordsUsed.push(tuple);
                                     canBeFound = true;
+                                    break;
                                 }
-
-                                bestFitWord = wordsFromDictionary[idx].word;
-                                score = wordsFromDictionary[idx].score;
                                 idx++;
-                            } while(idx < wordsFromDictionary.length || score > 500);
+                            } while(idx < 3 && idx < datamuseQueryResults.length);
 
-                            //if it does not match the top few (score threshold >500), mark it for now; could be a masked banned word
+                            //if it does not match the top few, mark it for now; could be a masked banned word
                             if(!canBeFound) {
                                 bannedWordsUsed.push(tuple);
                                 guilty = true;
