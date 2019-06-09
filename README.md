@@ -6,12 +6,14 @@ This bot attempts to detect banned words in Discord messages, but in a smarter m
 
 Written in `typescript` using `Discord.js`  - [https://github.com/discordjs/discord.js/](https://github.com/discordjs/discord.js/)
 
+Also huge props to Datamuse - [http://www.datamuse.com/api/](http://www.datamuse.com/api/) which I'm using to query the words!
+
 # Getting Started
 1. `git clone` this repositry.
 2. `npm i` to install dependencies.
 3. Add `BOT_TOKEN="<your discord bot token>"` to `.env` in `root`
 4. You're ready!
-   * `npm build` to transpile the code into `Javascript`. Output files can be found in `./build`
+   * `npm build` to transpile the code into `javascript`. Output files can be found in `./build`
    * `npm start` to use `nodemon` for testing.
    * `npm test` to run tests.
 

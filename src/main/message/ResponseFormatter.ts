@@ -11,7 +11,7 @@ export class ResponseFormatter {
         this.result = result;
     }
 
-    public sendResult() {
+    public generateEmbed(): RichEmbed {
         const tag = this.message.author.tag;
         const username = this.message.member.nickname;
         const wordsUsed = this.result.bannedWordsUsed;
@@ -27,7 +27,7 @@ export class ResponseFormatter {
             offenderStr = `**${username}, aka ${tag}**`;
         }
         let report = `Offender: ${offenderStr}\nMessage ID: **${id}**\nMessage link: ${url}`;
-        
+
         // Get list of words used
         let words = "";
         let contexts = "";
@@ -58,6 +58,7 @@ export class ResponseFormatter {
             .addField("Context", contexts, true)
             .addField("Full Message", `**${tag}:** ${content}`, false)
             .setTimestamp();
-        this.message.reply(embed);
+        
+        return embed;
     }
 }

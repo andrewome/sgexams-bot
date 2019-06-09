@@ -4,7 +4,7 @@ import { MessageChecker } from "./message/MessageChecker";
 import { ResponseFormatter } from "./message/ResponseFormatter";
 
 const bot = new Client();
-const bannedWords: string[] = ["coon", "nigger", "fuck", "faggot", "fag", "ching chong", "chink", "chigga", "nigga", "negro", "negroe", "nibba", "nig"];
+const bannedWords: string[] = ["coon", "nigger", "fuck", "faggot", "fag", "ching chong", "chink", "chigga", "nigga", "negro", "negroe", "nibba", "nig", "chingchong"];
 bot.login(process.env.BOT_TOKEN);
 
 bot.on("message", async (message) => {
@@ -18,7 +18,7 @@ bot.on("message", async (message) => {
             .checkMessage(message.content, bannedWords);
         if(result.guilty) {
             //console.log(result);
-            new ResponseFormatter(message, result).sendResult();
+            message.reply(new ResponseFormatter(message, result).generateEmbed());
         }
     } catch (err) {
         console.log(err);

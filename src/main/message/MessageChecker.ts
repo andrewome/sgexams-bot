@@ -49,7 +49,7 @@ export class MessageChecker {
                                 score = datamuseQueryResults[idx].score;
 
                                 //if the word matches the context, it is a legitimate word
-                                if(context === bestFitWord) {
+                                if(context.includes(bestFitWord)) {
                                     canBeFound = true;
                                 }
                                 
@@ -123,15 +123,13 @@ export class MessageChecker {
 
     /**
      * This function returns the context of the banned words found.
-     * eg. if the banned word is "shit", and the term used was "ashithole",
-     *     this will return "ashithole".
      * 
      * @param  {string} content Content of message
      * @param  {string[]} bannedWordsFound Banned words that are found in the content.
      * @returns Set<string> Set of strings
      */
     public getContextOfBannedWord(content: string, bannedWordsFound: string[]): [string, string][] {
-        let hashSet = new Set<[string, string]>();
+        let arr: [string, string][] = [];
         let lowerCaseContent = content.toLowerCase();
         for(let bannedWord of bannedWordsFound) {
             let length = content.length;
@@ -156,15 +154,24 @@ export class MessageChecker {
                 }
                 //console.log(`Start: ${start}, End: ${end}`);
 
-                //Add to hashset
-                hashSet.add([bannedWord, content.substring(start, end+1)]);
+                //Add to arr, make sure no duplicates
+                let context = content.substring(start, end+1);
+                let found = false;
+                for(let tuple of arr) {
+                    if(tuple[0] === bannedWord && tuple[1] === context) {
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found)
+                    arr.push([bannedWord, context]);
 
                 //Move to next substring, if any
                 idx = lowerCaseContent.indexOf(bannedWord, end);
                 end = idx + bannedWord.length - 1;
             } while(idx != -1);
         }
-        //console.log(hashSet); 
-        return Array.from(hashSet);
+
+        return arr;
     };
 }
