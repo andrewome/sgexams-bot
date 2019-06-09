@@ -4,6 +4,7 @@ import { DatamuseQueryError } from "../errors/DatamuseQueryError";
 
 /** This class checks a message if it contains any banned words */
 export class MessageChecker {
+
     /**
      * This function checks the message for banned words
      * Then it queries Datamuse API to get the best fit word
@@ -12,77 +13,86 @@ export class MessageChecker {
      * 
      * @param  {string} content Content of the message
      * @param  {string[]} bannedWords Array of banned words
-     * @returns Promise of MessageCheckerResult
+     * @returns MessageCheckerResult Results of the check
      */
     public async checkMessage(content: string, bannedWords: string[]): Promise<MessageCheckerResult> {
         return new Promise<MessageCheckerResult>(async (resolve) => {
-            const datamuse = new DatamuseApi();
             let bannedWordsFound = this.checkForBannedWords(content, bannedWords);
             let contextOfBannedWords = this.getContextOfBannedWord(content, bannedWordsFound);
             
             //Determine if the contexts of the banned words used was malicious
-            let guilty = false;
             let bannedWordsUsed: [string, string][] = [];
             for(let tuple of contextOfBannedWords) {
-                let bannedWord = tuple[0].toLowerCase();
-                let context = tuple[1].toLowerCase();
+                try {
+                    let isGuilty = await this.checkContext(bannedWordsUsed, tuple);
+                    if(isGuilty) {
+                        bannedWordsUsed.push(tuple)
+                    }
+                } catch (err) {
+                    throw err;
+                }
+            }
 
-                // If it's a perfect match with a banned word, no need to query.
-                if(context === bannedWord) {
-                    guilty = true;
-                    bannedWordsUsed.push(tuple)
+            //Create result and resolve promise
+            let isGuilty: boolean;
+            if(bannedWordsUsed.length === 0) {
+                isGuilty = false;
+            } else { 
+                isGuilty = true;
+            }
+            const result = new MessageCheckerResult(isGuilty, bannedWordsUsed);
+            resolve(result);
+        });
+    }
+
+    /**
+     * This function checks datamuse Api for the context of the word used
+     * 
+     * @param  {[string string][]} bannedWordsUsed Array containing all found banned words
+     *                                             and contexts used over the message
+     * @param  {[string, string]} tuple containing banned word used & its context
+     * @return boolean if the context is found to be a banned word
+     */
+    private async checkContext(bannedWordsUsed: [string, string][], tuple: [string, string]): Promise<boolean> {
+        return new Promise<boolean>(async (resolve) => {
+            let bannedWord = tuple[0].toLowerCase();
+            let context = tuple[1].toLowerCase();
+
+            // If it's a perfect match with a banned word, no need to query.
+            if(context === bannedWord) {
+                resolve(true);
+            } else {
+                let datamuseQueryResults = await new DatamuseApi().checkSpelling(context);
+                // If no results, is not a legitimate word, mark it.
+                if(datamuseQueryResults.length === 0) {
+                    bannedWordsUsed.push(tuple);
                 } else {
-                    try {
-                        let datamuseQueryResults = await datamuse.checkSpelling(context);
+                    //if it does not match the top few (3 for now), mark it
+                    let canBeFound = false;
+                    let idx = 0;
+                    do {
+                        let bestFitWord = datamuseQueryResults[idx].word;
 
-                        // If no results, is not a legitimate word, mark it.
-                        if(datamuseQueryResults.length === 0) {
-                            guilty = true;
-                            bannedWordsUsed.push(tuple);
-                        } else {
-                            //if it does not match the top few (3 for now), mark it
-                            let canBeFound = false;
-                            let idx = 0;
-                            let score;
-                            do {
-                                let bestFitWord = datamuseQueryResults[idx].word;
-                                score = datamuseQueryResults[idx].score;
-
-                                //if the word matches the context, it is a legitimate word
-                                if(context.includes(bestFitWord)) {
-                                    canBeFound = true;
-                                }
-                                
-                                //if I can find the banned word in the query, mark it.
-                                if(bannedWord === bestFitWord) {
-                                    guilty = true;
-                                    bannedWordsUsed.push(tuple);
-                                    canBeFound = true;
-                                    break;
-                                }
-                                idx++;
-                            } while(idx < 3 && idx < datamuseQueryResults.length);
-
-                            //if it does not match the top few, mark it for now; could be a masked banned word
-                            if(!canBeFound) {
-                                bannedWordsUsed.push(tuple);
-                                guilty = true;
-                            }
+                        //if the word matches the context, it is a legitimate word
+                        if(context.includes(bestFitWord)) {
+                            canBeFound = true;
                         }
-                    } catch (err) {
-                        if (err instanceof DatamuseQueryError) {
-                            throw err;
-                        } else {
-                            console.log(err);
-                            throw new Error("Oops! Something unexpected happened");
+                        
+                        //if I can find the banned word in the query, mark it.
+                        if(bannedWord === bestFitWord) {
+                            resolve(true)
                         }
+                        idx++;
+                    } while(idx < 3 && idx < datamuseQueryResults.length);
+
+                    //if it does not match the top few, mark it for now; could be a masked banned word
+                    //downside: typos will get flagged too
+                    if(!canBeFound) {
+                        resolve(true)
                     }
                 }
-            };
-
-            //create new class and resolve promise
-            const result = new MessageCheckerResult(guilty, bannedWordsUsed);
-            resolve(result);
+            }
+            resolve(false);
         });
     }
 
@@ -162,7 +172,7 @@ export class MessageChecker {
                     isEmote = true;
                 }
 
-                //Add to arr, make sure no duplicates
+                //Make sure no duplicates
                 let found = false;
                 for(let tuple of arr) {
                     if(tuple[0] === bannedWord && tuple[1] === context) {
@@ -170,6 +180,8 @@ export class MessageChecker {
                         break;
                     }
                 }
+
+                //Add to array if there's no dupes and is not an emote
                 if(!found && !isEmote) {
                     arr.push([bannedWord, context]);
                 }
