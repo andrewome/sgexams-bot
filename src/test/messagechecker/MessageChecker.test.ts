@@ -220,5 +220,11 @@ describe("MessageChecker test suite", () => {
             result.guilty.should.be.true;
             result.bannedWordsUsed.length.should.be.equals(1);
         });
+        it("Match with an emote that is named similarly 1", async () => {
+            const str = "<:testing:5983237282386>";
+            let result = await messageChecker.checkMessage(str, bannedWords);
+            result.guilty.should.be.false;
+            result.bannedWordsUsed.length.should.be.equals(0);
+        });
     });
 });

@@ -154,8 +154,15 @@ export class MessageChecker {
                 }
                 //console.log(`Start: ${start}, End: ${end}`);
 
-                //Add to arr, make sure no duplicates
+                // Check if it is an emote.
+                // Emotes follow the patten <:context:>(\d+\d)>
                 let context = content.substring(start, end+1);
+                let isEmote = false;
+                if(content.match(new RegExp(`<:${context}:([0-9]+[0-9])>`))) {
+                    isEmote = true;
+                }
+
+                //Add to arr, make sure no duplicates
                 let found = false;
                 for(let tuple of arr) {
                     if(tuple[0] === bannedWord && tuple[1] === context) {
@@ -163,8 +170,9 @@ export class MessageChecker {
                         break;
                     }
                 }
-                if(!found)
+                if(!found && !isEmote) {
                     arr.push([bannedWord, context]);
+                }
 
                 //Move to next substring, if any
                 idx = lowerCaseContent.indexOf(bannedWord, end);

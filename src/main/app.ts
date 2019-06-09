@@ -15,7 +15,7 @@ bot.on("message", async (message) => {
     // Check message contents if it contains a bad word >:o
     try {
         let result = await new MessageChecker()
-            .checkMessage(message.content, bannedWords);
+            .checkMessage(message.cleanContent, bannedWords);
         if(result.guilty) {
             //console.log(result);
             message.reply(new ResponseFormatter(message, result).generateEmbed());
