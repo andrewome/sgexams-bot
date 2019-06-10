@@ -1,12 +1,14 @@
+import { Context } from "./Context";
+
 /** This class contains the return results from MessageChecker */
 export class MessageCheckerResult {
     /** Boolean value if message is guilty of using banned words */
     public guilty: boolean;
     /** Array of banned words used */
-    public bannedWordsUsed: [string, string][];
+    public contexts: Context[];
 
-    constructor(guilty: boolean, bannedWordsUsed: [string, string][]) {
+    constructor(guilty: boolean, contexts: Context[]) {
         this.guilty = guilty;
-        this.bannedWordsUsed = bannedWordsUsed;
+        this.contexts = contexts;
     }
 }

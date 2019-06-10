@@ -3,7 +3,8 @@ import { should } from 'chai';
 should();
 
 const datamuse = new DatamuseApi();
-describe("DatamuseApi test suite", () => {
+describe("DatamuseApi test suite", function() {
+    this.timeout(5000);
     describe("fetchSimilarSpellings test", () => {
         it("Valid word should be a straight match 1", async () => {
             const str = "hello";

@@ -14,7 +14,7 @@ export class ResponseFormatter {
     public generateEmbed(): RichEmbed {
         const tag = this.message.author.tag;
         const username = this.message.member.nickname;
-        const wordsUsed = this.result.bannedWordsUsed;
+        const wordsUsed = this.result.contexts;
         const id = this.message.id;
         const url = this.message.url;
         let content = this.message.content;
@@ -32,8 +32,8 @@ export class ResponseFormatter {
         let words = "";
         let contexts = "";
         for(let i of wordsUsed) {
-            let word = i[0];
-            let context = i[1];
+            let word = i.bannedWord;
+            let context = i.originalContext;
             words += `${word}\n`;
             contexts += `${context}\n`;
         }
