@@ -21,9 +21,9 @@ export class MessageParser {
      * @returns boolean if it is an emote in the content
      */
     public checkIsEmote(content: string, context: string): boolean {
-        // Emotes follow the patten /<:context:[0-9]+>/
+        // Emotes follow the patten /<a?:context:[0-9]+>/
         try {
-            let regexEmote = new RegExp(`<:${context}:[0-9]+>`, "g");
+            let regexEmote = new RegExp(`<a?:${context}:[0-9]+>`, "g");
             if(regexEmote.test(content)) {
                 return true;
             }

@@ -68,6 +68,12 @@ describe("MessageChecker test suite", () => {
             result.guilty.should.be.false;
             result.contexts.length.should.be.equals(0);
         });
+        it("Match with an emote that is named similarly 2", async () => {
+            const str = "<a:testing:5983237282386>";
+            let result = await messageChecker.checkMessage(str, bannedWords);
+            result.guilty.should.be.false;
+            result.contexts.length.should.be.equals(0);
+        });
         it("Instance of leetspeech 1", async () => {
             const str = "c00n lmao";
             let result = await messageChecker.checkMessage(str, bannedWords);
