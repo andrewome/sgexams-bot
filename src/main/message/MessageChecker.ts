@@ -3,10 +3,10 @@ import { MessageCheckerResult } from "./MessageCheckerResult";
 import { CharacterSubstitutor } from "./CharacterSubstitutor";
 import { Context } from "./Context";
 import { NaiveMessageParser } from "./NaiveMessageParser";
+import { ComplexMessageParser } from "./ComplexMessageParser";
 
 /** This class checks a message if it contains any banned words */
 export class MessageChecker {
-
     /**
      * This function checks the message for banned words
      * Then it queries Datamuse API to get the best fit word
@@ -23,15 +23,24 @@ export class MessageChecker {
                                         .convertText(content.toLowerCase());
             let bannedWordsFound: string[] = [];
             let contextOfBannedWords: Context[] = [];
+
             //1st round - checking for direct matches
             const naiveMessageParser = new NaiveMessageParser();
-            bannedWordsFound = bannedWordsFound.concat(naiveMessageParser.checkForBannedWords(convertedContent,
-                                                            bannedWords));
-            //console.log(bannedWordsFound);
-            contextOfBannedWords = contextOfBannedWords.concat(naiveMessageParser.getContextOfBannedWord(content,
-                                                            convertedContent,
-                                                            bannedWordsFound));
-            //console.log(contextOfBannedWords);
+            bannedWordsFound = bannedWordsFound
+                .concat(naiveMessageParser
+                    .checkForBannedWords(convertedContent,
+                                         bannedWords));
+            contextOfBannedWords = contextOfBannedWords
+                .concat(naiveMessageParser
+                    .getContextOfBannedWord(content,
+                                            convertedContent,
+                                            bannedWordsFound));
+            
+            //2nd round - checking for spaces and duplicate chars using Regex
+            const complexMessageParser = new ComplexMessageParser()
+                                            .processBannedWords(bannedWords);
+            contextOfBannedWords = contextOfBannedWords.concat(complexMessageParser.getContextOfBannedWord(content, convertedContent));
+
             //Determine if the contexts of the banned words used was malicious
             let realBannedWords: Context[] = [];
             for(let context of contextOfBannedWords) {

@@ -1,22 +1,7 @@
 import { Context } from "./Context";
+import { MessageParser } from "./MessageParser";
 
-export class NaiveMessageParser {
-    /**
-     * This function checks if the unicode number is alphanumeric.
-     * Taken from: https://stackoverflow.com/questions/4434076/best-way-to-alphanumeric-check-in-javascript
-     * 
-     * @param  {number} code Unicode number of character
-     * @returns boolean Whether it is alphanumeric or not.
-     */
-    public isAlphaNumeric(code: number): boolean {
-        if (!(code > 47 && code < 58) &&  // numeric (0-9)
-            !(code > 64 && code < 91) &&  // upper alpha (A-Z)
-            !(code > 96 && code < 123)) { // lower alpha (a-z)
-        return false;
-        }
-    return true;
-    };
-
+export class NaiveMessageParser extends MessageParser {
     /**
      * @param  {string} convertedContent Converted content
      * @param  {string[]} bannedWords Array of banned words
@@ -63,17 +48,12 @@ export class NaiveMessageParser {
                         break;
                     end = i;
                 }
-                //console.log(`Start: ${start}, End: ${end}`);
 
-                // Check if it is an emote.
-                // Emotes follow the patten /<:context:[0-9]+>/
                 let originalContext = originalContent.substring(start, end+1);
                 let convertedContext = convertedContent.substring(start, end+1);
-                let isEmote = false;
-                if(originalContent.match(new RegExp(`<:${originalContext}:[0-9]+>`))) {
-                    isEmote = true;
-                }
 
+                // Check if it is an emote.
+                let isEmote = this.checkIsEmote(originalContent, originalContext);
                 //Make sure no duplicates
                 const contextToBeAdded = new Context(bannedWord,
                                                      originalContext,
