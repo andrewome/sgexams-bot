@@ -25,7 +25,8 @@
     "discord.js": "^11.5.1",
     "dotenv": "^8.0.0",
     "fs": "0.0.1-security",
-    "https": "^1.0.0"
+    "https": "^1.0.0",
+    "npm": "^6.9.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",

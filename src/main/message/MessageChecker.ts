@@ -2,7 +2,6 @@ import { DatamuseApi } from "../datamuseapi/DatamuseApi";
 import { MessageCheckerResult } from "./MessageCheckerResult";
 import { CharacterSubstitutor } from "./CharacterSubstitutor";
 import { Context } from "./Context";
-import { NaiveMessageParser } from "./NaiveMessageParser";
 import { ComplexMessageParser } from "./ComplexMessageParser";
 
 /** This class checks a message if it contains any banned words */
@@ -21,22 +20,9 @@ export class MessageChecker {
         return new Promise<MessageCheckerResult>(async (resolve) => {
             let convertedContent = new CharacterSubstitutor()
                                         .convertText(content.toLowerCase());
-            let bannedWordsFound: string[] = [];
             let contextOfBannedWords: Context[] = [];
 
-            //1st round - checking for direct matches
-            const naiveMessageParser = new NaiveMessageParser();
-            bannedWordsFound = bannedWordsFound
-                .concat(naiveMessageParser
-                    .checkForBannedWords(convertedContent,
-                                         bannedWords));
-            contextOfBannedWords = contextOfBannedWords
-                .concat(naiveMessageParser
-                    .getContextOfBannedWord(content,
-                                            convertedContent,
-                                            bannedWordsFound));
-            
-            //2nd round - checking for spaces and duplicate chars using Regex
+            //checking for spaces and duplicate chars using Regex
             const complexMessageParser = new ComplexMessageParser()
                                             .processBannedWords(bannedWords);
             contextOfBannedWords = contextOfBannedWords.concat(complexMessageParser.getContextOfBannedWord(content, convertedContent));

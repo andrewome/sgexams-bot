@@ -117,10 +117,6 @@ export class ComplexMessageParser extends MessageParser {
                 }
 
                 let word = arr[0];
-                //if word length === regex word then it would have been detected by NaiveMessageChecker.
-                if(word.length === foundRegex.word.length)
-                    continue;
-
                 let end = regex.lastIndex - 1;
                 let start = end - word.length + 1;
 
