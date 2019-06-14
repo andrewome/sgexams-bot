@@ -21,6 +21,20 @@ export class MessageParser {
      * @returns boolean if it is an emote in the content
      */
     public checkIsEmote(content: string, context: string): boolean {
+        // This function escapes reserved chars in Regex
+        const escapeChars = (str: string) => {
+            const charSet = new Set<string>(["[", "\\", "^", "$", ".", "|", "?", "*", "+", "(", ")"]);
+            let out = "";
+            for(let i = 0; i < str.length; i++) {
+                if(charSet.has(str[i])) {
+                    out += `\\${str[i]}`;
+                } else {
+                    out += str[i];
+                }
+            }
+            return out;
+        }
+        context = escapeChars(context);
         // Emotes follow the patten /<a?:context:[0-9]+>/
         try {
             let regexEmote = new RegExp(`<a?:${context}:[0-9]+>`, "g");
