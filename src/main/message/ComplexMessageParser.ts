@@ -101,8 +101,7 @@ export class ComplexMessageParser extends MessageParser {
      * @param  {string} convertedContent Converted content (by CharacterSubstitutor or smth) 
      * @returns Context Context of banned word
      */
-    public getContextOfBannedWord(originalContent: string, convertedContent: string): Context[] {
-        let contexts: Context[] = [];
+    public getContextOfBannedWord(originalContent: string, convertedContent: string, contextOfBannedWords: Context[]): void {
  
         let foundRegexs = this.checkForBannedWords(convertedContent);
         for(let foundRegex of foundRegexs) {
@@ -120,6 +119,10 @@ export class ComplexMessageParser extends MessageParser {
                 let end = regex.lastIndex - 1;
                 let start = end - word.length + 1;
 
+                // Don't need to consider if the substr is found before lastStoppedIdx.
+                if(end <= lastStoppedIdx)
+                    continue;
+
                 //check chars behind the startIdx
                 for(let i = start; i >= lastStoppedIdx; i--) {
                     if(!this.isAlphaNumeric(convertedContent.charCodeAt(i)))
@@ -134,18 +137,21 @@ export class ComplexMessageParser extends MessageParser {
                     end = i;                    
                 }
                 lastStoppedIdx = end;
+                //console.log(start, end, lastStoppedIdx);
 
                 //Get contexts
                 let originalContext = originalContent.substring(start, end+1);
                 let convertedContext = "";
 
-                //Get context without addional chars
+                //Get context without additonal chars
                 for(let i = 0; i < originalContext.length; i++) {
                     if(!this.isAlphaNumeric(originalContext.charCodeAt(i))) {
                         continue;
                     }
                     convertedContext += originalContext[i];
                 }
+                convertedContext = convertedContext.toLowerCase();
+
                 // Check if it is an emote.
                 let isEmote = this.checkIsEmote(originalContent, originalContext);
                 const contextToBeAdded = new Context(foundRegex.word,
@@ -153,7 +159,7 @@ export class ComplexMessageParser extends MessageParser {
                                                      convertedContext);
                 //Check for duplicates
                 let found = false;
-                for(let context of contexts) {
+                for(let context of contextOfBannedWords) {
                     if(context.equals(contextToBeAdded)) {
                         found = true;
                         break;
@@ -162,10 +168,9 @@ export class ComplexMessageParser extends MessageParser {
 
                 //Add to array if there's no dupes and is not an emote
                 if(!found && !isEmote) {
-                    contexts.push(contextToBeAdded);
+                    contextOfBannedWords.push(contextToBeAdded);
                 }
             }
         }
-        return contexts;
     }
 }

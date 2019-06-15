@@ -18,14 +18,26 @@ export class MessageChecker {
      */
     public async checkMessage(content: string, bannedWords: string[]): Promise<MessageCheckerResult> {
         return new Promise<MessageCheckerResult>(async (resolve) => {
-            let convertedContent = new CharacterSubstitutor()
-                                        .convertText(content.toLowerCase());
-            let contextOfBannedWords: Context[] = [];
+            
+            //Removing diacritic accents
+            //https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+            content = content.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-            //checking for spaces and duplicate chars using Regex
-            const complexMessageParser = new ComplexMessageParser()
-                                            .processBannedWords(bannedWords);
-            contextOfBannedWords = contextOfBannedWords.concat(complexMessageParser.getContextOfBannedWord(content, convertedContent));
+            //Generate contents
+            let contents: string[] = [];
+            //Push lower case
+            contents.push(content.toLowerCase());
+            //Generate other possible contents
+            contents = contents.concat(new CharacterSubstitutor().convertText(content.toLowerCase()));
+
+           
+            //Checking for bad words
+            let contextOfBannedWords: Context[] = [];
+            const complexMessageParser = new ComplexMessageParser().processBannedWords(bannedWords);
+
+            for(let convertedContent of contents) {
+                complexMessageParser.getContextOfBannedWord(content, convertedContent, contextOfBannedWords);
+            }
 
             //Determine if the contexts of the banned words used was malicious
             let realBannedWords: Context[] = [];

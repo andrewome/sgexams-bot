@@ -12,8 +12,7 @@ export class Context {
 
     public equals(other: Context) {
         if(other.bannedWord === this.bannedWord &&
-           other.originalContext === this.originalContext &&
-           other.convertedContext === this.convertedContext) {
+           other.originalContext === this.originalContext) {
                return true;
            }
         return false;

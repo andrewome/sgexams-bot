@@ -20,10 +20,10 @@ bot.on("message", async (message: Message) => {
             .checkMessage(message.cleanContent, bannedWords);
         if(result.guilty) {
             //console.log(result);
-            message.reply(new ResponseFormatter(message, result)
-                   .generateEmbed());
+            let embed = new ResponseFormatter(message, result)
+                .generateEmbed();
             const timeTaken = (performance.now() - t0)/1000;
-            message.channel.send(`That took ${timeTaken} seconds.`)
+            message.channel.send(`<@${message.author.id}>, That took ${timeTaken} seconds.`, embed)
         }
     } catch (err) {
         console.log(err);
