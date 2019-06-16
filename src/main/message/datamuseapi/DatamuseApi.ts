@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { DatamuseSpellingQueryResult } from "./DatamuseSpellingQueryResult";
-import { DatamuseQueryError } from "../errors/DatamuseQueryError";
+import { DatamuseQueryError } from "./errors/DatamuseQueryError";
 
 // http://www.datamuse.com/api/
 export class DatamuseApi {

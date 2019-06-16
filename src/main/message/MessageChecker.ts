@@ -1,4 +1,4 @@
-import { DatamuseApi } from "../datamuseapi/DatamuseApi";
+import { DatamuseApi } from "./datamuseapi/DatamuseApi";
 import { MessageCheckerResult } from "./MessageCheckerResult";
 import { CharacterSubstitutor } from "./CharacterSubstitutor";
 import { Context } from "./Context";
