@@ -1,12 +1,10 @@
 import { Server } from "../../storage/Server";
-import { CommandInterface } from "./CommandInterface";
 import { Permissions, GuildMember, Message } from "discord.js";
 
 /** Base class of the Commands */
-export class Command implements CommandInterface {
-    public execute(server: Server,  message: Message): void {
-        throw new Error("This method is not meant to be called");
-    }
+export abstract class Command {
+
+    public abstract execute(server: Server,  message: Message): void;
     
     /**
      * This function checks if a given guildmember has the permissions required

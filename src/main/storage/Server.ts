@@ -35,11 +35,38 @@ export class Server {
         this.reportingChannelId = reportingChannelId;
     }
 
-    /** Getters and Setters */
-    public addbannedWord(word: string): void {
-        this.bannedWords.add(word);
+    /**
+     * This function adds a word to the banned word list
+     * 
+     * @param  {string} word Word to be added
+     * @returns boolean indicating if the add was a success
+     */
+    public addbannedWord(word: string): boolean {
+        if(this.bannedWords.has(word)) {
+            return false;
+        } else {
+            this.bannedWords.add(word);
+            return true;
+        }
     }
 
+    /**
+     * This function removes a word to the banned word list
+     * 
+     * @param  {string} word Word to be removed
+     * @returns boolean indicating if the removal was a success
+     */
+    public removeBannedWord(word: string): boolean {
+        if(!this.bannedWords.has(word)) {
+            return false;
+        } else {
+            this.bannedWords.delete(word);
+            return true;
+        }
+    }
+
+    /** Getters and Setters */
+    
     public getBannedWords(): string[] {
         return Array.from(this.bannedWords);
     }
@@ -54,13 +81,6 @@ export class Server {
 
     public getServerId(): string {
         return this.serverId;
-    }
-
-    public removeBannedWord(word: string): void {
-        if(!this.bannedWords.has(word)) {
-            return;
-        }
-        this.bannedWords.delete(word);
     }
 
     /**
@@ -94,5 +114,22 @@ export class Server {
         let reportingChannelId = obj["reportingChannelId"];
 
         return new Server(bannedWords, serverId, reportingChannelId === null ? undefined : reportingChannelId);
+    }
+    /**
+     * Tests if server objects are the same.
+     * 
+     * @param  {Server} other
+     */
+    public equals(other: Server): boolean {
+        if(this.getBannedWords.toString() !== other.getBannedWords.toString())
+            return false;
+        
+        if(this.getReportingChannelId() !== other.getReportingChannelId())
+            return false;
+        
+        if(this.getServerId() !== other.getServerId())
+            return false;
+
+        return true;
     }
 }

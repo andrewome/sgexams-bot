@@ -4,7 +4,7 @@ import { DatamuseQueryError } from "./errors/DatamuseQueryError";
 
 // http://www.datamuse.com/api/
 export class DatamuseApi {
-    private endpoint: string = "https://api.datamuse.com/words";
+    private endpoint: string = "http://api.datamuse.com/words";
 
     /**
      * This function returns the API call from datamuse

@@ -1,4 +1,4 @@
-export class MessageParser {
+export abstract class MessageParser {
     /**
      * This function checks if the unicode number is alphanumeric.
      * Taken from: https://stackoverflow.com/questions/4434076/best-way-to-alphanumeric-check-in-javascript

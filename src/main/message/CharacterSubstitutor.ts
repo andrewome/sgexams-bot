@@ -33,7 +33,7 @@ export class CharacterSubstitutor {
             }
             const [b2, ...c2] = c;
             const fab = f(a, b);
-            return cartesianProduct(fab, b2, c2);
+            return cartesianProduct(fab, b2, ...c2);
         };
 
         // Round 1, convert one to one chars. Note down how many chars

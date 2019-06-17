@@ -47,4 +47,8 @@ export class Storage {
         }
         fs.writeFileSync(this.STORAGE_PATH, JSON.stringify(serverJsons));
     }
+
+    public setStoragePath(str: string) {
+        this.STORAGE_PATH = str;
+    }
 }

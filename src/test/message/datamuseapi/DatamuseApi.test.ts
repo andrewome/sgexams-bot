@@ -1,4 +1,4 @@
-import { DatamuseApi } from "../../main/message/datamuseapi/DatamuseApi";
+import { DatamuseApi } from "../../../main/message/datamuseapi/DatamuseApi";
 import { should } from 'chai';
 should();
 
