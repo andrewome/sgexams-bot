@@ -28,9 +28,40 @@ export class AddWordCommand extends Command {
 
         //Execute
         let words = this.args;
+        let wordsAdded: string[] = [];
+        let wordsNotAdded: string[] = [];
         for(let word of words) {
-            server.addbannedWord(word);
+            if(server.addbannedWord(word)) {
+                wordsAdded.push(word);
+            } else {
+                wordsNotAdded.push(word);
+            }
         }
-        message.reply(`Added word(s): ${words}`);
+
+        //Generate output string
+        let output = "";
+        if(wordsAdded.length !== 0) {
+            output += "✅ Added: ";
+            for(let i = 0; i < wordsAdded.length; i++) {
+                output += wordsAdded[i];
+                output += (i === wordsAdded.length - 1) ? "\n" : ", ";
+            }
+        }
+
+        if(wordsNotAdded.length !== 0) {
+            output += "❌ Unable to add: ";
+            for(let i = 0; i < wordsNotAdded.length; i++) {
+                output += wordsNotAdded[i];
+                output += (i === wordsNotAdded.length - 1) ? "\n" : ", ";
+            }
+            output += "Perhaps those word(s) are already added?";
+        }
+
+        if(words.length === 0) {
+            output += this.NO_ARGUMENTS;
+        }
+
+        //Send output
+        message.channel.send(output);
     }
 }

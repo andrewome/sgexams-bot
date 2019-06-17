@@ -28,9 +28,40 @@ export class RemoveWordCommand extends Command {
 
         //Execute
         let words = this.args;
+        let wordsRemoved: string[] = [];
+        let wordsNotRemoved: string[] = [];
         for(let word of words) {
-            server.removeBannedWord(word);
+            if(server.removeBannedWord(word)) {
+                wordsRemoved.push(word);
+            } else {
+                wordsNotRemoved.push(word);
+            }
         }
-        message.reply(`Removed word(s): ${words}`);
+
+        //Generate output string
+        let output = "";
+        if(wordsRemoved.length !== 0) {
+            output += "✅ Removed: ";
+            for(let i = 0; i < wordsRemoved.length; i++) {
+                output += wordsRemoved[i];
+                output += (i === wordsRemoved.length - 1) ? "\n" : ", ";
+            }
+        }
+
+        if(wordsNotRemoved.length !== 0) {
+            output += "❌ Unable to remove: ";
+            for(let i = 0; i < wordsNotRemoved.length; i++) {
+                output += wordsNotRemoved[i];
+                output += (i === wordsNotRemoved.length - 1) ? "\n" : ", ";
+            }
+            output += "Perhaps those word(s) are not inside the list?";
+        }
+ 
+        if(words.length === 0) {
+            output += this.NO_ARGUMENTS;
+        }
+
+        //Send output
+        message.channel.send(output);
     }
 }

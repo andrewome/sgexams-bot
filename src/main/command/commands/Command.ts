@@ -4,6 +4,8 @@ import { Permissions, GuildMember, Message } from "discord.js";
 /** Base class of the Commands */
 export abstract class Command {
 
+    public NO_ARGUMENTS: string = "Oops! I received no arguments. Please try again.";
+
     public abstract execute(server: Server,  message: Message): void;
     
     /**
@@ -15,6 +17,7 @@ export abstract class Command {
      */
     public hasPermissions(commandPermissions: Permissions, member: GuildMember): boolean {
         let commandPermissionsArr = commandPermissions.toArray();
+        
         //Check if user permissions exist inside command permissions
         for(let permission of commandPermissionsArr) {
             if(!member.hasPermission(permission)) {

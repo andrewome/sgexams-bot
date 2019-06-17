@@ -1,12 +1,15 @@
 import { Command } from "./Command";
-import { Permissions, Message } from "discord.js";
+import { Permissions, Message, RichEmbed } from "discord.js";
 import { Server } from "../../storage/Server";
 
 export class ListWordsCommand extends Command {
     static COMMAND_NAME = "listwords";
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
+    private NO_WORDS_FOUND = "There are no words set for this server!";
+
     /**
-     * 
+     * This function executes the list words command.
+     * Lists out all the banned words that the server has.
      * 
      * @param  {Server} server
      * @param  {Message} message
@@ -19,6 +22,19 @@ export class ListWordsCommand extends Command {
         }
 
         //Execute Command
-        message.reply(server.getBannedWords().toString());
+        let bannedWords = server.getBannedWords();
+        bannedWords.sort();
+        if(bannedWords.length === 0) {
+            message.channel.send(this.NO_WORDS_FOUND);
+        } else {
+            let embed = new RichEmbed();
+            let output = "";
+            for(let word of bannedWords) {
+                output += word + "\n";
+            }
+            embed.setColor("#125bd1");
+            embed.addField("Blacklisted Words", output);
+            message.channel.send(embed);
+        }
     }
 }

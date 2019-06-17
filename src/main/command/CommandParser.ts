@@ -4,12 +4,18 @@ import { SetChannelCommand } from "./commands/SetChannelCommand";
 import { AddWordCommand } from "./commands/AddWordCommand";
 import { RemoveWordCommand } from "./commands/RemoveWordCommand";
 import { NoSuchCommandError } from "./error/NoSuchCommandError";
+import { GetChannelCommand } from "./commands/GetChannelCommand";
+import { ListCommandsCommand } from "./commands/ListCommandsCommand";
 
+const HELP = "help"
 export class CommandParser {
     private commands: Set<string> = new Set<string>([ListWordsCommand.COMMAND_NAME,
                                                      SetChannelCommand.COMMAND_NAME,
                                                      AddWordCommand.COMMAND_NAME,
-                                                     RemoveWordCommand.COMMAND_NAME]);
+                                                     RemoveWordCommand.COMMAND_NAME,
+                                                     GetChannelCommand.COMMAND_NAME,
+                                                     ListCommandsCommand.COMMAND_NAME,
+                                                     HELP]);
     private content: string;
     private splittedContent: string[];
 
@@ -24,7 +30,6 @@ export class CommandParser {
         this.splittedContent = content.split(/ +|,+/g);
     }
 
-    
     /**
      * This function returns if the content was a command
      * 
@@ -32,15 +37,14 @@ export class CommandParser {
      * @returns boolean
      */
     public isCommand(selfId: string): boolean {
+
         //Check if bot is mentioned as the 1st word
-        if(this.splittedContent[0] !== `<@${selfId}>`) {
+        if(!(new RegExp(`<@!?${selfId}>`).test(this.splittedContent[0]))) {
             return false;
         }
 
         //Check if command word is the 2nd word
         if(!this.commands.has(this.splittedContent[1])) {
-            console.log(this.splittedContent[1]);
-            console.log(this.commands);
             return false;
         }
         return true;
@@ -60,7 +64,6 @@ export class CommandParser {
         }
         return [];
     }
-
     
     /**
      * This function executes the listword command
@@ -72,15 +75,22 @@ export class CommandParser {
      */
     public getCommand(): Command {
         const command = this.splittedContent[1];
+        const args = this.getArgs();
         switch(command) {
             case ListWordsCommand.COMMAND_NAME:
                 return new ListWordsCommand();
             case SetChannelCommand.COMMAND_NAME:
-                return new SetChannelCommand(this.getArgs());
+                return new SetChannelCommand(args);
             case AddWordCommand.COMMAND_NAME:
-                return new AddWordCommand(this.getArgs());
+                return new AddWordCommand(args);
             case RemoveWordCommand.COMMAND_NAME:
-                return new RemoveWordCommand(this.getArgs());
+                return new RemoveWordCommand(args);
+            case GetChannelCommand.COMMAND_NAME:
+                return new GetChannelCommand();
+            case ListCommandsCommand.COMMAND_NAME:
+                return new ListCommandsCommand(this.commands);
+            case HELP:
+                return new ListCommandsCommand(this.commands);
         }
         throw new NoSuchCommandError("No such command!");
     }
