@@ -20,7 +20,7 @@ export class Storage {
             let objects = JSON.parse(servers);
             for(let object of objects) {
                 let server = Server.convertFromJsonFriendly(object);
-                this.servers.set(server.getServerId(), server);
+                this.servers.set(server.serverId, server);
             }
         } catch(err) {
             // File not found, create empty file

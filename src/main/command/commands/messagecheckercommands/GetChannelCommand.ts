@@ -1,6 +1,6 @@
-import { Command } from "./Command";
+import { Command } from "../Command";
 import { Permissions, Message } from "discord.js";
-import { Server } from "../../storage/Server";
+import { Server } from "../../../storage/Server";
 
 export class GetChannelCommand extends Command {
     static COMMAND_NAME = "getchannel";
@@ -12,7 +12,7 @@ export class GetChannelCommand extends Command {
     }
 
     /**
-     * This function executes the setchannel command
+     * This function executes the getchannel command
      * Sets the reporting channel of the server.
      * 
      * @param  {Server} server Server object of the message
@@ -26,7 +26,7 @@ export class GetChannelCommand extends Command {
         }
 
         //Execute
-        let channelId = server.getReportingChannelId();
+        let channelId = server.messageCheckerSettings.getReportingChannelId();
         if(typeof channelId === "undefined") {
             message.channel.send(this.CHANNEL_NOT_SET);
         } else {

@@ -1,13 +1,15 @@
 import { Command } from "./commands/Command";
-import { ListWordsCommand } from "./commands/ListWordsCommand";
-import { SetChannelCommand } from "./commands/SetChannelCommand";
-import { AddWordCommand } from "./commands/AddWordCommand";
-import { RemoveWordCommand } from "./commands/RemoveWordCommand";
+import { ListWordsCommand } from "./commands/messagecheckercommands/ListWordsCommand";
+import { SetChannelCommand } from "./commands/messagecheckercommands/SetChannelCommand";
+import { AddWordCommand } from "./commands/messagecheckercommands/AddWordCommand";
+import { RemoveWordCommand } from "./commands/messagecheckercommands/RemoveWordCommand";
 import { NoSuchCommandError } from "./error/NoSuchCommandError";
-import { GetChannelCommand } from "./commands/GetChannelCommand";
-import { ListCommandsCommand } from "./commands/ListCommandsCommand";
+import { GetChannelCommand } from "./commands/messagecheckercommands/GetChannelCommand";
+import { ListCommandsCommand } from "./commands/messagecheckercommands/ListCommandsCommand";
+import { SetResponseMessageCommand } from "./commands/messagecheckercommands/SetResponseMessageCommand";
+import { GetResponseMessageCommand } from "./commands/messagecheckercommands/GetResponseMessageCommand";
+import { SetDeleteMessageCommand } from "./commands/messagecheckercommands/SetDeleteMessageCommand";
 
-const HELP = "help"
 export class CommandParser {
     private commands: Set<string> = new Set<string>([ListWordsCommand.COMMAND_NAME,
                                                      SetChannelCommand.COMMAND_NAME,
@@ -15,7 +17,9 @@ export class CommandParser {
                                                      RemoveWordCommand.COMMAND_NAME,
                                                      GetChannelCommand.COMMAND_NAME,
                                                      ListCommandsCommand.COMMAND_NAME,
-                                                     HELP]);
+                                                     SetResponseMessageCommand.COMMAND_NAME,
+                                                     GetResponseMessageCommand.COMMAND_NAME,
+                                                     SetDeleteMessageCommand.COMMAND_NAME]);
     private content: string;
     private splittedContent: string[];
 
@@ -27,7 +31,7 @@ export class CommandParser {
      */
     constructor(content: string) {
         this.content = content.toLowerCase();
-        this.splittedContent = content.split(/ +|,+/g);
+        this.splittedContent = content.split(/ +/g);
     }
 
     /**
@@ -89,8 +93,12 @@ export class CommandParser {
                 return new GetChannelCommand();
             case ListCommandsCommand.COMMAND_NAME:
                 return new ListCommandsCommand(this.commands);
-            case HELP:
-                return new ListCommandsCommand(this.commands);
+            case SetResponseMessageCommand.COMMAND_NAME:
+                return new SetResponseMessageCommand(args);
+            case GetResponseMessageCommand.COMMAND_NAME:
+                return new GetResponseMessageCommand();
+            case SetDeleteMessageCommand.COMMAND_NAME:
+                return new SetDeleteMessageCommand(args);
         }
         throw new NoSuchCommandError("No such command!");
     }

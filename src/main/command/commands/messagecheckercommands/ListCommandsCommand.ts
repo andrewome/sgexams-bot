@@ -1,11 +1,11 @@
-import { Command } from "./Command";
+import { Command } from "../Command";
 import { Permissions, Message, RichEmbed } from "discord.js";
-import { Server } from "../../storage/Server";
+import { Server } from "../../../storage/Server";
 
 export class ListCommandsCommand extends Command {
-    static COMMAND_NAME = "listcommands";
+    static COMMAND_NAME = "help";
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
-    private NO_WORDS_FOUND = "There are no words set for this server!";
+
     private commands: Set<string>;
 
     constructor(commands: Set<string>) {

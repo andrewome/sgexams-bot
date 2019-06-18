@@ -1,86 +1,28 @@
-/** JSON Serialiser class  */
-class ServerJson {
-    private bannedWords: string[];
-    private serverId: string;
-    private reportingChannelId: string | null;
-
-    constructor(server: Server) {
-        this.bannedWords = server.getBannedWords();
-        this.serverId = server.getServerId();
-        let reportingChannelId = server.getReportingChannelId();
-        if(typeof reportingChannelId === "undefined") {
-            this.reportingChannelId = null;
-        } else {
-            this.reportingChannelId = reportingChannelId;
-        }
-    }
-}
+import { MessageCheckerSettings } from "./MessageCheckerSettings";
 
 /** This class represents a server object that the bot references from */
 export class Server {
-    private bannedWords: Set<string>;
-    private serverId: string;
-    private reportingChannelId: string | undefined;
+    public serverId: string;
+    public messageCheckerSettings: MessageCheckerSettings;
     
-    /** 
-     * Constructor for server object
-     * 
-     * @param  {string[]} bannedWords string array of banned words
-     * @param  {string} serverId server id
-     * @param  {string} reportingChannelId? reporting channel id (if any)
-     */
-    constructor(bannedWords: string[], serverId: string, reportingChannelId?: string) {
-        this.bannedWords = new Set<string>(bannedWords);
+    constructor(serverId: string, messageCheckerSettings: MessageCheckerSettings) {
         this.serverId = serverId;
-        this.reportingChannelId = reportingChannelId;
+        this.messageCheckerSettings = messageCheckerSettings;
     }
 
     /**
-     * This function adds a word to the banned word list
+     * Tests if server objects are the same.
      * 
-     * @param  {string} word Word to be added
-     * @returns boolean indicating if the add was a success
+     * @param {Server} other
      */
-    public addbannedWord(word: string): boolean {
-        if(this.bannedWords.has(word)) {
+    public equals(other: Server): boolean {   
+        if(this.serverId !== other.serverId)
             return false;
-        } else {
-            this.bannedWords.add(word);
-            return true;
-        }
-    }
 
-    /**
-     * This function removes a word to the banned word list
-     * 
-     * @param  {string} word Word to be removed
-     * @returns boolean indicating if the removal was a success
-     */
-    public removeBannedWord(word: string): boolean {
-        if(!this.bannedWords.has(word)) {
+        if(!this.messageCheckerSettings.equals(other.messageCheckerSettings))
             return false;
-        } else {
-            this.bannedWords.delete(word);
-            return true;
-        }
-    }
 
-    /** Getters and Setters */
-    
-    public getBannedWords(): string[] {
-        return Array.from(this.bannedWords);
-    }
-
-    public setReportingChannelId(id: string): void {
-        this.reportingChannelId = id;
-    }
-
-    public getReportingChannelId(): string | undefined {
-        return this.reportingChannelId;
-    }
-
-    public getServerId(): string {
-        return this.serverId;
+        return true;
     }
 
     /**
@@ -88,10 +30,16 @@ export class Server {
      * that can be easily converted into a JSON object
      * 
      * @param  {Server} server Server object
-     * @returns ServerJson 
+     * @returns any 
      */
-    static convertToJsonFriendly(server: Server): ServerJson {
-        return new ServerJson(server);
+    static convertToJsonFriendly(server: Server): any {
+        let out: any = {};
+        out.serverId = server.serverId;
+        let messageCheckerSettings = server.messageCheckerSettings;
+        out.messageCheckerSettings = 
+            MessageCheckerSettings.convertToJsonFriendly(messageCheckerSettings);
+
+        return out;
     }
 
     /**
@@ -103,33 +51,14 @@ export class Server {
      */
     static convertFromJsonFriendly(obj: any): Server {
         //Check attributes
-        if(!(obj.hasOwnProperty("bannedWords") && 
-             obj.hasOwnProperty("serverId") &&
-             obj.hasOwnProperty("reportingChannelId"))) {
+        if(!(obj.hasOwnProperty("messageCheckerSettings") && 
+             obj.hasOwnProperty("serverId"))) {
                 throw new Error("Object is not valid");
         }
 
-        let bannedWords = obj["bannedWords"];
         let serverId = obj["serverId"];
-        let reportingChannelId = obj["reportingChannelId"];
+        let messageCheckerSettings = MessageCheckerSettings.convertFromJsonFriendly(obj["messageCheckerSettings"]);
 
-        return new Server(bannedWords, serverId, reportingChannelId === null ? undefined : reportingChannelId);
-    }
-    /**
-     * Tests if server objects are the same.
-     * 
-     * @param  {Server} other
-     */
-    public equals(other: Server): boolean {
-        if(this.getBannedWords.toString() !== other.getBannedWords.toString())
-            return false;
-        
-        if(this.getReportingChannelId() !== other.getReportingChannelId())
-            return false;
-        
-        if(this.getServerId() !== other.getServerId())
-            return false;
-
-        return true;
+        return new Server(serverId, messageCheckerSettings);
     }
 }

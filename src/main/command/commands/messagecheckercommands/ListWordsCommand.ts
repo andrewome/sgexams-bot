@@ -1,6 +1,6 @@
-import { Command } from "./Command";
+import { Command } from "../Command";
 import { Permissions, Message, RichEmbed } from "discord.js";
-import { Server } from "../../storage/Server";
+import { Server } from "../../../storage/Server";
 
 export class ListWordsCommand extends Command {
     static COMMAND_NAME = "listwords";
@@ -22,7 +22,7 @@ export class ListWordsCommand extends Command {
         }
 
         //Execute Command
-        let bannedWords = server.getBannedWords();
+        let bannedWords = server.messageCheckerSettings.getBannedWords();
         bannedWords.sort();
         if(bannedWords.length === 0) {
             message.channel.send(this.NO_WORDS_FOUND);

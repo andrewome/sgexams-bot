@@ -1,6 +1,6 @@
-import { Command } from "./Command";
+import { Command } from "../Command";
 import { Permissions, Message } from "discord.js";
-import { Server } from "../../storage/Server";
+import { Server } from "../../../storage/Server";
 
 export class AddWordCommand extends Command {
     static COMMAND_NAME = "addwords";
@@ -31,7 +31,7 @@ export class AddWordCommand extends Command {
         let wordsAdded: string[] = [];
         let wordsNotAdded: string[] = [];
         for(let word of words) {
-            if(server.addbannedWord(word)) {
+            if(server.messageCheckerSettings.addbannedWord(word)) {
                 wordsAdded.push(word);
             } else {
                 wordsNotAdded.push(word);

@@ -2,6 +2,7 @@ import * as fs from "fs";
 import { Storage } from "../../main/storage/Storage";
 import { should } from 'chai';
 import { Server } from "../../main/storage/Server";
+import { MessageCheckerSettings } from "../../main/storage/MessageCheckerSettings";
 should();
 
 const STORAGE_PATH = "./TESTING.json";
@@ -22,8 +23,8 @@ before(() => {
 // Initialise server1 and server2 before each
 let server1: Server, server2: Server;
 beforeEach(() => {
-    server1 = new Server([], "111", "123");
-    server2 = new Server([], "112");
+    server1 = new Server("111", new MessageCheckerSettings());
+    server2 = new Server("112", new MessageCheckerSettings());
 })
 
 // Delete the json file after each
@@ -42,19 +43,19 @@ describe("Storage test suite", () => {
         });
         it("Should save and load from file successfully", () => {
             const storage1 = new Storage_Test().loadServers();
-            storage1.servers.set(server1.getServerId(), server1);
-            storage1.servers.set(server2.getServerId(), server2);
+            storage1.servers.set(server1.serverId, server1);
+            storage1.servers.set(server2.serverId, server2);
             storage1.saveServers();
 
             //Load from json file
             const storage2 = new Storage_Test().loadServers();
             storage2.servers.size.should.equals(2);
-            storage2.servers.has(server1.getServerId()).should.be.true;
-            storage2.servers.has(server2.getServerId()).should.be.true;
+            storage2.servers.has(server1.serverId).should.be.true;
+            storage2.servers.has(server2.serverId).should.be.true;
 
             //Server objects should equal through the saving and loading
-            server1.equals(storage2.servers.get(server1.getServerId())!).should.be.true;
-            server2.equals(storage2.servers.get(server2.getServerId())!).should.be.true;
+            server1.equals(storage2.servers.get(server1.serverId)!).should.be.true;
+            server2.equals(storage2.servers.get(server2.serverId)!).should.be.true;
         });
     });
-})
+});

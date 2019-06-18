@@ -26,6 +26,7 @@
     "dotenv": "^8.0.0",
     "fs": "0.0.1-security",
     "https": "^1.0.0",
+    "loglevel": "^1.6.3",
     "npm": "^6.9.0"
   },
   "devDependencies": {

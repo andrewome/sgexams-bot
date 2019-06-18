@@ -1,11 +1,26 @@
 import "./lib/env";
 import { Client, Message, TextChannel } from "discord.js";
 import { MessageChecker } from "./message/MessageChecker";
-import { ResponseFormatter } from "./message/ReportFormatter";
-import { performance } from "perf_hooks";
+import { MessageResponse } from "./message/MessageResponse";
 import { CommandParser } from "./command/CommandParser";
 import { Server } from "./storage/Server";
 import { Storage } from "./storage/Storage";
+import log from "loglevel";
+import { MessageCheckerSettings } from "./storage/MessageCheckerSettings";
+
+// Set up logging method
+log.enableAll();
+const originalFactory = log.methodFactory;
+log.methodFactory = function(methodName, logLevel, loggerName) {
+    const rawMethod = originalFactory(methodName, logLevel, loggerName);
+
+    return function(message) {
+        const curDate = new Date().toLocaleString();
+        const logMsg = `[${curDate}]: ${message}`;
+        rawMethod(logMsg);
+    }
+}
+log.setLevel(log.getLevel());
 
 class App {
     private bot: Client;
@@ -13,28 +28,36 @@ class App {
 
     constructor() {
         this.bot = new Client();
+        log.info("Logging the bot in...");
+        this.bot.login(process.env.BOT_TOKEN);
+        log.info("Loading Servers...");
         this.storage = new Storage().loadServers();
     }
 
+    /**
+     * Retrieves server object from server map
+     * 
+     * @param  {string} id Server Id
+     * @returns Server
+     */
     private getServer(id: string): Server {
         if(this.storage.servers.has(id) === false) {
-            this.storage.servers.set(id, new Server([], id));
+            this.storage.servers.set(id, new Server(id, new MessageCheckerSettings()));
         }
         return this.storage.servers.get(id)!;
     }
 
-    public login(): App {
-        this.bot.login(process.env.BOT_TOKEN);
-        return this;
-    }
-
+    /**
+     * Contains event emitters that the bot is listening to
+     */
     public run() {
         this.bot.on("message", async (message: Message) => {
             // Retrieve server
             let server = this.getServer(message.guild.id.toString());
-            let bannedWords = server.getBannedWords();
-            let reportingChannelId = server.getReportingChannelId();
-            let isValidReportingChannel = !(typeof reportingChannelId === "undefined");
+            let bannedWords = server.messageCheckerSettings.getBannedWords();
+            let reportingChannelId = server.messageCheckerSettings.getReportingChannelId();
+            let responseMessage = server.messageCheckerSettings.getResponseMessage();
+            let deleteMessage = server.messageCheckerSettings.getDeleteMessage();
 
             // If it's a bot, ignore :)
             if(message.author.bot)
@@ -43,32 +66,32 @@ class App {
             // If it's a command, execute the command and save servers
             const commandParser = new CommandParser(message.content);
             if(commandParser.isCommand(this.bot.user.id.toString())) {
-                commandParser.getCommand().execute(server, message);
+                commandParser
+                    .getCommand()
+                    .execute(server, message);
                 this.storage.saveServers();
             }
 
             // Check message contents if it contains a bad word >:o
             try {
-                const t0 = performance.now();
-                let result = await new MessageChecker()
-                    .checkMessage(message.content, bannedWords);
+                let result = 
+                    await new MessageChecker().checkMessage(message.content, bannedWords);
                 if(result.guilty) {
-                    let embed = new ResponseFormatter(message, result).generateEmbed();
-                    const timeTaken = (performance.now() - t0)/1000;
-                    if(isValidReportingChannel) {
-                        let reportingChannel = message.guild.channels.get(reportingChannelId as string);
-                        (reportingChannel as TextChannel).send(`That took ${timeTaken} seconds.`, embed);
-                    }
+                    new MessageResponse(message)
+                        .sendReport(result, reportingChannelId)
+                        .sendMessageToUser(responseMessage)
+                        .deleteMessage(deleteMessage);
                 }
             } catch (err) {
-                console.log(err);
+                log.error(err);
             }
         });
 
         this.bot.on('ready', () => {
-            console.log('I am ready!');
+            log.info('I am ready!');
+            this.bot.user.setActivity("with NUKES!!!!", { type: "PLAYING"});
         });
     }
 }
 
-new App().login().run();
+new App().run();

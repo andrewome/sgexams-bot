@@ -1,6 +1,6 @@
-import { Command } from "./Command";
+import { Command } from "../Command";
 import { Permissions, Message } from "discord.js";
-import { Server } from "../../storage/Server";
+import { Server } from "../../../storage/Server";
 
 export class RemoveWordCommand extends Command {
     static COMMAND_NAME = "removewords";
@@ -31,7 +31,7 @@ export class RemoveWordCommand extends Command {
         let wordsRemoved: string[] = [];
         let wordsNotRemoved: string[] = [];
         for(let word of words) {
-            if(server.removeBannedWord(word)) {
+            if(server.messageCheckerSettings.removeBannedWord(word)) {
                 wordsRemoved.push(word);
             } else {
                 wordsNotRemoved.push(word);

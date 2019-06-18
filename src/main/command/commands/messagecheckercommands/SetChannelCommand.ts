@@ -1,6 +1,6 @@
-import { Command } from "./Command";
+import { Command } from "../Command";
 import { Permissions, Message } from "discord.js";
-import { Server } from "../../storage/Server";
+import { Server } from "../../../storage/Server";
 
 export class SetChannelCommand extends Command {
     static COMMAND_NAME = "setchannel";
@@ -41,7 +41,7 @@ export class SetChannelCommand extends Command {
             } else if (channel.type !== "text") {
                 message.channel.send(this.NOT_TEXT_CHANNEL);
             } else {
-                server.setReportingChannelId(channelId);
+                server.messageCheckerSettings.setReportingChannelId(channelId);
                 message.channel.send(`Reporting Channel set to <#${channelId}>.`);
             }
         }
