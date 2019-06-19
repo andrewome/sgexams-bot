@@ -78,7 +78,7 @@ export class MessageCheckerSettings {
         return Array.from(this.bannedWords);
     }
 
-    public setReportingChannelId(id: string): void {
+    public setReportingChannelId(id: string | undefined): void {
         this.reportingChannelId = id;
     }
 
@@ -86,7 +86,7 @@ export class MessageCheckerSettings {
         return this.reportingChannelId;
     }
 
-    public setResponseMessage(responseMessage: string): void {
+    public setResponseMessage(responseMessage: string | undefined): void {
         this.responseMessage = responseMessage;
     }
 
@@ -149,6 +149,7 @@ export class MessageCheckerSettings {
         let bannedWords = obj["bannedWords"];
         let reportingChannelId = obj["reportingChannelId"];
         let responseMessage = obj["responseMessage"];
+        let deleteMessage = obj["deleteMessage"];
 
         if(reportingChannelId === null)
             reportingChannelId = undefined;
@@ -156,6 +157,9 @@ export class MessageCheckerSettings {
         if(responseMessage === null)
             responseMessage = undefined;
 
-        return new MessageCheckerSettings(reportingChannelId, responseMessage, bannedWords);
+        return new MessageCheckerSettings(reportingChannelId,
+                                          responseMessage,
+                                          bannedWords,
+                                          deleteMessage);
     }
 }

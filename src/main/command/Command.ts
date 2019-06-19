@@ -1,10 +1,11 @@
-import { Server } from "../../storage/Server";
+import { Server } from "../storage/Server";
 import { Permissions, GuildMember, Message } from "discord.js";
 
 /** Base class of the Commands */
 export abstract class Command {
 
     public NO_ARGUMENTS: string = "Oops! I received no arguments. Please try again.";
+    public EMBED_COLOUR: string = "#125bd1";
 
     public abstract execute(server: Server,  message: Message): void;
     

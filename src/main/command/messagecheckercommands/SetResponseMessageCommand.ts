@@ -1,9 +1,10 @@
 import { Command } from "../Command";
 import { Permissions, Message } from "discord.js";
-import { Server } from "../../../storage/Server";
+import { Server } from "../../storage/Server";
 
 export class SetResponseMessageCommand extends Command {
     static COMMAND_NAME = "setresponsemessage";
+    static DESCRIPTION = "Sets the response message to the user upon detection of blacklisted words for this server.";
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private args: string[];
 
@@ -27,7 +28,8 @@ export class SetResponseMessageCommand extends Command {
         }
 
         if(this.args.length === 0) {
-            message.channel.send(this.NO_ARGUMENTS);
+            server.messageCheckerSettings.setResponseMessage(undefined);
+            message.channel.send("Response Message has been resetted.");
         } else {
             let msg = "";
             for(let i = 0; i < this.args.length; i++) {

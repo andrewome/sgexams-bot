@@ -1,9 +1,10 @@
 import { Command } from "../Command";
 import { Permissions, Message } from "discord.js";
-import { Server } from "../../../storage/Server";
+import { Server } from "../../storage/Server";
 
 export class SetDeleteMessageCommand extends Command {
     static COMMAND_NAME = "setdeletemessage";
+    static DESCRIPTION = "Sets whether the bot should delete instances of blacklisted words being used.";
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private args: string[];
     private INCORRECT_FORMAT = "Incorrect format. Use only \"true\" or \"false\"."

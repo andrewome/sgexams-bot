@@ -1,9 +1,10 @@
 import { Command } from "../Command";
 import { Permissions, Message, RichEmbed } from "discord.js";
-import { Server } from "../../../storage/Server";
+import { Server } from "../../storage/Server";
 
 export class ListWordsCommand extends Command {
     static COMMAND_NAME = "listwords";
+    static DESCRIPTION = "Displays all blacklisted words.";
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private NO_WORDS_FOUND = "There are no words set for this server!";
 
@@ -32,7 +33,7 @@ export class ListWordsCommand extends Command {
             for(let word of bannedWords) {
                 output += word + "\n";
             }
-            embed.setColor("#125bd1");
+            embed.setColor(this.EMBED_COLOUR);
             embed.addField("Blacklisted Words", output);
             message.channel.send(embed);
         }

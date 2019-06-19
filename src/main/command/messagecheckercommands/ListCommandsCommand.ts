@@ -1,16 +1,19 @@
 import { Command } from "../Command";
 import { Permissions, Message, RichEmbed } from "discord.js";
-import { Server } from "../../../storage/Server";
+import { Server } from "../../storage/Server";
 
 export class ListCommandsCommand extends Command {
     static COMMAND_NAME = "help";
+    static DESCRIPTION = "Displays all the available commands that this bot listens to."
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
 
-    private commands: Set<string>;
+    private commands: string[];
+    private descriptions: string[]
 
-    constructor(commands: Set<string>) {
+    constructor(commands: Set<string>, descriptions: string[]) {
         super();
-        this.commands = commands;
+        this.commands = Array.from(commands);
+        this.descriptions = descriptions;
     }
 
     /**
@@ -29,10 +32,10 @@ export class ListCommandsCommand extends Command {
         //Execute Command
         let embed = new RichEmbed();
         let output = "";
-        for(let command of Array.from(this.commands).sort()) {
-            output += command + "\n";
+        for(let i in this.commands) {
+            output += `**${this.commands[i]}** - ${this.descriptions[i]}\n`;
         }
-        embed.setColor("#125bd1");
+        embed.setColor(this.EMBED_COLOUR);
         embed.addField("Commands", output);
         message.channel.send(embed);
     }

@@ -1,12 +1,13 @@
 import { Command } from "../Command";
 import { Permissions, Message } from "discord.js";
-import { Server } from "../../../storage/Server";
+import { Server } from "../../storage/Server";
 
 export class SetChannelCommand extends Command {
     static COMMAND_NAME = "setchannel";
+    static DESCRIPTION = "Sets the reporting channel to post incident reports for this server when blacklisted words are used.";
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private args: string[];
-    private CHANNEL_NOT_FOUND = "Channel was not found. Please submit a valid channel ID."
+    private CHANNEL_NOT_FOUND = "Channel was not found. Please submit a valid channel ID.";
     private NOT_TEXT_CHANNEL = "Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel";
 
     constructor(args: string[]) {
@@ -30,7 +31,8 @@ export class SetChannelCommand extends Command {
 
         //Execute
         if(this.args.length === 0) {
-            message.channel.send(this.NO_ARGUMENTS);
+            server.messageCheckerSettings.setReportingChannelId(undefined);
+            message.channel.send("Reporting Channel has been resetted. Please set a new one.");
         } else {
             let channelId = this.args[0];
 

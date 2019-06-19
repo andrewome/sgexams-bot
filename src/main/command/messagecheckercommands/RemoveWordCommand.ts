@@ -1,9 +1,10 @@
 import { Command } from "../Command";
 import { Permissions, Message } from "discord.js";
-import { Server } from "../../../storage/Server";
+import { Server } from "../../storage/Server";
 
 export class RemoveWordCommand extends Command {
     static COMMAND_NAME = "removewords";
+    static DESCRIPTION = "Remove word(s) from the blacklist.";
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private args: string[];
 

@@ -1,31 +1,42 @@
-import { Command } from "./commands/Command";
-import { ListWordsCommand } from "./commands/messagecheckercommands/ListWordsCommand";
-import { SetChannelCommand } from "./commands/messagecheckercommands/SetChannelCommand";
-import { AddWordCommand } from "./commands/messagecheckercommands/AddWordCommand";
-import { RemoveWordCommand } from "./commands/messagecheckercommands/RemoveWordCommand";
+import { Command } from "./Command";
+import { ListWordsCommand } from "./messagecheckercommands/ListWordsCommand";
+import { SetChannelCommand } from "./messagecheckercommands/SetChannelCommand";
+import { AddWordCommand } from "./messagecheckercommands/AddWordCommand";
+import { RemoveWordCommand } from "./messagecheckercommands/RemoveWordCommand";
 import { NoSuchCommandError } from "./error/NoSuchCommandError";
-import { GetChannelCommand } from "./commands/messagecheckercommands/GetChannelCommand";
-import { ListCommandsCommand } from "./commands/messagecheckercommands/ListCommandsCommand";
-import { SetResponseMessageCommand } from "./commands/messagecheckercommands/SetResponseMessageCommand";
-import { GetResponseMessageCommand } from "./commands/messagecheckercommands/GetResponseMessageCommand";
-import { SetDeleteMessageCommand } from "./commands/messagecheckercommands/SetDeleteMessageCommand";
+import { GetChannelCommand } from "./messagecheckercommands/GetChannelCommand";
+import { ListCommandsCommand } from "./messagecheckercommands/ListCommandsCommand";
+import { SetResponseMessageCommand } from "./messagecheckercommands/SetResponseMessageCommand";
+import { GetResponseMessageCommand } from "./messagecheckercommands/GetResponseMessageCommand";
+import { SetDeleteMessageCommand } from "./messagecheckercommands/SetDeleteMessageCommand";
 
 export class CommandParser {
-    private commands: Set<string> = new Set<string>([ListWordsCommand.COMMAND_NAME,
-                                                     SetChannelCommand.COMMAND_NAME,
+    private commands: Set<string> = new Set<string>([ListCommandsCommand.COMMAND_NAME,
+                                                     ListWordsCommand.COMMAND_NAME,
                                                      AddWordCommand.COMMAND_NAME,
                                                      RemoveWordCommand.COMMAND_NAME,
+                                                     SetChannelCommand.COMMAND_NAME,
                                                      GetChannelCommand.COMMAND_NAME,
-                                                     ListCommandsCommand.COMMAND_NAME,
                                                      SetResponseMessageCommand.COMMAND_NAME,
                                                      GetResponseMessageCommand.COMMAND_NAME,
                                                      SetDeleteMessageCommand.COMMAND_NAME]);
+
+    private descriptions: string[] = [ListCommandsCommand.DESCRIPTION,
+                                      ListWordsCommand.DESCRIPTION,
+                                      AddWordCommand.DESCRIPTION,
+                                      RemoveWordCommand.DESCRIPTION,
+                                      SetChannelCommand.DESCRIPTION,
+                                      GetChannelCommand.DESCRIPTION,
+                                      SetResponseMessageCommand.DESCRIPTION,
+                                      GetResponseMessageCommand.DESCRIPTION,
+                                      SetDeleteMessageCommand.DESCRIPTION];
+
     private content: string;
     private splittedContent: string[];
 
     /**
      * Constructor, takes in content and gets the splitted content
-     * splitted by ' ' and ','
+     * splitted by ' '
      * 
      * @param  {string} content
      */
@@ -92,7 +103,7 @@ export class CommandParser {
             case GetChannelCommand.COMMAND_NAME:
                 return new GetChannelCommand();
             case ListCommandsCommand.COMMAND_NAME:
-                return new ListCommandsCommand(this.commands);
+                return new ListCommandsCommand(this.commands, this.descriptions);
             case SetResponseMessageCommand.COMMAND_NAME:
                 return new SetResponseMessageCommand(args);
             case GetResponseMessageCommand.COMMAND_NAME:
