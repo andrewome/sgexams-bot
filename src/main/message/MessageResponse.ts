@@ -5,6 +5,12 @@ import log from "loglevel";
 
 export class MessageResponse {
     private message: Message;
+    private EMBED_COLOUR = "#ff0000";
+    private REPORT = "Report";
+    private CONTEXT = "Context";
+    private WORDS_USED = "Words Used";
+    private MESSAGE_TOO_LONG = "... (message too long)";
+    private BAD_WORD_DETECTED = "❌Bad Word Detected❌";
 
     constructor(message: Message) {
         this.message = message;
@@ -23,20 +29,22 @@ export class MessageResponse {
         }
 
         const tag = this.message.author.tag;
+        const avatarUrl = this.message.author.avatarURL;
         const username = this.message.member.nickname;
         const wordsUsed = result.contexts;
         const id = this.message.id;
         const url = this.message.url;
+        const channel = `<#${this.message.channel.id.toString()}>`;
         let content = this.message.content;
 
         // Generate strings
         let offenderStr = "";
         if(username === null) {
-            offenderStr = `**${tag}**`;
+            offenderStr = `${tag}`;
         } else {
-            offenderStr = `**${username}, aka ${tag}**`;
+            offenderStr = `${username}, aka ${tag}`;
         }
-        let report = `Offender: ${offenderStr}\nMessage ID: **${id}**\nMessage link: ${url}`;
+        let report = `**Offender:** ${offenderStr}\n**Message ID:** ${id}\n**Channel:** ${channel}\n**[Message Link](${url})**`;
 
         // Get list of words used
         let words = "";
@@ -51,29 +59,29 @@ export class MessageResponse {
         //Some strings may be too long, stop it at 1024 chars.
         if(content.length > 1024) {
             content = content.substr(0, 980);
-            content += "... (message too long)";
+            content += this.MESSAGE_TOO_LONG;
         }
 
         if(contexts.length > 1024) {
             contexts = contexts.substr(0, 980);
-            contexts += "... (message too long)";
+            contexts += this.MESSAGE_TOO_LONG;
         }
 
         // Make embed
         const embed = new RichEmbed()
-            .setColor("#ff0000")
-            .setTitle("❌Bad Word Detected❌")
-            .addField("Report", report, false)
-            .addField("Word Used", words, true)
-            .addField("Context", contexts, true)
-            .addField("Full Message", `**${tag}:** ${content}`, false)
+            .setColor(this.EMBED_COLOUR)
+            .setAuthor(`${offenderStr} said...`, avatarUrl)
+            .setDescription(`\`\`\`${content}\`\`\``)
+            .addField(this.REPORT, report, false)
+            .addField(this.WORDS_USED, `\`\`\`${words}\`\`\``, true)
+            .addField(this.CONTEXT, `\`\`\`${contexts}\`\`\``, true)
             .setTimestamp();
-
+          
         const reportingChannel = this.message.guild.channels.get(reportingChannelId)!;
-        (reportingChannel as TextChannel).send(embed);      
+        (reportingChannel as TextChannel).send(this.BAD_WORD_DETECTED, embed);
 
         // Log it
-        log.info(`Bad Word Detected in guild "${this.message.guild.name}". ${offenderStr.replace(/\*/g, "")} said "${content}" which has banned words: ${words.replace(/\n/g, " ")}`);
+        log.info(`Bad Word Detected in guild "${this.message.guild.name}". ${offenderStr} said "${content}" which has banned words: ${words.replace(/\n/g, " ")}`);
 
         return this;
     }
