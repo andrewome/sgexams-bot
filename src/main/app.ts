@@ -92,6 +92,32 @@ class App {
             }
         });
 
+        this.bot.on("messageUpdate", async (oldMessage, newMessage) => {
+            // Retrieve server
+            let server = this.getServer(newMessage.guild.id.toString());
+            let bannedWords = server.messageCheckerSettings.getBannedWords();
+            let reportingChannelId = server.messageCheckerSettings.getReportingChannelId();
+            let responseMessage = server.messageCheckerSettings.getResponseMessage();
+            let deleteMessage = server.messageCheckerSettings.getDeleteMessage();
+
+            if(newMessage.author.bot)
+                return;
+
+            // Check message contents if it contains a bad word >:o
+            try {
+                let result = 
+                    await new MessageChecker().checkMessage(newMessage.content, bannedWords);
+                if(result.guilty) {
+                    new MessageResponse(newMessage)
+                        .sendReport(result, reportingChannelId)
+                        .sendMessageToUser(responseMessage)
+                        .deleteMessage(deleteMessage);
+                }
+            } catch (err) {
+                log.error(err);
+            }
+        });
+
         this.bot.on('ready', () => {
             log.info('I am ready!');
             this.bot.user.setActivity("with NUKES!!!!", { type: "PLAYING"});
