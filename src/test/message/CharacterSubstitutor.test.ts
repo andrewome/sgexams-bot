@@ -1,4 +1,4 @@
-import { CharacterSubstitutor } from "../../../main/messagechecker/charactersubstitutor/CharacterSubstitutor";
+import { CharacterSubstitutor } from "../../main/messagechecker/charactersubstitutor/CharacterSubstitutor";
 import { should } from 'chai';
 should();
 

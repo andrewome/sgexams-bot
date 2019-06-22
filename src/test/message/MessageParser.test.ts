@@ -1,5 +1,5 @@
 import { should } from 'chai';
-import { ComplexMessageParser } from '../../../main/messagechecker/parser/ComplexMessageParser';
+import { ComplexMessageParser } from '../../main/messagechecker/parser/ComplexMessageParser';
 should();
 
 const messageParser = new ComplexMessageParser();
