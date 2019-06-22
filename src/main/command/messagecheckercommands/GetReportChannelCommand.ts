@@ -3,8 +3,8 @@ import { Permissions, Message, RichEmbed } from "discord.js";
 import { Server } from "../../storage/Server";
 import { CommandResult } from "../CommandResult";
 
-export class GetChannelCommand extends Command {
-    static COMMAND_NAME = "getchannel";
+export class GetReportChannelCommand extends Command {
+    static COMMAND_NAME = "getreportchannel";
     static DESCRIPTION = "Displays the reporting channel to post incident reports for this server when blacklisted words are used.";
     /** SaveServer: false, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);

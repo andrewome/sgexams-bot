@@ -11,6 +11,7 @@ export class SetResponseMessageCommand extends Command {
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private args: string[];
     private EMBED_TITLE = "Reponse Message";
+    private MESSAGE_RESETTED = "Response Message has been resetted because there was no arguments.";
 
     constructor(args: string[]) {
         super();
@@ -34,8 +35,7 @@ export class SetResponseMessageCommand extends Command {
         let embed = new RichEmbed().setColor(this.EMBED_DEFAULT_COLOUR);
         if(this.args.length === 0) {
             server.messageCheckerSettings.setResponseMessage(undefined);
-            let msg = "Response Message has been resetted because there was no arguments.";
-            embed.addField(this.EMBED_TITLE, msg);
+            embed.addField(this.EMBED_TITLE, this.MESSAGE_RESETTED);
         } else {
             let msg = "";
             for(let i = 0; i < this.args.length; i++) {

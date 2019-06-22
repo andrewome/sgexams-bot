@@ -38,7 +38,7 @@ export class ListCommandsCommand extends Command {
         for(let i in this.commands) {
             output += `**${this.commands[i]}**` 
             output += (this.descriptions[i] === "\u200b") ?
-                      "\n" : `- ${this.descriptions[i]}\n`;
+                      "\n" : ` - ${this.descriptions[i]}\n`;
         }
         embed.setColor(this.EMBED_DEFAULT_COLOUR);
         embed.addField(this.EMBED_TITLE, output);

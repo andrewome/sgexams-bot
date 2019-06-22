@@ -1,36 +1,42 @@
 import { Command } from "./Command";
 import { ListWordsCommand } from "./messagecheckercommands/ListWordsCommand";
-import { SetChannelCommand } from "./messagecheckercommands/SetChannelCommand";
+import { SetReportChannelCommand } from "./messagecheckercommands/SetReportChannelCommand";
 import { AddWordCommand } from "./messagecheckercommands/AddWordCommand";
 import { RemoveWordCommand } from "./messagecheckercommands/RemoveWordCommand";
 import { NoSuchCommandError } from "./error/NoSuchCommandError";
-import { GetChannelCommand } from "./messagecheckercommands/GetChannelCommand";
+import { GetReportChannelCommand } from "./messagecheckercommands/GetReportChannelCommand";
 import { ListCommandsCommand } from "./ListCommandsCommand";
 import { SetResponseMessageCommand } from "./messagecheckercommands/SetResponseMessageCommand";
 import { GetResponseMessageCommand } from "./messagecheckercommands/GetResponseMessageCommand";
 import { SetDeleteMessageCommand } from "./messagecheckercommands/SetDeleteMessageCommand";
 
 export class CommandParser {
-    private commands: Set<string> = new Set<string>(["__General Commands__",
+    private EMPTY_STRING = "\u200b";
+    private GENERAL_COMMANDS_HEADER = "__General Commands__";
+    private MESSAGE_CHECKER_COMMANDS_HEADER = "__Message Checker Commands__";
+    private notCommands: Set<string> = new Set<string>([this.GENERAL_COMMANDS_HEADER,
+                                                        this.MESSAGE_CHECKER_COMMANDS_HEADER]);
+
+    private commands: Set<string> = new Set<string>([this.GENERAL_COMMANDS_HEADER,
                                                      ListCommandsCommand.COMMAND_NAME,
-                                                     "__Message Checker Commands__",
+                                                     this.MESSAGE_CHECKER_COMMANDS_HEADER,
                                                      ListWordsCommand.COMMAND_NAME,
                                                      AddWordCommand.COMMAND_NAME,
                                                      RemoveWordCommand.COMMAND_NAME,
-                                                     SetChannelCommand.COMMAND_NAME,
-                                                     GetChannelCommand.COMMAND_NAME,
+                                                     SetReportChannelCommand.COMMAND_NAME,
+                                                     GetReportChannelCommand.COMMAND_NAME,
                                                      SetResponseMessageCommand.COMMAND_NAME,
                                                      GetResponseMessageCommand.COMMAND_NAME,
                                                      SetDeleteMessageCommand.COMMAND_NAME]);
 
-    private descriptions: string[] = ["\u200B",
+    private descriptions: string[] = [this.EMPTY_STRING,
                                       ListCommandsCommand.DESCRIPTION,
-                                      "\u200B",
+                                      this.EMPTY_STRING,
                                       ListWordsCommand.DESCRIPTION,
                                       AddWordCommand.DESCRIPTION,
                                       RemoveWordCommand.DESCRIPTION,
-                                      SetChannelCommand.DESCRIPTION,
-                                      GetChannelCommand.DESCRIPTION,
+                                      SetReportChannelCommand.DESCRIPTION,
+                                      GetReportChannelCommand.DESCRIPTION,
                                       SetResponseMessageCommand.DESCRIPTION,
                                       GetResponseMessageCommand.DESCRIPTION,
                                       SetDeleteMessageCommand.DESCRIPTION];
@@ -46,8 +52,7 @@ export class CommandParser {
      */
     constructor(content: string) {
         this.content = content.toLowerCase();
-        this.splittedContent = content.split(/ +|\n+/g);
-
+        this.splittedContent = this.content.split(/ +|\n+/g);
     }
 
     /**
@@ -63,10 +68,16 @@ export class CommandParser {
             return false;
         }
 
+        let command = this.splittedContent[1];
         //Check if command word is the 2nd word
-        if(!this.commands.has(this.splittedContent[1])) {
+        if(!this.commands.has(command)) {
             return false;
         }
+
+        if(this.notCommands.has(command)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -99,14 +110,14 @@ export class CommandParser {
         switch(command) {
             case ListWordsCommand.COMMAND_NAME:
                 return new ListWordsCommand();
-            case SetChannelCommand.COMMAND_NAME:
-                return new SetChannelCommand(args);
+            case SetReportChannelCommand.COMMAND_NAME:
+                return new SetReportChannelCommand(args);
             case AddWordCommand.COMMAND_NAME:
                 return new AddWordCommand(args);
             case RemoveWordCommand.COMMAND_NAME:
                 return new RemoveWordCommand(args);
-            case GetChannelCommand.COMMAND_NAME:
-                return new GetChannelCommand();
+            case GetReportChannelCommand.COMMAND_NAME:
+                return new GetReportChannelCommand();
             case ListCommandsCommand.COMMAND_NAME:
                 return new ListCommandsCommand(this.commands, this.descriptions);
             case SetResponseMessageCommand.COMMAND_NAME:
