@@ -1,5 +1,5 @@
 import { Command } from "../Command";
-import { Permissions, Message } from "discord.js";
+import { Permissions, Message, RichEmbed } from "discord.js";
 import { Server } from "../../storage/Server";
 import { CommandResult } from "../CommandResult";
 
@@ -42,31 +42,35 @@ export class AddWordCommand extends Command {
             }
         }
 
-        //Generate output string
-        let output = "";
+        //Generate output embed
+        let embed = new RichEmbed().setColor(this.EMBED_DEFAULT_COLOUR);
         if(wordsAdded.length !== 0) {
-            output += "✅ Added: ";
+            let output = "";
             for(let i = 0; i < wordsAdded.length; i++) {
                 output += wordsAdded[i];
-                output += (i === wordsAdded.length - 1) ? "\n" : ", ";
+                output += "\n";
             }
+            embed.addField("✅Added Words:", output, false);
         }
 
         if(wordsNotAdded.length !== 0) {
-            output += "❌ Unable to add: ";
+            let output = ""
             for(let i = 0; i < wordsNotAdded.length; i++) {
                 output += wordsNotAdded[i];
-                output += (i === wordsNotAdded.length - 1) ? "\n" : ", ";
+                output += "\n";
             }
             output += "Perhaps those word(s) are already added?";
+            embed.addField("❌Unable To Add:", output, false);
         }
 
         if(words.length === 0) {
-            output += this.NO_ARGUMENTS;
+            embed = new RichEmbed()
+                .setColor(this.EMBED_ERROR_COLOUR)
+                .addField(this.ERROR_EMBED_TITLE, this.NO_ARGUMENTS);
         }
 
         //Send output
-        message.channel.send(output);
+        message.channel.send(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

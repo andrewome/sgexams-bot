@@ -1,12 +1,14 @@
 import { Server } from "../storage/Server";
-import { Permissions, GuildMember, Message } from "discord.js";
+import { Permissions, GuildMember, Message, RichEmbed } from "discord.js";
 import { CommandResult } from "./CommandResult";
 
 /** Base class of the Commands */
 export abstract class Command {
-    public NO_ARGUMENTS: string = "Oops! I received no arguments. Please try again.";
-    public EMBED_COLOUR: string = "#125bd1";
-    public NO_PERMISSIONS_COMMANDRESULT: CommandResult = new CommandResult(false, false);
+    public NO_ARGUMENTS = "Oops! I received no arguments. Please try again.";
+    public EMBED_DEFAULT_COLOUR = "#125bd1";
+    public EMBED_ERROR_COLOUR = "ff0000";
+    public ERROR_EMBED_TITLE = "❌ Error";
+    public NO_PERMISSIONS_COMMANDRESULT = new CommandResult(false, true);
 
     /**
      * Each command class must implement an execute method.

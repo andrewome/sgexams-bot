@@ -10,6 +10,7 @@ export class ListWordsCommand extends Command {
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private NO_WORDS_FOUND = "There are no words set for this server!";
+    private EMBED_TITLE = "Blacklisted Words";
 
     /**
      * This function executes the list words command.
@@ -36,8 +37,8 @@ export class ListWordsCommand extends Command {
             for(let word of bannedWords) {
                 output += word + "\n";
             }
-            embed.setColor(this.EMBED_COLOUR);
-            embed.addField("Blacklisted Words", output);
+            embed.setColor(this.EMBED_DEFAULT_COLOUR);
+            embed.addField(this.EMBED_TITLE, output);
             message.channel.send(embed);
         }
         

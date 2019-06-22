@@ -1,5 +1,5 @@
 import { Command } from "../Command";
-import { Permissions, Message } from "discord.js";
+import { Permissions, Message, RichEmbed } from "discord.js";
 import { Server } from "../../storage/Server";
 import { CommandResult } from "../CommandResult";
 
@@ -10,6 +10,7 @@ export class SetResponseMessageCommand extends Command {
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, true);
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private args: string[];
+    private EMBED_TITLE = "Reponse Message";
 
     constructor(args: string[]) {
         super();
@@ -30,9 +31,11 @@ export class SetResponseMessageCommand extends Command {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
+        let embed = new RichEmbed().setColor(this.EMBED_DEFAULT_COLOUR);
         if(this.args.length === 0) {
             server.messageCheckerSettings.setResponseMessage(undefined);
-            message.channel.send("Response Message has been resetted.");
+            let msg = "Response Message has been resetted because there was no arguments.";
+            embed.addField(this.EMBED_TITLE, msg);
         } else {
             let msg = "";
             for(let i = 0; i < this.args.length; i++) {
@@ -40,9 +43,10 @@ export class SetResponseMessageCommand extends Command {
                 msg += (i !== this.args.length - 1) ? " " : "";
             }
             server.messageCheckerSettings.setResponseMessage(msg);
-            message.channel.send(`Response Message set to ${msg}`);
+            embed.addField(this.EMBED_TITLE, `Response Message set to ${msg}`);
         }
-
+        
+        message.channel.send(embed)
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT
     }
 }

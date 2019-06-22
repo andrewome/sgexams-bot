@@ -1,5 +1,5 @@
 import { Command } from "../Command";
-import { Permissions, Message } from "discord.js";
+import { Permissions, Message, RichEmbed } from "discord.js";
 import { Server } from "../../storage/Server";
 import { CommandResult } from "../CommandResult";
 
@@ -12,6 +12,7 @@ export class SetChannelCommand extends Command {
     private args: string[];
     private CHANNEL_NOT_FOUND = "Channel was not found. Please submit a valid channel ID.";
     private NOT_TEXT_CHANNEL = "Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel";
+    private EMBED_TITLE = "Reporting Channel";
 
     constructor(args: string[]) {
         super();
@@ -33,24 +34,31 @@ export class SetChannelCommand extends Command {
         }
 
         //Execute
+        let embed = new RichEmbed();
         if(this.args.length === 0) {
             server.messageCheckerSettings.setReportingChannelId(undefined);
-            message.channel.send("Reporting Channel has been resetted. Please set a new one.");
+            let msg = "Reporting Channel has been resetted because there was no arguments. Please set a new one.";
+            embed.setColor(this.EMBED_DEFAULT_COLOUR);
+            embed.addField(this.EMBED_TITLE, msg);
         } else {
             let channelId = this.args[0];
 
             // Check if valid channel
             const channel = message.guild.channels.get(channelId);
             if(typeof channel === "undefined") {
-                message.channel.send(this.CHANNEL_NOT_FOUND);
+                embed.setColor(this.EMBED_ERROR_COLOUR);
+                embed.addField(this.EMBED_TITLE, this.CHANNEL_NOT_FOUND);
             } else if (channel.type !== "text") {
-                message.channel.send(this.NOT_TEXT_CHANNEL);
+                embed.setColor(this.EMBED_ERROR_COLOUR);
+                embed.addField(this.EMBED_TITLE, this.NOT_TEXT_CHANNEL);
             } else {
                 server.messageCheckerSettings.setReportingChannelId(channelId);
-                message.channel.send(`Reporting Channel set to <#${channelId}>.`);
+                let msg = `Reporting Channel set to <#${channelId}>.`;
+                embed.setColor(this.EMBED_DEFAULT_COLOUR);
+                embed.addField(this.EMBED_TITLE, msg);
             }
         }
-
+        message.channel.send(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

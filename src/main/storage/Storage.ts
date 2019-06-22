@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import { Server } from "./Server";
+import log from "loglevel";
 
 /** This represents all the servers that the bot is keeping track of */
 export class Storage {
@@ -46,6 +47,7 @@ export class Storage {
             serverJsons.push(Server.convertToJsonFriendly(v))
         }
         fs.writeFileSync(this.STORAGE_PATH, JSON.stringify(serverJsons));
+        log.info("Saving Servers...");
     }
 
     public setStoragePath(str: string) {

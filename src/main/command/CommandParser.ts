@@ -5,13 +5,15 @@ import { AddWordCommand } from "./messagecheckercommands/AddWordCommand";
 import { RemoveWordCommand } from "./messagecheckercommands/RemoveWordCommand";
 import { NoSuchCommandError } from "./error/NoSuchCommandError";
 import { GetChannelCommand } from "./messagecheckercommands/GetChannelCommand";
-import { ListCommandsCommand } from "./messagecheckercommands/ListCommandsCommand";
+import { ListCommandsCommand } from "./ListCommandsCommand";
 import { SetResponseMessageCommand } from "./messagecheckercommands/SetResponseMessageCommand";
 import { GetResponseMessageCommand } from "./messagecheckercommands/GetResponseMessageCommand";
 import { SetDeleteMessageCommand } from "./messagecheckercommands/SetDeleteMessageCommand";
 
 export class CommandParser {
-    private commands: Set<string> = new Set<string>([ListCommandsCommand.COMMAND_NAME,
+    private commands: Set<string> = new Set<string>(["__General Commands__",
+                                                     ListCommandsCommand.COMMAND_NAME,
+                                                     "__Message Checker Commands__",
                                                      ListWordsCommand.COMMAND_NAME,
                                                      AddWordCommand.COMMAND_NAME,
                                                      RemoveWordCommand.COMMAND_NAME,
@@ -21,7 +23,9 @@ export class CommandParser {
                                                      GetResponseMessageCommand.COMMAND_NAME,
                                                      SetDeleteMessageCommand.COMMAND_NAME]);
 
-    private descriptions: string[] = [ListCommandsCommand.DESCRIPTION,
+    private descriptions: string[] = ["\u200B",
+                                      ListCommandsCommand.DESCRIPTION,
+                                      "\u200B",
                                       ListWordsCommand.DESCRIPTION,
                                       AddWordCommand.DESCRIPTION,
                                       RemoveWordCommand.DESCRIPTION,
@@ -36,13 +40,14 @@ export class CommandParser {
 
     /**
      * Constructor, takes in content and gets the splitted content
-     * splitted by ' '
+     * splitted by ' ' and '\n'
      * 
      * @param  {string} content
      */
     constructor(content: string) {
         this.content = content.toLowerCase();
-        this.splittedContent = content.split(/ +/g);
+        this.splittedContent = content.split(/ +|\n+/g);
+
     }
 
     /**

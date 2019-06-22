@@ -1,13 +1,14 @@
-import { Command } from "../Command";
+import { Command } from "./Command";
 import { Permissions, Message, RichEmbed } from "discord.js";
-import { Server } from "../../storage/Server";
-import { CommandResult } from "../CommandResult";
+import { Server } from "../storage/Server";
+import { CommandResult } from "./CommandResult";
 
 export class ListCommandsCommand extends Command {
     static COMMAND_NAME = "help";
     static DESCRIPTION = "Displays all the available commands that this bot listens to."
     /** SaveServer: false, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
+    private EMBED_TITLE = "Commands";
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private commands: string[];
     private descriptions: string[]
@@ -35,10 +36,12 @@ export class ListCommandsCommand extends Command {
         let embed = new RichEmbed();
         let output = "";
         for(let i in this.commands) {
-            output += `**${this.commands[i]}** - ${this.descriptions[i]}\n`;
+            output += `**${this.commands[i]}**` 
+            output += (this.descriptions[i] === "\u200b") ?
+                      "\n" : `- ${this.descriptions[i]}\n`;
         }
-        embed.setColor(this.EMBED_COLOUR);
-        embed.addField("Commands", output);
+        embed.setColor(this.EMBED_DEFAULT_COLOUR);
+        embed.addField(this.EMBED_TITLE, output);
         message.channel.send(embed);
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;

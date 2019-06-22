@@ -1,5 +1,5 @@
 import { Command } from "../Command";
-import { Permissions, Message } from "discord.js";
+import { Permissions, Message, RichEmbed } from "discord.js";
 import { Server } from "../../storage/Server";
 import { CommandResult } from "../CommandResult";
 
@@ -13,6 +13,7 @@ export class SetDeleteMessageCommand extends Command {
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private args: string[];
     private INCORRECT_FORMAT = "Incorrect format. Use only \"true\" or \"false\"."
+    private EMBED_TITLE = "Delete Message";
 
     constructor(args: string[]) {
         super();
@@ -33,14 +34,19 @@ export class SetDeleteMessageCommand extends Command {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
+        let embed = new RichEmbed()
         if(this.args.length === 0) {
-            message.channel.send(this.NO_ARGUMENTS);
+            embed.setColor(this.EMBED_ERROR_COLOUR);
+            embed.addField(this.EMBED_TITLE, this.NO_ARGUMENTS);
+            message.channel.send(embed);
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT
         } else {
             const boolStr = this.args[0].toLowerCase();
             const trueFalseRegex = new RegExp(/\btrue\b|\bfalse\b/, "g");
             if(!trueFalseRegex.test(boolStr)) {
-                message.channel.send(this.INCORRECT_FORMAT);
+                embed.setColor(this.EMBED_ERROR_COLOUR);
+                embed.addField(this.EMBED_TITLE, this.INCORRECT_FORMAT);
+                message.channel.send(embed);
                 return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
             }
 
@@ -51,8 +57,11 @@ export class SetDeleteMessageCommand extends Command {
             if(boolStr === "false") {
                 server.messageCheckerSettings.setDeleteMessage(false);
             }
-
-            message.channel.send(`Delete Message set to: **${boolStr.toUpperCase()}**`);
+            let msg = `Delete Message set to: **${boolStr.toUpperCase()}**`;
+            embed.setColor(this.EMBED_DEFAULT_COLOUR);
+            embed.addField(this.EMBED_TITLE, msg);
+            message.channel.send(embed);
+            
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
     }

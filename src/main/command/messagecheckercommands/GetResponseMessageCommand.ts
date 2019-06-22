@@ -1,5 +1,5 @@
 import { Command } from "../Command";
-import { Permissions, Message } from "discord.js";
+import { Permissions, Message, RichEmbed } from "discord.js";
 import { Server } from "../../storage/Server";
 import { CommandResult } from "../CommandResult";
 
@@ -10,6 +10,7 @@ export class GetResponseMessageCommand extends Command {
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private CHANNEL_NOT_SET = "There is no message set for this server.";
+    private EMBED_TITLE = "Response Message"
 
     constructor() {
         super();
@@ -31,11 +32,14 @@ export class GetResponseMessageCommand extends Command {
 
         //Execute
         let responseMessage = server.messageCheckerSettings.getResponseMessage();
+        let embed = new RichEmbed().setColor(this.EMBED_DEFAULT_COLOUR);
         if(typeof responseMessage === "undefined") {
-            message.channel.send(this.CHANNEL_NOT_SET);
+            embed.addField(this.EMBED_TITLE, this.CHANNEL_NOT_SET);
         } else {
-            message.channel.send(`Response message is ${responseMessage}.`);
+            let msg = `Response message is ${responseMessage}.`;
+            embed.addField(this.EMBED_TITLE, msg);
         }
+        message.channel.send(embed)
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

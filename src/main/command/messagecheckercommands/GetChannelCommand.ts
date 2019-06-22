@@ -1,5 +1,5 @@
 import { Command } from "../Command";
-import { Permissions, Message } from "discord.js";
+import { Permissions, Message, RichEmbed } from "discord.js";
 import { Server } from "../../storage/Server";
 import { CommandResult } from "../CommandResult";
 
@@ -10,6 +10,7 @@ export class GetChannelCommand extends Command {
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private CHANNEL_NOT_SET = "There is no reporting channel set for this server.";
+    private EMBED_TITLE = "Reporting Channel";
 
     constructor() {
         super();
@@ -31,12 +32,14 @@ export class GetChannelCommand extends Command {
 
         //Execute
         let channelId = server.messageCheckerSettings.getReportingChannelId();
+        let embed = new RichEmbed().setColor(this.EMBED_DEFAULT_COLOUR);
         if(typeof channelId === "undefined") {
-            message.channel.send(this.CHANNEL_NOT_SET);
+            embed.addField(this.EMBED_TITLE, this.CHANNEL_NOT_SET);
         } else {
-            message.channel.send(`Reporting Channel is currently set to <#${channelId}>.`);
+            let msg =  `Reporting Channel is currently set to <#${channelId}>.`;
+            embed.addField(this.EMBED_TITLE, msg);
         }
-
+        message.channel.send(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

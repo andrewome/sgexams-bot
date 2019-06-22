@@ -1,5 +1,5 @@
 import { Command } from "../Command";
-import { Permissions, Message } from "discord.js";
+import { Permissions, Message, RichEmbed } from "discord.js";
 import { Server } from "../../storage/Server";
 import { CommandResult } from "../CommandResult";
 
@@ -42,31 +42,35 @@ export class RemoveWordCommand extends Command {
             }
         }
 
-        //Generate output string
-        let output = "";
+        //Generate output embed
+        let embed = new RichEmbed().setColor(this.EMBED_DEFAULT_COLOUR);
         if(wordsRemoved.length !== 0) {
-            output += "✅ Removed: ";
+            let output = "";
             for(let i = 0; i < wordsRemoved.length; i++) {
                 output += wordsRemoved[i];
-                output += (i === wordsRemoved.length - 1) ? "\n" : ", ";
+                output += "\n";
             }
+            embed.addField("✅Removed Words:", output, false);
         }
 
         if(wordsNotRemoved.length !== 0) {
-            output += "❌ Unable to remove: ";
+            let output = ""
             for(let i = 0; i < wordsNotRemoved.length; i++) {
                 output += wordsNotRemoved[i];
-                output += (i === wordsNotRemoved.length - 1) ? "\n" : ", ";
+                output += "\n";
             }
             output += "Perhaps those word(s) are not inside the list?";
+            embed.addField("❌Unable To Remove", output, false);
         }
- 
+
         if(words.length === 0) {
-            output += this.NO_ARGUMENTS;
+            embed = new RichEmbed()
+                .setColor(this.EMBED_ERROR_COLOUR)
+                .addField(this.ERROR_EMBED_TITLE, this.NO_ARGUMENTS);
         }
 
         //Send output
-        message.channel.send(output);
+        message.channel.send(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }
