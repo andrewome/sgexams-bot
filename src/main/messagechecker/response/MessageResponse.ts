@@ -1,5 +1,5 @@
 import { Message, TextChannel } from "discord.js";
-import { MessageCheckerResult } from "./MessageCheckerResult";
+import { MessageCheckerResult } from "../classes/MessageCheckerResult";
 import { RichEmbed } from "discord.js";
 import log from "loglevel";
 

@@ -1,4 +1,4 @@
-import { Context } from "./Context";
+import { Context } from "../classes/Context";
 import { MessageParser } from "./MessageParser";
 
 /** This class contains the banned word & its regex */
@@ -137,10 +137,10 @@ export class ComplexMessageParser extends MessageParser {
                     end = i;                    
                 }
                 lastStoppedIdx = end;
-                //console.log(start, end, lastStoppedIdx);
 
                 //Get contexts
                 let originalContext = originalContent.substring(start, end+1);
+
                 let convertedContext = "";
 
                 //Get context without additonal chars

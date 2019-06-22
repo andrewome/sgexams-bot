@@ -1,9 +1,9 @@
 import { DatamuseApi } from "./datamuseapi/DatamuseApi";
-import { MessageCheckerResult } from "./MessageCheckerResult";
-import { CharacterSubstitutor } from "./CharacterSubstitutor";
-import { Context } from "./Context";
-import { ComplexMessageParser } from "./ComplexMessageParser";
-import log from "loglevel";
+import { MessageCheckerResult } from "./classes/MessageCheckerResult";
+import { CharacterSubstitutor } from "./charactersubstitutor/CharacterSubstitutor";
+import { Context } from "./classes/Context";
+import { ComplexMessageParser } from "./parser/ComplexMessageParser";
+import { NaiveMessageParser } from "./parser/NaiveMessageParser";
 
 /** This class checks a message if it contains any banned words */
 export class MessageChecker {
@@ -31,13 +31,17 @@ export class MessageChecker {
             //Generate other possible contents
             contents = contents.concat(new CharacterSubstitutor().convertText(content.toLowerCase()));
 
-           
             //Checking for bad words
             let contextOfBannedWords: Context[] = [];
+            const naiveMessageParser = new NaiveMessageParser();
             const complexMessageParser = new ComplexMessageParser().processBannedWords(bannedWords);
 
             for(let convertedContent of contents) {
-                complexMessageParser.getContextOfBannedWord(content, convertedContent, contextOfBannedWords);
+                naiveMessageParser
+                    .checkForBannedWords(convertedContent, bannedWords)
+                    .getContextOfBannedWord(content, convertedContent, contextOfBannedWords);
+                complexMessageParser
+                    .getContextOfBannedWord(content, convertedContent, contextOfBannedWords);
             }
 
             //Determine if the contexts of the banned words used was malicious
@@ -46,15 +50,12 @@ export class MessageChecker {
             for(let context of contextOfBannedWords) {
                 promises.push(this.checkContext(context));
             }
-            try {
-                let results = await Promise.all(promises);
-                for(let result of results) {
-                    if(result !== null) {
-                        realBannedWords.push(result);
-                    }
+
+            let results = await Promise.all(promises);
+            for(let result of results) {
+                if(result !== null) {
+                    realBannedWords.push(result);
                 }
-            } catch (err) {
-                throw err;
             }
 
             //Create result and resolve promise
