@@ -7,6 +7,7 @@ import { Server } from "./storage/Server";
 import { Storage } from "./storage/Storage";
 import log from "loglevel";
 import { MessageCheckerSettings } from "./storage/MessageCheckerSettings";
+import { CommandResult } from "./command/CommandResult";
 
 // Set up logging method
 log.enableAll();
@@ -65,25 +66,29 @@ class App {
 
             // If it's a command, execute the command and save servers
             const commandParser = new CommandParser(message.content);
+            // Default command result - do not save, check messages.
+            let commandResult = new CommandResult(false, true);
             if(commandParser.isCommand(this.bot.user.id.toString())) {
-                commandParser
-                    .getCommand()
-                    .execute(server, message);
-                this.storage.saveServers();
+                commandResult = commandParser.getCommand().execute(server, message);
             }
 
+            if(commandResult.shouldSaveServers)
+                this.storage.saveServers();
+
             // Check message contents if it contains a bad word >:o
-            try {
-                let result = 
-                    await new MessageChecker().checkMessage(message.content, bannedWords);
-                if(result.guilty) {
-                    new MessageResponse(message)
-                        .sendReport(result, reportingChannelId)
-                        .sendMessageToUser(responseMessage)
-                        .deleteMessage(deleteMessage);
+            if(commandResult.shouldCheckMessage) {
+                try {
+                    let result = 
+                        await new MessageChecker().checkMessage(message.content, bannedWords);
+                    if(result.guilty) {
+                        new MessageResponse(message)
+                            .sendReport(result, reportingChannelId)
+                            .sendMessageToUser(responseMessage)
+                            .deleteMessage(deleteMessage);
+                    }
+                } catch (err) {
+                    log.error(err);
                 }
-            } catch (err) {
-                log.error(err);
             }
         });
 

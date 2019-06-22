@@ -2,7 +2,6 @@ import { Message, TextChannel } from "discord.js";
 import { MessageCheckerResult } from "./MessageCheckerResult";
 import { RichEmbed } from "discord.js";
 import log from "loglevel";
-import { S_IFREG } from "constants";
 
 export class MessageResponse {
     private message: Message;
@@ -18,6 +17,11 @@ export class MessageResponse {
      * @returns MessageResponse
      */
     public sendReport(result: MessageCheckerResult, reportingChannelId: string | undefined): MessageResponse {
+        // If not set, don't send anything
+        if(reportingChannelId === undefined) {
+            return this;
+        }
+
         const tag = this.message.author.tag;
         const username = this.message.member.nickname;
         const wordsUsed = result.contexts;
@@ -65,11 +69,8 @@ export class MessageResponse {
             .addField("Full Message", `**${tag}:** ${content}`, false)
             .setTimestamp();
 
-        // Send embed to designated reporting channel
-        if(reportingChannelId !== undefined) {
-            const reportingChannel = this.message.guild.channels.get(reportingChannelId)!;
-            (reportingChannel as TextChannel).send(embed);
-        }        
+        const reportingChannel = this.message.guild.channels.get(reportingChannelId)!;
+        (reportingChannel as TextChannel).send(embed);      
 
         // Log it
         log.info(`Bad Word Detected in guild "${this.message.guild.name}". ${offenderStr.replace(/\*/g, "")} said "${content}" which has banned words: ${words.replace(/\n/g, " ")}`);
@@ -87,29 +88,35 @@ export class MessageResponse {
         const user = `<@${this.message.author.id}>`;
 
         // If message is undefined, don't do anything
-        if(message === undefined) {
+        if(message === undefined)
             return this;
-        } else {
-            // Send message
-            message = message.replace(/{user}/g, user);
-            channel.send(message);
-            return this;
-        }
+        
+        // Send message
+        message = message.replace(/{user}/g, user);
+        log.info(`Sending response message - ${message}`);
+        channel.send(message)
+            .catch((err) => {
+                if(err.message === "Missing Permissions")
+                    log.warn("Unable to send message. Insufficient permissions.");
+            });
+        return this;
     }
-    
+
     /**
      * Deletes the message in question.
      * 
+     * @param  {boolean} deleteMessage Boolean of delete message option
      * @returns MessageResponse
      */
     public deleteMessage(deleteMessage: boolean): MessageResponse {
         if(!deleteMessage)
             return this;
         
+        log.info("Deleting message...");
         this.message.delete()
             .catch((err) => {
                 if(err.message === "Missing Permissions")
-                    log.trace("Unable to delete message. Insufficient permissions.");
+                    log.warn("Unable to delete message. Insufficient permissions.");
             });
         return this;
     }

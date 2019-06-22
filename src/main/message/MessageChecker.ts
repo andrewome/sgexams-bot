@@ -3,6 +3,7 @@ import { MessageCheckerResult } from "./MessageCheckerResult";
 import { CharacterSubstitutor } from "./CharacterSubstitutor";
 import { Context } from "./Context";
 import { ComplexMessageParser } from "./ComplexMessageParser";
+import log from "loglevel";
 
 /** This class checks a message if it contains any banned words */
 export class MessageChecker {
@@ -55,7 +56,7 @@ export class MessageChecker {
             } catch (err) {
                 throw err;
             }
-            
+
             //Create result and resolve promise
             let isGuilty: boolean;
             if(realBannedWords.length === 0) {
