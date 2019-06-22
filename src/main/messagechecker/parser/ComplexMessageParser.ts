@@ -1,4 +1,4 @@
-import { Context } from "./Context";
+import { Context } from "../classes/Context";
 import { MessageParser } from "./MessageParser";
 
 /** This class contains the banned word & its regex */

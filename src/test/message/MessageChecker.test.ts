@@ -1,5 +1,5 @@
 import { should } from 'chai';
-import { MessageChecker }from "../../main/message/MessageChecker";
+import { MessageChecker }from "../../main/messagechecker/MessageChecker";
 should();
 
 const messageChecker = new MessageChecker();

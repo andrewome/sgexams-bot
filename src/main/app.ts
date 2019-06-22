@@ -1,13 +1,13 @@
 import "./lib/env";
 import { Client, Message, TextChannel } from "discord.js";
-import { MessageChecker } from "./message/MessageChecker";
-import { MessageResponse } from "./message/MessageResponse";
+import { MessageChecker } from "./messagechecker/MessageChecker";
+import { MessageResponse } from "./messagechecker/response/MessageResponse";
 import { CommandParser } from "./command/CommandParser";
 import { Server } from "./storage/Server";
 import { Storage } from "./storage/Storage";
 import log from "loglevel";
 import { MessageCheckerSettings } from "./storage/MessageCheckerSettings";
-import { CommandResult } from "./command/CommandResult";
+import { CommandResult } from "./command/classes/CommandResult";
 
 // Set up logging method
 log.enableAll();

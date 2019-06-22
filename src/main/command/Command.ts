@@ -1,6 +1,6 @@
 import { Server } from "../storage/Server";
 import { Permissions, GuildMember, Message, RichEmbed } from "discord.js";
-import { CommandResult } from "./CommandResult";
+import { CommandResult } from "./classes/CommandResult";
 
 /** Base class of the Commands */
 export abstract class Command {

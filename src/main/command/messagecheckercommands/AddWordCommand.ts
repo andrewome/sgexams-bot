@@ -1,7 +1,7 @@
 import { Command } from "../Command";
 import { Permissions, Message, RichEmbed } from "discord.js";
 import { Server } from "../../storage/Server";
-import { CommandResult } from "../CommandResult";
+import { CommandResult } from "../classes/CommandResult";
 
 export class AddWordCommand extends Command {
     static COMMAND_NAME = "addwords";

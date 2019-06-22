@@ -1,6 +1,6 @@
 import { should } from 'chai';
 import { CommandParser } from "../../main/command/CommandParser";
-import { ListCommandsCommand } from '../../main/command/ListCommandsCommand';
+import { ListCommandsCommand } from '../../main/command/generalcommands/ListCommandsCommand';
 import { ListWordsCommand } from '../../main/command/messagecheckercommands/ListWordsCommand';
 import { AddWordCommand } from '../../main/command/messagecheckercommands/AddWordCommand';
 import { RemoveWordCommand } from '../../main/command/messagecheckercommands/RemoveWordCommand';

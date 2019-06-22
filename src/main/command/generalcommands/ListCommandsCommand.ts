@@ -1,7 +1,7 @@
-import { Command } from "./Command";
+import { Command } from "../Command";
 import { Permissions, Message, RichEmbed } from "discord.js";
-import { Server } from "../storage/Server";
-import { CommandResult } from "./CommandResult";
+import { Server } from "../../storage/Server";
+import { CommandResult } from "../classes/CommandResult";
 
 export class ListCommandsCommand extends Command {
     static COMMAND_NAME = "help";
