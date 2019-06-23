@@ -46,13 +46,13 @@ export class CommandParser {
 
     /**
      * Constructor, takes in content and gets the splitted content
-     * splitted by ' ' and '\n'
+     * splitted by ' '
      * 
      * @param  {string} content
      */
     constructor(content: string) {
-        this.content = content.toLowerCase();
-        this.splittedContent = this.content.split(/ +|\n+/g);
+        this.content = content;
+        this.splittedContent = this.content.split(/ +/g);
     }
 
     /**
@@ -69,6 +69,7 @@ export class CommandParser {
         }
 
         let command = this.splittedContent[1];
+        command = command.toLowerCase();
         //Check if command word is the 2nd word
         if(!this.commands.has(command)) {
             return false;

@@ -13,7 +13,7 @@ export class SetReportChannelCommand extends Command {
     private CHANNEL_NOT_FOUND = "Channel was not found. Please submit a valid channel ID.";
     private NOT_TEXT_CHANNEL = "Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel";
     private EMBED_TITLE = "Reporting Channel";
-    private CHANNEL_RESETTED = "Reporting Channel has been resetted because there was no arguments. Please set a new one.";
+    private CHANNEL_RESETTED = "Reporting Channel has been resetted because there were no arguments. Please set a new one.";
 
     constructor(args: string[]) {
         super();

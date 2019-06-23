@@ -10,7 +10,10 @@ export class AddWordCommand extends Command {
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, false);
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private args: string[];
-    
+    private ADDED_WORDS = "✅Added Words(s):";
+    private MAYBE_WORDS_ALREADY_ADDED = "Perhaps those word(s) are already added?";
+    private UNABLE_TO_ADD_WORDS = "❌Unable To Add:";
+
     constructor(args: string[]) {
         super();
         this.args = args;
@@ -35,6 +38,8 @@ export class AddWordCommand extends Command {
         let wordsAdded: string[] = [];
         let wordsNotAdded: string[] = [];
         for(let word of words) {
+            // Make word lowercase
+            word = word.toLowerCase();
             if(server.messageCheckerSettings.addbannedWord(word)) {
                 wordsAdded.push(word);
             } else {
@@ -50,7 +55,7 @@ export class AddWordCommand extends Command {
                 output += wordsAdded[i];
                 output += "\n";
             }
-            embed.addField("✅Added Words:", output, false);
+            embed.addField(this.ADDED_WORDS, output, false);
         }
 
         if(wordsNotAdded.length !== 0) {
@@ -59,8 +64,8 @@ export class AddWordCommand extends Command {
                 output += wordsNotAdded[i];
                 output += "\n";
             }
-            output += "Perhaps those word(s) are already added?";
-            embed.addField("❌Unable To Add:", output, false);
+            output += this.MAYBE_WORDS_ALREADY_ADDED;
+            embed.addField(this.UNABLE_TO_ADD_WORDS, output, false);
         }
 
         if(words.length === 0) {

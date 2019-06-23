@@ -10,6 +10,9 @@ export class RemoveWordCommand extends Command {
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, false);
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private args: string[];
+    private REMOVED_WORDS = "✅Removed Word(s)";
+    private MAYBE_WORDS_NOT_INSIDE = "Perhaps those word(s) are not inside the list?";
+    private UNABLE_TO_REMOVE_WORDS = "❌Unable To Remove";
 
     constructor(args: string[]) {
         super();
@@ -35,6 +38,8 @@ export class RemoveWordCommand extends Command {
         let wordsRemoved: string[] = [];
         let wordsNotRemoved: string[] = [];
         for(let word of words) {
+            // Make word lowercase
+            word = word.toLowerCase();
             if(server.messageCheckerSettings.removeBannedWord(word)) {
                 wordsRemoved.push(word);
             } else {
@@ -50,7 +55,7 @@ export class RemoveWordCommand extends Command {
                 output += wordsRemoved[i];
                 output += "\n";
             }
-            embed.addField("✅Removed Words:", output, false);
+            embed.addField(this.REMOVED_WORDS, output, false);
         }
 
         if(wordsNotRemoved.length !== 0) {
@@ -59,8 +64,8 @@ export class RemoveWordCommand extends Command {
                 output += wordsNotRemoved[i];
                 output += "\n";
             }
-            output += "Perhaps those word(s) are not inside the list?";
-            embed.addField("❌Unable To Remove", output, false);
+            output += this.MAYBE_WORDS_NOT_INSIDE;
+            embed.addField(this.UNABLE_TO_REMOVE_WORDS, output, false);
         }
 
         if(words.length === 0) {
