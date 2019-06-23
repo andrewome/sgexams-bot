@@ -52,11 +52,11 @@ describe("CommandParser test suite", () => {
             new CommandParser(content).isCommand(botId).should.be.true;
         });
         it("tagging the bot correctly 2", () => {
-            const content = "<@!123456789> listwords";
+            const content = `<@!123456789> ${ListWordsCommand.COMMAND_NAME}`;
             new CommandParser(content).isCommand(botId).should.be.true;
         });
         it("tagging the bot correctly 3", () => {
-            const content = "<@!123456789> addwords";
+            const content = `<@!123456789> ${AddWordCommand.COMMAND_NAME}`;
             new CommandParser(content).isCommand(botId).should.be.true;
         });
         it("tagging the bot correctly 4", () => {

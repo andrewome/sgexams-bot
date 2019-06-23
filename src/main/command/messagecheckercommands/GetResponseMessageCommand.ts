@@ -6,11 +6,13 @@ import { CommandResult } from "../classes/CommandResult";
 export class GetResponseMessageCommand extends Command {
     static COMMAND_NAME = "getresponsemessage";
     static DESCRIPTION = "Displays the response message to the user upon detection of blacklisted words for this server.";
+    static CHANNEL_NOT_SET = "There is no message set for this server.";
+    static EMBED_TITLE = "Response Message"
+
     /** SaveServer: false, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
-    private CHANNEL_NOT_SET = "There is no message set for this server.";
-    private EMBED_TITLE = "Response Message"
+
 
     constructor() {
         super();
@@ -26,20 +28,35 @@ export class GetResponseMessageCommand extends Command {
      */
     public execute(server: Server, message: Message): CommandResult {
         //Check for permissions first
-        if(!this.hasPermissions(this.permissions, message.member)) {
+        if(!this.hasPermissions(this.permissions, message.member.permissions)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         //Execute
+        message.channel.send(this.generateEmbed(server));
+        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+    }
+
+    /**
+     * Generates embed that is sent back to user 
+     * 
+     * @param  {Server} server
+     * @returns RichEmbed
+     */
+    public generateEmbed(server: Server): RichEmbed {
         let responseMessage = server.messageCheckerSettings.getResponseMessage();
-        let embed = new RichEmbed().setColor(this.EMBED_DEFAULT_COLOUR);
+        let embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if(typeof responseMessage === "undefined") {
-            embed.addField(this.EMBED_TITLE, this.CHANNEL_NOT_SET);
+            embed.addField(GetResponseMessageCommand.EMBED_TITLE,
+                           GetResponseMessageCommand.CHANNEL_NOT_SET);
         } else {
             let msg = `Response message is ${responseMessage}.`;
-            embed.addField(this.EMBED_TITLE, msg);
+            embed.addField(GetResponseMessageCommand.EMBED_TITLE, msg);
         }
-        message.channel.send(embed)
-        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        return embed;
+    }
+
+    public changeServerSettings(server: Server, ...args: any): void {
+        throw new Error(Command.THIS_METHOD_SHOULD_NOT_BE_CALLED);
     }
 }

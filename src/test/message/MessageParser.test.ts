@@ -1,8 +1,14 @@
 import { should } from 'chai';
-import { ComplexMessageParser } from '../../main/messagechecker/parser/ComplexMessageParser';
+import { MessageParser } from '../../main/messagechecker/parser/MessageParser';
 should();
 
-const messageParser = new ComplexMessageParser();
+class MessageParser_Stub extends MessageParser {
+    constructor() {
+        super();
+    }
+}
+
+const messageParser = new MessageParser_Stub();
 describe("MessageParser test suite", () => {
     /** Test isAlphaNumeric function */
     describe("isAlphaNumeric Tests", () => {

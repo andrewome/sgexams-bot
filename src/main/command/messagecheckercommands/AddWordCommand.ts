@@ -6,11 +6,15 @@ import { CommandResult } from "../classes/CommandResult";
 export class AddWordCommand extends Command {
     static COMMAND_NAME = "addwords";
     static DESCRIPTION = "Add word(s) to the blacklist.";
+    static ADDED_WORDS = "✅Added Words(s):";
+    static MAYBE_WORDS_ALREADY_ADDED = "Perhaps those word(s) are already added?";
+    static UNABLE_TO_ADD_WORDS = "❌Unable To Add:";
+
     /** SaveServer: true, CheckMessage: false */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, false);
     private permissions = new Permissions(["KICK_MEMBERS", "BAN_MEMBERS"]);
     private args: string[];
-    
+
     constructor(args: string[]) {
         super();
         this.args = args;
@@ -26,31 +30,42 @@ export class AddWordCommand extends Command {
      */
     public execute(server: Server, message: Message): CommandResult {
         //Check for permissions first
-        if(!this.hasPermissions(this.permissions, message.member)) {
+        if(!this.hasPermissions(this.permissions, message.member.permissions)) {
             return this.NO_PERMISSIONS_COMMANDRESULT
         }
 
         //Execute
-        let words = this.args;
+
         let wordsAdded: string[] = [];
         let wordsNotAdded: string[] = [];
-        for(let word of words) {
-            if(server.messageCheckerSettings.addbannedWord(word)) {
-                wordsAdded.push(word);
-            } else {
-                wordsNotAdded.push(word);
-            }
-        }
+        this.changeServerSettings(server, wordsAdded, wordsNotAdded);
 
         //Generate output embed
-        let embed = new RichEmbed().setColor(this.EMBED_DEFAULT_COLOUR);
+        let embed = this.generateEmbed(wordsAdded, wordsNotAdded);
+
+        //Send output
+        message.channel.send(embed);
+        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+    }
+    
+    /**
+     * Generates output embed to be sent back to user.
+     * 
+     * @param  {string[]} wordsAdded Words successfully added
+     * @param  {string[]} wordsNotAdded Words unsuccessfully added
+     * @returns RichEmbed
+     */
+    public generateEmbed(wordsAdded: string[],
+                         wordsNotAdded: string[]): RichEmbed {
+        let words = this.args;
+        let embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if(wordsAdded.length !== 0) {
             let output = "";
             for(let i = 0; i < wordsAdded.length; i++) {
                 output += wordsAdded[i];
                 output += "\n";
             }
-            embed.addField("✅Added Words:", output, false);
+            embed.addField(AddWordCommand.ADDED_WORDS, output, false);
         }
 
         if(wordsNotAdded.length !== 0) {
@@ -59,18 +74,39 @@ export class AddWordCommand extends Command {
                 output += wordsNotAdded[i];
                 output += "\n";
             }
-            output += "Perhaps those word(s) are already added?";
-            embed.addField("❌Unable To Add:", output, false);
+            output += AddWordCommand.MAYBE_WORDS_ALREADY_ADDED;
+            embed.addField(AddWordCommand.UNABLE_TO_ADD_WORDS, output, false);
         }
 
         if(words.length === 0) {
             embed = new RichEmbed()
-                .setColor(this.EMBED_ERROR_COLOUR)
-                .addField(this.ERROR_EMBED_TITLE, this.NO_ARGUMENTS);
+                .setColor(Command.EMBED_ERROR_COLOUR)
+                .addField(AddWordCommand.ERROR_EMBED_TITLE, AddWordCommand.NO_ARGUMENTS);
         }
 
-        //Send output
-        message.channel.send(embed);
-        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        return embed;
+    }
+
+    /**
+     * Changed the settings of server object
+     * 
+     * @param  {Server} server the discord server
+     * @param  {string[]} wordsAdded Words successfully added
+     * @param  {string[]} wordsNotAdded Words unsuccessfully added
+     * @returns void
+     */
+    public changeServerSettings(server: Server,
+                                wordsAdded: string[],
+                                wordsNotAdded: string[]): void {
+        let words = this.args;
+        for(let word of words) {
+            // Make word lowercase
+            word = word.toLowerCase();
+            if(server.messageCheckerSettings.addbannedWord(word)) {
+                wordsAdded.push(word);
+            } else {
+                wordsNotAdded.push(word);
+            }
+        }
     }
 }
