@@ -11,6 +11,7 @@ export class MessageResponse {
     private WORDS_USED = "Words Used";
     private MESSAGE_TOO_LONG = "... (message too long)";
     private BAD_WORD_DETECTED = "❌Bad Word Detected❌";
+    private CODE_BLOCK = `\`\`\`\n`;
 
     constructor(message: Message) {
         this.message = message;
@@ -71,12 +72,12 @@ export class MessageResponse {
         const embed = new RichEmbed()
             .setColor(this.EMBED_COLOUR)
             .setAuthor(`${offenderStr} said...`, avatarUrl)
-            .setDescription(`\`\`\`${content}\`\`\``)
+            .setDescription(`${this.CODE_BLOCK}${content}${this.CODE_BLOCK}`)
             .addField(this.REPORT, report, false)
-            .addField(this.WORDS_USED, `\`\`\`${words}\`\`\``, true)
-            .addField(this.CONTEXT, `\`\`\`${contexts}\`\`\``, true)
+            .addField(this.WORDS_USED, `${this.CODE_BLOCK}${words}${this.CODE_BLOCK}`, true)
+            .addField(this.CONTEXT, `${this.CODE_BLOCK}${contexts}${this.CODE_BLOCK}`, true)
             .setTimestamp();
-          
+
         const reportingChannel = this.message.guild.channels.get(reportingChannelId)!;
         (reportingChannel as TextChannel).send(this.BAD_WORD_DETECTED, embed);
 
