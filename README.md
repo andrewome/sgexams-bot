@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/andrewome/discord-bad-words-bot.svg?branch=master)](https://travis-ci.com/andrewome/discord-bad-words-bot)
+[![Build Status](https://travis-ci.com/andrewome/sgexams-bot.svg?branch=master)](https://travis-ci.com/andrewome/sgexams-bot)
 # r/SGExams Bot
 
 # Introduction
