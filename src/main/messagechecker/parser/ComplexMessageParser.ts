@@ -52,8 +52,8 @@ export class ComplexMessageParser extends MessageParser {
      * @returns string regex of the char
      */
     private generateRegexForChar(char: string): string {
-        //If not alphanumeric, return empty string
-        if(!this.isAlphaNumeric(char.charCodeAt(0))) {
+        //If not alphabetical, return empty string
+        if(!this.isAlpha(char.charCodeAt(0))) {
             return "";
         }
 
@@ -125,14 +125,16 @@ export class ComplexMessageParser extends MessageParser {
 
                 //check chars behind the startIdx
                 for(let i = start; i >= lastStoppedIdx; i--) {
-                    if(!this.isAlphaNumeric(convertedContent.charCodeAt(i)))
+                    const asciiVal = convertedContent.charCodeAt(i);
+                    if(!this.isAlpha(asciiVal) && asciiVal !== "'".charCodeAt(0))
                         break;
                     start = i;
                 }
 
                 //check chars after end of substring
                 for(let i = end; i < convertedContent.length; i++) {
-                    if(!this.isAlphaNumeric(convertedContent.charCodeAt(i)))
+                    const asciiVal = convertedContent.charCodeAt(i);
+                    if(!this.isAlpha(asciiVal) && asciiVal !== "'".charCodeAt(0))
                         break;
                     end = i;                    
                 }
@@ -140,23 +142,15 @@ export class ComplexMessageParser extends MessageParser {
 
                 //Get contexts
                 let originalContext = originalContent.substring(start, end+1);
-
-                let convertedContext = "";
-
-                //Get context without additonal chars
-                for(let i = 0; i < originalContext.length; i++) {
-                    if(!this.isAlphaNumeric(originalContext.charCodeAt(i))) {
-                        continue;
-                    }
-                    convertedContext += originalContext[i];
-                }
-                convertedContext = convertedContext.toLowerCase();
-
+                let convertedContext = convertedContent.substring(start, end+1);
+                
                 // Check if it is an emote.
                 let isEmote = this.checkIsEmote(originalContent, originalContext);
+
                 const contextToBeAdded = new Context(foundRegex.word,
                                                      originalContext,
                                                      convertedContext);
+
                 //Check for duplicates
                 let found = false;
                 for(let context of contextOfBannedWords) {
@@ -166,7 +160,7 @@ export class ComplexMessageParser extends MessageParser {
                     }
                 }
 
-                //Add to array if there's no dupes and is not an emote
+                //Add to array if is not an emote or a dupe
                 if(!found && !isEmote) {
                     contextOfBannedWords.push(contextToBeAdded);
                 }

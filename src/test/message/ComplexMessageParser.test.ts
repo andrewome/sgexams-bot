@@ -6,7 +6,8 @@ should();
 const complexMessageParser = new ComplexMessageParser().processBannedWords(["banned", "word"]);
 const findContext = (contexts: Context[], context: Context): boolean => {
     for(let _context of contexts) {
-        if(_context.equals(context))
+        let convertedContext = _context.convertedContext;
+        if(_context.equals(context) && convertedContext === context.convertedContext)
             return true;
     }
     return false;
@@ -97,42 +98,42 @@ describe("ComplexMessageParser test suite", () => {
         });
         it("Non-alphanumeric chars 1", () => {
             const str = "b a n n e d";
-            let context = new Context("banned", str, "banned");
+            let context = new Context("banned", str, str);
             let out: Context[] = [];
             complexMessageParser.getContextOfBannedWord(str, str, out);
             findContext(out, context).should.be.true;
         });
         it("Non-alphanumeric chars 2", () => {
             const str = "b(a&n^n$e#d";
-            let context = new Context("banned", str, "banned");
+            let context = new Context("banned", str, str);
             let out: Context[] = [];
             complexMessageParser.getContextOfBannedWord(str, str, out);
             findContext(out, context).should.be.true;
         });
         it("Non-alphanumeric chars in a string 1", () => {
             const str = "you are b a n n e d!!!! lol";
-            let context = new Context("banned", "b a n n e d", "banned");
+            let context = new Context("banned", "b a n n e d", "b a n n e d");
             let out: Context[] = [];
             complexMessageParser.getContextOfBannedWord(str, str, out);
             findContext(out, context).should.be.true;
         });
         it("Non-alphanumeric chars in a string 2", () => {
             const str = "get b(a&n^n$e#d s0n";
-            let context = new Context("banned", "b(a&n^n$e#d", "banned");
+            let context = new Context("banned", "b(a&n^n$e#d", "b(a&n^n$e#d");
             let out: Context[] = [];
             complexMessageParser.getContextOfBannedWord(str, str, out);
             findContext(out, context).should.be.true;
         });
         it("Combination 1", () => {
             const str = "b a   n&n e e#d";
-            let context = new Context("banned", str, "banneed");
+            let context = new Context("banned", str, str);
             let out: Context[] = [];
             complexMessageParser.getContextOfBannedWord(str, str, out);
             findContext(out, context).should.be.true;
         });
         it("Combination 2", () => {
             const str = "bb aaa ^^^  n&n e#ddd";
-            let context = new Context("banned", str, "bbaaanneddd");
+            let context = new Context("banned", str, str);
             let out: Context[] = [];
             complexMessageParser.getContextOfBannedWord(str, str, out);
             findContext(out, context).should.be.true;
