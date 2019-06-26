@@ -38,14 +38,14 @@ export class NaiveMessageParser extends MessageParser {
             do {
                 //check chars behind the index.
                 for(let i = idx; i >= 0; i--) {
-                    if(!this.isAlphaNumeric(convertedContent.charCodeAt(i)))
+                    if(!this.isAlpha(convertedContent.charCodeAt(i)))
                         break;
                     start = i;
                 }
 
                 //check chars after the end of the substring
                 for(let i = end; i < length; i++) {
-                    if(!this.isAlphaNumeric(convertedContent.charCodeAt(i)))
+                    if(!this.isAlpha(convertedContent.charCodeAt(i)))
                         break;
                     end = i;
                 }

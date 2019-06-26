@@ -99,5 +99,17 @@ describe("MessageChecker test suite", () => {
             let result = await messageChecker.checkMessage(str, _bannedWords);
             result.guilty.should.be.true;
         });
+        it("False positive 1", async () => {
+            let _bannedWords = ["negro"];
+            const str = "one group";
+            let result = await messageChecker.checkMessage(str, _bannedWords);
+            result.guilty.should.be.false;
+        });
+        it("False positive 2", async () => {
+            let _bannedWords = ["nig"];
+            const str = "can i get";
+            let result = await messageChecker.checkMessage(str, _bannedWords);
+            result.guilty.should.be.false;
+        });
     });
 });

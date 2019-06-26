@@ -10,35 +10,57 @@ class MessageParser_Stub extends MessageParser {
 
 const messageParser = new MessageParser_Stub();
 describe("MessageParser test suite", () => {
-    /** Test isAlphaNumeric function */
-    describe("isAlphaNumeric Tests", () => {
-        it("It should return true for 0 to 9", () => {
-            for(let i = "0".charCodeAt(0); i <= "9".charCodeAt(0); i++) {
-                messageParser.isAlphaNumeric(i).should.be.true;
-            }
-        });
+    describe("isAlphabetical Tests", () => {
         it("It should return true for lowercase alphabets", () => {
             for(let i = "a".charCodeAt(0); i <= "z".charCodeAt(0); i++) {
-                messageParser.isAlphaNumeric(i).should.be.true;
+                messageParser.isAlpha(i).should.be.true;
             }
         });
         it("It should return true for uppercase alphabets", () => {
             for(let i = "A".charCodeAt(0); i <= "Z".charCodeAt(0); i++) {
-                messageParser.isAlphaNumeric(i).should.be.true;
+                messageParser.isAlpha(i).should.be.true;
             }
         });
-        it("It should return false for punctuations and spaces", () => {
+        it("It should return false for punctuations and spaces and digits", () => {
+            for(let i = "0".charCodeAt(0); i <= "9".charCodeAt(0); i++) {
+                messageParser.isAlpha(i).should.be.false;
+            }
             for(let i = 0; i <= 47; i++) {
-                messageParser.isAlphaNumeric(i).should.be.false;
+                messageParser.isAlpha(i).should.be.false;
             }
             for(let i = 58; i <= 64; i++) {
-                messageParser.isAlphaNumeric(i).should.be.false;
+                messageParser.isAlpha(i).should.be.false;
             }
             for(let i = 91; i <= 96; i++) {
-                messageParser.isAlphaNumeric(i).should.be.false;
+                messageParser.isAlpha(i).should.be.false;
             }
         });
     });
+    describe("isNumeric Tests", () => {
+        it("It should return true for 0 to 9", () => {
+            for(let i = "0".charCodeAt(0); i <= "9".charCodeAt(0); i++) {
+                messageParser.isNumeric(i).should.be.true;
+            }
+        });
+        it("Should return false for other chars", () => {
+            for(let i = 0; i <= 47; i++) {
+                messageParser.isNumeric(i).should.be.false;
+            }
+            for(let i = 58; i <= 64; i++) {
+                messageParser.isNumeric(i).should.be.false;
+            }
+            for(let i = 91; i <= 96; i++) {
+                messageParser.isNumeric(i).should.be.false;
+            }
+            for(let i = "A".charCodeAt(0); i <= "Z".charCodeAt(0); i++) {
+                messageParser.isNumeric(i).should.be.false;
+            }
+            for(let i = "a".charCodeAt(0); i <= "z".charCodeAt(0); i++) {
+                messageParser.isNumeric(i).should.be.false;
+            }
+        });
+    });
+
     describe("isEmote Test", () => {
         it("Is an emote 1", () => {
             let content = "<:normal_emote:999999>";

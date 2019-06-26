@@ -71,7 +71,7 @@ export class MessageChecker {
     }
 
     /**
-     * This function checks datamuse Api for the context of the word used
+     * This function determines if the context used was malicious
      * 
      * @param  {Context} context containing banned word used & its context
      * @return Promise<Context | null> if the context is found to be a banned word
@@ -81,14 +81,82 @@ export class MessageChecker {
             let bannedWord = context.bannedWord;
             let convertedContext = context.convertedContext;
 
+            // If converted context has non-alphabetical chars, split it up by
+            // non-alphabetical chars, not inclusive of '
+            let nonAlphabetical = new RegExp(/[^a-z']/g);
+            if(nonAlphabetical.test(convertedContext)) {
+                //Split context up by non alphabetical chars
+                let dummy = convertedContext;
+                dummy = dummy.replace(nonAlphabetical, " ");
+                let words = dummy.split(/ +/g);
+
+                //Check each splitted word, if all are legit words, pass this context
+                let promises: Promise<boolean>[] = [];
+                let legalOneLetterChars = new Set<string>(["a", "i", "u", "o", "m"]);
+                let isLegit = true;
+                for(let word of words) {
+                    if(word.length === 1) {
+                        if(!legalOneLetterChars.has(word)) {
+                            isLegit = false;
+                        }
+                    }
+                    promises.push(this.checkWord(word, bannedWord));
+                }
+
+                let results = await Promise.all(promises);
+                for(let result of results) {
+                    if(result === true) {
+                        isLegit = false;
+                    }
+                }
+
+                if(isLegit) {
+                    resolve(null);
+                    return;
+                }
+
+                //Give second chance - test the word without any alphanumerics
+                let word = "";
+                for(let word_ of words) {
+                    word += word_;
+                }
+
+                let isBadWord = await this.checkWord(word, bannedWord);
+                if(isBadWord) {
+                    resolve(context);
+                }
+                else {
+                    resolve(null);
+                }
+            } else { // Trivial check
+                let isBadWord = await this.checkWord(convertedContext, bannedWord)
+                if(isBadWord) {
+                    resolve(context);
+                } else {
+                    resolve(null);
+                }
+            }
+        });
+    }
+
+    /**
+     * This function checks datamuse API with a given context vs bannedword
+     * 
+     * @param  {string} context Context
+     * @param  {string} bannedWord banned word
+     */
+    private async checkWord(context: string, bannedWord: string): Promise<boolean> {
+        return new Promise<boolean>(async (resolve) => {
             // If it's a perfect match with a banned word, no need to query.
-            if(convertedContext === bannedWord) {
-                resolve(context);
+            if(context === bannedWord) {
+                resolve(true);
+                return;
             } else {
-                let datamuseQueryResults = await new DatamuseApi().checkSpelling(convertedContext);
+                let datamuseQueryResults = await new DatamuseApi().checkSpelling(context);
                 // If no results, is not a legitimate word, mark it.
                 if(datamuseQueryResults.length === 0) {
-                    resolve(context);
+                    resolve(true);
+                    return;
                 } else {
                     //if it does not match the top few (3 for now), mark it
                     let canBeFound = false;
@@ -98,13 +166,13 @@ export class MessageChecker {
 
                         //if the word can be found in the context, it is a legitimate word
                         //this adds some tolerance to prevent false positives
-                        if(convertedContext.includes(bestFitWord)) {
+                        if(context.includes(bestFitWord)) {
                             canBeFound = true;
                         }
                         
                         //if I can find the banned word in the query, mark it.
                         if(bannedWord === bestFitWord) {
-                            resolve(context)
+                            resolve(true)
                         }
                         idx++;
                     } while(idx < 3 && idx < datamuseQueryResults.length);
@@ -112,11 +180,12 @@ export class MessageChecker {
                     //if it does not match the top few, mark it for now; could be a masked banned word
                     //downside: typos will get flagged too
                     if(!canBeFound) {
-                        resolve(context)
+                        resolve(true)
+                        return;
                     }
                 }
             }
-            resolve(null);
+            resolve(false);
         });
     }
 }
