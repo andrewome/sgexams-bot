@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { should } from 'chai';
 import { Server } from '../../../main/storage/Server';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -17,13 +18,13 @@ const { MAYBE_WORDS_NOT_INSIDE } = RemoveWordCommand;
 const { UNABLE_TO_REMOVE_WORDS } = RemoveWordCommand;
 const { NO_ARGUMENTS } = RemoveWordCommand;
 const words = ['word1', 'word2', 'word3'];
-beforeEach(() => {
+beforeEach((): void => {
     server = new Server('123', new MessageCheckerSettings());
     for (const word of words) server.messageCheckerSettings.addbannedWord(word);
 });
 
-describe('RemoveWordCommand test suite', () => {
-    it('Removing words, no duplicates', () => {
+describe('RemoveWordCommand test suite', (): void => {
+    it('Removing words, no duplicates', (): void => {
         const args = ['word1', 'word2', 'word3'];
         const removedWordsStr = `${args[0]}\n${args[1]}\n${args[2]}\n`;
         const wordsRemoved: string[] = [];
@@ -45,7 +46,7 @@ describe('RemoveWordCommand test suite', () => {
         field.name.should.equals(REMOVED_WORDS);
         field.value.should.equals(removedWordsStr);
     });
-    it('Removing words, with some removed already', () => {
+    it('Removing words, with some removed already', (): void => {
         // Remove some words first
         const args = ['word1', 'word2', 'word3'];
         command = new RemoveWordCommand(args.slice(0, 2));
@@ -77,7 +78,7 @@ describe('RemoveWordCommand test suite', () => {
         unableToAddWordsField.name.should.equals(UNABLE_TO_REMOVE_WORDS);
         unableToAddWordsField.value.should.equals(unableToRemoveWordsStr);
     });
-    it('Removing words, with duplicates in args', () => {
+    it('Removing words, with duplicates in args', (): void => {
         const args = ['word1', 'word2', 'word3', 'word3'];
         command = new RemoveWordCommand(args);
         const removedWordsStr = `${args[0]}\n${args[1]}\n${args[2]}\n`;
@@ -105,7 +106,7 @@ describe('RemoveWordCommand test suite', () => {
         unableToAddWordsField.name.should.equals(UNABLE_TO_REMOVE_WORDS);
         unableToAddWordsField.value.should.equals(unableToRemoveWordsStr);
     });
-    it('No arguments', () => {
+    it('No arguments', (): void => {
         const args: string[] = [];
         command = new RemoveWordCommand(args);
 

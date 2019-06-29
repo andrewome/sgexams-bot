@@ -1,6 +1,6 @@
 import './lib/env';
 import { Client, Message } from 'discord.js';
-import log, { MethodFactory } from 'loglevel';
+import log, { LoggingMethod } from 'loglevel';
 import { MessageChecker } from './messagechecker/MessageChecker';
 import { MessageResponse } from './messagechecker/response/MessageResponse';
 import { CommandParser } from './command/CommandParser';
@@ -12,10 +12,10 @@ import { CommandResult } from './command/classes/CommandResult';
 // Set up logging method
 log.enableAll();
 const originalFactory = log.methodFactory;
-log.methodFactory = function (methodName, logLevel, loggerName): MethodFactory {
+log.methodFactory = function (methodName, logLevel, loggerName): LoggingMethod {
     const rawMethod = originalFactory(methodName, logLevel, loggerName);
 
-    return function (message): any {
+    return function (message): void {
         const curDate = new Date().toLocaleString();
         const logMsg = `[${curDate}]: ${message}`;
         rawMethod(logMsg);

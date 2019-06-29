@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { should } from 'chai';
 import { SetDeleteMessageCommand, ResponseType } from '../../../main/command/messagecheckercommands/SetDeleteMessageCommand';
 import { Command } from '../../../main/command/Command';
@@ -18,24 +19,24 @@ const { INCORRECT_FORMAT } = SetDeleteMessageCommand;
 const { EMBED_TITLE } = SetDeleteMessageCommand;
 const { BOOL_CANNOT_BE_UNDEFINED } = SetDeleteMessageCommand;
 
-beforeEach(() => {
+beforeEach((): void => {
     server = new Server('123', new MessageCheckerSettings());
 });
 
-describe('SetDeleteMessageCommand test suite', () => {
-    describe('changeServerSettings test', () => {
-        it('Should become from false to true', () => {
+describe('SetDeleteMessageCommand test suite', (): void => {
+    describe('changeServerSettings test', (): void => {
+        it('Should become from false to true', (): void => {
             command.changeServerSettings(server, true);
             server.messageCheckerSettings.getDeleteMessage().should.be.true;
         });
-        it('Should become from true to false', () => {
+        it('Should become from true to false', (): void => {
             command.changeServerSettings(server, true); // false by default
             command.changeServerSettings(server, false);
             server.messageCheckerSettings.getDeleteMessage().should.be.false;
         });
     });
-    describe('generateEmbed test', () => {
-        it('No arguments', () => {
+    describe('generateEmbed test', (): void => {
+        it('No arguments', (): void => {
             const embed = command.generateEmbed(ResponseType.NO_ARGUMENTS);
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -43,7 +44,7 @@ describe('SetDeleteMessageCommand test suite', () => {
             field.name.should.equals(EMBED_TITLE);
             field.value.should.equals(NO_ARGUMENTS);
         });
-        it('Wrong format', () => {
+        it('Wrong format', (): void => {
             const embed = command.generateEmbed(ResponseType.WRONG_FORMAT);
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -51,7 +52,7 @@ describe('SetDeleteMessageCommand test suite', () => {
             field.name.should.equals(EMBED_TITLE);
             field.value.should.equals(INCORRECT_FORMAT);
         });
-        it('Correct format, true', () => {
+        it('Correct format, true', (): void => {
             const msg = 'Delete Message set to: **TRUE**';
             const embed = command.generateEmbed(ResponseType.VALID_FORMAT, true);
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -60,7 +61,7 @@ describe('SetDeleteMessageCommand test suite', () => {
             field.name.should.equals(EMBED_TITLE);
             field.value.should.equals(msg);
         });
-        it('Correct format, false', () => {
+        it('Correct format, false', (): void => {
             const msg = 'Delete Message set to: **FALSE**';
             const embed = command.generateEmbed(ResponseType.VALID_FORMAT, false);
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -69,7 +70,7 @@ describe('SetDeleteMessageCommand test suite', () => {
             field.name.should.equals(EMBED_TITLE);
             field.value.should.equals(msg);
         });
-        it('Correct format but bool not set', () => {
+        it('Correct format but bool not set', (): void => {
             try {
                 const embed = command.generateEmbed(ResponseType.WRONG_FORMAT);
             } catch (err) {

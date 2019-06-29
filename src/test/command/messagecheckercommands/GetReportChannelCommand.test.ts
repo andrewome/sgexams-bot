@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { should } from 'chai';
 import { GetReportChannelCommand } from '../../../main/command/messagecheckercommands/GetReportChannelCommand';
 import { Server } from '../../../main/storage/Server';
@@ -14,12 +15,12 @@ const { THIS_METHOD_SHOULD_NOT_BE_CALLED } = Command;
 const { CHANNEL_NOT_SET } = GetReportChannelCommand;
 const { EMBED_TITLE } = GetReportChannelCommand;
 
-beforeEach(() => {
+beforeEach((): void => {
     server = new Server('123', new MessageCheckerSettings());
 });
 
-describe('GetReportChannelCommand class test suite', () => {
-    it('Channel not set', () => {
+describe('GetReportChannelCommand class test suite', (): void => {
+    it('Channel not set', (): void => {
         const embed = command.generateEmbed(server);
 
         // Check embed
@@ -29,7 +30,7 @@ describe('GetReportChannelCommand class test suite', () => {
         field.name.should.equals(EMBED_TITLE);
         field.value.should.equals(CHANNEL_NOT_SET);
     });
-    it('Channel set', () => {
+    it('Channel set', (): void => {
         const channelId = '111';
         server.messageCheckerSettings.setReportingChannelId(channelId);
         const embed = command.generateEmbed(server);
@@ -41,7 +42,7 @@ describe('GetReportChannelCommand class test suite', () => {
         field.name.should.equals(EMBED_TITLE);
         field.value.should.equals(`Reporting Channel is currently set to <#${channelId}>.`);
     });
-    it('changeServerSettings should throw error', () => {
+    it('changeServerSettings should throw error', (): void => {
         try {
             command.changeServerSettings(server);
         } catch (err) {

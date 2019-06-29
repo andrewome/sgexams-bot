@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { should } from 'chai';
 import { Server } from '../../../main/storage/Server';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';

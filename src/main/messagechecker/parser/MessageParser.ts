@@ -33,7 +33,7 @@ export abstract class MessageParser {
      */
     public checkIsEmote(content: string, context: string): boolean {
         // This function escapes reserved chars in Regex
-        const escapeChars = (str: string) => {
+        const escapeChars = (str: string): string => {
             const charSet = new Set<string>(['[', '\\', '^', '$', '.', '|', '?', '*', '+', '(', ')']);
             let out = '';
             for (let i = 0; i < str.length; i++) {

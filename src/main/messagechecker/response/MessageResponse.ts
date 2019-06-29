@@ -111,7 +111,7 @@ export class MessageResponse {
         message = message.replace(/{user}/g, user);
         log.info(`Sending response message - ${message}`);
         channel.send(message)
-            .catch((err) => {
+            .catch((err): void => {
                 if (err.message === 'Missing Permissions') log.warn('Unable to send message. Insufficient permissions.');
             });
         return this;
@@ -128,7 +128,7 @@ export class MessageResponse {
 
         log.info('Deleting message...');
         this.message.delete()
-            .catch((err) => {
+            .catch((err): void => {
                 if (err.message === 'Missing Permissions') log.warn('Unable to delete message. Insufficient permissions.');
             });
         return this;

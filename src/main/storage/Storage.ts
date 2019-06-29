@@ -50,7 +50,7 @@ export class Storage {
         log.info('Saving Servers...');
     }
 
-    public setStoragePath(str: string) {
+    public setStoragePath(str: string): void {
         this.STORAGE_PATH = str;
     }
 }

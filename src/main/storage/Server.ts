@@ -31,6 +31,7 @@ export class Server {
      * @param  {Server} server Server object
      * @returns any
      */
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     public static convertToJsonFriendly(server: Server): any {
         const out: any = {};
         out.serverId = server.serverId;
@@ -39,6 +40,7 @@ export class Server {
 
         return out;
     }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     /**
      * This function converts an object back into a server object
@@ -47,6 +49,7 @@ export class Server {
      * @param  {any} obj
      * @returns Server
      */
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     public static convertFromJsonFriendly(obj: any): Server {
         // Check attributes
         if (!(obj.hasOwnProperty('messageCheckerSettings')
@@ -59,4 +62,5 @@ export class Server {
 
         return new Server(serverId, messageCheckerSettings);
     }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 }

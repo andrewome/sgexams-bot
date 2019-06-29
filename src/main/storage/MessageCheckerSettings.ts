@@ -107,6 +107,7 @@ export class MessageCheckerSettings {
      * @param  {MessageCheckerSettings} messageSettings
      * @returns any
      */
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     public static convertToJsonFriendly(messageSettings: MessageCheckerSettings): any {
         const out: any = {};
 
@@ -128,6 +129,7 @@ export class MessageCheckerSettings {
 
         return out;
     }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     /**
      * This function converts an object back into a server object
@@ -136,6 +138,7 @@ export class MessageCheckerSettings {
      * @param  {any} obj
      * @returns MessageCheckerSettings
      */
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     public static convertFromJsonFriendly(obj: any): MessageCheckerSettings {
         // Check attributes
         if (!(obj.hasOwnProperty('bannedWords')
@@ -158,4 +161,5 @@ export class MessageCheckerSettings {
             bannedWords,
             deleteMessage);
     }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 }

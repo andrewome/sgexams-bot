@@ -34,6 +34,7 @@ export abstract class Command {
      * @param  {any} ...args
      * @returns RichEmbed
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public abstract generateEmbed(...args: any): RichEmbed;
 
     /**
@@ -45,6 +46,7 @@ export abstract class Command {
      * @param  {any} ...args
      * @returns void
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public abstract changeServerSettings(server: Server, ...args: any): void;
 
     /**
