@@ -3,60 +3,61 @@ import { ListWordsCommand } from '../../main/command/messagecheckercommands/List
 import { Command } from '../../main/command/Command';
 import { Server } from '../../main/storage/Server';
 import { MessageCheckerSettings } from '../../main/storage/MessageCheckerSettings';
+
 should();
 
 const command = new ListWordsCommand();
 let server: Server;
-let EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, "");
-let EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, "");
-let THIS_METHOD_SHOULD_NOT_BE_CALLED = Command.THIS_METHOD_SHOULD_NOT_BE_CALLED;
-let EMBED_TITLE = ListWordsCommand.EMBED_TITLE;
-let NO_WORDS_FOUND = ListWordsCommand.NO_WORDS_FOUND;
+const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
+const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
+const { THIS_METHOD_SHOULD_NOT_BE_CALLED } = Command;
+const { EMBED_TITLE } = ListWordsCommand;
+const { NO_WORDS_FOUND } = ListWordsCommand;
 
 beforeEach(() => {
-    server = new Server("123", new MessageCheckerSettings());
+    server = new Server('123', new MessageCheckerSettings());
 });
 
-describe("ListCommandsCommand test suite", () => {
-    it("Embed should show all bannedWords", () => {
+describe('ListCommandsCommand test suite', () => {
+    it('Embed should show all bannedWords', () => {
         // Set banned words
-        let bannedWords = ["word1", "word2", "word3"];
-        for(let word of bannedWords) {
+        const bannedWords = ['word1', 'word2', 'word3'];
+        for (const word of bannedWords) {
             server.messageCheckerSettings.addbannedWord(word);
         }
 
         // Get output string
-        let output = "";
-        for(let word of bannedWords) {
-            output += word + "\n";
+        let output = '';
+        for (const word of bannedWords) {
+            output += `${word}\n`;
         }
 
-        //Compare with generated embed field.
-        let embed = command.generateEmbed(server);
+        // Compare with generated embed field.
+        const embed = command.generateEmbed(server);
 
-        //Check colour
+        // Check colour
         embed.color!.toString(16).should.equal(EMBED_DEFAULT_COLOUR);
 
-        //Check field
+        // Check field
         embed.fields!.length.should.be.equals(1);
-        let field = embed.fields![0];
+        const field = embed.fields![0];
         field.name.should.equals(EMBED_TITLE);
         field.value.should.equals(output);
     });
-    it("Embed should show if no bannedWords", () => {
-        //Compare with generated embed field.
-        let embed = command.generateEmbed(server);
+    it('Embed should show if no bannedWords', () => {
+        // Compare with generated embed field.
+        const embed = command.generateEmbed(server);
 
-        //Check colour
+        // Check colour
         embed.color!.toString(16).should.equal(EMBED_DEFAULT_COLOUR);
 
-        //Check field
+        // Check field
         embed.fields!.length.should.be.equals(1);
-        let field = embed.fields![0];
+        const field = embed.fields![0];
         field.name.should.equals(EMBED_TITLE);
         field.value.should.equals(NO_WORDS_FOUND);
     });
-    it("changeServerSettings should throw error", () => {
+    it('changeServerSettings should throw error', () => {
         try {
             command.changeServerSettings(server);
         } catch (err) {
