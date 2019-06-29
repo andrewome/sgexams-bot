@@ -4,7 +4,7 @@ export class CharacterSubstitutor {
 
     private oneToManyMap: Map<string, string[]>;
 
-    constructor() {
+    public constructor() {
         this.oneToOneMap = new Map<string, string>();
         this.oneToOneMap.set('@', 'a');
         this.oneToOneMap.set('3', 'e');

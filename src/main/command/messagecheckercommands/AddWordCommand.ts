@@ -4,15 +4,15 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class AddWordCommand extends Command {
-    static COMMAND_NAME = 'addwords';
+    public static COMMAND_NAME = 'addwords';
 
-    static DESCRIPTION = 'Add word(s) to the blacklist.';
+    public static DESCRIPTION = 'Add word(s) to the blacklist.';
 
-    static ADDED_WORDS = '✅Added Words(s):';
+    public static ADDED_WORDS = '✅Added Words(s):';
 
-    static MAYBE_WORDS_ALREADY_ADDED = 'Perhaps those word(s) are already added?';
+    public static MAYBE_WORDS_ALREADY_ADDED = 'Perhaps those word(s) are already added?';
 
-    static UNABLE_TO_ADD_WORDS = '❌Unable To Add:';
+    public static UNABLE_TO_ADD_WORDS = '❌Unable To Add:';
 
     /** SaveServer: true, CheckMessage: false */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, false);
@@ -21,7 +21,7 @@ export class AddWordCommand extends Command {
 
     private args: string[];
 
-    constructor(args: string[]) {
+    public constructor(args: string[]) {
         super();
         this.args = args;
     }

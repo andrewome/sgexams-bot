@@ -8,7 +8,7 @@ should();
 
 const STORAGE_PATH = './TESTING.json';
 class Storage_Test extends Storage {
-    constructor() {
+    public constructor() {
         super();
         super.setStoragePath(STORAGE_PATH);
     }

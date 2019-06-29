@@ -6,7 +6,7 @@ import { CommandResult } from '../../main/command/classes/CommandResult';
 
 chai.should();
 
-class Command_Stub extends Command {
+class CommandStub extends Command {
     public execute(server: Server, message: Message): CommandResult {
         throw new Error('Method not implemented.');
     }
@@ -20,7 +20,7 @@ class Command_Stub extends Command {
     }
 }
 
-const command = new Command_Stub();
+const command = new CommandStub();
 describe('Command class test suite', () => {
     describe('hasPermissions method test', () => {
         it('sufficient permissions 1', () => {

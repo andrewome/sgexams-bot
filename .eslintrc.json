@@ -18,7 +18,8 @@
     ],
     "rules": {
         "@typescript-eslint/no-non-null-assertion": "off",
-        "import/prefer-default-export": "off"
+        "import/prefer-default-export": "off",
+        "eslint/no-cond-assign": "off"
     },
     "settings": {
         "import/resolver": {

@@ -20,7 +20,7 @@ export class MessageResponse {
 
     private CODE_BLOCK = '```\n';
 
-    constructor(message: Message) {
+    public constructor(message: Message) {
         this.message = message;
     }
 

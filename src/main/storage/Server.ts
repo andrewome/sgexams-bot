@@ -6,7 +6,7 @@ export class Server {
 
     public messageCheckerSettings: MessageCheckerSettings;
 
-    constructor(serverId: string, messageCheckerSettings: MessageCheckerSettings) {
+    public constructor(serverId: string, messageCheckerSettings: MessageCheckerSettings) {
         this.serverId = serverId;
         this.messageCheckerSettings = messageCheckerSettings;
     }
@@ -31,7 +31,7 @@ export class Server {
      * @param  {Server} server Server object
      * @returns any
      */
-    static convertToJsonFriendly(server: Server): any {
+    public static convertToJsonFriendly(server: Server): any {
         const out: any = {};
         out.serverId = server.serverId;
         const { messageCheckerSettings } = server;
@@ -47,7 +47,7 @@ export class Server {
      * @param  {any} obj
      * @returns Server
      */
-    static convertFromJsonFriendly(obj: any): Server {
+    public static convertFromJsonFriendly(obj: any): Server {
         // Check attributes
         if (!(obj.hasOwnProperty('messageCheckerSettings')
              && obj.hasOwnProperty('serverId'))) {

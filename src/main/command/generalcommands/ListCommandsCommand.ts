@@ -5,11 +5,11 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandParser } from '../CommandParser';
 
 export class ListCommandsCommand extends Command {
-    static COMMAND_NAME = 'help';
+    public static COMMAND_NAME = 'help';
 
-    static DESCRIPTION = 'Displays all the available commands that this bot listens to.';
+    public static DESCRIPTION = 'Displays all the available commands that this bot listens to.';
 
-    static EMBED_TITLE = 'Commands';
+    public static EMBED_TITLE = 'Commands';
 
     /** SaveServer: false, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
@@ -24,7 +24,7 @@ export class ListCommandsCommand extends Command {
      * @param  {Set<string>} commands List of available commands
      * @param  {string[]} descriptions List of descriptions
      */
-    constructor() {
+    public constructor() {
         super();
         this.commands = Array.from(CommandParser.commands);
         this.descriptions = CommandParser.descriptions;
