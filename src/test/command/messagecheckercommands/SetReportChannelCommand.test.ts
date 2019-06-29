@@ -1,8 +1,8 @@
 import { should } from 'chai';
-import { SetReportChannelCommand, ResponseType } from '../../main/command/messagecheckercommands/SetReportChannelCommand';
-import { Command } from '../../main/command/Command';
-import { MessageCheckerSettings } from '../../main/storage/MessageCheckerSettings';
-import { Server } from '../../main/storage/Server';
+import { SetReportChannelCommand, ResponseType } from '../../../main/command/messagecheckercommands/SetReportChannelCommand';
+import { Command } from '../../../main/command/Command';
+import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
+import { Server } from '../../../main/storage/Server';
 
 should();
 

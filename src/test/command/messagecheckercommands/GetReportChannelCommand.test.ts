@@ -1,8 +1,8 @@
 import { should } from 'chai';
-import { GetReportChannelCommand } from '../../main/command/messagecheckercommands/GetReportChannelCommand';
-import { Server } from '../../main/storage/Server';
-import { Command } from '../../main/command/Command';
-import { MessageCheckerSettings } from '../../main/storage/MessageCheckerSettings';
+import { GetReportChannelCommand } from '../../../main/command/messagecheckercommands/GetReportChannelCommand';
+import { Server } from '../../../main/storage/Server';
+import { Command } from '../../../main/command/Command';
+import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 
 should();
 

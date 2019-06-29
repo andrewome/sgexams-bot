@@ -1,5 +1,5 @@
 import { should } from 'chai';
-import { CharacterSubstitutor } from '../../main/messagechecker/charactersubstitutor/CharacterSubstitutor';
+import { CharacterSubstitutor } from '../../../main/messagechecker/charactersubstitutor/CharacterSubstitutor';
 
 should();
 

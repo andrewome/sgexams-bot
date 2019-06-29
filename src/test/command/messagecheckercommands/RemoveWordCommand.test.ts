@@ -1,8 +1,8 @@
 import { should } from 'chai';
-import { Server } from '../../main/storage/Server';
-import { MessageCheckerSettings } from '../../main/storage/MessageCheckerSettings';
-import { RemoveWordCommand } from '../../main/command/messagecheckercommands/RemoveWordCommand';
-import { Command } from '../../main/command/Command';
+import { Server } from '../../../main/storage/Server';
+import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
+import { RemoveWordCommand } from '../../../main/command/messagecheckercommands/RemoveWordCommand';
+import { Command } from '../../../main/command/Command';
 
 should();
 

@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "lint": "eslint ./src/**/*.ts",
-    "test": "rimraf -rf build/ && npm run build && mocha ./build/test/**/*.js --recursive --exit",
+    "lint": "eslint \"./src/**/*.ts\"",
+    "test": "rimraf -rf build/ && npm run build && mocha \"./build/test/**/*.js\"",
     "start": "npm run build:live",
     "build": "tsc -p .",
     "build:live": "nodemon"

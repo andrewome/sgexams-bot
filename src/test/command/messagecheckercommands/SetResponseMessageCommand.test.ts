@@ -1,8 +1,8 @@
 import { should } from 'chai';
-import { SetResponseMessageCommand, ResponseType } from '../../main/command/messagecheckercommands/SetResponseMessageCommand';
-import { Command } from '../../main/command/Command';
-import { MessageCheckerSettings } from '../../main/storage/MessageCheckerSettings';
-import { Server } from '../../main/storage/Server';
+import { SetResponseMessageCommand, ResponseType } from '../../../main/command/messagecheckercommands/SetResponseMessageCommand';
+import { Command } from '../../../main/command/Command';
+import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
+import { Server } from '../../../main/storage/Server';
 
 should();
 

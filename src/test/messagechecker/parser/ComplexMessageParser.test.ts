@@ -1,6 +1,6 @@
 import { should } from 'chai';
-import { ComplexMessageParser } from '../../main/messagechecker/parser/ComplexMessageParser';
-import { Context } from '../../main/messagechecker/classes/Context';
+import { ComplexMessageParser } from '../../../main/messagechecker/parser/ComplexMessageParser';
+import { Context } from '../../../main/messagechecker/classes/Context';
 
 should();
 

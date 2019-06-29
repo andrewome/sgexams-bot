@@ -1,5 +1,5 @@
 import { should } from 'chai';
-import { MessageParser } from '../../main/messagechecker/parser/MessageParser';
+import { MessageParser } from '../../../main/messagechecker/parser/MessageParser';
 
 should();
 

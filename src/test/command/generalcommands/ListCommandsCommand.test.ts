@@ -1,9 +1,9 @@
 import { should } from 'chai';
-import { ListCommandsCommand } from '../../main/command/generalcommands/ListCommandsCommand';
-import { CommandParser } from '../../main/command/CommandParser';
-import { Command } from '../../main/command/Command';
-import { Server } from '../../main/storage/Server';
-import { MessageCheckerSettings } from '../../main/storage/MessageCheckerSettings';
+import { ListCommandsCommand } from '../../../main/command/generalcommands/ListCommandsCommand';
+import { CommandParser } from '../../../main/command/CommandParser';
+import { Command } from '../../../main/command/Command';
+import { Server } from '../../../main/storage/Server';
+import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 
 should();
 

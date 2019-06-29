@@ -1,5 +1,5 @@
 import { should } from 'chai';
-import { DatamuseApi } from '../../main/messagechecker/datamuseapi/DatamuseApi';
+import { DatamuseApi } from '../../../main/messagechecker/datamuseapi/DatamuseApi';
 
 should();
 

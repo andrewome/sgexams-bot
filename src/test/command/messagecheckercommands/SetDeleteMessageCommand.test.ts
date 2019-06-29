@@ -1,8 +1,8 @@
 import { should } from 'chai';
-import { SetDeleteMessageCommand, ResponseType } from '../../main/command/messagecheckercommands/SetDeleteMessageCommand';
-import { Command } from '../../main/command/Command';
-import { MessageCheckerSettings } from '../../main/storage/MessageCheckerSettings';
-import { Server } from '../../main/storage/Server';
+import { SetDeleteMessageCommand, ResponseType } from '../../../main/command/messagecheckercommands/SetDeleteMessageCommand';
+import { Command } from '../../../main/command/Command';
+import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
+import { Server } from '../../../main/storage/Server';
 
 should();
 

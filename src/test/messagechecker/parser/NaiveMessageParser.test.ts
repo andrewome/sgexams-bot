@@ -1,7 +1,7 @@
 
 import { should } from 'chai';
-import { NaiveMessageParser } from '../../main/messagechecker/parser/NaiveMessageParser';
-import { Context } from '../../main/messagechecker/classes/Context';
+import { NaiveMessageParser } from '../../../main/messagechecker/parser/NaiveMessageParser';
+import { Context } from '../../../main/messagechecker/classes/Context';
 
 should();
 

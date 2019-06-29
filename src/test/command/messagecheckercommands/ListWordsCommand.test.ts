@@ -1,8 +1,8 @@
 import { should } from 'chai';
-import { ListWordsCommand } from '../../main/command/messagecheckercommands/ListWordsCommand';
-import { Command } from '../../main/command/Command';
-import { Server } from '../../main/storage/Server';
-import { MessageCheckerSettings } from '../../main/storage/MessageCheckerSettings';
+import { ListWordsCommand } from '../../../main/command/messagecheckercommands/ListWordsCommand';
+import { Command } from '../../../main/command/Command';
+import { Server } from '../../../main/storage/Server';
+import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 
 should();
 
