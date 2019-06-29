@@ -1,5 +1,5 @@
 import "./lib/env";
-import { Client, Message, TextChannel } from "discord.js";
+import { Client, Message } from "discord.js";
 import { MessageChecker } from "./messagechecker/MessageChecker";
 import { MessageResponse } from "./messagechecker/response/MessageResponse";
 import { CommandParser } from "./command/CommandParser";

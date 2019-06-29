@@ -4,11 +4,11 @@ import { CommandResult } from "./classes/CommandResult";
 
 /** Base class of the Commands */
 export abstract class Command {
-    static NO_ARGUMENTS = "Oops! I received no arguments. Please try again.";
-    static EMBED_DEFAULT_COLOUR = "125bd1";
-    static EMBED_ERROR_COLOUR = "ff0000";
-    static ERROR_EMBED_TITLE = "❌ Error";
-    static THIS_METHOD_SHOULD_NOT_BE_CALLED = "This Method should not be called.";
+    public static NO_ARGUMENTS = "Oops! I received no arguments. Please try again.";
+    public static EMBED_DEFAULT_COLOUR = "125bd1";
+    public static EMBED_ERROR_COLOUR = "ff0000";
+    public static ERROR_EMBED_TITLE = "❌ Error";
+    public static THIS_METHOD_SHOULD_NOT_BE_CALLED = "This Method should not be called.";
 
     public NO_PERMISSIONS_COMMANDRESULT = new CommandResult(false, true);
 
