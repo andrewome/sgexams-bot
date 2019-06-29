@@ -11,18 +11,18 @@ import { GetResponseMessageCommand } from './messagecheckercommands/GetResponseM
 import { SetDeleteMessageCommand } from './messagecheckercommands/SetDeleteMessageCommand';
 
 export class CommandParser {
-    static EMPTY_STRING = '\u200b';
+    public static EMPTY_STRING = '\u200b';
 
-    static GENERAL_COMMANDS_HEADER = '__General Commands__';
+    public static GENERAL_COMMANDS_HEADER = '__General Commands__';
 
-    static MESSAGE_CHECKER_COMMANDS_HEADER = '__Message Checker Commands__';
+    public static MESSAGE_CHECKER_COMMANDS_HEADER = '__Message Checker Commands__';
 
-    static NO_SUCH_COMMAND = 'No such command!';
+    public static NO_SUCH_COMMAND = 'No such command!';
 
-    static notCommands: Set<string> = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
+    public static notCommands: Set<string> = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
         CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER]);
 
-    static commands: Set<string> = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
+    public static commands: Set<string> = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
         ListCommandsCommand.COMMAND_NAME,
         CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER,
         ListWordsCommand.COMMAND_NAME,
@@ -34,7 +34,7 @@ export class CommandParser {
         GetResponseMessageCommand.COMMAND_NAME,
         SetDeleteMessageCommand.COMMAND_NAME]);
 
-    static descriptions: string[] = [CommandParser.EMPTY_STRING,
+    public static descriptions: string[] = [CommandParser.EMPTY_STRING,
         ListCommandsCommand.DESCRIPTION,
         CommandParser.EMPTY_STRING,
         ListWordsCommand.DESCRIPTION,
@@ -56,7 +56,7 @@ export class CommandParser {
      *
      * @param  {string} content
      */
-    constructor(content: string) {
+    public constructor(content: string) {
         this.content = content;
         this.splittedContent = this.content.split(/ +/g);
     }

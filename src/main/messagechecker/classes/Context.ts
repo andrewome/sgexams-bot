@@ -6,7 +6,7 @@ export class Context {
 
     public convertedContext: string;
 
-    constructor(bannedWord: string, originalContext: string, convertedContext: string) {
+    public constructor(bannedWord: string, originalContext: string, convertedContext: string) {
         this.bannedWord = bannedWord;
         this.originalContext = originalContext;
         this.convertedContext = convertedContext;

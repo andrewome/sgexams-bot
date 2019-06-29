@@ -4,13 +4,13 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class GetResponseMessageCommand extends Command {
-    static COMMAND_NAME = 'getresponsemessage';
+    public static COMMAND_NAME = 'getresponsemessage';
 
-    static DESCRIPTION = 'Displays the response message to the user upon detection of blacklisted words for this server.';
+    public static DESCRIPTION = 'Displays the response message to the user upon detection of blacklisted words for this server.';
 
-    static CHANNEL_NOT_SET = 'There is no message set for this server.';
+    public static CHANNEL_NOT_SET = 'There is no message set for this server.';
 
-    static EMBED_TITLE = 'Response Message'
+    public static EMBED_TITLE = 'Response Message'
 
     /** SaveServer: false, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
@@ -18,7 +18,7 @@ export class GetResponseMessageCommand extends Command {
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
 
-    constructor() {
+    public constructor() {
         super();
     }
 

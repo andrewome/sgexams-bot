@@ -10,15 +10,15 @@ export enum ResponseType {
 }
 
 export class SetDeleteMessageCommand extends Command {
-    static COMMAND_NAME = 'setdeletemessage';
+    public static COMMAND_NAME = 'setdeletemessage';
 
-    static DESCRIPTION = 'Sets whether the bot should delete instances of blacklisted words being used.';
+    public static DESCRIPTION = 'Sets whether the bot should delete instances of blacklisted words being used.';
 
-    static INCORRECT_FORMAT = 'Incorrect format. Use only "true" or "false".'
+    public static INCORRECT_FORMAT = 'Incorrect format. Use only "true" or "false".'
 
-    static EMBED_TITLE = 'Delete Message';
+    public static EMBED_TITLE = 'Delete Message';
 
-    static BOOL_CANNOT_BE_UNDEFINED = 'Boolean should not be undefined!';
+    public static BOOL_CANNOT_BE_UNDEFINED = 'Boolean should not be undefined!';
 
     /** SaveServer: true, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, true);
@@ -30,7 +30,7 @@ export class SetDeleteMessageCommand extends Command {
 
     private args: string[];
 
-    constructor(args: string[]) {
+    public constructor(args: string[]) {
         super();
         this.args = args;
     }

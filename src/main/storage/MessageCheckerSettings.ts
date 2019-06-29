@@ -7,7 +7,7 @@ export class MessageCheckerSettings {
 
     private deleteMessage: boolean;
 
-    constructor(reportingChannelId?: string,
+    public constructor(reportingChannelId?: string,
         responseMessage?: string,
         bannedWords?: string[],
         deleteMessage?: boolean) {
@@ -107,7 +107,7 @@ export class MessageCheckerSettings {
      * @param  {MessageCheckerSettings} messageSettings
      * @returns any
      */
-    static convertToJsonFriendly(messageSettings: MessageCheckerSettings): any {
+    public static convertToJsonFriendly(messageSettings: MessageCheckerSettings): any {
         const out: any = {};
 
         out.bannedWords = messageSettings.getBannedWords();
@@ -136,7 +136,7 @@ export class MessageCheckerSettings {
      * @param  {any} obj
      * @returns MessageCheckerSettings
      */
-    static convertFromJsonFriendly(obj: any): MessageCheckerSettings {
+    public static convertFromJsonFriendly(obj: any): MessageCheckerSettings {
         // Check attributes
         if (!(obj.hasOwnProperty('bannedWords')
              && obj.hasOwnProperty('responseMessage')

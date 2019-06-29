@@ -7,7 +7,7 @@ class WordAndRegex {
 
     public regex: RegExp;
 
-    constructor(word: string, regexStr: string) {
+    public constructor(word: string, regexStr: string) {
         this.word = word;
         this.regex = new RegExp(regexStr, 'g');
     }

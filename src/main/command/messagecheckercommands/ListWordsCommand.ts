@@ -4,13 +4,13 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class ListWordsCommand extends Command {
-    static COMMAND_NAME = 'listwords';
+    public static COMMAND_NAME = 'listwords';
 
-    static DESCRIPTION = 'Displays all blacklisted words.';
+    public static DESCRIPTION = 'Displays all blacklisted words.';
 
-    static NO_WORDS_FOUND = 'There are no words set for this server!';
+    public static NO_WORDS_FOUND = 'There are no words set for this server!';
 
-    static EMBED_TITLE = 'Blacklisted Words';
+    public static EMBED_TITLE = 'Blacklisted Words';
 
     /** SaveServer: false, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
