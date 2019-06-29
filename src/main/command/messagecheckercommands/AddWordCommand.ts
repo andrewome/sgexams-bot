@@ -102,8 +102,8 @@ export class AddWordCommand extends Command {
      * @returns void
      */
     public changeServerSettings(server: Server,
-        wordsAdded: string[],
-        wordsNotAdded: string[]): void {
+                                wordsAdded: string[],
+                                wordsNotAdded: string[]): void {
         const words = this.args;
         for (let word of words) {
             // Make word lowercase
