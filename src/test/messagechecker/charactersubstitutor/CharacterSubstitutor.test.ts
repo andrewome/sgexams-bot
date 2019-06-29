@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { should } from 'chai';
-import { CharacterSubstitutor } from '../../../main/messagechecker/charactersubstitutor/CharacterSubstitutor';
+import { CharacterSubstitutor } from '../../../main/modules/messagechecker/charactersubstitutor/CharacterSubstitutor';
 
 should();
 

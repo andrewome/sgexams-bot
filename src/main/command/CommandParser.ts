@@ -19,32 +19,35 @@ export class CommandParser {
 
     public static NO_SUCH_COMMAND = 'No such command!';
 
-    public static notCommands: Set<string> = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
-        CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER]);
+    public static notCommands: Set<string> 
+    = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
+                       CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER]);
 
-    public static commands: Set<string> = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
-        ListCommandsCommand.COMMAND_NAME,
-        CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER,
-        ListWordsCommand.COMMAND_NAME,
-        AddWordCommand.COMMAND_NAME,
-        RemoveWordCommand.COMMAND_NAME,
-        SetReportChannelCommand.COMMAND_NAME,
-        GetReportChannelCommand.COMMAND_NAME,
-        SetResponseMessageCommand.COMMAND_NAME,
-        GetResponseMessageCommand.COMMAND_NAME,
-        SetDeleteMessageCommand.COMMAND_NAME]);
+    public static commands: Set<string>
+        = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
+                           ListCommandsCommand.COMMAND_NAME,
+                           CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER,
+                           ListWordsCommand.COMMAND_NAME,
+                           AddWordCommand.COMMAND_NAME,
+                           RemoveWordCommand.COMMAND_NAME,
+                           SetReportChannelCommand.COMMAND_NAME,
+                           GetReportChannelCommand.COMMAND_NAME,
+                           SetResponseMessageCommand.COMMAND_NAME,
+                           GetResponseMessageCommand.COMMAND_NAME,
+                           SetDeleteMessageCommand.COMMAND_NAME]);
 
-    public static descriptions: string[] = [CommandParser.EMPTY_STRING,
-        ListCommandsCommand.DESCRIPTION,
-        CommandParser.EMPTY_STRING,
-        ListWordsCommand.DESCRIPTION,
-        AddWordCommand.DESCRIPTION,
-        RemoveWordCommand.DESCRIPTION,
-        SetReportChannelCommand.DESCRIPTION,
-        GetReportChannelCommand.DESCRIPTION,
-        SetResponseMessageCommand.DESCRIPTION,
-        GetResponseMessageCommand.DESCRIPTION,
-        SetDeleteMessageCommand.DESCRIPTION];
+    public static descriptions: string[]
+        = [CommandParser.EMPTY_STRING,
+           ListCommandsCommand.DESCRIPTION,
+           CommandParser.EMPTY_STRING,
+           ListWordsCommand.DESCRIPTION,
+           AddWordCommand.DESCRIPTION,
+           RemoveWordCommand.DESCRIPTION,
+           SetReportChannelCommand.DESCRIPTION,
+           GetReportChannelCommand.DESCRIPTION,
+           SetResponseMessageCommand.DESCRIPTION,
+           GetResponseMessageCommand.DESCRIPTION,
+           SetDeleteMessageCommand.DESCRIPTION];
 
     private content: string;
 

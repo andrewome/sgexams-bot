@@ -1,8 +1,8 @@
 import './lib/env';
 import { Client, Message } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
-import { MessageChecker } from './messagechecker/MessageChecker';
-import { MessageResponse } from './messagechecker/response/MessageResponse';
+import { MessageChecker } from './modules/messagechecker/MessageChecker';
+import { MessageResponse } from './modules/messagechecker/response/MessageResponse';
 import { CommandParser } from './command/CommandParser';
 import { Server } from './storage/Server';
 import { Storage } from './storage/Storage';
@@ -77,13 +77,7 @@ class App {
             // Check message contents if it contains a bad word >:o
             if (commandResult.shouldCheckMessage) {
                 try {
-                    const result = await new MessageChecker().checkMessage(message.content, bannedWords);
-                    if (result.guilty) {
-                        new MessageResponse(message)
-                            .sendReport(result, reportingChannelId)
-                            .sendMessageToUser(responseMessage)
-                            .deleteMessage(deleteMessage);
-                    }
+                    this.checkMessage(message, bannedWords, reportingChannelId, responseMessage, deleteMessage);
                 } catch (err) {
                     log.error(err);
                 }
@@ -102,13 +96,7 @@ class App {
 
             // Check message contents if it contains a bad word >:o
             try {
-                const result = await new MessageChecker().checkMessage(newMessage.content, bannedWords);
-                if (result.guilty) {
-                    new MessageResponse(newMessage)
-                        .sendReport(result, reportingChannelId)
-                        .sendMessageToUser(responseMessage)
-                        .deleteMessage(deleteMessage);
-                }
+                this.checkMessage(newMessage, bannedWords, reportingChannelId, responseMessage, deleteMessage);
             } catch (err) {
                 log.error(err);
             }
@@ -118,6 +106,20 @@ class App {
             log.info('I am ready!');
             this.bot.user.setActivity('with NUKES!!!!', { type: 'PLAYING' });
         });
+    }
+
+    private async checkMessage(message: Message,
+                               bannedWords: string[],
+                               reportingChannelId: string | undefined,
+                               responseMessage: string | undefined,
+                               deleteMessage: boolean): Promise<void> {
+        const result = await new MessageChecker().checkMessage(message.content, bannedWords);
+        if (result.guilty) {
+            new MessageResponse(message)
+                .sendReport(result, reportingChannelId)
+                .sendMessageToUser(responseMessage)
+                .deleteMessage(deleteMessage);
+        }
     }
 }
 

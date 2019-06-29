@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { should } from 'chai';
-import { ComplexMessageParser } from '../../../main/messagechecker/parser/ComplexMessageParser';
-import { Context } from '../../../main/messagechecker/classes/Context';
+import { ComplexMessageParser } from '../../../main/modules/messagechecker/parser/ComplexMessageParser';
+import { Context } from '../../../main/modules/messagechecker/classes/Context';
 
 should();
 

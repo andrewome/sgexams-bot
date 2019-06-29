@@ -102,8 +102,8 @@ export class RemoveWordCommand extends Command {
      * @returns void
      */
     public changeServerSettings(server: Server,
-        wordsRemoved: string[],
-        wordsNotRemoved: string[]): void {
+                                wordsRemoved: string[],
+                                wordsNotRemoved: string[]): void {
         const words = this.args;
         for (let word of words) {
             // Make word lowercase

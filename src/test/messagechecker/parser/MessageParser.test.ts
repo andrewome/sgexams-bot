@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { should } from 'chai';
-import { MessageParser } from '../../../main/messagechecker/parser/MessageParser';
+import { MessageParser } from '../../../main/modules/messagechecker/parser/MessageParser';
 
 should();
 

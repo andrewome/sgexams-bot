@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { should } from 'chai';
-import { DatamuseApi } from '../../../main/messagechecker/datamuseapi/DatamuseApi';
+import { DatamuseApi } from '../../../main/modules/messagechecker/datamuseapi/DatamuseApi';
 
 should();
 
