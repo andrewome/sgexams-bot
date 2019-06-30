@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { CharacterSubstitutor } from '../../../main/modules/messagechecker/charactersubstitutor/CharacterSubstitutor';
 

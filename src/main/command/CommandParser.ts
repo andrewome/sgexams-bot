@@ -19,9 +19,9 @@ export class CommandParser {
 
     public static NO_SUCH_COMMAND = 'No such command!';
 
-    public static notCommands: Set<string> 
-    = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
-                       CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER]);
+    public static notCommands: Set<string>
+        = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
+                           CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER]);
 
     public static commands: Set<string>
         = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
@@ -135,7 +135,8 @@ export class CommandParser {
                 return new GetResponseMessageCommand();
             case SetDeleteMessageCommand.COMMAND_NAME:
                 return new SetDeleteMessageCommand(args);
+            default:
+                throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }
-        throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
     }
 }

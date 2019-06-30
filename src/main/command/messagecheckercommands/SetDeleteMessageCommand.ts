@@ -82,6 +82,7 @@ export class SetDeleteMessageCommand extends Command {
      * @param  {boolean} bool? boolean value if delete message is true or false
      * @returns RichEmbed
      */
+    /* eslint-disable class-methods-use-this */
     public generateEmbed(type: ResponseType, bool?: boolean): RichEmbed {
         const embed = new RichEmbed();
         if (type === ResponseType.VALID_FORMAT) {
@@ -115,4 +116,5 @@ export class SetDeleteMessageCommand extends Command {
     public changeServerSettings(server: Server, bool: boolean): void {
         server.messageCheckerSettings.setDeleteMessage(bool);
     }
+    /* eslint-enable class-methods-use-this */
 }

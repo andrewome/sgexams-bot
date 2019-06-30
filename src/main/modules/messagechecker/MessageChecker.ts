@@ -17,10 +17,12 @@ export class MessageChecker {
      * @param  {string[]} bannedWords Array of banned words
      * @returns Promise<MessageCheckerResult> Results of the check
      */
-    public async checkMessage(content: string, bannedWords: string[]): Promise<MessageCheckerResult> {
+    public async checkMessage(content: string,
+                              bannedWords: string[]): Promise<MessageCheckerResult> {
         return new Promise<MessageCheckerResult>(async (resolve): Promise<void> => {
             // Removing diacritic accents
             // https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+            // eslint-disable-next-line no-param-reassign
             content = content.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
             // Generate contents
@@ -28,7 +30,8 @@ export class MessageChecker {
             // Push lower case
             contents.push(content.toLowerCase());
             // Generate other possible contents
-            contents = contents.concat(new CharacterSubstitutor().convertText(content.toLowerCase()));
+            contents
+                = contents.concat(new CharacterSubstitutor().convertText(content.toLowerCase()));
 
             // Checking for bad words
             const contextOfBannedWords: Context[] = [];

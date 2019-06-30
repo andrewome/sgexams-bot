@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars, no-restricted-syntax */
 import { should } from 'chai';
 import { ListWordsCommand } from '../../../main/command/messagecheckercommands/ListWordsCommand';
 import { Command } from '../../../main/command/Command';

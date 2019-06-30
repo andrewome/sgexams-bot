@@ -100,7 +100,9 @@ export class ComplexMessageParser extends MessageParser {
      * @param  {string} convertedContent Converted content (by CharacterSubstitutor or smth)
      * @returns Context Context of banned word
      */
-    public getContextOfBannedWord(originalContent: string, convertedContent: string, contextOfBannedWords: Context[]): void {
+    public getContextOfBannedWord(originalContent: string,
+                                  convertedContent: string,
+                                  contextOfBannedWords: Context[]): void {
         const foundRegexs = this.checkForBannedWords(convertedContent);
         for (const foundRegex of foundRegexs) {
             let lastStoppedIdx = 0;

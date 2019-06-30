@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars, no-restricted-syntax */
 import { should } from 'chai';
 import { Server } from '../../../main/storage/Server';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';

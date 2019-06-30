@@ -36,7 +36,8 @@ export class Server {
         const out: any = {};
         out.serverId = server.serverId;
         const { messageCheckerSettings } = server;
-        out.messageCheckerSettings = MessageCheckerSettings.convertToJsonFriendly(messageCheckerSettings);
+        out.messageCheckerSettings
+            = MessageCheckerSettings.convertToJsonFriendly(messageCheckerSettings);
 
         return out;
     }
@@ -58,7 +59,8 @@ export class Server {
         }
 
         const { serverId } = obj;
-        const messageCheckerSettings = MessageCheckerSettings.convertFromJsonFriendly(obj.messageCheckerSettings);
+        const messageCheckerSettings
+            = MessageCheckerSettings.convertFromJsonFriendly(obj.messageCheckerSettings);
 
         return new Server(serverId, messageCheckerSettings);
     }

@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars, no-useless-constructor */
+/* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { MessageParser } from '../../../main/modules/messagechecker/parser/MessageParser';
 

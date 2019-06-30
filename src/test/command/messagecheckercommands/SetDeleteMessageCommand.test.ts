@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { SetDeleteMessageCommand, ResponseType } from '../../../main/command/messagecheckercommands/SetDeleteMessageCommand';
 import { Command } from '../../../main/command/Command';

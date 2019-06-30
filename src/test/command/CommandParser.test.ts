@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { CommandParser } from '../../main/command/CommandParser';
 import { ListCommandsCommand } from '../../main/command/generalcommands/ListCommandsCommand';

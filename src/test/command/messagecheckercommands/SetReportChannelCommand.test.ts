@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { SetReportChannelCommand, ResponseType } from '../../../main/command/messagecheckercommands/SetReportChannelCommand';
 import { Command } from '../../../main/command/Command';
