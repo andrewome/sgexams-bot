@@ -54,15 +54,17 @@ class App {
      */
     public run(): void {
         this.bot.on('message', async (message: Message): Promise<void> => {
+            // If it is a DM, ignore.
+            if (message.guild === null) return;
+            // If it's a bot, ignore :)
+            if (message.author.bot) return;
+
             // Retrieve server
             const server = this.getServer(message.guild.id.toString());
             const bannedWords = server.messageCheckerSettings.getBannedWords();
             const reportingChannelId = server.messageCheckerSettings.getReportingChannelId();
             const responseMessage = server.messageCheckerSettings.getResponseMessage();
             const deleteMessage = server.messageCheckerSettings.getDeleteMessage();
-
-            // If it's a bot, ignore :)
-            if (message.author.bot) return;
 
             // If it's a command, execute the command and save servers
             const commandParser = new CommandParser(message.content);
@@ -85,14 +87,17 @@ class App {
         });
 
         this.bot.on('messageUpdate', async (oldMessage, newMessage): Promise<void> => {
+            // If it is a DM, ignore.
+            if (newMessage.guild === null) return;
+            // If it's a bot, ignore :)
+            if (newMessage.author.bot) return;
+
             // Retrieve server
             const server = this.getServer(newMessage.guild.id.toString());
             const bannedWords = server.messageCheckerSettings.getBannedWords();
             const reportingChannelId = server.messageCheckerSettings.getReportingChannelId();
             const responseMessage = server.messageCheckerSettings.getResponseMessage();
             const deleteMessage = server.messageCheckerSettings.getDeleteMessage();
-
-            if (newMessage.author.bot) return;
 
             // Check message contents if it contains a bad word >:o
             try {
