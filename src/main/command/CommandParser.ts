@@ -11,6 +11,10 @@ import { GetResponseMessageCommand } from './messagecheckercommands/GetResponseM
 import { SetDeleteMessageCommand } from './messagecheckercommands/SetDeleteMessageCommand';
 import { SetStarboardChannelCommand } from './starboardcommands/SetStarboardChannelCommand';
 import { GetStarboardChannelCommand } from './starboardcommands/GetStarboardChannelCommand';
+import { SetStarboardEmojiCommand } from './starboardcommands/SetStarboardEmojiCommand';
+import { GetStarboardEmojiCommand } from './starboardcommands/GetStarboardEmojiCommand';
+import { GetStarboardThresholdCommand } from './starboardcommands/GetStarboardThresholdCommand';
+import { SetStarboardThresholdCommand } from './starboardcommands/SetStarboardThresholdCommand';
 
 export class CommandParser {
     public static EMPTY_STRING = '\u200b';
@@ -42,7 +46,11 @@ export class CommandParser {
                            SetDeleteMessageCommand.COMMAND_NAME,
                            CommandParser.STARBOARD_COMMANDS_HEADER,
                            GetStarboardChannelCommand.COMMAND_NAME,
-                           SetStarboardChannelCommand.COMMAND_NAME]);
+                           SetStarboardChannelCommand.COMMAND_NAME,
+                           GetStarboardEmojiCommand.COMMAND_NAME,
+                           SetStarboardEmojiCommand.COMMAND_NAME,
+                           GetStarboardThresholdCommand.COMMAND_NAME,
+                           SetStarboardThresholdCommand.COMMAND_NAME]);
 
     public static commandsLowerCase: Set<string>
         = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
@@ -57,7 +65,11 @@ export class CommandParser {
                            GetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
                            SetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE,
                            GetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE,
-                           SetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE]);
+                           SetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE,
+                           GetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE,
+                           SetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE,
+                           GetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE,
+                           SetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE]);
 
     public static descriptions: string[]
         = [CommandParser.EMPTY_STRING,
@@ -73,7 +85,11 @@ export class CommandParser {
            SetDeleteMessageCommand.DESCRIPTION,
            CommandParser.EMPTY_STRING,
            SetStarboardChannelCommand.DESCRIPTION,
-           GetStarboardChannelCommand.DESCRIPTION];
+           GetStarboardChannelCommand.DESCRIPTION,
+           GetStarboardEmojiCommand.DESCRIPTION,
+           SetStarboardEmojiCommand.DESCRIPTION,
+           GetStarboardThresholdCommand.DESCRIPTION,
+           SetStarboardThresholdCommand.DESCRIPTION];
 
     private content: string;
 
@@ -162,10 +178,18 @@ export class CommandParser {
                 return new GetResponseMessageCommand();
             case SetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE:
                 return new SetDeleteMessageCommand(args);
-            case SetStarboardChannelCommand.COMMAND_NAME:
+            case SetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE:
                 return new SetStarboardChannelCommand(args);
-            case GetStarboardChannelCommand.COMMAND_NAME:
+            case GetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE:
                 return new GetReportChannelCommand();
+            case GetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE:
+                return new GetStarboardEmojiCommand();
+            case SetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE:
+                return new SetStarboardEmojiCommand(args);
+            case GetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE:
+                return new GetStarboardThresholdCommand();
+            case SetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE:
+                return new SetStarboardThresholdCommand(args);
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }
