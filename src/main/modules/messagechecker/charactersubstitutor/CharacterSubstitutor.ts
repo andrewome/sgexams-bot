@@ -26,9 +26,9 @@ export class CharacterSubstitutor {
      */
     public convertText(text: string): string[] {
         // https://stackoverflow.com/questions/12303989/cartesian-product-of-multiple-arrays-in-javascript
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, max-len
         const f = (a: any[], b: any[]): any[] => ([] as any).concat(...a.map((a2): any[] => b.map((b2): any => ([] as any).concat(a2, b2))));
-        
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const cartesianProduct = (a: any[], b: any[], ...c: any[]): any[][] => {
             if (!b || b.length === 0) {
@@ -97,7 +97,7 @@ export class CharacterSubstitutor {
 
         for (const i of combinations) {
             let _output = output;
-            for (const j in i) {
+            for (let j = 0; j < i.length; j++) {
                 const charToBeReplaced = oneToManyCharsFound[j];
                 let regex: RegExp;
                 if (charSet.has(charToBeReplaced)) {

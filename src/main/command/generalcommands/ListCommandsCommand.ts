@@ -53,9 +53,10 @@ export class ListCommandsCommand extends Command {
      *
      * @returns RichEmbed
      */
+    /* eslint-disable class-methods-use-this */
     public generateEmbed(): RichEmbed {
         let output = '';
-        for (const i in this.commands) {
+        for (let i = 0; i < this.commands.length; i++) {
             output += `**${this.commands[i]}**`;
             output += (this.descriptions[i] === '\u200b')
                 ? '\n' : ` - ${this.descriptions[i]}\n`;
@@ -66,8 +67,10 @@ export class ListCommandsCommand extends Command {
         return embed;
     }
 
+    // eslint-disable-next-line max-len
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
     public changeServerSettings(server: Server, ...args: any): void {
         throw new Error(Command.THIS_METHOD_SHOULD_NOT_BE_CALLED);
     }
+    /* eslint-enable class-methods-use-this */
 }

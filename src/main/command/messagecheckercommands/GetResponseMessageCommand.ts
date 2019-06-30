@@ -17,11 +17,6 @@ export class GetResponseMessageCommand extends Command {
 
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
-
-    public constructor() {
-        super();
-    }
-
     /**
      * This function executes the setchannel command
      * Sets the reporting channel of the server.
@@ -47,6 +42,7 @@ export class GetResponseMessageCommand extends Command {
      * @param  {Server} server
      * @returns RichEmbed
      */
+    /* eslint-disable class-methods-use-this */
     public generateEmbed(server: Server): RichEmbed {
         const responseMessage = server.messageCheckerSettings.getResponseMessage();
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
@@ -60,8 +56,10 @@ export class GetResponseMessageCommand extends Command {
         return embed;
     }
 
+    // eslint-disable-next-line max-len
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
     public changeServerSettings(server: Server, ...args: any): void {
         throw new Error(Command.THIS_METHOD_SHOULD_NOT_BE_CALLED);
     }
+    /* eslint-enable class-methods-use-this */
 }

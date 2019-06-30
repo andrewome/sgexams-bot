@@ -22,9 +22,9 @@ export class MessageResponse {
 
     private FIELD_CHAR_LIMIT = 1024;
 
-    private CONTINUED = "continued";
+    private CONTINUED = 'continued';
 
-    private DOTDOTDOT = "...";
+    private DOTDOTDOT = '...';
 
     public constructor(message: Message) {
         this.message = message;
@@ -36,7 +36,8 @@ export class MessageResponse {
      * @param  {string|undefined} reportingChannelId Channel Id to send report to
      * @returns MessageResponse
      */
-    public sendReport(result: MessageCheckerResult, reportingChannelId: string | undefined): MessageResponse {
+    public sendReport(result: MessageCheckerResult,
+                      reportingChannelId: string | undefined): MessageResponse {
         // If not set, don't send anything
         if (reportingChannelId === undefined) {
             return this;
@@ -72,9 +73,9 @@ export class MessageResponse {
 
         // Some strings may be too long. Remove all grave accents and
         // split it up because field can only take in 1024 chars.
-        content = content.replace(/```/g, "");
-        let contents: string[] = [];
-        while(content.length > this.FIELD_CHAR_LIMIT) {
+        content = content.replace(/```/g, '');
+        const contents: string[] = [];
+        while (content.length > this.FIELD_CHAR_LIMIT) {
             contents.push(content.substring(0, this.FIELD_CHAR_LIMIT - 12) + this.DOTDOTDOT);
             content = content.substring(this.FIELD_CHAR_LIMIT - 12, content.length);
         }
@@ -93,8 +94,8 @@ export class MessageResponse {
 
         // Add rest of contents in (if any)
         contents.shift();
-        for(const content of contents) {
-            embed.addField(this.CONTINUED, `${this.CODE_BLOCK}${content}${this.CODE_BLOCK}`);
+        for (const otherContent of contents) {
+            embed.addField(this.CONTINUED, `${this.CODE_BLOCK}${otherContent}${this.CODE_BLOCK}`);
         }
 
         // Continue with rest of fields
@@ -126,8 +127,8 @@ export class MessageResponse {
         if (message === undefined) return this;
 
         // Send message
-        message = message.replace(/{user}/g, user);
-        log.info(`Sending response message - ${message}`);
+        const replacedMessage = message.replace(/{user}/g, user);
+        log.info(`Sending response message - ${replacedMessage}`);
         channel.send(message)
             .catch((err): void => {
                 if (err.message === 'Missing Permissions') log.warn('Unable to send message. Insufficient permissions.');
@@ -147,8 +148,7 @@ export class MessageResponse {
         log.info('Deleting message...');
         this.message.delete()
             .catch((err): void => {
-                if (err.message === 'Missing Permissions')
-                    log.warn('Unable to delete message. Insufficient permissions.');
+                if (err.message === 'Missing Permissions') { log.warn('Unable to delete message. Insufficient permissions.'); }
             });
         return this;
     }

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
+/* eslint-disable no-underscore-dangle, no-unused-expressions, class-methods-use-this */
 import chai from 'chai';
 import { Permissions, RichEmbed, Message } from 'discord.js';
 import { Command } from '../../main/command/Command';

@@ -70,6 +70,7 @@ export class SetResponseMessageCommand extends Command {
      * @param  {string} msg? Response Message
      * @returns RichEmbed
      */
+    /* eslint-disable class-methods-use-this */
     public generateEmbed(type: ResponseType, msg?: string): RichEmbed {
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if (type === ResponseType.RESET) {
@@ -100,4 +101,5 @@ export class SetResponseMessageCommand extends Command {
             server.messageCheckerSettings.setResponseMessage(responseMessage);
         }
     }
+    /* eslint-enable class-methods-use-this */
 }

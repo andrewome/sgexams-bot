@@ -79,7 +79,11 @@ class App {
             // Check message contents if it contains a bad word >:o
             if (commandResult.shouldCheckMessage) {
                 try {
-                    this.checkMessage(message, bannedWords, reportingChannelId, responseMessage, deleteMessage);
+                    this.checkMessage(message,
+                                      bannedWords,
+                                      reportingChannelId,
+                                      responseMessage,
+                                      deleteMessage);
                 } catch (err) {
                     log.error(err);
                 }
@@ -101,7 +105,11 @@ class App {
 
             // Check message contents if it contains a bad word >:o
             try {
-                this.checkMessage(newMessage, bannedWords, reportingChannelId, responseMessage, deleteMessage);
+                this.checkMessage(newMessage,
+                                  bannedWords,
+                                  reportingChannelId,
+                                  responseMessage,
+                                  deleteMessage);
             } catch (err) {
                 log.error(err);
             }
@@ -113,6 +121,7 @@ class App {
         });
     }
 
+    /* eslint-disable class-methods-use-this */
     private async checkMessage(message: Message,
                                bannedWords: string[],
                                reportingChannelId: string | undefined,
@@ -126,6 +135,7 @@ class App {
                 .deleteMessage(deleteMessage);
         }
     }
+    /* eslint-enable class-methods-use-this */
 }
 
 new App().run();

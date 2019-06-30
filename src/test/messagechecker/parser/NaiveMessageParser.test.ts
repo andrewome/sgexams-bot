@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
+/* eslint-disable no-underscore-dangle, no-unused-expressions, no-restricted-syntax */
 import { should } from 'chai';
 import { NaiveMessageParser } from '../../../main/modules/messagechecker/parser/NaiveMessageParser';
 import { Context } from '../../../main/modules/messagechecker/classes/Context';

@@ -17,7 +17,7 @@ export class Context {
            && other.originalContext === this.originalContext) {
             return true;
         }
-     
+
         return false;
     }
 }

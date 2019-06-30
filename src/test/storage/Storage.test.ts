@@ -1,4 +1,4 @@
-/* eslint-disable no-empty */
+/* eslint-disable no-empty, no-unused-expressions */
 import * as fs from 'fs';
 import { should } from 'chai';
 import { Storage } from '../../main/storage/Storage';

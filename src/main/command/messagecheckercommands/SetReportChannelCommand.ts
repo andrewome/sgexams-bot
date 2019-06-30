@@ -82,6 +82,7 @@ export class SetReportChannelCommand extends Command {
      * @param  {string} channelId?
      * @returns RichEmbed
      */
+    /* eslint-disable class-methods-use-this */
     public generateEmbed(type: ResponseType, channelId?: string): RichEmbed {
         const embed = new RichEmbed();
         if (type === ResponseType.RESET) {
@@ -124,4 +125,5 @@ export class SetReportChannelCommand extends Command {
             server.messageCheckerSettings.setReportingChannelId(undefined);
         }
     }
+    /* eslint-enable class-methods-use-this */
 }

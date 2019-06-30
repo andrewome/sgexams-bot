@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars, no-restricted-syntax */
+/* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { ComplexMessageParser } from '../../../main/modules/messagechecker/parser/ComplexMessageParser';
 import { Context } from '../../../main/modules/messagechecker/classes/Context';
