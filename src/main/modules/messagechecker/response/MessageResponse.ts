@@ -129,7 +129,7 @@ export class MessageResponse {
         // Send message
         const replacedMessage = message.replace(/{user}/g, user);
         log.info(`Sending response message - ${replacedMessage}`);
-        channel.send(message)
+        channel.send(replacedMessage)
             .catch((err): void => {
                 if (err.message === 'Missing Permissions') log.warn('Unable to send message. Insufficient permissions.');
             });
