@@ -181,7 +181,7 @@ export class CommandParser {
             case SetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE:
                 return new SetStarboardChannelCommand(args);
             case GetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE:
-                return new GetReportChannelCommand();
+                return new GetStarboardChannelCommand();
             case GetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE:
                 return new GetStarboardEmojiCommand();
             case SetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE:

@@ -11,6 +11,8 @@ import { Storage } from './storage/Storage';
 import { MessageCheckerSettings } from './storage/MessageCheckerSettings';
 import { CommandResult } from './command/classes/CommandResult';
 import { StarboardSettings } from './storage/StarboardSettings';
+import { StarboardChecker } from './modules/starboard/StarboardChecker';
+import { StarboardResponse } from './modules/starboard/StarboardResponse';
 
 // Set up logging method
 log.enableAll();
@@ -122,37 +124,42 @@ class App {
         });
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.bot.on('raw', async (event: any): Promise<void> => {
-            const events = {
-                MESSAGE_REACTION_ADD: 'messageReactionAdd',
-                MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
-            };
+        this.bot.on('raw', async (packet: any): Promise<void> => {
+            const events = ['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE',
+            ];
 
-            if (!events.hasOwnProperty(event.t)) return;
-
-            const { d: data } = event;
-            const user = this.bot.users.get(data.user_id)!;
-            const channel = this.bot.channels.get(data.channel_id) || await user.createDM();
-
+            // Checks if the packet contains what I want.
+            if (!events.includes(packet.t)) return;
+            const channel = this.bot.channels.get(packet.d.channel_id)!;
+            if (channel === undefined) return;
             if (channel.type !== 'text') return;
-            if ((channel as TextChannel).messages.has(data.message_id)) return;
+            if ((channel as TextChannel).messages.has(packet.d.channel_id)) return;
 
-            const message = await (channel as TextChannel).fetchMessage(data.message_id);
-            const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-            let reaction = message.reactions.get(emojiKey);
-
-            if (!reaction) {
-                const emoji = new Emoji(this.bot.guilds.get(data.guild_id)!, data.emoji);
-                reaction
-                    = new MessageReaction(message, emoji, 1, data.user_id === this.bot.user.id);
-            }
-
-            this.bot.emit(event[event.t], reaction, user);
+            (channel as TextChannel).fetchMessage(packet.d.message_id)
+                .then((message: Message): void => {
+                    const emoji = packet.d.emoji.id
+                                  ? `${packet.d.emoji.name}:${packet.d.emoji.id}`
+                                  : packet.d.emoji.name;
+                    const reaction = message.reactions.get(emoji);
+                    if (reaction) {
+                        reaction.users.set(packet.d.user_id, this.bot.users.get(packet.d.user_id)!);
+                    }
+                    if (packet.t === 'MESSAGE_REACTION_ADD') {
+                        this.bot.emit('messageReactionAdd', reaction, this.bot.users.get(packet.d.user_id));
+                    }
+                    if (packet.t === 'messageReactionRemove') {
+                        this.bot.emit(events[1], reaction, this.bot.users.get(packet.d.user_id));
+                    }
+                });
         });
 
         this.bot.on('messageReactionAdd', async (reaction: MessageReaction,
                                                  user: User): Promise<void> => {
-            console.log(`${user.username} reacted with "${reaction.emoji}".`);
+            const server = this.getServer(reaction.message.guild.id.toString());
+            const { starboardSettings } = server;
+            if (new StarboardChecker(starboardSettings, reaction).checkReacts()) {
+                new StarboardResponse(starboardSettings, reaction).addToStarboard();
+            }
         });
 
         this.bot.on('ready', (): void => {
