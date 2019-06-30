@@ -1,8 +1,8 @@
 import './lib/env';
 import { Client, Message } from 'discord.js';
-import log, { MethodFactory } from 'loglevel';
-import { MessageChecker } from './messagechecker/MessageChecker';
-import { MessageResponse } from './messagechecker/response/MessageResponse';
+import log, { LoggingMethod } from 'loglevel';
+import { MessageChecker } from './modules/messagechecker/MessageChecker';
+import { MessageResponse } from './modules/messagechecker/response/MessageResponse';
 import { CommandParser } from './command/CommandParser';
 import { Server } from './storage/Server';
 import { Storage } from './storage/Storage';
@@ -12,10 +12,10 @@ import { CommandResult } from './command/classes/CommandResult';
 // Set up logging method
 log.enableAll();
 const originalFactory = log.methodFactory;
-log.methodFactory = function (methodName, logLevel, loggerName): MethodFactory {
+log.methodFactory = function (methodName, logLevel, loggerName): LoggingMethod {
     const rawMethod = originalFactory(methodName, logLevel, loggerName);
 
-    return function (message): any {
+    return function (message): void {
         const curDate = new Date().toLocaleString();
         const logMsg = `[${curDate}]: ${message}`;
         rawMethod(logMsg);
@@ -54,15 +54,17 @@ class App {
      */
     public run(): void {
         this.bot.on('message', async (message: Message): Promise<void> => {
+            // If it is a DM, ignore.
+            if (message.guild === null) return;
+            // If it's a bot, ignore :)
+            if (message.author.bot) return;
+
             // Retrieve server
             const server = this.getServer(message.guild.id.toString());
             const bannedWords = server.messageCheckerSettings.getBannedWords();
             const reportingChannelId = server.messageCheckerSettings.getReportingChannelId();
             const responseMessage = server.messageCheckerSettings.getResponseMessage();
             const deleteMessage = server.messageCheckerSettings.getDeleteMessage();
-
-            // If it's a bot, ignore :)
-            if (message.author.bot) return;
 
             // If it's a command, execute the command and save servers
             const commandParser = new CommandParser(message.content);
@@ -77,13 +79,11 @@ class App {
             // Check message contents if it contains a bad word >:o
             if (commandResult.shouldCheckMessage) {
                 try {
-                    const result = await new MessageChecker().checkMessage(message.content, bannedWords);
-                    if (result.guilty) {
-                        new MessageResponse(message)
-                            .sendReport(result, reportingChannelId)
-                            .sendMessageToUser(responseMessage)
-                            .deleteMessage(deleteMessage);
-                    }
+                    this.checkMessage(message,
+                                      bannedWords,
+                                      reportingChannelId,
+                                      responseMessage,
+                                      deleteMessage);
                 } catch (err) {
                     log.error(err);
                 }
@@ -91,6 +91,11 @@ class App {
         });
 
         this.bot.on('messageUpdate', async (oldMessage, newMessage): Promise<void> => {
+            // If it is a DM, ignore.
+            if (newMessage.guild === null) return;
+            // If it's a bot, ignore :)
+            if (newMessage.author.bot) return;
+
             // Retrieve server
             const server = this.getServer(newMessage.guild.id.toString());
             const bannedWords = server.messageCheckerSettings.getBannedWords();
@@ -98,17 +103,13 @@ class App {
             const responseMessage = server.messageCheckerSettings.getResponseMessage();
             const deleteMessage = server.messageCheckerSettings.getDeleteMessage();
 
-            if (newMessage.author.bot) return;
-
             // Check message contents if it contains a bad word >:o
             try {
-                const result = await new MessageChecker().checkMessage(newMessage.content, bannedWords);
-                if (result.guilty) {
-                    new MessageResponse(newMessage)
-                        .sendReport(result, reportingChannelId)
-                        .sendMessageToUser(responseMessage)
-                        .deleteMessage(deleteMessage);
-                }
+                this.checkMessage(newMessage,
+                                  bannedWords,
+                                  reportingChannelId,
+                                  responseMessage,
+                                  deleteMessage);
             } catch (err) {
                 log.error(err);
             }
@@ -119,6 +120,22 @@ class App {
             this.bot.user.setActivity('with NUKES!!!!', { type: 'PLAYING' });
         });
     }
+
+    /* eslint-disable class-methods-use-this */
+    private async checkMessage(message: Message,
+                               bannedWords: string[],
+                               reportingChannelId: string | undefined,
+                               responseMessage: string | undefined,
+                               deleteMessage: boolean): Promise<void> {
+        const result = await new MessageChecker().checkMessage(message.content, bannedWords);
+        if (result.guilty) {
+            new MessageResponse(message)
+                .sendReport(result, reportingChannelId)
+                .sendMessageToUser(responseMessage)
+                .deleteMessage(deleteMessage);
+        }
+    }
+    /* eslint-enable class-methods-use-this */
 }
 
 new App().run();

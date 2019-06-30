@@ -11,19 +11,19 @@ export enum ResponseType {
 }
 
 export class SetReportChannelCommand extends Command {
-    static COMMAND_NAME = 'setreportchannel';
+    public static COMMAND_NAME = 'setreportchannel';
 
-    static DESCRIPTION = 'Sets the reporting channel to post incident reports for this server when blacklisted words are used.';
+    public static DESCRIPTION = 'Sets the reporting channel to post incident reports for this server when blacklisted words are used.';
 
-    static CHANNEL_NOT_FOUND = 'Channel was not found. Please submit a valid channel ID.';
+    public static CHANNEL_NOT_FOUND = 'Channel was not found. Please submit a valid channel ID.';
 
-    static NOT_TEXT_CHANNEL = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
+    public static NOT_TEXT_CHANNEL = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
 
-    static EMBED_TITLE = 'Reporting Channel';
+    public static EMBED_TITLE = 'Reporting Channel';
 
-    static CHANNEL_RESETTED = 'Reporting Channel has been resetted because there were no arguments. Please set a new one.';
+    public static CHANNEL_RESETTED = 'Reporting Channel has been resetted because there were no arguments. Please set a new one.';
 
-    static CHANNELID_CANNOT_BE_UNDEFINED = 'Channel ID cannot be undefined!';
+    public static CHANNELID_CANNOT_BE_UNDEFINED = 'Channel ID cannot be undefined!';
 
     /** SaveServer: true, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, true);
@@ -33,7 +33,7 @@ export class SetReportChannelCommand extends Command {
     private args: string[];
 
 
-    constructor(args: string[]) {
+    public constructor(args: string[]) {
         super();
         this.args = args;
     }
@@ -82,6 +82,7 @@ export class SetReportChannelCommand extends Command {
      * @param  {string} channelId?
      * @returns RichEmbed
      */
+    /* eslint-disable class-methods-use-this */
     public generateEmbed(type: ResponseType, channelId?: string): RichEmbed {
         const embed = new RichEmbed();
         if (type === ResponseType.RESET) {
@@ -124,4 +125,5 @@ export class SetReportChannelCommand extends Command {
             server.messageCheckerSettings.setReportingChannelId(undefined);
         }
     }
+    /* eslint-enable class-methods-use-this */
 }

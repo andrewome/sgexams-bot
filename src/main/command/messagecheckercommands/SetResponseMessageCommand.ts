@@ -9,15 +9,15 @@ export enum ResponseType {
 }
 
 export class SetResponseMessageCommand extends Command {
-    static COMMAND_NAME = 'setresponsemessage';
+    public static COMMAND_NAME = 'setresponsemessage';
 
-    static DESCRIPTION = 'Sets the response message to the user upon detection of blacklisted words for this server.';
+    public static DESCRIPTION = 'Sets the response message to the user upon detection of blacklisted words for this server.';
 
-    static EMBED_TITLE = 'Reponse Message';
+    public static EMBED_TITLE = 'Reponse Message';
 
-    static MESSAGE_RESETTED = 'Response Message has been resetted because there was no arguments.';
+    public static MESSAGE_RESETTED = 'Response Message has been resetted because there was no arguments.';
 
-    static RESPONSE_MESSAGE_CANNOT_BE_UNDEFINED = 'Reponse Message cannot be undefined!';
+    public static RESPONSE_MESSAGE_CANNOT_BE_UNDEFINED = 'Reponse Message cannot be undefined!';
 
     /** SaveServer: true, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, true);
@@ -26,7 +26,7 @@ export class SetResponseMessageCommand extends Command {
 
     private args: string[];
 
-    constructor(args: string[]) {
+    public constructor(args: string[]) {
         super();
         this.args = args;
     }
@@ -70,6 +70,7 @@ export class SetResponseMessageCommand extends Command {
      * @param  {string} msg? Response Message
      * @returns RichEmbed
      */
+    /* eslint-disable class-methods-use-this */
     public generateEmbed(type: ResponseType, msg?: string): RichEmbed {
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if (type === ResponseType.RESET) {
@@ -100,4 +101,5 @@ export class SetResponseMessageCommand extends Command {
             server.messageCheckerSettings.setResponseMessage(responseMessage);
         }
     }
+    /* eslint-enable class-methods-use-this */
 }

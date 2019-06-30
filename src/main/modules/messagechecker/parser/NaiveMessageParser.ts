@@ -9,7 +9,8 @@ export class NaiveMessageParser extends MessageParser {
      * @param  {string[]} bannedWords Array of banned words
      * @returns NaiveMessageParser
      */
-    public checkForBannedWords(convertedContent: string, bannedWords: string[]): NaiveMessageParser {
+    public checkForBannedWords(convertedContent: string,
+                               bannedWords: string[]): NaiveMessageParser {
         const bannedWordsFoundSet: Set<string> = new Set<string>();
         for (const bannedWord of bannedWords) {
             if (convertedContent.includes(bannedWord)) {
@@ -26,7 +27,9 @@ export class NaiveMessageParser extends MessageParser {
      * @param  {Context[]} contextOfBannedWords Array of all contexts found so far.
      * @returns void
      */
-    public getContextOfBannedWord(originalContent: string, convertedContent: string, contextOfBannedWords: Context[]): void {
+    public getContextOfBannedWord(originalContent: string,
+                                  convertedContent: string,
+                                  contextOfBannedWords: Context[]): void {
         // Check the context of the banned word appearing in the content
         for (const bannedWord of this.bannedWordsFound) {
             const { length } = convertedContent;

@@ -4,23 +4,18 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class GetResponseMessageCommand extends Command {
-    static COMMAND_NAME = 'getresponsemessage';
+    public static COMMAND_NAME = 'getresponsemessage';
 
-    static DESCRIPTION = 'Displays the response message to the user upon detection of blacklisted words for this server.';
+    public static DESCRIPTION = 'Displays the response message to the user upon detection of blacklisted words for this server.';
 
-    static CHANNEL_NOT_SET = 'There is no message set for this server.';
+    public static CHANNEL_NOT_SET = 'There is no message set for this server.';
 
-    static EMBED_TITLE = 'Response Message'
+    public static EMBED_TITLE = 'Response Message'
 
     /** SaveServer: false, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
 
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
-
-
-    constructor() {
-        super();
-    }
 
     /**
      * This function executes the setchannel command
@@ -47,6 +42,7 @@ export class GetResponseMessageCommand extends Command {
      * @param  {Server} server
      * @returns RichEmbed
      */
+    /* eslint-disable class-methods-use-this */
     public generateEmbed(server: Server): RichEmbed {
         const responseMessage = server.messageCheckerSettings.getResponseMessage();
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
@@ -60,7 +56,10 @@ export class GetResponseMessageCommand extends Command {
         return embed;
     }
 
+    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
     public changeServerSettings(server: Server, ...args: any): void {
         throw new Error(Command.THIS_METHOD_SHOULD_NOT_BE_CALLED);
     }
+    /* eslint-enable class-methods-use-this */
 }

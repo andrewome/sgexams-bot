@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { should } from 'chai';
 import { GetResponseMessageCommand } from '../../../main/command/messagecheckercommands/GetResponseMessageCommand';
 import { Server } from '../../../main/storage/Server';
@@ -14,12 +15,12 @@ const { THIS_METHOD_SHOULD_NOT_BE_CALLED } = Command;
 const { CHANNEL_NOT_SET } = GetResponseMessageCommand;
 const { EMBED_TITLE } = GetResponseMessageCommand;
 
-beforeEach(() => {
+beforeEach((): void => {
     server = new Server('123', new MessageCheckerSettings());
 });
 
-describe('GetResponseMessageCommand class test suite', () => {
-    it('Message not set', () => {
+describe('GetResponseMessageCommand class test suite', (): void => {
+    it('Message not set', (): void => {
         const embed = command.generateEmbed(server);
 
         // Check embed
@@ -29,7 +30,7 @@ describe('GetResponseMessageCommand class test suite', () => {
         field.name.should.equals(EMBED_TITLE);
         field.value.should.equals(CHANNEL_NOT_SET);
     });
-    it('Message set', () => {
+    it('Message set', (): void => {
         const responseMessage = 'testing';
         server.messageCheckerSettings.setResponseMessage(responseMessage);
         const embed = command.generateEmbed(server);
@@ -41,7 +42,7 @@ describe('GetResponseMessageCommand class test suite', () => {
         field.name.should.equals(EMBED_TITLE);
         field.value.should.equals(`Response message is ${responseMessage}.`);
     });
-    it('changeServerSettings should throw error', () => {
+    it('changeServerSettings should throw error', (): void => {
         try {
             command.changeServerSettings(server);
         } catch (err) {

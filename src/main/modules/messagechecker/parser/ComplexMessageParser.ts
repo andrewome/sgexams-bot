@@ -7,12 +7,12 @@ class WordAndRegex {
 
     public regex: RegExp;
 
-    constructor(word: string, regexStr: string) {
+    public constructor(word: string, regexStr: string) {
         this.word = word;
         this.regex = new RegExp(regexStr, 'g');
     }
 
-    public equals(other: WordAndRegex) {
+    public equals(other: WordAndRegex): boolean {
         if (other.word === this.word) {
             return true;
         }
@@ -30,7 +30,7 @@ export class ComplexMessageParser extends MessageParser {
      *
      * @param  {string[]} bannedWords Array of banned words
      */
-    public processBannedWords(bannedWords: string[]) {
+    public processBannedWords(bannedWords: string[]): ComplexMessageParser {
         for (const word of bannedWords) {
             // Generate RegExp for each word.
             let regexStr = '';
@@ -100,13 +100,16 @@ export class ComplexMessageParser extends MessageParser {
      * @param  {string} convertedContent Converted content (by CharacterSubstitutor or smth)
      * @returns Context Context of banned word
      */
-    public getContextOfBannedWord(originalContent: string, convertedContent: string, contextOfBannedWords: Context[]): void {
+    public getContextOfBannedWord(originalContent: string,
+                                  convertedContent: string,
+                                  contextOfBannedWords: Context[]): void {
         const foundRegexs = this.checkForBannedWords(convertedContent);
         for (const foundRegex of foundRegexs) {
             let lastStoppedIdx = 0;
             const { regex } = foundRegex;
             regex.lastIndex = 0; // reset last index
             let arr;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             while ((arr = regex.exec(convertedContent)) !== null) {
                 // This is necessary to avoid infinite loops with zero-width matches
                 if (arr.index === regex.lastIndex) {

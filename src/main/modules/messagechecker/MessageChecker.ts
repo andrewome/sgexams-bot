@@ -17,10 +17,12 @@ export class MessageChecker {
      * @param  {string[]} bannedWords Array of banned words
      * @returns Promise<MessageCheckerResult> Results of the check
      */
-    public async checkMessage(content: string, bannedWords: string[]): Promise<MessageCheckerResult> {
-        return new Promise<MessageCheckerResult>(async (resolve) => {
+    public async checkMessage(content: string,
+                              bannedWords: string[]): Promise<MessageCheckerResult> {
+        return new Promise<MessageCheckerResult>(async (resolve): Promise<void> => {
             // Removing diacritic accents
             // https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+            // eslint-disable-next-line no-param-reassign
             content = content.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
             // Generate contents
@@ -28,7 +30,8 @@ export class MessageChecker {
             // Push lower case
             contents.push(content.toLowerCase());
             // Generate other possible contents
-            contents = contents.concat(new CharacterSubstitutor().convertText(content.toLowerCase()));
+            contents
+                = contents.concat(new CharacterSubstitutor().convertText(content.toLowerCase()));
 
             // Checking for bad words
             const contextOfBannedWords: Context[] = [];
@@ -76,7 +79,7 @@ export class MessageChecker {
      * @return Promise<Context | null> if the context is found to be a banned word
      */
     private async checkContext(context: Context): Promise<Context | null> {
-        return new Promise<Context | null>(async (resolve) => {
+        return new Promise<Context | null>(async (resolve): Promise<void> => {
             const { bannedWord } = context;
             const { convertedContext } = context;
 
@@ -144,7 +147,7 @@ export class MessageChecker {
      * @param  {string} bannedWord banned word
      */
     private async checkWord(context: string, bannedWord: string): Promise<boolean> {
-        return new Promise<boolean>(async (resolve) => {
+        return new Promise<boolean>(async (resolve): Promise<void> => {
             // If it's a perfect match with a banned word, no need to query.
             if (context === bannedWord) {
                 resolve(true);
@@ -181,8 +184,6 @@ export class MessageChecker {
                 resolve(true);
                 return;
             }
-
-
             resolve(false);
         });
     }

@@ -8,7 +8,7 @@ export class MessageCheckerResult {
     /** Array of banned words used */
     public contexts: Context[];
 
-    constructor(guilty: boolean, contexts: Context[]) {
+    public constructor(guilty: boolean, contexts: Context[]) {
         this.guilty = guilty;
         this.contexts = contexts;
     }

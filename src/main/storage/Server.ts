@@ -6,7 +6,7 @@ export class Server {
 
     public messageCheckerSettings: MessageCheckerSettings;
 
-    constructor(serverId: string, messageCheckerSettings: MessageCheckerSettings) {
+    public constructor(serverId: string, messageCheckerSettings: MessageCheckerSettings) {
         this.serverId = serverId;
         this.messageCheckerSettings = messageCheckerSettings;
     }
@@ -31,14 +31,17 @@ export class Server {
      * @param  {Server} server Server object
      * @returns any
      */
-    static convertToJsonFriendly(server: Server): any {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    public static convertToJsonFriendly(server: Server): any {
         const out: any = {};
         out.serverId = server.serverId;
         const { messageCheckerSettings } = server;
-        out.messageCheckerSettings = MessageCheckerSettings.convertToJsonFriendly(messageCheckerSettings);
+        out.messageCheckerSettings
+            = MessageCheckerSettings.convertToJsonFriendly(messageCheckerSettings);
 
         return out;
     }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     /**
      * This function converts an object back into a server object
@@ -47,7 +50,8 @@ export class Server {
      * @param  {any} obj
      * @returns Server
      */
-    static convertFromJsonFriendly(obj: any): Server {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    public static convertFromJsonFriendly(obj: any): Server {
         // Check attributes
         if (!(obj.hasOwnProperty('messageCheckerSettings')
              && obj.hasOwnProperty('serverId'))) {
@@ -55,8 +59,10 @@ export class Server {
         }
 
         const { serverId } = obj;
-        const messageCheckerSettings = MessageCheckerSettings.convertFromJsonFriendly(obj.messageCheckerSettings);
+        const messageCheckerSettings
+            = MessageCheckerSettings.convertFromJsonFriendly(obj.messageCheckerSettings);
 
         return new Server(serverId, messageCheckerSettings);
     }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 }

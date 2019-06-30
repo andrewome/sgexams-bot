@@ -4,13 +4,13 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class ListWordsCommand extends Command {
-    static COMMAND_NAME = 'listwords';
+    public static COMMAND_NAME = 'listwords';
 
-    static DESCRIPTION = 'Displays all blacklisted words.';
+    public static DESCRIPTION = 'Displays all blacklisted words.';
 
-    static NO_WORDS_FOUND = 'There are no words set for this server!';
+    public static NO_WORDS_FOUND = 'There are no words set for this server!';
 
-    static EMBED_TITLE = 'Blacklisted Words';
+    public static EMBED_TITLE = 'Blacklisted Words';
 
     /** SaveServer: false, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
@@ -42,6 +42,7 @@ export class ListWordsCommand extends Command {
      * @param  {Server} server
      * @returns RichEmbed
      */
+    /* eslint-disable class-methods-use-this */
     public generateEmbed(server: Server): RichEmbed {
         const bannedWords = server.messageCheckerSettings.getBannedWords();
         bannedWords.sort();
@@ -60,7 +61,10 @@ export class ListWordsCommand extends Command {
         return embed;
     }
 
+    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
     public changeServerSettings(server: Server, ...args: any): void {
         throw new Error(Command.THIS_METHOD_SHOULD_NOT_BE_CALLED);
     }
+    /* eslint-enable class-methods-use-this */
 }

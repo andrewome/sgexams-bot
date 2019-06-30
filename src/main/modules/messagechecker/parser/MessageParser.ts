@@ -21,8 +21,7 @@ export abstract class MessageParser {
      * @returns boolean Whether it is alphanumeric or not.
      */
     public isNumeric(code: number): boolean {
-        if (!(code > 47 && code < 58)) // numeric (0-9))
-        { return false; }
+        if (!(code > 47 && code < 58)) { return false; } // numeric (0-9))
         return true;
     }
 
@@ -33,7 +32,7 @@ export abstract class MessageParser {
      */
     public checkIsEmote(content: string, context: string): boolean {
         // This function escapes reserved chars in Regex
-        const escapeChars = (str: string) => {
+        const escapeChars = (str: string): string => {
             const charSet = new Set<string>(['[', '\\', '^', '$', '.', '|', '?', '*', '+', '(', ')']);
             let out = '';
             for (let i = 0; i < str.length; i++) {
@@ -45,6 +44,7 @@ export abstract class MessageParser {
             }
             return out;
         };
+        // eslint-disable-next-line no-param-reassign
         context = escapeChars(context);
         // Emotes follow the patten /<a?:context:[0-9]+>/
         try {
@@ -52,7 +52,8 @@ export abstract class MessageParser {
             if (regexEmote.test(content)) {
                 return true;
             }
-        } catch (err) { // if there's other symbols inside the string, it might give an error on regex creation
+        } catch (err) {
+        // if there's other symbols inside the string, it might give an error on regex creation
             return false;
         }
         return false;

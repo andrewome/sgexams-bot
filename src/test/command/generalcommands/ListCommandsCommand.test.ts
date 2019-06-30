@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, guard-for-in, no-restricted-syntax */
+/* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { ListCommandsCommand } from '../../../main/command/generalcommands/ListCommandsCommand';
 import { CommandParser } from '../../../main/command/CommandParser';
@@ -9,12 +11,11 @@ should();
 
 const command = new ListCommandsCommand();
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
-const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { THIS_METHOD_SHOULD_NOT_BE_CALLED } = Command;
 const { EMBED_TITLE } = ListCommandsCommand;
 
-describe('ListCommandsCommand test suite', () => {
-    it('Embed should generate all names + description of commands inclusive of headers', () => {
+describe('ListCommandsCommand test suite', (): void => {
+    it('Embed should generate all names + description of commands inclusive of headers', (): void => {
         // Get output string
         let output = '';
         const commands = Array.from(CommandParser.commands);
@@ -37,7 +38,7 @@ describe('ListCommandsCommand test suite', () => {
         field.name.should.equals(EMBED_TITLE);
         field.value.should.equals(output);
     });
-    it('changeServerSettings should throw error', () => {
+    it('changeServerSettings should throw error', (): void => {
         try {
             command.changeServerSettings(new Server('1', new MessageCheckerSettings()));
         } catch (err) {

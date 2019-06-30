@@ -1,31 +1,33 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
-import { CharacterSubstitutor } from '../../../main/messagechecker/charactersubstitutor/CharacterSubstitutor';
+import { CharacterSubstitutor } from '../../../main/modules/messagechecker/charactersubstitutor/CharacterSubstitutor';
 
 should();
 
 const characterSubstitutor = new CharacterSubstitutor();
-describe('CharacterSubstitutor test suite', () => {
-    describe('convertText test', () => {
-        it('1 to 1 conversion 1', () => {
+describe('CharacterSubstitutor test suite', (): void => {
+    describe('convertText test', (): void => {
+        it('1 to 1 conversion 1', (): void => {
             const str = '@30!5$';
             const out = characterSubstitutor.convertText(str);
             out.includes('aeoiss').should.be.true;
             out.length.should.be.equals(1);
         });
-        it('1 to 1 conversion 2', () => {
+        it('1 to 1 conversion 2', (): void => {
             const str = 'd@t 3gg 0ffer!ng5';
             const out = characterSubstitutor.convertText(str);
             out.includes('dat egg offerings').should.be.true;
             out.length.should.be.equals(1);
         });
-        it('Many to 1 conversion 1', () => {
+        it('Many to 1 conversion 1', (): void => {
             const str = 'st|ck';
             const out = characterSubstitutor.convertText(str);
             out.includes('stick').should.be.true;
             out.includes('stlck').should.be.true;
             out.length.should.be.equals(2);
         });
-        it('Many to 1 conversion 2', () => {
+        it('Many to 1 conversion 2', (): void => {
             const str = 'm4pp1ng';
             const out = characterSubstitutor.convertText(str);
             out.includes('mapping').should.be.true;
@@ -34,7 +36,7 @@ describe('CharacterSubstitutor test suite', () => {
             out.includes('mapplng').should.be.true;
             out.length.should.be.equals(4);
         });
-        it('Many to 1 conversion 3', () => {
+        it('Many to 1 conversion 3', (): void => {
             const str = 'm4pp1ng|';
             const out = characterSubstitutor.convertText(str);
             out.includes('mappingl').should.be.true;
@@ -47,7 +49,7 @@ describe('CharacterSubstitutor test suite', () => {
             out.includes('mapplngi').should.be.true;
             out.length.should.be.equals(8);
         });
-        it('Many to 1 conversion 4', () => {
+        it('Many to 1 conversion 4', (): void => {
             const str = 'm4pp1ng|7';
             const out = characterSubstitutor.convertText(str);
             out.includes('mappinglt').should.be.true;
@@ -68,7 +70,7 @@ describe('CharacterSubstitutor test suite', () => {
             out.includes('mapplngil').should.be.true;
             out.length.should.be.equals(16);
         });
-        it('Combined 1', () => {
+        it('Combined 1', (): void => {
             const str = 'm4pp!1ng|7';
             const out = characterSubstitutor.convertText(str);
             out.includes('mappiinglt').should.be.true;

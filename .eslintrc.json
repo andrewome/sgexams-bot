@@ -18,7 +18,18 @@
     ],
     "rules": {
         "@typescript-eslint/no-non-null-assertion": "off",
-        "import/prefer-default-export": "off"
+        "@typescript-eslint/indent": "off",
+        "no-cond-assign": "off",
+        "no-plusplus": "off",
+        "no-restricted-syntax": "off",
+        "operator-linebreak": "off",
+        "no-prototype-builtins": "off",
+        "no-underscore-dangle": "off",
+        "no-continue": "off",
+        "class-methods-use-this": "warn",
+        "no-async-promise-executor": "warn",
+        "import/prefer-default-export": "off",
+        "import/no-extraneous-dependencies": "off"
     },
     "settings": {
         "import/resolver": {

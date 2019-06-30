@@ -5,11 +5,11 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandParser } from '../CommandParser';
 
 export class ListCommandsCommand extends Command {
-    static COMMAND_NAME = 'help';
+    public static COMMAND_NAME = 'help';
 
-    static DESCRIPTION = 'Displays all the available commands that this bot listens to.';
+    public static DESCRIPTION = 'Displays all the available commands that this bot listens to.';
 
-    static EMBED_TITLE = 'Commands';
+    public static EMBED_TITLE = 'Commands';
 
     /** SaveServer: false, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
@@ -24,7 +24,7 @@ export class ListCommandsCommand extends Command {
      * @param  {Set<string>} commands List of available commands
      * @param  {string[]} descriptions List of descriptions
      */
-    constructor() {
+    public constructor() {
         super();
         this.commands = Array.from(CommandParser.commands);
         this.descriptions = CommandParser.descriptions;
@@ -53,9 +53,10 @@ export class ListCommandsCommand extends Command {
      *
      * @returns RichEmbed
      */
+    /* eslint-disable class-methods-use-this */
     public generateEmbed(): RichEmbed {
         let output = '';
-        for (const i in this.commands) {
+        for (let i = 0; i < this.commands.length; i++) {
             output += `**${this.commands[i]}**`;
             output += (this.descriptions[i] === '\u200b')
                 ? '\n' : ` - ${this.descriptions[i]}\n`;
@@ -66,7 +67,10 @@ export class ListCommandsCommand extends Command {
         return embed;
     }
 
+    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
     public changeServerSettings(server: Server, ...args: any): void {
         throw new Error(Command.THIS_METHOD_SHOULD_NOT_BE_CALLED);
     }
+    /* eslint-enable class-methods-use-this */
 }

@@ -4,15 +4,15 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class RemoveWordCommand extends Command {
-    static COMMAND_NAME = 'removewords';
+    public static COMMAND_NAME = 'removewords';
 
-    static DESCRIPTION = 'Remove word(s) from the blacklist.';
+    public static DESCRIPTION = 'Remove word(s) from the blacklist.';
 
-    static REMOVED_WORDS = '✅Removed Word(s)';
+    public static REMOVED_WORDS = '✅Removed Word(s)';
 
-    static MAYBE_WORDS_NOT_INSIDE = 'Perhaps those word(s) are not inside the list?';
+    public static MAYBE_WORDS_NOT_INSIDE = 'Perhaps those word(s) are not inside the list?';
 
-    static UNABLE_TO_REMOVE_WORDS = '❌Unable To Remove';
+    public static UNABLE_TO_REMOVE_WORDS = '❌Unable To Remove';
 
     /** SaveServer: true, CheckMessage: false */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, false);
@@ -21,7 +21,7 @@ export class RemoveWordCommand extends Command {
 
     private args: string[];
 
-    constructor(args: string[]) {
+    public constructor(args: string[]) {
         super();
         this.args = args;
     }
@@ -102,8 +102,8 @@ export class RemoveWordCommand extends Command {
      * @returns void
      */
     public changeServerSettings(server: Server,
-        wordsRemoved: string[],
-        wordsNotRemoved: string[]): void {
+                                wordsRemoved: string[],
+                                wordsNotRemoved: string[]): void {
         const words = this.args;
         for (let word of words) {
             // Make word lowercase

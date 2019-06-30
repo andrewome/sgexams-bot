@@ -13,10 +13,11 @@ export class DatamuseApi {
      * @returns Promise holding the return data from the API.
      */
     public async checkSpelling(word: string): Promise<DatamuseSpellingQueryResult[]> {
-        return new Promise<any>((resolve) => {
+        return new Promise<DatamuseSpellingQueryResult[]>((resolve): void => {
             const query = `${this.endpoint}?sp=${word}`;
             axios.get(query)
-                .then((res) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                .then((res): any => {
                     const { data } = res;
                     const output: DatamuseSpellingQueryResult[] = [];
                     for (const d of data) {
@@ -24,7 +25,7 @@ export class DatamuseApi {
                     }
                     resolve(output);
                 })
-                .catch(() => { throw new DatamuseQueryError('Error fetching result'); });
+                .catch((): void => { throw new DatamuseQueryError('Error fetching result'); });
         });
     }
 }

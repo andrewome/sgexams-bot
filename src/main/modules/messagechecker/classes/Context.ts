@@ -6,17 +6,18 @@ export class Context {
 
     public convertedContext: string;
 
-    constructor(bannedWord: string, originalContext: string, convertedContext: string) {
+    public constructor(bannedWord: string, originalContext: string, convertedContext: string) {
         this.bannedWord = bannedWord;
         this.originalContext = originalContext;
         this.convertedContext = convertedContext;
     }
 
-    public equals(other: Context) {
+    public equals(other: Context): boolean {
         if (other.bannedWord === this.bannedWord
            && other.originalContext === this.originalContext) {
             return true;
         }
+
         return false;
     }
 }

@@ -20,7 +20,13 @@ export class MessageResponse {
 
     private CODE_BLOCK = '```\n';
 
-    constructor(message: Message) {
+    private FIELD_CHAR_LIMIT = 1024;
+
+    private CONTINUED = 'continued';
+
+    private DOTDOTDOT = '...';
+
+    public constructor(message: Message) {
         this.message = message;
     }
 
@@ -30,7 +36,8 @@ export class MessageResponse {
      * @param  {string|undefined} reportingChannelId Channel Id to send report to
      * @returns MessageResponse
      */
-    public sendReport(result: MessageCheckerResult, reportingChannelId: string | undefined): MessageResponse {
+    public sendReport(result: MessageCheckerResult,
+                      reportingChannelId: string | undefined): MessageResponse {
         // If not set, don't send anything
         if (reportingChannelId === undefined) {
             return this;
@@ -64,13 +71,17 @@ export class MessageResponse {
             contexts += `${context}\n`;
         }
 
-        // Some strings may be too long, stop it at 1024 chars.
-        if (content.length > 1024) {
-            content = content.substr(0, 980);
-            content += this.MESSAGE_TOO_LONG;
+        // Some strings may be too long. Remove all grave accents and
+        // split it up because field can only take in 1024 chars.
+        content = content.replace(/```/g, '');
+        const contents: string[] = [];
+        while (content.length > this.FIELD_CHAR_LIMIT) {
+            contents.push(content.substring(0, this.FIELD_CHAR_LIMIT - 12) + this.DOTDOTDOT);
+            content = content.substring(this.FIELD_CHAR_LIMIT - 12, content.length);
         }
+        contents.push(content.substring(0, content.length));
 
-        if (contexts.length > 1024) {
+        if (contexts.length > this.FIELD_CHAR_LIMIT) {
             contexts = contexts.substr(0, 980);
             contexts += this.MESSAGE_TOO_LONG;
         }
@@ -79,8 +90,16 @@ export class MessageResponse {
         const embed = new RichEmbed()
             .setColor(this.EMBED_COLOUR)
             .setAuthor(`${offenderStr} said...`, avatarUrl)
-            .setDescription(`${this.CODE_BLOCK}${content}${this.CODE_BLOCK}`)
-            .addField(this.REPORT, report, false)
+            .setDescription(`${this.CODE_BLOCK}${contents[0]}${this.CODE_BLOCK}`);
+
+        // Add rest of contents in (if any)
+        contents.shift();
+        for (const otherContent of contents) {
+            embed.addField(this.CONTINUED, `${this.CODE_BLOCK}${otherContent}${this.CODE_BLOCK}`);
+        }
+
+        // Continue with rest of fields
+        embed.addField(this.REPORT, report, false)
             .addField(this.WORDS_USED, `${this.CODE_BLOCK}${words}${this.CODE_BLOCK}`, true)
             .addField(this.CONTEXT, `${this.CODE_BLOCK}${contexts}${this.CODE_BLOCK}`, true)
             .setTimestamp();
@@ -108,10 +127,10 @@ export class MessageResponse {
         if (message === undefined) return this;
 
         // Send message
-        message = message.replace(/{user}/g, user);
-        log.info(`Sending response message - ${message}`);
-        channel.send(message)
-            .catch((err) => {
+        const replacedMessage = message.replace(/{user}/g, user);
+        log.info(`Sending response message - ${replacedMessage}`);
+        channel.send(replacedMessage)
+            .catch((err): void => {
                 if (err.message === 'Missing Permissions') log.warn('Unable to send message. Insufficient permissions.');
             });
         return this;
@@ -128,8 +147,8 @@ export class MessageResponse {
 
         log.info('Deleting message...');
         this.message.delete()
-            .catch((err) => {
-                if (err.message === 'Missing Permissions') log.warn('Unable to delete message. Insufficient permissions.');
+            .catch((err): void => {
+                if (err.message === 'Missing Permissions') { log.warn('Unable to delete message. Insufficient permissions.'); }
             });
         return this;
     }
