@@ -1,4 +1,4 @@
-import { Permissions, Message, RichEmbed } from 'discord.js';
+import { Message, RichEmbed, Permissions } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
@@ -10,20 +10,18 @@ export enum ResponseType {
     VALID = 3
 }
 
-export class SetReportChannelCommand extends Command {
-    public static COMMAND_NAME = 'SetReportChannel';
+export class SetStarboardChannelCommand extends Command {
+    public static COMMAND_NAME = 'SetStarboardChannel';
 
-    public static COMMAND_NAME_LOWER_CASE = 'setreportchannel';
-
-    public static DESCRIPTION = 'Sets the reporting channel to post incident reports for this server when blacklisted words are used.';
-
-    public static CHANNEL_NOT_FOUND = 'Channel was not found. Please submit a valid channel ID.';
+    public static DESCRIPTION = 'Sets the Starboard channel where the bot will star messages.'
 
     public static NOT_TEXT_CHANNEL = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
 
-    public static EMBED_TITLE = 'Reporting Channel';
+    public static CHANNEL_NOT_FOUND = 'Channel was not found. Please submit a valid channel ID.';
 
-    public static CHANNEL_RESETTED = 'Reporting Channel has been resetted because there were no arguments. Please set a new one.';
+    public static EMBED_TITLE = 'Starboard Channel';
+
+    public static CHANNEL_RESETTED = 'Starboard Channel has been resetted because there were no arguments. Please set a new one.';
 
     public static CHANNELID_CANNOT_BE_UNDEFINED = 'Channel ID cannot be undefined!';
 
@@ -40,8 +38,8 @@ export class SetReportChannelCommand extends Command {
     }
 
     /**
-     * This function executes the setchannel command
-     * Sets the reporting channel of the server.
+     * This function executes the setstarboardchannel command
+     * Sets the starboard channel of the server.
      *
      * @param  {Server} server Server object of the message
      * @param  {Message} message Message object from the bot's on message event
@@ -57,7 +55,7 @@ export class SetReportChannelCommand extends Command {
         let embed: RichEmbed;
         if (this.args.length === 0) {
             embed = this.generateEmbed(ResponseType.RESET);
-            this.changeServerSettings(server, undefined);
+            this.changeServerSettings(server, null);
         } else {
             const channelId = this.args[0];
 
@@ -88,43 +86,39 @@ export class SetReportChannelCommand extends Command {
         const embed = new RichEmbed();
         if (type === ResponseType.RESET) {
             embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(SetReportChannelCommand.EMBED_TITLE,
-                SetReportChannelCommand.CHANNEL_RESETTED);
+            embed.addField(SetStarboardChannelCommand.EMBED_TITLE,
+                SetStarboardChannelCommand.CHANNEL_RESETTED);
         }
         if (type === ResponseType.UNDEFINED) {
             embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(SetReportChannelCommand.EMBED_TITLE,
-                SetReportChannelCommand.CHANNEL_NOT_FOUND);
+            embed.addField(SetStarboardChannelCommand.EMBED_TITLE,
+                SetStarboardChannelCommand.CHANNEL_NOT_FOUND);
         }
         if (type === ResponseType.NOT_TEXT_CHANNEL) {
             embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(SetReportChannelCommand.EMBED_TITLE,
-                SetReportChannelCommand.NOT_TEXT_CHANNEL);
+            embed.addField(SetStarboardChannelCommand.EMBED_TITLE,
+                SetStarboardChannelCommand.NOT_TEXT_CHANNEL);
         }
         if (type === ResponseType.VALID) {
             if (channelId === undefined) {
-                throw new Error(SetReportChannelCommand.CHANNELID_CANNOT_BE_UNDEFINED);
+                throw new Error(SetStarboardChannelCommand.CHANNELID_CANNOT_BE_UNDEFINED);
             }
-            const msg = `Reporting Channel set to <#${channelId}>.`;
+            const msg = `Starboard Channel set to <#${channelId}>.`;
             embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(SetReportChannelCommand.EMBED_TITLE, msg);
+            embed.addField(SetStarboardChannelCommand.EMBED_TITLE, msg);
         }
         return embed;
     }
 
     /**
-     * Sets the reporting channel of the server
+     * Sets the starboard channel of the server
      *
      * @param  {Server} server
      * @param  {string|undefined} channelId channel id.
      * @returns void
      */
-    public changeServerSettings(server: Server, channelId: string|undefined): void {
-        if (channelId !== undefined) {
-            server.messageCheckerSettings.setReportingChannelId(channelId);
-        } else {
-            server.messageCheckerSettings.setReportingChannelId(undefined);
-        }
+    public changeServerSettings(server: Server, channelId: string | null): void {
+        server.starboardSettings.setChannel(channelId);
     }
     /* eslint-enable class-methods-use-this */
 }

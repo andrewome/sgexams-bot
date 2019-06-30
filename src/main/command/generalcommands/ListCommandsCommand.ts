@@ -11,8 +11,6 @@ export class ListCommandsCommand extends Command {
 
     public static DESCRIPTION = 'Displays all the available commands that this bot listens to.';
 
-    public static EMBED_TITLE = 'Commands';
-
     /** SaveServer: false, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
 
@@ -57,15 +55,22 @@ export class ListCommandsCommand extends Command {
      */
     /* eslint-disable class-methods-use-this */
     public generateEmbed(): RichEmbed {
-        let output = '';
-        for (let i = 0; i < this.commands.length; i++) {
-            output += `**${this.commands[i]}**`;
-            output += (this.descriptions[i] === '\u200b')
-                ? '\n' : ` - ${this.descriptions[i]}\n`;
-        }
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(ListCommandsCommand.EMBED_TITLE, output);
+        let curTitle;
+        let output = '';
+        for (let i = 0; i < this.commands.length; i++) {
+            if (this.descriptions[i] === CommandParser.EMPTY_STRING) {
+                if (output !== '') embed.addField(curTitle, output);
+                curTitle = this.commands[i];
+                output = '';
+            } else {
+                output += (this.descriptions[i] !== '\u200b')
+                          ? `**${this.commands[i]}** - ${this.descriptions[i]}\n`
+                          : '\n';
+            }
+        }
+        embed.addField(curTitle, output);
         return embed;
     }
 

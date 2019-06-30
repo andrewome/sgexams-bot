@@ -1,4 +1,5 @@
 import { MessageCheckerSettings } from './MessageCheckerSettings';
+import { StarboardSettings } from './StarboardSettings';
 
 /** This class represents a server object that the bot references from */
 export class Server {
@@ -6,9 +7,14 @@ export class Server {
 
     public messageCheckerSettings: MessageCheckerSettings;
 
-    public constructor(serverId: string, messageCheckerSettings: MessageCheckerSettings) {
+    public starboardSettings: StarboardSettings;
+
+    public constructor(serverId: string,
+                       messageCheckerSettings: MessageCheckerSettings,
+                       starboardSettings: StarboardSettings) {
         this.serverId = serverId;
         this.messageCheckerSettings = messageCheckerSettings;
+        this.starboardSettings = starboardSettings;
     }
 
     /**
@@ -38,7 +44,9 @@ export class Server {
         const { messageCheckerSettings } = server;
         out.messageCheckerSettings
             = MessageCheckerSettings.convertToJsonFriendly(messageCheckerSettings);
-
+        const { starboardSettings } = server;
+        out.starboardSettings
+            = starboardSettings;
         return out;
     }
     /* eslint-enable @typescript-eslint/no-explicit-any */
@@ -58,11 +66,17 @@ export class Server {
             throw new Error('Object is not valid');
         }
 
+        let starboardSettings: StarboardSettings;
+        if (!obj.hasOwnProperty('starboardSettings')) {
+            starboardSettings = new StarboardSettings(null, null, null);
+        } else {
+            starboardSettings = StarboardSettings.convertFromJsonFriendly(obj.starboardSettings);
+        }
+
         const { serverId } = obj;
         const messageCheckerSettings
             = MessageCheckerSettings.convertFromJsonFriendly(obj.messageCheckerSettings);
-
-        return new Server(serverId, messageCheckerSettings);
+        return new Server(serverId, messageCheckerSettings, starboardSettings);
     }
     /* eslint-enable @typescript-eslint/no-explicit-any */
 }
