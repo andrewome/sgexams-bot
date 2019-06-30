@@ -9,6 +9,8 @@ import { ListCommandsCommand } from './generalcommands/ListCommandsCommand';
 import { SetResponseMessageCommand } from './messagecheckercommands/SetResponseMessageCommand';
 import { GetResponseMessageCommand } from './messagecheckercommands/GetResponseMessageCommand';
 import { SetDeleteMessageCommand } from './messagecheckercommands/SetDeleteMessageCommand';
+import { SetStarboardChannelCommand } from './starboardcommands/SetStarboardChannelCommand';
+import { GetStarboardChannelCommand } from './starboardcommands/GetStarboardChannelCommand';
 
 export class CommandParser {
     public static EMPTY_STRING = '\u200b';
@@ -17,11 +19,14 @@ export class CommandParser {
 
     public static MESSAGE_CHECKER_COMMANDS_HEADER = '__Message Checker Commands__';
 
+    public static STARBOARD_COMMANDS_HEADER = '__Starboard Commands__';
+
     public static NO_SUCH_COMMAND = 'No such command!';
 
     public static notCommands: Set<string>
         = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
-                           CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER]);
+                           CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER,
+                           CommandParser.STARBOARD_COMMANDS_HEADER]);
 
     public static commands: Set<string>
         = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
@@ -34,7 +39,10 @@ export class CommandParser {
                            GetReportChannelCommand.COMMAND_NAME,
                            SetResponseMessageCommand.COMMAND_NAME,
                            GetResponseMessageCommand.COMMAND_NAME,
-                           SetDeleteMessageCommand.COMMAND_NAME]);
+                           SetDeleteMessageCommand.COMMAND_NAME,
+                           CommandParser.STARBOARD_COMMANDS_HEADER,
+                           SetStarboardChannelCommand.COMMAND_NAME,
+                           GetStarboardChannelCommand.COMMAND_NAME]);
 
     public static descriptions: string[]
         = [CommandParser.EMPTY_STRING,
@@ -47,7 +55,10 @@ export class CommandParser {
            GetReportChannelCommand.DESCRIPTION,
            SetResponseMessageCommand.DESCRIPTION,
            GetResponseMessageCommand.DESCRIPTION,
-           SetDeleteMessageCommand.DESCRIPTION];
+           SetDeleteMessageCommand.DESCRIPTION,
+           CommandParser.EMPTY_STRING,
+           SetStarboardChannelCommand.DESCRIPTION,
+           GetStarboardChannelCommand.DESCRIPTION];
 
     private content: string;
 
@@ -135,6 +146,10 @@ export class CommandParser {
                 return new GetResponseMessageCommand();
             case SetDeleteMessageCommand.COMMAND_NAME:
                 return new SetDeleteMessageCommand(args);
+            case SetStarboardChannelCommand.COMMAND_NAME:
+                return new SetStarboardChannelCommand(args);
+            case GetStarboardChannelCommand.COMMAND_NAME:
+                return new GetReportChannelCommand();
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }

@@ -1,5 +1,5 @@
 import './lib/env';
-import { Client, Message } from 'discord.js';
+import { Client, Message, Emoji, MessageReaction, TextChannel, User } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
 import { MessageChecker } from './modules/messagechecker/MessageChecker';
 import { MessageResponse } from './modules/messagechecker/response/MessageResponse';
@@ -8,6 +8,7 @@ import { Server } from './storage/Server';
 import { Storage } from './storage/Storage';
 import { MessageCheckerSettings } from './storage/MessageCheckerSettings';
 import { CommandResult } from './command/classes/CommandResult';
+import { StarboardSettings } from './storage/StarboardSettings';
 
 // Set up logging method
 log.enableAll();
@@ -44,7 +45,10 @@ class App {
      */
     private getServer(id: string): Server {
         if (this.storage.servers.has(id) === false) {
-            this.storage.servers.set(id, new Server(id, new MessageCheckerSettings()));
+            this.storage.servers.set(id, 
+                                     new Server(id,
+                                     new MessageCheckerSettings(),
+                                     new StarboardSettings(null, null, null)));
         }
         return this.storage.servers.get(id)!;
     }
@@ -113,6 +117,39 @@ class App {
             } catch (err) {
                 log.error(err);
             }
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        this.bot.on('raw', async (event: any): Promise<void> => {
+            const events = {
+                MESSAGE_REACTION_ADD: 'messageReactionAdd',
+                MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
+            };
+
+            if (!events.hasOwnProperty(event.t)) return;
+
+            const { d: data } = event;
+            const user = this.bot.users.get(data.user_id)!;
+            const channel = this.bot.channels.get(data.channel_id) || await user.createDM();
+
+            if (channel.type !== "text") return;
+            if ((channel as TextChannel).messages.has(data.message_id)) return;
+
+            const message = await (channel as TextChannel).fetchMessage(data.message_id);
+            const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
+            let reaction = message.reactions.get(emojiKey);
+
+            if (!reaction) {
+                const emoji = new Emoji(this.bot.guilds.get(data.guild_id)!, data.emoji);
+                reaction = new MessageReaction(message, emoji, 1, data.user_id === this.bot.user.id);
+            }
+
+            this.bot.emit(event[event.t], reaction, user);
+        });
+
+        this.bot.on('messageReactionAdd', async (reaction: MessageReaction,
+                                                 user: User): Promise<void> => {
+            console.log(`${user.username} reacted with "${reaction.emoji}".`);
         });
 
         this.bot.on('ready', (): void => {
