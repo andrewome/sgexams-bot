@@ -45,12 +45,12 @@ export class CommandParser {
                            GetResponseMessageCommand.COMMAND_NAME,
                            SetDeleteMessageCommand.COMMAND_NAME,
                            CommandParser.STARBOARD_COMMANDS_HEADER,
-                           GetStarboardChannelCommand.COMMAND_NAME,
                            SetStarboardChannelCommand.COMMAND_NAME,
-                           GetStarboardEmojiCommand.COMMAND_NAME,
+                           GetStarboardChannelCommand.COMMAND_NAME,
                            SetStarboardEmojiCommand.COMMAND_NAME,
-                           GetStarboardThresholdCommand.COMMAND_NAME,
-                           SetStarboardThresholdCommand.COMMAND_NAME]);
+                           GetStarboardEmojiCommand.COMMAND_NAME,
+                           SetStarboardThresholdCommand.COMMAND_NAME,
+                           GetStarboardThresholdCommand.COMMAND_NAME]);
 
     public static commandsLowerCase: Set<string>
         = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
@@ -64,12 +64,12 @@ export class CommandParser {
                            SetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
                            GetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
                            SetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE,
-                           GetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE,
                            SetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE,
-                           GetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE,
+                           GetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE,
                            SetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE,
-                           GetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE,
-                           SetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE]);
+                           GetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE,
+                           SetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE,
+                           GetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE]);
 
     public static descriptions: string[]
         = [CommandParser.EMPTY_STRING,
@@ -86,10 +86,10 @@ export class CommandParser {
            CommandParser.EMPTY_STRING,
            SetStarboardChannelCommand.DESCRIPTION,
            GetStarboardChannelCommand.DESCRIPTION,
-           GetStarboardEmojiCommand.DESCRIPTION,
            SetStarboardEmojiCommand.DESCRIPTION,
-           GetStarboardThresholdCommand.DESCRIPTION,
-           SetStarboardThresholdCommand.DESCRIPTION];
+           GetStarboardEmojiCommand.DESCRIPTION,
+           SetStarboardThresholdCommand.DESCRIPTION,
+           GetStarboardThresholdCommand.DESCRIPTION];
 
     private content: string;
 

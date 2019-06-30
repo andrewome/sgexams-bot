@@ -6,7 +6,7 @@ import { CommandResult } from '../classes/CommandResult';
 export class GetStarboardChannelCommand extends Command {
     public static COMMAND_NAME = 'GetStarboardChannel';
 
-    public static COMMAND_NAME_LOWER_CASE = 'getstarboardchannel';
+    public static COMMAND_NAME_LOWER_CASE = GetStarboardChannelCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Displays the currently set Starboard channel';
 

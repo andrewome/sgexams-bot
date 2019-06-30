@@ -7,7 +7,7 @@ import { CommandParser } from '../CommandParser';
 export class ListCommandsCommand extends Command {
     public static COMMAND_NAME = 'Help';
 
-    public static COMMAND_NAME_LOWER_CASE = 'help';
+    public static COMMAND_NAME_LOWER_CASE = ListCommandsCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Displays all the available commands that this bot listens to.';
 

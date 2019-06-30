@@ -6,7 +6,7 @@ import { CommandResult } from '../classes/CommandResult';
 export class GetStarboardEmojiCommand extends Command {
     public static COMMAND_NAME = 'GetStarboardEmoji';
 
-    public static COMMAND_NAME_LOWER_CASE = 'getstarboardemoji';
+    public static COMMAND_NAME_LOWER_CASE = GetStarboardEmojiCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Displays the currently set Starboard emoji';
 

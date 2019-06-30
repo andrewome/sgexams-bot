@@ -6,7 +6,7 @@ import { CommandResult } from '../classes/CommandResult';
 export class GetResponseMessageCommand extends Command {
     public static COMMAND_NAME = 'GetResponseMessage';
 
-    public static COMMAND_NAME_LOWER_CASE = 'getresponsemessage';
+    public static COMMAND_NAME_LOWER_CASE = GetResponseMessageCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Displays the response message to the user upon detection of blacklisted words for this server.';
 

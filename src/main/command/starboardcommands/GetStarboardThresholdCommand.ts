@@ -6,7 +6,7 @@ import { CommandResult } from '../classes/CommandResult';
 export class GetStarboardThresholdCommand extends Command {
     public static COMMAND_NAME = 'GetStarboardThreshold';
 
-    public static COMMAND_NAME_LOWER_CASE = 'getstarboardthreshold';
+    public static COMMAND_NAME_LOWER_CASE = GetStarboardThresholdCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Displays the emoji threshold for a message to be starred.';
 

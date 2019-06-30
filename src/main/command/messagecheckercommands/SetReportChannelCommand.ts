@@ -13,7 +13,7 @@ export enum ResponseType {
 export class SetReportChannelCommand extends Command {
     public static COMMAND_NAME = 'SetReportChannel';
 
-    public static COMMAND_NAME_LOWER_CASE = 'setreportchannel';
+    public static COMMAND_NAME_LOWER_CASE = SetReportChannelCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Sets the reporting channel to post incident reports for this server when blacklisted words are used.';
 

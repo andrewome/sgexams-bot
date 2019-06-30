@@ -12,7 +12,8 @@ export enum ResponseType {
 export class SetStarboardThresholdCommand extends Command {
     public static COMMAND_NAME = 'SetStarboardThreshold';
 
-    public static COMMAND_NAME_LOWER_CASE = 'setstarboardthreshold';
+    public static COMMAND_NAME_LOWER_CASE
+        = SetStarboardThresholdCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Sets the emoji threshold for a message to be starred.'
 

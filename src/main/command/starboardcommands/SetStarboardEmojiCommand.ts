@@ -14,7 +14,7 @@ export enum ResponseType {
 export class SetStarboardEmojiCommand extends Command {
     public static COMMAND_NAME = 'SetStarboardEmoji';
 
-    public static COMMAND_NAME_LOWER_CASE = 'setstarboardemoji';
+    public static COMMAND_NAME_LOWER_CASE = SetStarboardEmojiCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Sets the Starboard emoji that the bot will look out for.'
 
