@@ -4,7 +4,9 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class RemoveWordCommand extends Command {
-    public static COMMAND_NAME = 'removewords';
+    public static COMMAND_NAME = 'RemoveWords';
+
+    public static COMMAND_NAME_LOWER_CASE = 'removewords';
 
     public static DESCRIPTION = 'Remove word(s) from the blacklist.';
 

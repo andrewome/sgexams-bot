@@ -4,7 +4,9 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class GetResponseMessageCommand extends Command {
-    public static COMMAND_NAME = 'getresponsemessage';
+    public static COMMAND_NAME = 'GetResponseMessage';
+
+    public static COMMAND_NAME_LOWER_CASE = 'getresponsemessage';
 
     public static DESCRIPTION = 'Displays the response message to the user upon detection of blacklisted words for this server.';
 

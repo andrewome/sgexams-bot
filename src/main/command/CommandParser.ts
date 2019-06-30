@@ -20,8 +20,8 @@ export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
 
     public static notCommands: Set<string>
-        = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
-                           CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER]);
+        = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER.toLowerCase(),
+                           CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER.toLowerCase()]);
 
     public static commands: Set<string>
         = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
@@ -48,6 +48,19 @@ export class CommandParser {
            SetResponseMessageCommand.DESCRIPTION,
            GetResponseMessageCommand.DESCRIPTION,
            SetDeleteMessageCommand.DESCRIPTION];
+
+    public static commandsLowerCase: Set<string>
+        = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
+                           ListCommandsCommand.COMMAND_NAME_LOWER_CASE,
+                           CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER,
+                           ListWordsCommand.COMMAND_NAME_LOWER_CASE,
+                           AddWordCommand.COMMAND_NAME_LOWER_CASE,
+                           RemoveWordCommand.COMMAND_NAME_LOWER_CASE,
+                           SetReportChannelCommand.COMMAND_NAME_LOWER_CASE,
+                           GetReportChannelCommand.COMMAND_NAME_LOWER_CASE,
+                           SetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
+                           GetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
+                           SetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE]);
 
     private content: string;
 
@@ -78,8 +91,9 @@ export class CommandParser {
 
         let command = this.splittedContent[1];
         command = command.toLowerCase();
+
         // Check if command word is the 2nd word
-        if (!CommandParser.commands.has(command)) {
+        if (!CommandParser.commandsLowerCase.has(command)) {
             return false;
         }
 
@@ -114,26 +128,26 @@ export class CommandParser {
      * @returns void
      */
     public getCommand(): Command {
-        const command = this.splittedContent[1];
+        const command = this.splittedContent[1].toLowerCase();
         const args = this.getArgs();
         switch (command) {
-            case ListWordsCommand.COMMAND_NAME:
+            case ListWordsCommand.COMMAND_NAME_LOWER_CASE:
                 return new ListWordsCommand();
-            case SetReportChannelCommand.COMMAND_NAME:
+            case SetReportChannelCommand.COMMAND_NAME_LOWER_CASE:
                 return new SetReportChannelCommand(args);
-            case AddWordCommand.COMMAND_NAME:
+            case AddWordCommand.COMMAND_NAME_LOWER_CASE:
                 return new AddWordCommand(args);
-            case RemoveWordCommand.COMMAND_NAME:
+            case RemoveWordCommand.COMMAND_NAME_LOWER_CASE:
                 return new RemoveWordCommand(args);
-            case GetReportChannelCommand.COMMAND_NAME:
+            case GetReportChannelCommand.COMMAND_NAME_LOWER_CASE:
                 return new GetReportChannelCommand();
-            case ListCommandsCommand.COMMAND_NAME:
+            case ListCommandsCommand.COMMAND_NAME_LOWER_CASE:
                 return new ListCommandsCommand();
-            case SetResponseMessageCommand.COMMAND_NAME:
+            case SetResponseMessageCommand.COMMAND_NAME_LOWER_CASE:
                 return new SetResponseMessageCommand(args);
-            case GetResponseMessageCommand.COMMAND_NAME:
+            case GetResponseMessageCommand.COMMAND_NAME_LOWER_CASE:
                 return new GetResponseMessageCommand();
-            case SetDeleteMessageCommand.COMMAND_NAME:
+            case SetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE:
                 return new SetDeleteMessageCommand(args);
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);

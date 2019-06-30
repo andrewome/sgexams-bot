@@ -9,7 +9,9 @@ export enum ResponseType {
 }
 
 export class SetResponseMessageCommand extends Command {
-    public static COMMAND_NAME = 'setresponsemessage';
+    public static COMMAND_NAME = 'SetResponseMessage';
+
+    public static COMMAND_NAME_LOWER_CASE = 'setresponsemessage';
 
     public static DESCRIPTION = 'Sets the response message to the user upon detection of blacklisted words for this server.';
 
