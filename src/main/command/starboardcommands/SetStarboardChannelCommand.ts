@@ -1,7 +1,7 @@
-import { Message, RichEmbed, Permissions } from "discord.js";
-import { Command } from "../Command";
-import { Server } from "../../storage/Server";
-import { CommandResult } from "../classes/CommandResult";
+import { Message, RichEmbed, Permissions } from 'discord.js';
+import { Command } from '../Command';
+import { Server } from '../../storage/Server';
+import { CommandResult } from '../classes/CommandResult';
 
 export enum ResponseType {
     RESET = 0,
@@ -71,9 +71,9 @@ export class SetStarboardChannelCommand extends Command {
             }
         }
         message.channel.send(embed);
-        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;        
+        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
-    
+
     /**
      * Generates embed that is sent back to user
      *

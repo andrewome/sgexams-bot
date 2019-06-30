@@ -1,5 +1,7 @@
 import './lib/env';
-import { Client, Message, Emoji, MessageReaction, TextChannel, User } from 'discord.js';
+import {
+ Client, Message, Emoji, MessageReaction, TextChannel, User,
+} from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
 import { MessageChecker } from './modules/messagechecker/MessageChecker';
 import { MessageResponse } from './modules/messagechecker/response/MessageResponse';
@@ -45,7 +47,7 @@ class App {
      */
     private getServer(id: string): Server {
         if (this.storage.servers.has(id) === false) {
-            this.storage.servers.set(id, 
+            this.storage.servers.set(id,
                                      new Server(id,
                                      new MessageCheckerSettings(),
                                      new StarboardSettings(null, null, null)));
@@ -132,7 +134,7 @@ class App {
             const user = this.bot.users.get(data.user_id)!;
             const channel = this.bot.channels.get(data.channel_id) || await user.createDM();
 
-            if (channel.type !== "text") return;
+            if (channel.type !== 'text') return;
             if ((channel as TextChannel).messages.has(data.message_id)) return;
 
             const message = await (channel as TextChannel).fetchMessage(data.message_id);
@@ -141,7 +143,8 @@ class App {
 
             if (!reaction) {
                 const emoji = new Emoji(this.bot.guilds.get(data.guild_id)!, data.emoji);
-                reaction = new MessageReaction(message, emoji, 1, data.user_id === this.bot.user.id);
+                reaction
+                    = new MessageReaction(message, emoji, 1, data.user_id === this.bot.user.id);
             }
 
             this.bot.emit(event[event.t], reaction, user);

@@ -1,4 +1,4 @@
-import { Emoji } from "discord.js";
+import { Emoji } from 'discord.js';
 
 export class StarboardSettings {
     private emoji: Emoji | null;
@@ -17,6 +17,7 @@ export class StarboardSettings {
     public getEmoji(): Emoji | null {
         return this.emoji;
     }
+
     public setEmoji(value: Emoji | null): void {
         this.emoji = value;
     }

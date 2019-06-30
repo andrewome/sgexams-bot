@@ -56,13 +56,12 @@ export class ListCommandsCommand extends Command {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         let curTitle;
-        let output = "";
+        let output = '';
         for (let i = 0; i < this.commands.length; i++) {
             if (this.descriptions[i] === CommandParser.EMPTY_STRING) {
-                if (output !== "")
-                    embed.addField(curTitle, output);
+                if (output !== '') embed.addField(curTitle, output);
                 curTitle = this.commands[i];
-                output = "";
+                output = '';
             } else {
                 output += (this.descriptions[i] !== '\u200b')
                           ? `**${this.commands[i]}** - ${this.descriptions[i]}\n`

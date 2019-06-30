@@ -67,7 +67,7 @@ export class Server {
         }
 
         let starboardSettings: StarboardSettings;
-        if(!obj.hasOwnProperty('starboardSettings')) {
+        if (!obj.hasOwnProperty('starboardSettings')) {
             starboardSettings = new StarboardSettings(null, null, null);
         } else {
             starboardSettings = StarboardSettings.convertFromJsonFriendly(obj.starboardSettings);
