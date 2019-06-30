@@ -65,7 +65,7 @@ export class ListCommandsCommand extends Command {
                 curTitle = this.commands[i];
                 output = '';
             } else {
-                output += (this.descriptions[i] !== '\u200b')
+                output += (this.descriptions[i] !== CommandParser.EMPTY_STRING)
                           ? `**${this.commands[i]}** - ${this.descriptions[i]}\n`
                           : '\n';
             }

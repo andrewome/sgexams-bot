@@ -41,8 +41,23 @@ export class CommandParser {
                            GetResponseMessageCommand.COMMAND_NAME,
                            SetDeleteMessageCommand.COMMAND_NAME,
                            CommandParser.STARBOARD_COMMANDS_HEADER,
-                           SetStarboardChannelCommand.COMMAND_NAME,
-                           GetStarboardChannelCommand.COMMAND_NAME]);
+                           GetStarboardChannelCommand.COMMAND_NAME,
+                           SetStarboardChannelCommand.COMMAND_NAME]);
+
+    public static commandsLowerCase: Set<string>
+        = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
+                           ListCommandsCommand.COMMAND_NAME_LOWER_CASE,
+                           CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER,
+                           ListWordsCommand.COMMAND_NAME_LOWER_CASE,
+                           AddWordCommand.COMMAND_NAME_LOWER_CASE,
+                           RemoveWordCommand.COMMAND_NAME_LOWER_CASE,
+                           SetReportChannelCommand.COMMAND_NAME_LOWER_CASE,
+                           GetReportChannelCommand.COMMAND_NAME_LOWER_CASE,
+                           SetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
+                           GetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
+                           SetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE,
+                           GetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE,
+                           SetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE]);
 
     public static descriptions: string[]
         = [CommandParser.EMPTY_STRING,
@@ -59,19 +74,6 @@ export class CommandParser {
            CommandParser.EMPTY_STRING,
            SetStarboardChannelCommand.DESCRIPTION,
            GetStarboardChannelCommand.DESCRIPTION];
-
-    public static commandsLowerCase: Set<string>
-        = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
-                           ListCommandsCommand.COMMAND_NAME_LOWER_CASE,
-                           CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER,
-                           ListWordsCommand.COMMAND_NAME_LOWER_CASE,
-                           AddWordCommand.COMMAND_NAME_LOWER_CASE,
-                           RemoveWordCommand.COMMAND_NAME_LOWER_CASE,
-                           SetReportChannelCommand.COMMAND_NAME_LOWER_CASE,
-                           GetReportChannelCommand.COMMAND_NAME_LOWER_CASE,
-                           SetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
-                           GetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
-                           SetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE]);
 
     private content: string;
 

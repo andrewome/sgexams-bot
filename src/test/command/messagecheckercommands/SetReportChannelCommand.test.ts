@@ -5,6 +5,7 @@ import { SetReportChannelCommand, ResponseType } from '../../../main/command/mes
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { Server } from '../../../main/storage/Server';
+import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 
 should();
 
@@ -23,7 +24,11 @@ const { CHANNEL_RESETTED } = SetReportChannelCommand;
 const { CHANNELID_CANNOT_BE_UNDEFINED } = SetReportChannelCommand;
 
 beforeEach((): void => {
-    server = new Server('123', new MessageCheckerSettings());
+    server = new Server(
+        '123',
+        new MessageCheckerSettings(),
+        new StarboardSettings(null, null, null),
+);
 });
 
 describe('SetReportChannelCommand test suite', (): void => {

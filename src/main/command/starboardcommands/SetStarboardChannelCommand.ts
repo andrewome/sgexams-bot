@@ -13,6 +13,8 @@ export enum ResponseType {
 export class SetStarboardChannelCommand extends Command {
     public static COMMAND_NAME = 'SetStarboardChannel';
 
+    public static COMMAND_NAME_LOWER_CASE = 'setstarboardchannel';
+
     public static DESCRIPTION = 'Sets the Starboard channel where the bot will star messages.'
 
     public static NOT_TEXT_CHANNEL = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';

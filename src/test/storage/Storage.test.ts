@@ -4,6 +4,7 @@ import { should } from 'chai';
 import { Storage } from '../../main/storage/Storage';
 import { Server } from '../../main/storage/Server';
 import { MessageCheckerSettings } from '../../main/storage/MessageCheckerSettings';
+import { StarboardSettings } from '../../main/storage/StarboardSettings';
 
 should();
 
@@ -23,11 +24,19 @@ before((): void => {
 });
 
 // Initialise server1 and server2 before each
-let server1: Server; let
-    server2: Server;
+let server1: Server;
+let server2: Server;
 beforeEach((): void => {
-    server1 = new Server('111', new MessageCheckerSettings());
-    server2 = new Server('112', new MessageCheckerSettings());
+    server1 = new Server(
+        '111',
+        new MessageCheckerSettings(),
+        new StarboardSettings(null, null, null),
+);
+    server2 = new Server(
+        '112',
+        new MessageCheckerSettings(),
+        new StarboardSettings(null, null, null),
+);
 });
 
 // Delete the json file after each

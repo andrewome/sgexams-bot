@@ -5,6 +5,7 @@ import { Server } from '../../../main/storage/Server';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { AddWordCommand } from '../../../main/command/messagecheckercommands/AddWordCommand';
 import { Command } from '../../../main/command/Command';
+import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 
 should();
 
@@ -20,7 +21,11 @@ const { MAYBE_WORDS_ALREADY_ADDED } = AddWordCommand;
 const { UNABLE_TO_ADD_WORDS } = AddWordCommand;
 
 beforeEach((): void => {
-    server = new Server('123', new MessageCheckerSettings());
+    server = new Server(
+        '123',
+        new MessageCheckerSettings(),
+        new StarboardSettings(null, null, null),
+);
 });
 
 describe('AddWordCommand test suite', (): void => {
