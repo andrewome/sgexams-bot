@@ -4,7 +4,9 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class ListWordsCommand extends Command {
-    public static COMMAND_NAME = 'listwords';
+    public static COMMAND_NAME = 'ListWords';
+
+    public static COMMAND_NAME_LOWER_CASE = 'listwords';
 
     public static DESCRIPTION = 'Displays all blacklisted words.';
 
