@@ -157,8 +157,36 @@ class App {
                                                  user: User): Promise<void> => {
             const server = this.getServer(reaction.message.guild.id.toString());
             const { starboardSettings } = server;
-            if (new StarboardChecker(starboardSettings, reaction).checkReacts()) {
-                new StarboardResponse(starboardSettings, reaction).addToStarboard();
+            const starboardChecker = new StarboardChecker(starboardSettings, reaction);
+            if (await starboardChecker.checkAddReact()) {
+                const starboardResponse = new StarboardResponse(starboardSettings, reaction);
+                if (await starboardChecker.checkIfMessageExists()) {
+                    await starboardResponse.editStarboardMessageCount(
+                        starboardChecker.numberOfReactions,
+                        starboardChecker.messageIdInStarboardChannel!,
+                    );
+                } else {
+                    await starboardResponse.addToStarboard(starboardChecker.numberOfReactions);
+                }
+            }
+        });
+
+        this.bot.on('messageReactionRemove', async (reaction: MessageReaction,
+                                                    user: User): Promise<void> => {
+            const server = this.getServer(reaction.message.guild.id.toString());
+            const { starboardSettings } = server;
+            const starboardChecker = new StarboardChecker(starboardSettings, reaction);
+            if (await starboardChecker.checkRemoveReact()) {
+                const starboardResponse = new StarboardResponse(starboardSettings, reaction);
+                if (await starboardChecker.shouldDeleteMessage()) {
+                    await starboardResponse
+                        .deleteStarboardMessage(starboardChecker.messageIdInStarboardChannel!);
+                } else {
+                    await starboardResponse.editStarboardMessageCount(
+                        starboardChecker.numberOfReactions,
+                        starboardChecker.messageIdInStarboardChannel!,
+                    );
+                }
             }
         });
 
