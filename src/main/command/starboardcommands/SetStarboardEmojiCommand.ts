@@ -4,6 +4,7 @@ import {
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
+import { SimplifiedEmoji } from '../../storage/StarboardSettings';
 
 export enum ResponseType {
     RESET = 0,
@@ -66,7 +67,9 @@ export class SetStarboardEmojiCommand extends Command {
                 embed = this.generateEmbed(ResponseType.UNDEFINED);
             } else {
                 embed = this.generateEmbed(ResponseType.VALID, emoji);
-                this.changeServerSettings(server, emoji);
+                const simplifiedEmoji
+                    = new SimplifiedEmoji(emoji.name, emoji.id);
+                this.changeServerSettings(server, simplifiedEmoji);
             }
         }
         message.channel.send(embed);
@@ -111,7 +114,7 @@ export class SetStarboardEmojiCommand extends Command {
      * @param  {emoji|null} emoji emoji.
      * @returns void
      */
-    public changeServerSettings(server: Server, emoji: Emoji | null): void {
+    public changeServerSettings(server: Server, emoji: SimplifiedEmoji | null): void {
         server.starboardSettings.setEmoji(emoji);
     }
     /* eslint-enable class-methods-use-this */

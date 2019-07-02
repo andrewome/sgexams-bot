@@ -1,24 +1,35 @@
-import { Emoji } from 'discord.js';
+export class SimplifiedEmoji {
+    public name: string;
+
+    public id: string;
+
+    public constructor(name: string, id: string) {
+        this.name = name;
+        this.id = id;
+    }
+}
 
 export class StarboardSettings {
-    private emoji: Emoji | null;
+    private emoji: SimplifiedEmoji | null;
 
     private channel: string | null;
 
     private threshold: number | null;
 
-    public constructor(channel: string | null, emoji: Emoji | null, threshold: number | null) {
+    public constructor(channel: string | null,
+                       emoji: SimplifiedEmoji | null,
+                       threshold: number | null) {
         this.channel = channel;
         this.emoji = emoji;
         this.threshold = threshold;
     }
 
     /* Getter & Setters */
-    public getEmoji(): Emoji | null {
+    public getEmoji(): SimplifiedEmoji | null {
         return this.emoji;
     }
 
-    public setEmoji(value: Emoji | null): void {
+    public setEmoji(value: SimplifiedEmoji | null): void {
         this.emoji = value;
     }
 
