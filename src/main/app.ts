@@ -1,6 +1,6 @@
 import './lib/env';
 import {
- Client, Message, Emoji, MessageReaction, TextChannel, User,
+ Client, Message, MessageReaction, User,
 } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
 import { MessageChecker } from './modules/messagechecker/MessageChecker';
@@ -11,8 +11,9 @@ import { Storage } from './storage/Storage';
 import { MessageCheckerSettings } from './storage/MessageCheckerSettings';
 import { CommandResult } from './command/classes/CommandResult';
 import { StarboardSettings } from './storage/StarboardSettings';
-import { StarboardChecker } from './modules/starboard/StarboardChecker';
-import { StarboardResponse } from './modules/starboard/StarboardResponse';
+import { RawEventHandler } from './handler/RawEventHandler';
+import { MessageReactionAddEventHandler } from './handler/MessageReactionAddEventHandler';
+import { MessageReactionRemoveEventHandler } from './handler/MessageReactionRemoveEventHandler';
 
 // Set up logging method
 log.enableAll();
@@ -125,69 +126,21 @@ class App {
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.bot.on('raw', async (packet: any): Promise<void> => {
-            const events = ['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE',
-            ];
-
-            // Checks if the packet contains what I want.
-            if (!events.includes(packet.t)) return;
-            const channel = this.bot.channels.get(packet.d.channel_id)!;
-            if (channel === undefined) return;
-            if (channel.type !== 'text') return;
-            if ((channel as TextChannel).messages.has(packet.d.channel_id)) return;
-
-            (channel as TextChannel).fetchMessage(packet.d.message_id)
-                .then((message: Message): void => {
-                    const emoji = packet.d.emoji.id
-                                  ? `${packet.d.emoji.name}:${packet.d.emoji.id}`
-                                  : packet.d.emoji.name;
-                    const reaction = message.reactions.get(emoji);
-                    if (reaction) {
-                        reaction.users.set(packet.d.user_id, this.bot.users.get(packet.d.user_id)!);
-                    }
-                    if (packet.t === 'MESSAGE_REACTION_ADD') {
-                        this.bot.emit('messageReactionAdd', reaction, this.bot.users.get(packet.d.user_id));
-                    }
-                    if (packet.t === 'messageReactionRemove') {
-                        this.bot.emit(events[1], reaction, this.bot.users.get(packet.d.user_id));
-                    }
-                });
+            new RawEventHandler(this.bot, packet).handleEvent();
         });
 
         this.bot.on('messageReactionAdd', async (reaction: MessageReaction,
                                                  user: User): Promise<void> => {
             const server = this.getServer(reaction.message.guild.id.toString());
             const { starboardSettings } = server;
-            const starboardChecker = new StarboardChecker(starboardSettings, reaction);
-            if (await starboardChecker.checkAddReact()) {
-                const starboardResponse = new StarboardResponse(starboardSettings, reaction);
-                if (await starboardChecker.checkIfMessageExists()) {
-                    await starboardResponse.editStarboardMessageCount(
-                        starboardChecker.numberOfReactions,
-                        starboardChecker.messageIdInStarboardChannel!,
-                    );
-                } else {
-                    await starboardResponse.addToStarboard(starboardChecker.numberOfReactions);
-                }
-            }
+            new MessageReactionAddEventHandler(starboardSettings, reaction).handleEvent();
         });
 
         this.bot.on('messageReactionRemove', async (reaction: MessageReaction,
                                                     user: User): Promise<void> => {
             const server = this.getServer(reaction.message.guild.id.toString());
             const { starboardSettings } = server;
-            const starboardChecker = new StarboardChecker(starboardSettings, reaction);
-            if (await starboardChecker.checkRemoveReact()) {
-                const starboardResponse = new StarboardResponse(starboardSettings, reaction);
-                if (await starboardChecker.shouldDeleteMessage()) {
-                    await starboardResponse
-                        .deleteStarboardMessage(starboardChecker.messageIdInStarboardChannel!);
-                } else {
-                    await starboardResponse.editStarboardMessageCount(
-                        starboardChecker.numberOfReactions,
-                        starboardChecker.messageIdInStarboardChannel!,
-                    );
-                }
-            }
+            new MessageReactionRemoveEventHandler(starboardSettings, reaction).handleEvent();
         });
 
         this.bot.on('ready', (): void => {

@@ -83,7 +83,7 @@ export class StarboardResponse {
             embed.setTimestamp(message.createdTimestamp);
 
             const outputMsg
-                = `**${numberOfReacts}** <:${emoji.name}:${emoji.id}> **Channel:** ${channel} **ID:** ${id}`;
+                = `**${numberOfReacts}** <:${emoji.name}:${emoji.id}> **In:** ${channel} **ID:** ${id}`;
             (starboardChannel as TextChannel).send(outputMsg, embed);
         });
     }
