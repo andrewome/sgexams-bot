@@ -1,5 +1,7 @@
 import './lib/env';
-import { Client, Message } from 'discord.js';
+import {
+ Client, Message, MessageReaction, User,
+} from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
 import { MessageChecker } from './modules/messagechecker/MessageChecker';
 import { MessageResponse } from './modules/messagechecker/response/MessageResponse';
@@ -8,6 +10,10 @@ import { Server } from './storage/Server';
 import { Storage } from './storage/Storage';
 import { MessageCheckerSettings } from './storage/MessageCheckerSettings';
 import { CommandResult } from './command/classes/CommandResult';
+import { StarboardSettings } from './storage/StarboardSettings';
+import { RawEventHandler } from './handler/RawEventHandler';
+import { MessageReactionAddEventHandler } from './handler/MessageReactionAddEventHandler';
+import { MessageReactionRemoveEventHandler } from './handler/MessageReactionRemoveEventHandler';
 
 // Set up logging method
 log.enableAll();
@@ -44,7 +50,10 @@ class App {
      */
     private getServer(id: string): Server {
         if (this.storage.servers.has(id) === false) {
-            this.storage.servers.set(id, new Server(id, new MessageCheckerSettings()));
+            this.storage.servers.set(id,
+                                     new Server(id,
+                                     new MessageCheckerSettings(),
+                                     new StarboardSettings(null, null, null)));
         }
         return this.storage.servers.get(id)!;
     }
@@ -113,6 +122,25 @@ class App {
             } catch (err) {
                 log.error(err);
             }
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        this.bot.on('raw', async (packet: any): Promise<void> => {
+            new RawEventHandler(this.bot, packet).handleEvent();
+        });
+
+        this.bot.on('messageReactionAdd', async (reaction: MessageReaction,
+                                                 user: User): Promise<void> => {
+            const server = this.getServer(reaction.message.guild.id.toString());
+            const { starboardSettings } = server;
+            new MessageReactionAddEventHandler(starboardSettings, reaction).handleEvent();
+        });
+
+        this.bot.on('messageReactionRemove', async (reaction: MessageReaction,
+                                                    user: User): Promise<void> => {
+            const server = this.getServer(reaction.message.guild.id.toString());
+            const { starboardSettings } = server;
+            new MessageReactionRemoveEventHandler(starboardSettings, reaction).handleEvent();
         });
 
         this.bot.on('ready', (): void => {

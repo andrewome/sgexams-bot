@@ -4,6 +4,7 @@ import { ListWordsCommand } from '../../../main/command/messagecheckercommands/L
 import { Command } from '../../../main/command/Command';
 import { Server } from '../../../main/storage/Server';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
+import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 
 should();
 
@@ -16,7 +17,11 @@ const { EMBED_TITLE } = ListWordsCommand;
 const { NO_WORDS_FOUND } = ListWordsCommand;
 
 beforeEach((): void => {
-    server = new Server('123', new MessageCheckerSettings());
+    server = new Server(
+        '123',
+        new MessageCheckerSettings(),
+        new StarboardSettings(null, null, null),
+);
 });
 
 describe('ListCommandsCommand test suite', (): void => {

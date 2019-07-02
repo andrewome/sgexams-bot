@@ -4,7 +4,9 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class AddWordCommand extends Command {
-    public static COMMAND_NAME = 'addwords';
+    public static COMMAND_NAME = 'AddWords';
+
+    public static COMMAND_NAME_LOWER_CASE = AddWordCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Add word(s) to the blacklist.';
 

@@ -3,16 +3,16 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
-export class ListWordsCommand extends Command {
-    public static COMMAND_NAME = 'ListWords';
+export class GetStarboardChannelCommand extends Command {
+    public static COMMAND_NAME = 'GetStarboardChannel';
 
-    public static COMMAND_NAME_LOWER_CASE = ListWordsCommand.COMMAND_NAME.toLowerCase();
+    public static COMMAND_NAME_LOWER_CASE = GetStarboardChannelCommand.COMMAND_NAME.toLowerCase();
 
-    public static DESCRIPTION = 'Displays all blacklisted words.';
+    public static DESCRIPTION = 'Displays the currently set Starboard channel';
 
-    public static NO_WORDS_FOUND = 'There are no words set for this server!';
+    public static CHANNEL_NOT_SET = 'There is no Starboard channel set for this server.';
 
-    public static EMBED_TITLE = 'Blacklisted Words';
+    public static EMBED_TITLE = 'Starboard Channel';
 
     /** SaveServer: false, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
@@ -20,11 +20,11 @@ export class ListWordsCommand extends Command {
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
     /**
-     * This function executes the list words command.
-     * Lists out all the banned words that the server has.
+     * This function executes the getchannel command
+     * Sets the Starboard channel of the server.
      *
-     * @param  {Server} server
-     * @param  {Message} message
+     * @param  {Server} server Server object of the message
+     * @param  {Message} message Message object from the bot's on message event
      * @returns CommandResult
      */
     public execute(server: Server, message: Message): CommandResult {
@@ -33,7 +33,7 @@ export class ListWordsCommand extends Command {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        // Execute Command
+        // Execute
         message.channel.send(this.generateEmbed(server));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -46,19 +46,14 @@ export class ListWordsCommand extends Command {
      */
     /* eslint-disable class-methods-use-this */
     public generateEmbed(server: Server): RichEmbed {
-        const bannedWords = server.messageCheckerSettings.getBannedWords();
-        bannedWords.sort();
-
+        const channelId = server.starboardSettings.getChannel();
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
-        if (bannedWords.length === 0) {
-            embed.addField(ListWordsCommand.EMBED_TITLE, ListWordsCommand.NO_WORDS_FOUND);
+        if (typeof channelId === 'undefined') {
+            embed.addField(GetStarboardChannelCommand.EMBED_TITLE,
+                GetStarboardChannelCommand.CHANNEL_NOT_SET);
         } else {
-            let output = '';
-            for (const word of bannedWords) {
-                output += `${word}\n`;
-            }
-            embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(ListWordsCommand.EMBED_TITLE, output);
+            const msg = `Starboard Channel is currently set to <#${channelId}>.`;
+            embed.addField(GetStarboardChannelCommand.EMBED_TITLE, msg);
         }
         return embed;
     }

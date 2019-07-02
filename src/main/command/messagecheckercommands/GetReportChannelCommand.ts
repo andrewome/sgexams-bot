@@ -4,7 +4,9 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class GetReportChannelCommand extends Command {
-    public static COMMAND_NAME = 'getreportchannel';
+    public static COMMAND_NAME = 'GetReportChannel';
+
+    public static COMMAND_NAME_LOWER_CASE = GetReportChannelCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Displays the reporting channel to post incident reports for this server when blacklisted words are used.';
 

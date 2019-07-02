@@ -4,6 +4,7 @@ import { GetReportChannelCommand } from '../../../main/command/messagecheckercom
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
+import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 
 should();
 
@@ -16,7 +17,11 @@ const { CHANNEL_NOT_SET } = GetReportChannelCommand;
 const { EMBED_TITLE } = GetReportChannelCommand;
 
 beforeEach((): void => {
-    server = new Server('123', new MessageCheckerSettings());
+    server = new Server(
+        '123',
+        new MessageCheckerSettings(),
+        new StarboardSettings(null, null, null),
+);
 });
 
 describe('GetReportChannelCommand class test suite', (): void => {

@@ -4,6 +4,7 @@ import { Server } from '../../../main/storage/Server';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { RemoveWordCommand } from '../../../main/command/messagecheckercommands/RemoveWordCommand';
 import { Command } from '../../../main/command/Command';
+import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 
 should();
 
@@ -18,8 +19,13 @@ const { MAYBE_WORDS_NOT_INSIDE } = RemoveWordCommand;
 const { UNABLE_TO_REMOVE_WORDS } = RemoveWordCommand;
 const { NO_ARGUMENTS } = RemoveWordCommand;
 const words = ['word1', 'word2', 'word3'];
+
 beforeEach((): void => {
-    server = new Server('123', new MessageCheckerSettings());
+    server = new Server(
+        '123',
+        new MessageCheckerSettings(),
+        new StarboardSettings(null, null, null),
+);
     for (const word of words) server.messageCheckerSettings.addbannedWord(word);
 });
 

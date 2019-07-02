@@ -5,6 +5,7 @@ import { SetResponseMessageCommand, ResponseType } from '../../../main/command/m
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { Server } from '../../../main/storage/Server';
+import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 
 should();
 
@@ -21,7 +22,11 @@ const { EMBED_TITLE } = SetResponseMessageCommand;
 const { RESPONSE_MESSAGE_CANNOT_BE_UNDEFINED } = SetResponseMessageCommand;
 
 beforeEach((): void => {
-    server = new Server('123', new MessageCheckerSettings());
+    server = new Server(
+        '123',
+        new MessageCheckerSettings(),
+        new StarboardSettings(null, null, null),
+);
 });
 
 describe('SetResponseMessageCommand test suite', (): void => {

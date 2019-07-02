@@ -10,7 +10,9 @@ export enum ResponseType {
 }
 
 export class SetDeleteMessageCommand extends Command {
-    public static COMMAND_NAME = 'setdeletemessage';
+    public static COMMAND_NAME = 'SetDeleteMessage';
+
+    public static COMMAND_NAME_LOWER_CASE = SetDeleteMessageCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Sets whether the bot should delete instances of blacklisted words being used.';
 
