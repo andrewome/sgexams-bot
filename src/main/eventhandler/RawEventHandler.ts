@@ -46,8 +46,8 @@ export class RawEventHandler implements EventHandler {
         (channel as TextChannel).fetchMessage(this.packet.d.message_id)
             .then((message: Message): void => {
                 const emoji = this.packet.d.emoji.id
-                                ? `${this.packet.d.emoji.name}:${this.packet.d.emoji.id}`
-                                : this.packet.d.emoji.name;
+                              ? `${this.packet.d.emoji.name}:${this.packet.d.emoji.id}`
+                              : this.packet.d.emoji.name;
                 const reaction = message.reactions.get(emoji);
 
                 // It can be undefined if the emoji was removed from the message

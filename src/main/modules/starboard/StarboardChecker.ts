@@ -1,7 +1,7 @@
 import {
  MessageReaction, Message, User, Collection, TextChannel, Emoji,
 } from 'discord.js';
-import { StarboardSettings } from '../../storage/StarboardSettings';
+import { StarboardSettings, SimplifiedEmoji } from '../../storage/StarboardSettings';
 
 export class StarboardChecker {
     private starboardSettings: StarboardSettings;
@@ -26,7 +26,7 @@ export class StarboardChecker {
      * @param  {string|null} channel
      * @returns boolean false if failed, true if passed
      */
-    private standardChecks(starboardEmoji: Emoji | null,
+    private standardChecks(starboardEmoji: SimplifiedEmoji | null,
                            threshold: number | null,
                            channel: string | null): boolean {
         // If any of the settings are null, starboard cannot work

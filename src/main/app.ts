@@ -11,9 +11,9 @@ import { Storage } from './storage/Storage';
 import { MessageCheckerSettings } from './storage/MessageCheckerSettings';
 import { CommandResult } from './command/classes/CommandResult';
 import { StarboardSettings } from './storage/StarboardSettings';
-import { RawEventHandler } from './handler/RawEventHandler';
-import { MessageReactionAddEventHandler } from './handler/MessageReactionAddEventHandler';
-import { MessageReactionRemoveEventHandler } from './handler/MessageReactionRemoveEventHandler';
+import { RawEventHandler } from './eventhandler/RawEventHandler';
+import { MessageReactionAddEventHandler } from './eventhandler/MessageReactionAddEventHandler';
+import { MessageReactionRemoveEventHandler } from './eventhandler/MessageReactionRemoveEventHandler';
 
 // Set up logging method
 log.enableAll();

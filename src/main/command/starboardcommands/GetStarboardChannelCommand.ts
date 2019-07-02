@@ -48,7 +48,7 @@ export class GetStarboardChannelCommand extends Command {
     public generateEmbed(server: Server): RichEmbed {
         const channelId = server.starboardSettings.getChannel();
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
-        if (typeof channelId === 'undefined') {
+        if (channelId === null) {
             embed.addField(GetStarboardChannelCommand.EMBED_TITLE,
                 GetStarboardChannelCommand.CHANNEL_NOT_SET);
         } else {
