@@ -1,23 +1,25 @@
 import {
  Client, TextChannel, Message, Emoji,
 } from 'discord.js';
+import { Storage } from '../storage/Storage';
 import { EventHandler } from './EventHandler';
+import { MessageReactionAddEventHandler } from './MessageReactionAddEventHandler';
+import { MessageReactionRemoveEventHandler } from './MessageReactionRemoveEventHandler';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export class RawEventHandler implements EventHandler {
+export class RawEventHandler extends EventHandler {
     public packet: any;
 
     public bot: Client;
 
     public static EVENTS = ['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'];
 
-    public static MESSAGE_REACTION_ADD_EVENT = 'messageReactionAdd';
-
-    public static MESSAGE_REACTION_REMOVE_EVENT = 'messageReactionRemove';
-
     public static MESSAGE_REACTION_DELETED_EVENT = 'messageReactionDeleted';
 
-    public constructor(bot: Client, packet: any) {
+    public static EVENT_NAME = 'raw';
+
+    public constructor(storage: Storage, bot: Client, packet: any) {
+        super(storage);
         this.bot = bot;
         this.packet = packet;
     }
@@ -31,8 +33,6 @@ export class RawEventHandler implements EventHandler {
     public handleEvent(): void {
         const {
             EVENTS,
-            MESSAGE_REACTION_ADD_EVENT,
-            MESSAGE_REACTION_REMOVE_EVENT,
             MESSAGE_REACTION_DELETED_EVENT,
         } = RawEventHandler;
 
@@ -60,7 +60,7 @@ export class RawEventHandler implements EventHandler {
 
                     if (this.packet.t === EVENTS[1]) {
                         this.bot.emit(
-                            MESSAGE_REACTION_REMOVE_EVENT,
+                            MessageReactionAddEventHandler.EVENT_NAME,
                             reaction,
                             this.bot.users.get(this.packet.d.user_id),
                         );
@@ -72,7 +72,7 @@ export class RawEventHandler implements EventHandler {
 
                 if (this.packet.t === EVENTS[0]) {
                     this.bot.emit(
-                        MESSAGE_REACTION_ADD_EVENT,
+                        MessageReactionRemoveEventHandler.EVENT_NAME,
                         reaction,
                         this.bot.users.get(this.packet.d.user_id),
                     );

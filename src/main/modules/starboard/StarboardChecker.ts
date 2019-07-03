@@ -1,5 +1,5 @@
 import {
- MessageReaction, Message, User, Collection, TextChannel, Emoji,
+ MessageReaction, Message, User, Collection, TextChannel,
 } from 'discord.js';
 import { StarboardSettings, SimplifiedEmoji } from '../../storage/StarboardSettings';
 
