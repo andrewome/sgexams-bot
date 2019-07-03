@@ -23,9 +23,9 @@ export class MessageReactionAddEventHandler extends EventHandler {
     public async handleEvent(): Promise<void> {
         const server = this.getServer(this.reaction.message.guild.id.toString());
         const { starboardSettings } = server;
-        const starboardChecker
-            = new StarboardChecker(starboardSettings, this.reaction);
-        if (await starboardChecker.checkAddReact()) {
+        const starboardChecker = new StarboardChecker(starboardSettings, this.reaction);
+        const shouldMakeChanges = await starboardChecker.checkAddReact();
+        if (shouldMakeChanges) {
             const starboardResponse = new StarboardResponse(starboardSettings, this.reaction);
             const exists = await starboardChecker.checkIfMessageExists();
             if (exists) {

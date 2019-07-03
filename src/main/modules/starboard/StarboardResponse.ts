@@ -103,8 +103,14 @@ export class StarboardResponse {
                 = this.reaction.message.guild.channels.get(this.starboardSettings.getChannel()!);
             (starboardChannel as TextChannel).fetchMessage(messageId)
                 .then((message: Message): void => {
+                    let replacementValue: number;
+                    if (Number.isNaN(numberOfReacts)) {
+                        replacementValue = 0;
+                    } else {
+                        replacementValue = numberOfReacts;
+                    }
                     const content = message.content.split(' ');
-                    content[0] = `**${numberOfReacts}**`;
+                    content[0] = `**${replacementValue}**`;
 
                     let newContent = '';
                     for (const str of content) {
@@ -116,6 +122,12 @@ export class StarboardResponse {
         });
     }
 
+    /**
+     * Deletes message from starboard channel
+     *
+     * @param  {string} messageId
+     * @returns Promise
+     */
     public async deleteStarboardMessage(messageId: string): Promise<void> {
         return new Promise<void>((): void => {
             // Get channel, then message

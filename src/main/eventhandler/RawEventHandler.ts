@@ -60,7 +60,7 @@ export class RawEventHandler extends EventHandler {
 
                     if (this.packet.t === EVENTS[1]) {
                         this.bot.emit(
-                            MessageReactionAddEventHandler.EVENT_NAME,
+                            MessageReactionRemoveEventHandler.EVENT_NAME,
                             reaction,
                             this.bot.users.get(this.packet.d.user_id),
                         );
@@ -72,7 +72,7 @@ export class RawEventHandler extends EventHandler {
 
                 if (this.packet.t === EVENTS[0]) {
                     this.bot.emit(
-                        MessageReactionRemoveEventHandler.EVENT_NAME,
+                        MessageReactionAddEventHandler.EVENT_NAME,
                         reaction,
                         this.bot.users.get(this.packet.d.user_id),
                     );

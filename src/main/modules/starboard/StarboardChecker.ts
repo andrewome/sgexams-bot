@@ -77,16 +77,14 @@ export class StarboardChecker {
             }
 
             // Get the count of the number of reactions of starboard emoji.
-            this.reaction.fetchUsers()
-                .then((users: Collection<string, User>): void => {
-                    const { size } = users;
-                    if (size < threshold!) {
-                        resolve(false);
-                        return;
-                    }
+            this.getNumberOfReactions().then((size: number): void => {
+                if (size < threshold!) {
+                    resolve(false);
+                } else {
                     this.numberOfReactions = size;
                     resolve(true);
-                });
+                }
+            });
         });
     }
 
@@ -148,10 +146,32 @@ export class StarboardChecker {
             this.checkIfMessageExists()
                 .then((exists: boolean): void => {
                     if (exists) {
-                        resolve(true);
+                        // Get the count of the number of
+                        // reactions of starboard emoji.
+                        this.getNumberOfReactions()
+                            .then((size: number): void => {
+                                this.numberOfReactions = size;
+                                resolve(true);
+                            });
                     } else {
                         resolve(false);
                     }
+                });
+        });
+    }
+
+    /**
+     * Fetches the number of reactions on a MessageReaction object
+     * because the built in one on Discord.js relies on cache.
+     *
+     * @returns Promise
+     */
+    private async getNumberOfReactions(): Promise<number> {
+        return new Promise<number>((resolve): void => {
+            this.reaction.fetchUsers()
+                .then((users: Collection<string, User>): void => {
+                    const { size } = users;
+                    resolve(size);
                 });
         });
     }

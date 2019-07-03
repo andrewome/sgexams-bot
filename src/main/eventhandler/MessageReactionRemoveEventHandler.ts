@@ -23,20 +23,14 @@ export class MessageReactionRemoveEventHandler extends EventHandler {
     public async handleEvent(): Promise<void> {
         const server = this.getServer(this.reaction.message.guild.id.toString());
         const { starboardSettings } = server;
-        const starboardChecker
-            = new StarboardChecker(starboardSettings, this.reaction);
-        if (await starboardChecker.checkRemoveReact()) {
+        const starboardChecker = new StarboardChecker(starboardSettings, this.reaction);
+        const shouldMakeChanges = await starboardChecker.checkRemoveReact();
+        if (shouldMakeChanges) {
             const starboardResponse = new StarboardResponse(starboardSettings, this.reaction);
-            const shouldDelete = await starboardChecker.shouldDeleteMessage();
-            if (shouldDelete) {
-                await starboardResponse
-                    .deleteStarboardMessage(starboardChecker.messageIdInStarboardChannel!);
-            } else {
-                await starboardResponse.editStarboardMessageCount(
-                    starboardChecker.numberOfReactions,
-                    starboardChecker.messageIdInStarboardChannel!,
-                );
-            }
+            starboardResponse.editStarboardMessageCount(
+                starboardChecker.numberOfReactions,
+                starboardChecker.messageIdInStarboardChannel!,
+            );
         }
     }
 }
