@@ -13,9 +13,10 @@ export class MessageUpdateEventHandler extends EventHandler {
         super(storage);
         this.message = message;
     }
+
     /**
      * Handles when message is editted
-     * 
+     *
      * @returns Promise
      */
     public async handleEvent(): Promise<void> {

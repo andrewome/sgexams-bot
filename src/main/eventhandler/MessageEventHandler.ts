@@ -20,7 +20,7 @@ export class MessageEventHandler extends MessageUpdateEventHandler {
 
     /**
      * Handles message event
-     * 
+     *
      * @returns Promise
      */
     public async handleEvent(): Promise<void> {

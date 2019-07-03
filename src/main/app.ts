@@ -37,28 +37,28 @@ class App {
      * Contains event emitters that the bot is listening to
      */
     public run(): void {
-        this.bot.on(this.MESSAGE, async (message: Message): Promise<void> => {
+        this.bot.on(this.MESSAGE, (message: Message): void => {
             new MessageEventHandler(message, this.storage, this.bot.user.id).handleEvent();
         });
 
-        this.bot.on(this.MESSAGE_UPDATE, async (oldMessage: Message,
-                                                newMessage: Message): Promise<void> => {
+        this.bot.on(this.MESSAGE_UPDATE, (oldMessage: Message,
+                                          newMessage: Message): void => {
             new MessageUpdateEventHandler(this.storage, newMessage).handleEvent();
         });
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.bot.on(this.RAW, async (packet: any): Promise<void> => {
+        this.bot.on(this.RAW, (packet: any): void => {
             new RawEventHandler(this.storage, this.bot, packet).handleEvent();
         });
 
         /* eslint-disable @typescript-eslint/no-unused-vars */
-        this.bot.on(this.REACTION_ADD, async (reaction: MessageReaction,
-                                              user: User): Promise<void> => {
+        this.bot.on(this.REACTION_ADD, (reaction: MessageReaction,
+                                        user: User): void => {
             new MessageReactionAddEventHandler(this.storage, reaction).handleEvent();
         });
 
-        this.bot.on(this.REACTION_REMOVE, async (reaction: MessageReaction,
-                                                 user: User): Promise<void> => {
+        this.bot.on(this.REACTION_REMOVE, (reaction: MessageReaction,
+                                           user: User): void => {
             new MessageReactionRemoveEventHandler(this.storage, reaction).handleEvent();
         });
         /* eslint-enable @typescript-eslint/no-unused-vars */
