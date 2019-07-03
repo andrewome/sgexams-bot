@@ -1,17 +1,17 @@
 import { MessageReaction } from 'discord.js';
 import { EventHandler } from './EventHandler';
-import { StarboardSettings } from '../storage/StarboardSettings';
 import { StarboardChecker } from '../modules/starboard/StarboardChecker';
 import { StarboardResponse } from '../modules/starboard/StarboardResponse';
+import { Storage } from '../storage/Storage';
 
-export class MessageReactionAddEventHandler implements EventHandler {
-    public starboardSettings: StarboardSettings;
+export class MessageReactionAddEventHandler extends EventHandler {
+    public static EVENT_NAME = 'messageReactionAdd';
 
     public reaction: MessageReaction;
 
-    public constructor(starboardSettings: StarboardSettings,
+    public constructor(storage: Storage,
                        reaction: MessageReaction) {
-        this.starboardSettings = starboardSettings;
+        super(storage);
         this.reaction = reaction;
     }
 
@@ -21,10 +21,12 @@ export class MessageReactionAddEventHandler implements EventHandler {
      * @returns Promise
      */
     public async handleEvent(): Promise<void> {
-        const starboardChecker
-            = new StarboardChecker(this.starboardSettings, this.reaction);
-        if (await starboardChecker.checkAddReact()) {
-            const starboardResponse = new StarboardResponse(this.starboardSettings, this.reaction);
+        const server = this.getServer(this.reaction.message.guild.id.toString());
+        const { starboardSettings } = server;
+        const starboardChecker = new StarboardChecker(starboardSettings, this.reaction);
+        const shouldMakeChanges = await starboardChecker.checkAddReact();
+        if (shouldMakeChanges) {
+            const starboardResponse = new StarboardResponse(starboardSettings, this.reaction);
             const exists = await starboardChecker.checkIfMessageExists();
             if (exists) {
                 await starboardResponse.editStarboardMessageCount(

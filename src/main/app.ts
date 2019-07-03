@@ -3,17 +3,72 @@ import {
  Client, Message, MessageReaction, User,
 } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
-import { MessageChecker } from './modules/messagechecker/MessageChecker';
-import { MessageResponse } from './modules/messagechecker/response/MessageResponse';
-import { CommandParser } from './command/CommandParser';
-import { Server } from './storage/Server';
 import { Storage } from './storage/Storage';
-import { MessageCheckerSettings } from './storage/MessageCheckerSettings';
-import { CommandResult } from './command/classes/CommandResult';
-import { StarboardSettings } from './storage/StarboardSettings';
 import { RawEventHandler } from './eventhandler/RawEventHandler';
 import { MessageReactionAddEventHandler } from './eventhandler/MessageReactionAddEventHandler';
 import { MessageReactionRemoveEventHandler } from './eventhandler/MessageReactionRemoveEventHandler';
+import { MessageEventHandler } from './eventhandler/MessageEventHandler';
+import { MessageUpdateEventHandler } from './eventhandler/MessageUpdateEventHandler';
+
+class App {
+    private bot: Client;
+
+    private storage: Storage;
+
+    private MESSAGE = MessageEventHandler.EVENT_NAME;
+
+    private MESSAGE_UPDATE = MessageUpdateEventHandler.EVENT_NAME;
+
+    private REACTION_ADD = MessageReactionAddEventHandler.EVENT_NAME;
+
+    private REACTION_REMOVE = MessageReactionRemoveEventHandler.EVENT_NAME;
+
+    private RAW = RawEventHandler.EVENT_NAME;
+
+    public constructor() {
+        this.bot = new Client();
+        log.info('Logging the bot in...');
+        this.bot.login(process.env.BOT_TOKEN);
+        log.info('Loading Servers...');
+        this.storage = new Storage().loadServers();
+    }
+
+    /**
+     * Contains event emitters that the bot is listening to
+     */
+    public run(): void {
+        this.bot.on(this.MESSAGE, (message: Message): void => {
+            new MessageEventHandler(message, this.storage, this.bot.user.id).handleEvent();
+        });
+
+        this.bot.on(this.MESSAGE_UPDATE, (oldMessage: Message,
+                                          newMessage: Message): void => {
+            new MessageUpdateEventHandler(this.storage, newMessage).handleEvent();
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        this.bot.on(this.RAW, (packet: any): void => {
+            new RawEventHandler(this.storage, this.bot, packet).handleEvent();
+        });
+
+        /* eslint-disable @typescript-eslint/no-unused-vars */
+        this.bot.on(this.REACTION_ADD, (reaction: MessageReaction,
+                                        user: User): void => {
+            new MessageReactionAddEventHandler(this.storage, reaction).handleEvent();
+        });
+
+        this.bot.on(this.REACTION_REMOVE, (reaction: MessageReaction,
+                                           user: User): void => {
+            new MessageReactionRemoveEventHandler(this.storage, reaction).handleEvent();
+        });
+        /* eslint-enable @typescript-eslint/no-unused-vars */
+
+        this.bot.on('ready', (): void => {
+            log.info('I am ready!');
+            this.bot.user.setActivity('with NUKES!!!!', { type: 'PLAYING' });
+        });
+    }
+}
 
 // Set up logging method
 log.enableAll();
@@ -28,142 +83,5 @@ log.methodFactory = function (methodName, logLevel, loggerName): LoggingMethod {
     };
 };
 log.setLevel(log.getLevel());
-
-class App {
-    private bot: Client;
-
-    private storage: Storage;
-
-    public constructor() {
-        this.bot = new Client();
-        log.info('Logging the bot in...');
-        this.bot.login(process.env.BOT_TOKEN);
-        log.info('Loading Servers...');
-        this.storage = new Storage().loadServers();
-    }
-
-    /**
-     * Retrieves server object from server map
-     *
-     * @param  {string} id Server Id
-     * @returns Server
-     */
-    private getServer(id: string): Server {
-        if (this.storage.servers.has(id) === false) {
-            this.storage.servers.set(id,
-                                     new Server(id,
-                                     new MessageCheckerSettings(),
-                                     new StarboardSettings(null, null, null)));
-        }
-        return this.storage.servers.get(id)!;
-    }
-
-    /**
-     * Contains event emitters that the bot is listening to
-     */
-    public run(): void {
-        this.bot.on('message', async (message: Message): Promise<void> => {
-            // If it is a DM, ignore.
-            if (message.guild === null) return;
-            // If it's a bot, ignore :)
-            if (message.author.bot) return;
-
-            // Retrieve server
-            const server = this.getServer(message.guild.id.toString());
-            const bannedWords = server.messageCheckerSettings.getBannedWords();
-            const reportingChannelId = server.messageCheckerSettings.getReportingChannelId();
-            const responseMessage = server.messageCheckerSettings.getResponseMessage();
-            const deleteMessage = server.messageCheckerSettings.getDeleteMessage();
-
-            // If it's a command, execute the command and save servers
-            const commandParser = new CommandParser(message.content);
-            // Default command result - do not save, check messages.
-            let commandResult = new CommandResult(false, true);
-            if (commandParser.isCommand(this.bot.user.id.toString())) {
-                commandResult = commandParser.getCommand().execute(server, message);
-            }
-
-            if (commandResult.shouldSaveServers) this.storage.saveServers();
-
-            // Check message contents if it contains a bad word >:o
-            if (commandResult.shouldCheckMessage) {
-                try {
-                    this.checkMessage(message,
-                                      bannedWords,
-                                      reportingChannelId,
-                                      responseMessage,
-                                      deleteMessage);
-                } catch (err) {
-                    log.error(err);
-                }
-            }
-        });
-
-        this.bot.on('messageUpdate', async (oldMessage, newMessage): Promise<void> => {
-            // If it is a DM, ignore.
-            if (newMessage.guild === null) return;
-            // If it's a bot, ignore :)
-            if (newMessage.author.bot) return;
-
-            // Retrieve server
-            const server = this.getServer(newMessage.guild.id.toString());
-            const bannedWords = server.messageCheckerSettings.getBannedWords();
-            const reportingChannelId = server.messageCheckerSettings.getReportingChannelId();
-            const responseMessage = server.messageCheckerSettings.getResponseMessage();
-            const deleteMessage = server.messageCheckerSettings.getDeleteMessage();
-
-            // Check message contents if it contains a bad word >:o
-            try {
-                this.checkMessage(newMessage,
-                                  bannedWords,
-                                  reportingChannelId,
-                                  responseMessage,
-                                  deleteMessage);
-            } catch (err) {
-                log.error(err);
-            }
-        });
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.bot.on('raw', async (packet: any): Promise<void> => {
-            new RawEventHandler(this.bot, packet).handleEvent();
-        });
-
-        this.bot.on('messageReactionAdd', async (reaction: MessageReaction,
-                                                 user: User): Promise<void> => {
-            const server = this.getServer(reaction.message.guild.id.toString());
-            const { starboardSettings } = server;
-            new MessageReactionAddEventHandler(starboardSettings, reaction).handleEvent();
-        });
-
-        this.bot.on('messageReactionRemove', async (reaction: MessageReaction,
-                                                    user: User): Promise<void> => {
-            const server = this.getServer(reaction.message.guild.id.toString());
-            const { starboardSettings } = server;
-            new MessageReactionRemoveEventHandler(starboardSettings, reaction).handleEvent();
-        });
-
-        this.bot.on('ready', (): void => {
-            log.info('I am ready!');
-            this.bot.user.setActivity('with NUKES!!!!', { type: 'PLAYING' });
-        });
-    }
-
-    /* eslint-disable class-methods-use-this */
-    private async checkMessage(message: Message,
-                               bannedWords: string[],
-                               reportingChannelId: string | undefined,
-                               responseMessage: string | undefined,
-                               deleteMessage: boolean): Promise<void> {
-        const result = await new MessageChecker().checkMessage(message.content, bannedWords);
-        if (result.guilty) {
-            new MessageResponse(message)
-                .sendReport(result, reportingChannelId)
-                .sendMessageToUser(responseMessage)
-                .deleteMessage(deleteMessage);
-        }
-    }
-    /* eslint-enable class-methods-use-this */
-}
 
 new App().run();
