@@ -19,7 +19,7 @@ export class MessageChecker {
      */
     public async checkMessage(content: string,
                               bannedWords: string[]): Promise<MessageCheckerResult> {
-        return new Promise<MessageCheckerResult>(async (resolve): Promise<void> => {
+        return new Promise<MessageCheckerResult>((resolve): void => {
             // Removing diacritic accents
             // https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
             // eslint-disable-next-line no-param-reassign
@@ -53,22 +53,24 @@ export class MessageChecker {
                 promises.push(this.checkContext(context));
             }
 
-            const results = await Promise.all(promises);
-            for (const result of results) {
-                if (result !== null) {
-                    realBannedWords.push(result);
-                }
-            }
+            Promise.all(promises)
+                .then((results: (Context | null)[]): void => {
+                    for (const result of results) {
+                        if (result !== null) {
+                            realBannedWords.push(result);
+                        }
+                    }
 
-            // Create result and resolve promise
-            let isGuilty: boolean;
-            if (realBannedWords.length === 0) {
-                isGuilty = false;
-            } else {
-                isGuilty = true;
-            }
-            const result = new MessageCheckerResult(isGuilty, realBannedWords);
-            resolve(result);
+                    // Create result and resolve promise
+                    let isGuilty: boolean;
+                    if (realBannedWords.length === 0) {
+                        isGuilty = false;
+                    } else {
+                        isGuilty = true;
+                    }
+                    const result = new MessageCheckerResult(isGuilty, realBannedWords);
+                    resolve(result);
+                });
         });
     }
 
@@ -79,7 +81,7 @@ export class MessageChecker {
      * @return Promise<Context | null> if the context is found to be a banned word
      */
     private async checkContext(context: Context): Promise<Context | null> {
-        return new Promise<Context | null>(async (resolve): Promise<void> => {
+        return new Promise<Context | null>((resolve): void => {
             const { bannedWord } = context;
             const { convertedContext } = context;
 
@@ -105,37 +107,41 @@ export class MessageChecker {
                     promises.push(this.checkWord(word, bannedWord));
                 }
 
-                const results = await Promise.all(promises);
-                for (const result of results) {
-                    if (result === true) {
-                        isLegit = false;
+                Promise.all(promises).then((results: boolean[]): void => {
+                    for (const result of results) {
+                        if (result === true) {
+                            isLegit = false;
+                        }
                     }
-                }
 
-                if (isLegit) {
-                    resolve(null);
-                    return;
-                }
+                    if (isLegit) {
+                        resolve(null);
+                        return;
+                    }
 
-                // Give second chance - test the word without any alphanumerics
-                let word = '';
-                for (const word_ of words) {
-                    word += word_;
-                }
+                    // Give second chance - test the word without any alphanumerics
+                    let word = '';
+                    for (const word_ of words) {
+                        word += word_;
+                    }
 
-                const isBadWord = await this.checkWord(word, bannedWord);
-                if (isBadWord) {
-                    resolve(context);
-                } else {
-                    resolve(null);
-                }
+                    this.checkWord(word, bannedWord)
+                        .then((isBadWord: boolean): void => {
+                            if (isBadWord) {
+                                resolve(context);
+                            } else {
+                                resolve(null);
+                            }
+                    });
+                });
             } else { // Trivial check
-                const isBadWord = await this.checkWord(convertedContext, bannedWord);
-                if (isBadWord) {
-                    resolve(context);
-                } else {
-                    resolve(null);
-                }
+                this.checkWord(convertedContext, bannedWord).then((isBadWord: boolean): void => {
+                    if (isBadWord) {
+                        resolve(context);
+                    } else {
+                        resolve(null);
+                    }
+                });
             }
         });
     }
@@ -146,6 +152,7 @@ export class MessageChecker {
      * @param  {string} context Context
      * @param  {string} bannedWord banned word
      */
+    // eslint-disable-next-line class-methods-use-this
     private async checkWord(context: string, bannedWord: string): Promise<boolean> {
         return new Promise<boolean>(async (resolve): Promise<void> => {
             // If it's a perfect match with a banned word, no need to query.
