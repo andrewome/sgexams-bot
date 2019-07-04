@@ -41,7 +41,7 @@ export class RawEventHandler extends EventHandler {
         const channel = this.bot.channels.get(this.packet.d.channel_id)!;
         if (channel === undefined) return;
         if (channel.type !== 'text') return;
-        if ((channel as TextChannel).messages.has(this.packet.d.channel_id)) return;
+        if ((channel as TextChannel).messages.has(this.packet.d.message_id)) return;
 
         (channel as TextChannel).fetchMessage(this.packet.d.message_id)
             .then((message: Message): void => {
@@ -65,18 +65,18 @@ export class RawEventHandler extends EventHandler {
                             this.bot.users.get(this.packet.d.user_id),
                         );
                     }
+
+                    if (this.packet.t === EVENTS[0]) {
+                        this.bot.emit(
+                            MessageReactionAddEventHandler.EVENT_NAME,
+                            reaction,
+                            this.bot.users.get(this.packet.d.user_id),
+                        );
+                    }
                 } else if (this.packet.t === EVENTS[1]) {
                         const removedEmoji = new Emoji(message.guild, this.packet.d.emoji);
                         this.bot.emit(MESSAGE_REACTION_DELETED_EVENT, message, removedEmoji);
                     }
-
-                if (this.packet.t === EVENTS[0]) {
-                    this.bot.emit(
-                        MessageReactionAddEventHandler.EVENT_NAME,
-                        reaction,
-                        this.bot.users.get(this.packet.d.user_id),
-                    );
-                }
             });
     }
 }
