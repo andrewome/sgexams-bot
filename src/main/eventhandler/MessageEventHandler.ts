@@ -4,17 +4,20 @@ import { CommandResult } from '../command/classes/CommandResult';
 import { Storage } from '../storage/Storage';
 import { MessageChecker } from '../modules/messagechecker/MessageChecker';
 import { MessageResponse } from '../modules/messagechecker/response/MessageResponse';
-import { MessageUpdateEventHandler } from './MessageUpdateEventHandler';
+import { EventHandler } from './EventHandler';
 
-export class MessageEventHandler extends MessageUpdateEventHandler {
+export class MessageEventHandler extends EventHandler {
     public static EVENT_NAME = 'message';
+
+    private message: Message;
 
     private botId: string;
 
     public constructor(message: Message,
                        storage: Storage,
                        botId: string) {
-        super(storage, message);
+        super(storage);
+        this.message = message;
         this.botId = botId;
     }
 

@@ -50,6 +50,11 @@ export class StarboardChecker {
             return false;
         }
 
+        // If the ID of the emoji being reacted is not the starboard emoji, ignore
+        if (this.reaction.emoji.id !== starboardEmoji!.id) {
+            return false;
+        }
+
         return true;
     }
 
@@ -66,12 +71,6 @@ export class StarboardChecker {
             const channel = this.starboardSettings.getChannel();
 
             if (!this.standardChecks(starboardEmoji, threshold, channel)) {
-                resolve(false);
-                return;
-            }
-
-            // If the ID of the emoji being reacted is not the starboard emoji, ignore
-            if (this.reaction.emoji.id !== starboardEmoji!.id) {
                 resolve(false);
                 return;
             }
