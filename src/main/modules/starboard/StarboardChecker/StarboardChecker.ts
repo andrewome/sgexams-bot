@@ -1,12 +1,12 @@
 import {
  MessageReaction, Message, User, Collection, TextChannel,
 } from 'discord.js';
-import { StarboardSettings, SimplifiedEmoji } from '../../storage/StarboardSettings';
+import { StarboardSettings, SimplifiedEmoji } from '../../../storage/StarboardSettings';
 
 export class StarboardChecker {
-    private starboardSettings: StarboardSettings;
+    protected starboardSettings: StarboardSettings;
 
-    private reaction: MessageReaction;
+    protected reaction: MessageReaction;
 
     public numberOfReactions: number = NaN;
 
@@ -26,7 +26,7 @@ export class StarboardChecker {
      * @param  {string|null} channel
      * @returns boolean false if failed, true if passed
      */
-    private standardChecks(starboardEmoji: SimplifiedEmoji | null,
+    protected standardChecks(starboardEmoji: SimplifiedEmoji | null,
                            threshold: number | null,
                            channel: string | null): boolean {
         // If any of the settings are null, starboard cannot work
@@ -56,35 +56,6 @@ export class StarboardChecker {
         }
 
         return true;
-    }
-
-    /**
-     * This function checks if the reaction qualifies for
-     * making changes to the Starboard.
-     *
-     * @returns Promise<boolean>
-     */
-    public async checkAddReact(): Promise<boolean> {
-        return new Promise<boolean>((resolve): void => {
-            const starboardEmoji = this.starboardSettings.getEmoji();
-            const threshold = this.starboardSettings.getThreshold();
-            const channel = this.starboardSettings.getChannel();
-
-            if (!this.standardChecks(starboardEmoji, threshold, channel)) {
-                resolve(false);
-                return;
-            }
-
-            // Get the count of the number of reactions of starboard emoji.
-            this.getNumberOfReactions().then((size: number): void => {
-                if (size < threshold!) {
-                    resolve(false);
-                } else {
-                    this.numberOfReactions = size;
-                    resolve(true);
-                }
-            });
-        });
     }
 
     /**
@@ -124,77 +95,17 @@ export class StarboardChecker {
     }
 
     /**
-     * This function checks if the reaction qualifies for
-     * making changes to the Starboard.
-     *
-     * @returns Promise<boolean>
-     */
-    public async checkRemoveReact(): Promise<boolean> {
-        return new Promise<boolean>((resolve): void => {
-            const starboardEmoji = this.starboardSettings.getEmoji();
-            const threshold = this.starboardSettings.getThreshold();
-            const channel = this.starboardSettings.getChannel();
-
-            if (!this.standardChecks(starboardEmoji, threshold, channel)) {
-                resolve(false);
-                return;
-            }
-
-            // Check if id of message appears in the Starboard
-            // If exists, definitely need to update (delete or edit)
-            this.checkIfMessageExists()
-                .then((exists: boolean): void => {
-                    if (exists) {
-                        // Get the count of the number of
-                        // reactions of starboard emoji.
-                        this.getNumberOfReactions()
-                            .then((size: number): void => {
-                                this.numberOfReactions = size;
-                                resolve(true);
-                            });
-                    } else {
-                        resolve(false);
-                    }
-                });
-        });
-    }
-
-    /**
      * Fetches the number of reactions on a MessageReaction object
      * because the built in one on Discord.js relies on cache.
      *
      * @returns Promise
      */
-    private async getNumberOfReactions(): Promise<number> {
+    protected async getNumberOfReactions(): Promise<number> {
         return new Promise<number>((resolve): void => {
             this.reaction.fetchUsers()
                 .then((users: Collection<string, User>): void => {
                     const { size } = users;
                     resolve(size);
-                });
-        });
-    }
-
-    /**
-     * This function checks if the starboard post should be deleted.
-     *
-     * @returns Promise true if delete, false if edit.
-     */
-    public async shouldDeleteMessage(): Promise<boolean> {
-        return new Promise<boolean>((resolve): void => {
-            const threshold = this.starboardSettings.getThreshold();
-
-            // Get the count of the number of reactions of starboard emoji.
-            this.reaction.fetchUsers()
-                .then((users: Collection<string, User>): void => {
-                    const { size } = users;
-                    // If smaller, should remove
-                    if (size < threshold!) {
-                        resolve(true);
-                    } else {
-                        this.numberOfReactions = size;
-                        resolve(false);
-                    }
                 });
         });
     }

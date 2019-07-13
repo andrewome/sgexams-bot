@@ -1,8 +1,8 @@
 import { MessageReaction } from 'discord.js';
 import { EventHandler } from './EventHandler';
-import { StarboardChecker } from '../modules/starboard/StarboardChecker';
 import { StarboardResponse } from '../modules/starboard/StarboardResponse';
 import { Storage } from '../storage/Storage';
+import { StarboardRemoveReactChecker } from '../modules/starboard/StarboardChecker/StarboardRemoveReactChecker';
 
 export class MessageReactionRemoveEventHandler extends EventHandler {
     public static EVENT_NAME = 'messageReactionRemove';
@@ -23,8 +23,12 @@ export class MessageReactionRemoveEventHandler extends EventHandler {
     public async handleEvent(): Promise<void> {
         const server = this.getServer(this.reaction.message.guild.id.toString());
         const { starboardSettings } = server;
-        const starboardChecker = new StarboardChecker(starboardSettings, this.reaction);
+        const starboardChecker = new StarboardRemoveReactChecker(starboardSettings, this.reaction);
+
+        // Check if the reaction removal qualifies for a change
         const shouldMakeChanges = await starboardChecker.checkRemoveReact();
+
+        // If it does, edit the starboard message, but don't delete to prevent abuse
         if (shouldMakeChanges) {
             const starboardResponse = new StarboardResponse(starboardSettings, this.reaction);
             starboardResponse.editStarboardMessageCount(
