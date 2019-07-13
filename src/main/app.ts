@@ -73,15 +73,22 @@ class App {
 // Set up logging method
 log.enableAll();
 const originalFactory = log.methodFactory;
-log.methodFactory = function (methodName, logLevel, loggerName): LoggingMethod {
-    const rawMethod = originalFactory(methodName, logLevel, loggerName);
 
-    return function (message): void {
+// Make logs show current date
+const newMethodFactory = (methodName: string,
+                          logLevel: 0 | 1 | 2 | 3 | 4 | 5,
+                          loggerName: string): LoggingMethod => {
+    const rawMethod = originalFactory(methodName, logLevel, loggerName);
+    const editedMethodFactory = (message: string): void => {
         const curDate = new Date().toLocaleString();
         const logMsg = `[${curDate}]: ${message}`;
         rawMethod(logMsg);
     };
+
+    return editedMethodFactory;
 };
+log.methodFactory = newMethodFactory;
+
 log.setLevel(log.getLevel());
 
 new App().run();

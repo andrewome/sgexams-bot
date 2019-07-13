@@ -27,7 +27,6 @@
         "no-underscore-dangle": "off",
         "no-continue": "off",
         "class-methods-use-this": "warn",
-        "no-async-promise-executor": "warn",
         "import/prefer-default-export": "off",
         "import/no-extraneous-dependencies": "off"
     },

@@ -43,6 +43,7 @@ export class Storage {
      */
     public saveServers(): void {
         const serverJsons = [];
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const [k, v] of this.servers) {
             serverJsons.push(Server.convertToJsonFriendly(v));
         }
