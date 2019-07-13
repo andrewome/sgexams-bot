@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars, func-names */
 import { should } from 'chai';
 import { DatamuseApi } from '../../../main/modules/messagechecker/datamuseapi/DatamuseApi';
 

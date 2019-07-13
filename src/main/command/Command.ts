@@ -56,6 +56,7 @@ export abstract class Command {
      * @param  {Permissions} userPermissions Permissions of the user
      * @returns boolean
      */
+    // eslint-disable-next-line class-methods-use-this
     public hasPermissions(commandPermissions: Permissions, userPermissions: Permissions): boolean {
         // Check if user permissions exist inside command permissions
         if (!userPermissions.has(commandPermissions)) {

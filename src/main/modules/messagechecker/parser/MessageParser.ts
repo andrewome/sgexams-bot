@@ -1,4 +1,5 @@
 export abstract class MessageParser {
+    /* eslint-disable class-methods-use-this */
     /**
      * This function checks if the unicode number is alphabetical
      * Taken from: https://stackoverflow.com/questions/4434076/best-way-to-alphanumeric-check-in-javascript
@@ -58,4 +59,5 @@ export abstract class MessageParser {
         }
         return false;
     }
+    /* eslint-enable class-methods-use-this */
 }

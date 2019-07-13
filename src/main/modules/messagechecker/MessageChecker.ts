@@ -4,6 +4,7 @@ import { CharacterSubstitutor } from './charactersubstitutor/CharacterSubstituto
 import { Context } from './classes/Context';
 import { ComplexMessageParser } from './parser/ComplexMessageParser';
 import { NaiveMessageParser } from './parser/NaiveMessageParser';
+import { DatamuseSpellingQueryResult } from './datamuseapi/DatamuseSpellingQueryResult';
 
 /** This class checks a message if it contains any banned words */
 export class MessageChecker {
@@ -154,44 +155,49 @@ export class MessageChecker {
      */
     // eslint-disable-next-line class-methods-use-this
     private async checkWord(context: string, bannedWord: string): Promise<boolean> {
-        return new Promise<boolean>(async (resolve): Promise<void> => {
+        return new Promise<boolean>((resolve): void => {
             // If it's a perfect match with a banned word, no need to query.
             if (context === bannedWord) {
                 resolve(true);
                 return;
             }
-            const datamuseQueryResults = await new DatamuseApi().checkSpelling(context);
-            // If no results, is not a legitimate word, mark it.
-            if (datamuseQueryResults.length === 0) {
-                resolve(true);
-                return;
-            }
-            // if it does not match the top few (3 for now), mark it
-            let canBeFound = false;
-            let idx = 0;
-            do {
-                const bestFitWord = datamuseQueryResults[idx].word;
 
-                // if the word can be found in the context, it is a legitimate word
-                // this adds some tolerance to prevent false positives
-                if (context.includes(bestFitWord)) {
-                    canBeFound = true;
-                }
+            // Query DatamuseAPI
+            new DatamuseApi().checkSpelling(context)
+                .then((datamuseQueryResults: DatamuseSpellingQueryResult[]): void => {
+                    // If no results, is not a legitimate word, mark it.
+                    if (datamuseQueryResults.length === 0) {
+                        resolve(true);
+                        return;
+                    }
+                    // if it does not match the top few (3 for now), mark it
+                    let canBeFound = false;
+                    let idx = 0;
+                    do {
+                        const bestFitWord = datamuseQueryResults[idx].word;
 
-                // if I can find the banned word in the query, mark it.
-                if (bannedWord === bestFitWord) {
-                    resolve(true);
-                }
-                idx++;
-            } while (idx < 3 && idx < datamuseQueryResults.length);
+                        // if the word can be found in the context, it is a legitimate word
+                        // this adds some tolerance to prevent false positives
+                        if (context.includes(bestFitWord)) {
+                            canBeFound = true;
+                        }
 
-            // if it does not match the top few, mark it for now; could be a masked banned word
-            // downside: typos will get flagged too
-            if (!canBeFound) {
-                resolve(true);
-                return;
-            }
-            resolve(false);
+                        // if I can find the banned word in the query, mark it.
+                        if (bannedWord === bestFitWord) {
+                            resolve(true);
+                        }
+                        idx++;
+                    } while (idx < 3 && idx < datamuseQueryResults.length);
+
+                    // if it does not match the top few, mark it for now;
+                    // could be a masked banned word
+                    // downside: typos will get flagged too
+                    if (!canBeFound) {
+                        resolve(true);
+                        return;
+                    }
+                    resolve(false);
+                });
         });
     }
 }
