@@ -55,10 +55,10 @@ export class StarboardResponse {
         };
 
         // This function handles attaching of images to the embed
-        const handleAttachmentAndEmbeds = (embed: RichEmbed,
-                                           embeds: MessageEmbed[],
-                                           attachments:
-                                           Collection <string, MessageAttachment>): void => {
+        const handleAttachmentAndEmbeds
+            = (embed: RichEmbed,
+               embeds: MessageEmbed[],
+               attachments: Collection <string, MessageAttachment>): void => {
             // Check embeds for image
             if (embeds.length > 0) {
                 const msgEmbed = embeds[0];
@@ -87,6 +87,7 @@ export class StarboardResponse {
                 }
             }
         };
+
         return new Promise<void>((): void => {
             const starboardChannelId = this.starboardSettings.getChannel()!;
             const { emoji } = this.reaction;
