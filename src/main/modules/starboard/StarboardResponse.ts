@@ -1,5 +1,5 @@
 import {
- MessageReaction, RichEmbed, TextChannel, Message,
+ MessageReaction, RichEmbed, TextChannel, Message, MessageAttachment, MessageEmbed, Collection,
 } from 'discord.js';
 import { StarboardSettings } from '../../storage/StarboardSettings';
 
@@ -28,6 +28,65 @@ export class StarboardResponse {
      * @returns Promise
      */
     public async addToStarboard(numberOfReacts: number): Promise<void> {
+        // This function splits up the contents into 1024 char sizes
+        const splitContents = (content: string): string[] => {
+            const output: string[] = [];
+
+            while (content.length > this.FIELD_CHAR_LIMIT) {
+                output.push(content.substring(0, this.FIELD_CHAR_LIMIT - 12) + this.DOTDOTDOT);
+                // eslint-disable-next-line no-param-reassign
+                content = content.substring(this.FIELD_CHAR_LIMIT - 12, content.length);
+            }
+            output.push(content.substring(0, content.length));
+            return output;
+        };
+
+        // This function adds the content part to the embed.
+        const handleContent = (embed: RichEmbed, content: string): void => {
+            // Message might be too long. Split it up.
+            const contents = splitContents(content);
+            embed.setDescription(contents[0]);
+
+            // Add rest of contents in (if any)
+            contents.shift();
+            for (const otherContent of contents) {
+                embed.addField(this.CONTINUED, otherContent);
+            }
+        };
+
+        // This function handles attaching of images to the embed
+        const handleAttachmentAndEmbeds = (embed: RichEmbed,
+                                           embeds: MessageEmbed[],
+                                           attachments:
+                                           Collection <string, MessageAttachment>): void => {
+            // Check embeds for image
+            if (embeds.length > 0) {
+                const msgEmbed = embeds[0];
+                const { thumbnail } = msgEmbed;
+
+                // We're using thumbnail url here because instagram and imgur.
+                // Still works though!
+                if (msgEmbed.type === 'image' && thumbnail) {
+                    embed.setImage(thumbnail.url);
+                }
+            }
+
+            // Check attachments
+            // setImage is overriden if img because attachment takes presidence.
+            if (attachments.size > 0) {
+                const file = attachments.array()[0];
+                const { url, filename } = file;
+                const splittedFileUrl = url.split('.');
+                const typeOfImage = splittedFileUrl[splittedFileUrl.length - 1];
+                const image = /(jpg|jpeg|png|gif|webp)/gi.test(typeOfImage);
+                if (image) {
+                    embed.setImage(url);
+                } else {
+                    // It is an attachment that is not an image, send as attachment.
+                    embed.addField('Attachment', `[${filename}](${url})`, false);
+                }
+            }
+        };
         return new Promise<void>((): void => {
             const starboardChannelId = this.starboardSettings.getChannel()!;
             const { emoji } = this.reaction;
@@ -36,10 +95,12 @@ export class StarboardResponse {
             const { tag } = message.author;
             const { nickname } = message.member;
             const channel = `<#${message.channel.id.toString()}>`;
-            const { url, id } = message;
-            let content = message.cleanContent;
+            const {
+                url, id, attachments, embeds,
+            } = message;
+            const content = message.cleanContent;
 
-            // Generate strings
+            // Generate embed
             let username = '';
             if (nickname === null) {
                 username = `${tag}`;
@@ -47,40 +108,20 @@ export class StarboardResponse {
                 username = `${nickname}, aka ${tag}`;
             }
 
-            // Message might be too long. Split it up.
-            const contents: string[] = [];
-            while (content.length > this.FIELD_CHAR_LIMIT) {
-                contents.push(content.substring(0, this.FIELD_CHAR_LIMIT - 12) + this.DOTDOTDOT);
-                content = content.substring(this.FIELD_CHAR_LIMIT - 12, content.length);
-            }
-            contents.push(content.substring(0, content.length));
-
             const embed = new RichEmbed()
                 .setColor(StarboardResponse.EMBED_COLOUR)
                 .setAuthor(`${username}`, message.author.avatarURL)
-                .setDescription(contents[0]);
+                .setTimestamp(message.createdTimestamp);
 
-            // Add rest of contents in (if any)
-            contents.shift();
-            for (const otherContent of contents) {
-                embed.addField(this.CONTINUED, otherContent);
-            }
+            // Add content to description or fields if overflow
+            handleContent(embed, content);
+
+            // Handle attachments and embeds in message
+            handleAttachmentAndEmbeds(embed, embeds, attachments);
 
             // Continue with rest of fields
             const details = `**[Message Link](${url})**`;
             embed.addField('Original', details);
-
-            // Check if image
-            if (message.attachments.size > 0) {
-                const imageLink = message.attachments.array()[0].url;
-                const splittedImageLink = imageLink.split('.');
-                const typeOfImage = splittedImageLink[splittedImageLink.length - 1];
-                const image = /(jpg|jpeg|png|gif)/gi.test(typeOfImage);
-                if (image) {
-                    embed.setImage(imageLink);
-                }
-            }
-            embed.setTimestamp(message.createdTimestamp);
 
             const outputMsg
                 = `**${numberOfReacts}** <:${emoji.name}:${emoji.id}> **In:** ${channel} **ID:** ${id}`;
