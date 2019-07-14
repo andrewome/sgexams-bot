@@ -27,7 +27,7 @@
     "fs": "0.0.1-security",
     "https": "^1.0.0",
     "loglevel": "^1.6.3",
-    "npm": "^6.9.2"
+    "npm": "^6.10.1"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",

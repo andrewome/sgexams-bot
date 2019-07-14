@@ -3,7 +3,7 @@ import {
 } from 'discord.js';
 import { StarboardSettings, SimplifiedEmoji } from '../../../storage/StarboardSettings';
 
-export class StarboardChecker {
+export abstract class StarboardChecker {
     protected starboardSettings: StarboardSettings;
 
     protected reaction: MessageReaction;
