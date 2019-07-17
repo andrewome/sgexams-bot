@@ -9,21 +9,12 @@ import { MessageReactionAddEventHandler } from './eventhandler/MessageReactionAd
 import { MessageReactionRemoveEventHandler } from './eventhandler/MessageReactionRemoveEventHandler';
 import { MessageEventHandler } from './eventhandler/MessageEventHandler';
 import { MessageUpdateEventHandler } from './eventhandler/MessageUpdateEventHandler';
+import { StarboardCache } from './storage/StarboardCache';
 
 class App {
     private bot: Client;
 
     private storage: Storage;
-
-    private MESSAGE = MessageEventHandler.EVENT_NAME;
-
-    private MESSAGE_UPDATE = MessageUpdateEventHandler.EVENT_NAME;
-
-    private REACTION_ADD = MessageReactionAddEventHandler.EVENT_NAME;
-
-    private REACTION_REMOVE = MessageReactionRemoveEventHandler.EVENT_NAME;
-
-    private RAW = RawEventHandler.EVENT_NAME;
 
     public constructor() {
         this.bot = new Client();
@@ -37,33 +28,39 @@ class App {
      * Contains event emitters that the bot is listening to
      */
     public run(): void {
-        this.bot.on(this.MESSAGE, (message: Message): void => {
+        const MESSAGE = MessageEventHandler.EVENT_NAME;
+        const MESSAGE_UPDATE = MessageUpdateEventHandler.EVENT_NAME;
+        const REACTION_ADD = MessageReactionAddEventHandler.EVENT_NAME;
+        const REACTION_REMOVE = MessageReactionRemoveEventHandler.EVENT_NAME;
+        const READY = 'ready';
+        const RAW = RawEventHandler.EVENT_NAME;
+
+        this.bot.on(MESSAGE, (message: Message): void => {
             new MessageEventHandler(message, this.storage, this.bot.user.id).handleEvent();
         });
 
-        this.bot.on(this.MESSAGE_UPDATE, (oldMessage: Message,
-                                          newMessage: Message): void => {
+        this.bot.on(MESSAGE_UPDATE, (oldMessage: Message, newMessage: Message): void => {
             new MessageUpdateEventHandler(this.storage, newMessage).handleEvent();
         });
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.bot.on(this.RAW, (packet: any): void => {
+        this.bot.on(RAW, (packet: any): void => {
             new RawEventHandler(this.storage, this.bot, packet).handleEvent();
         });
 
         /* eslint-disable @typescript-eslint/no-unused-vars */
-        this.bot.on(this.REACTION_ADD, (reaction: MessageReaction,
-                                        user: User): void => {
+        this.bot.on(REACTION_ADD, (reaction: MessageReaction, user: User): void => {
             new MessageReactionAddEventHandler(this.storage, reaction).handleEvent();
         });
 
-        this.bot.on(this.REACTION_REMOVE, (reaction: MessageReaction,
-                                           user: User): void => {
+        this.bot.on(REACTION_REMOVE, (reaction: MessageReaction, user: User): void => {
             new MessageReactionRemoveEventHandler(this.storage, reaction).handleEvent();
         });
         /* eslint-enable @typescript-eslint/no-unused-vars */
 
-        this.bot.on('ready', (): void => {
+        this.bot.on(READY, (): void => {
+            log.info('Populating Starboard Cache...');
+            StarboardCache.generateStarboardMessagesCache(this.bot, this.storage);
             log.info('I am ready!');
             this.bot.user.setActivity('with NUKES!!!!', { type: 'PLAYING' });
         });

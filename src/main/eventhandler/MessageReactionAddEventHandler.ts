@@ -26,19 +26,19 @@ export class MessageReactionAddEventHandler extends EventHandler {
         const starboardChecker = new StarboardAddReactChecker(starboardSettings, this.reaction);
 
         // Check if the react qualifies to make changes.
-        const shouldMakeChanges = await starboardChecker.checkAddReact();
-        if (shouldMakeChanges) {
+        const numberOfReactions = await starboardChecker.checkAddReact();
+        if (numberOfReactions !== null) {
             const starboardResponse = new StarboardResponse(starboardSettings, this.reaction);
 
             // If message exists in starboard channel, edit the count, else add to starboard
-            const exists = await starboardChecker.checkIfMessageExists();
-            if (exists) {
-                await starboardResponse.editStarboardMessageCount(
-                    starboardChecker.numberOfReactions,
-                    starboardChecker.messageIdInStarboardChannel!,
+            const messageId = starboardChecker.checkIfMessageExists();
+            if (messageId !== null) {
+                starboardResponse.editStarboardMessageCount(
+                    numberOfReactions,
+                    messageId,
                 );
             } else {
-                await starboardResponse.addToStarboard(starboardChecker.numberOfReactions);
+                starboardResponse.addToStarboard(numberOfReactions);
             }
         }
     }

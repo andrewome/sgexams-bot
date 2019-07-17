@@ -2,15 +2,10 @@ import {
  MessageReaction, RichEmbed, TextChannel, Message, MessageAttachment, MessageEmbed, Collection,
 } from 'discord.js';
 import { StarboardSettings } from '../../storage/StarboardSettings';
+import { StarboardCache } from '../../storage/StarboardCache';
 
 export class StarboardResponse {
     public static EMBED_COLOUR = 'f6ff73';
-
-    private FIELD_CHAR_LIMIT = 1024;
-
-    private DOTDOTDOT = '...';
-
-    private CONTINUED = 'continued';
 
     private starboardSettings: StarboardSettings;
 
@@ -28,32 +23,6 @@ export class StarboardResponse {
      * @returns Promise
      */
     public async addToStarboard(numberOfReacts: number): Promise<void> {
-        // This function splits up the contents into 1024 char sizes
-        const splitContents = (content: string): string[] => {
-            const output: string[] = [];
-
-            while (content.length > this.FIELD_CHAR_LIMIT) {
-                output.push(content.substring(0, this.FIELD_CHAR_LIMIT - 12) + this.DOTDOTDOT);
-                // eslint-disable-next-line no-param-reassign
-                content = content.substring(this.FIELD_CHAR_LIMIT - 12, content.length);
-            }
-            output.push(content.substring(0, content.length));
-            return output;
-        };
-
-        // This function adds the content part to the embed.
-        const handleContent = (embed: RichEmbed, content: string): void => {
-            // Message might be too long. Split it up.
-            const contents = splitContents(content);
-            embed.setDescription(contents[0]);
-
-            // Add rest of contents in (if any)
-            contents.shift();
-            for (const otherContent of contents) {
-                embed.addField(this.CONTINUED, otherContent);
-            }
-        };
-
         // This function handles attaching of images to the embed
         const handleAttachmentAndEmbeds
             = (embed: RichEmbed,
@@ -101,6 +70,9 @@ export class StarboardResponse {
             } = message;
             const content = message.cleanContent;
 
+            // Add message to cache first
+            const cacheArr = StarboardCache.addMessageToCacheFirst(message.guild.id, id);
+
             // Generate embed
             let username = '';
             if (nickname === null) {
@@ -112,10 +84,8 @@ export class StarboardResponse {
             const embed = new RichEmbed()
                 .setColor(StarboardResponse.EMBED_COLOUR)
                 .setAuthor(`${username}`, message.author.avatarURL)
-                .setTimestamp(message.createdTimestamp);
-
-            // Add content to description or fields if overflow
-            handleContent(embed, content);
+                .setTimestamp(message.createdTimestamp)
+                .setDescription(content);
 
             // Handle attachments and embeds in message
             handleAttachmentAndEmbeds(embed, embeds, attachments);
@@ -126,7 +96,11 @@ export class StarboardResponse {
 
             const outputMsg
                 = `**${numberOfReacts}** <:${emoji.name}:${emoji.id}> **In:** ${channel} **ID:** ${id}`;
-            (starboardChannel as TextChannel).send(outputMsg, embed);
+            (starboardChannel as TextChannel).send(outputMsg, embed)
+                // Don't forget to set the starboard channel in the cache.
+                .then((m: Message | Message[]): void => {
+                    if (m instanceof Message) cacheArr[1] = message.id;
+                });
         });
     }
 
