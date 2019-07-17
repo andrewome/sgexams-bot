@@ -1,7 +1,8 @@
 import {
- MessageReaction, Message, User, Collection, TextChannel,
+ MessageReaction, User, Collection,
 } from 'discord.js';
 import { StarboardSettings, SimplifiedEmoji } from '../../../storage/StarboardSettings';
+import { StarboardCache } from '../../../storage/StarboardCache';
 
 export abstract class StarboardChecker {
     protected starboardSettings: StarboardSettings;
@@ -27,8 +28,8 @@ export abstract class StarboardChecker {
      * @returns boolean false if failed, true if passed
      */
     protected standardChecks(starboardEmoji: SimplifiedEmoji | null,
-                           threshold: number | null,
-                           channel: string | null): boolean {
+                             threshold: number | null,
+                             channel: string | null): boolean {
         // If any of the settings are null, starboard cannot work
         if (starboardEmoji === null || threshold === null || channel === null) {
             return false;
@@ -64,34 +65,27 @@ export abstract class StarboardChecker {
      *
      * @returns Promise
      */
-    public async checkIfMessageExists(): Promise<boolean> {
-        return new Promise<boolean>((resolve): void => {
-            const messageId = this.reaction.message.id;
+    public checkIfMessageExists(): boolean {
+        const { starboardMessageCache } = StarboardCache;
+        const { message } = this.reaction;
+        const guildId = message.guild.id;
 
-            const starboardId = this.starboardSettings.getChannel();
-            if (starboardId === null) {
-                resolve(false);
-            }
+        if (!starboardMessageCache.has(guildId)) {
+            return false;
+        }
 
-            // Get messages from starboard channel
-            const channel = this.reaction.message.guild.channels.get(starboardId!);
-            (channel as TextChannel).fetchMessages({ limit: 100 })
-                .then((messages: Collection<string, Message>): void => {
-                    const msgArr = messages.array();
-                    for (const message of msgArr) {
-                        // Assuming each post content is structured like this:
-                        // eslint-disable-next-line max-len
-                        // `**${numberOfReacts}** <:${emoji.name}:${emoji.id}> **Channel:** ${channel} **ID:** ${id}`;
-                        const id = message.content.split(' ')[5];
-                        if (id === messageId) {
-                            this.messageIdInStarboardChannel = message.id;
-                            resolve(true);
-                            return;
-                        }
-                    }
-                    resolve(false);
-                });
-        });
+        const serverCache = starboardMessageCache.get(guildId)!;
+        if (!serverCache.messageExists(message.id)) {
+            return false;
+        }
+
+        const starboardMessageId = serverCache.getStarboardMessageId(message.id);
+        if (starboardMessageId === null) {
+            return false;
+        }
+
+        this.messageIdInStarboardChannel = starboardMessageId;
+        return true;
     }
 
     /**

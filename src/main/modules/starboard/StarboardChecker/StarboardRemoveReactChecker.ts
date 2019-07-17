@@ -21,20 +21,17 @@ export class StarboardRemoveReactChecker extends StarboardChecker {
 
             // Check if id of message appears in the Starboard
             // If exists, definitely need to update (delete or edit)
-            this.checkIfMessageExists()
-                .then((exists: boolean): void => {
-                    if (exists) {
-                        // Get the count of the number of
-                        // reactions of starboard emoji.
-                        this.getNumberOfReactions()
-                            .then((size: number): void => {
-                                this.numberOfReactions = size;
-                                resolve(true);
-                            });
-                    } else {
-                        resolve(false);
-                    }
-                });
+            if (this.checkIfMessageExists()) {
+               // Get the count of the number of
+               // reactions of starboard emoji.
+                this.getNumberOfReactions()
+                    .then((size: number): void => {
+                        this.numberOfReactions = size;
+                        resolve(true);
+                    });
+            } else {
+                resolve(false);
+            }
         });
     }
 

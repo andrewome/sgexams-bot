@@ -6,12 +6,6 @@ import { StarboardSettings } from '../../storage/StarboardSettings';
 export class StarboardResponse {
     public static EMBED_COLOUR = 'f6ff73';
 
-    private FIELD_CHAR_LIMIT = 1024;
-
-    private DOTDOTDOT = '...';
-
-    private CONTINUED = 'continued';
-
     private starboardSettings: StarboardSettings;
 
     private reaction: MessageReaction;
@@ -28,32 +22,6 @@ export class StarboardResponse {
      * @returns Promise
      */
     public async addToStarboard(numberOfReacts: number): Promise<void> {
-        // This function splits up the contents into 1024 char sizes
-        const splitContents = (content: string): string[] => {
-            const output: string[] = [];
-
-            while (content.length > this.FIELD_CHAR_LIMIT) {
-                output.push(content.substring(0, this.FIELD_CHAR_LIMIT - 12) + this.DOTDOTDOT);
-                // eslint-disable-next-line no-param-reassign
-                content = content.substring(this.FIELD_CHAR_LIMIT - 12, content.length);
-            }
-            output.push(content.substring(0, content.length));
-            return output;
-        };
-
-        // This function adds the content part to the embed.
-        const handleContent = (embed: RichEmbed, content: string): void => {
-            // Message might be too long. Split it up.
-            const contents = splitContents(content);
-            embed.setDescription(contents[0]);
-
-            // Add rest of contents in (if any)
-            contents.shift();
-            for (const otherContent of contents) {
-                embed.addField(this.CONTINUED, otherContent);
-            }
-        };
-
         // This function handles attaching of images to the embed
         const handleAttachmentAndEmbeds
             = (embed: RichEmbed,
@@ -112,10 +80,8 @@ export class StarboardResponse {
             const embed = new RichEmbed()
                 .setColor(StarboardResponse.EMBED_COLOUR)
                 .setAuthor(`${username}`, message.author.avatarURL)
-                .setTimestamp(message.createdTimestamp);
-
-            // Add content to description or fields if overflow
-            handleContent(embed, content);
+                .setTimestamp(message.createdTimestamp)
+                .setDescription(content);
 
             // Handle attachments and embeds in message
             handleAttachmentAndEmbeds(embed, embeds, attachments);

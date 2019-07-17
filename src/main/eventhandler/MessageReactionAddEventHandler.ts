@@ -31,14 +31,14 @@ export class MessageReactionAddEventHandler extends EventHandler {
             const starboardResponse = new StarboardResponse(starboardSettings, this.reaction);
 
             // If message exists in starboard channel, edit the count, else add to starboard
-            const exists = await starboardChecker.checkIfMessageExists();
+            const exists = starboardChecker.checkIfMessageExists();
             if (exists) {
-                await starboardResponse.editStarboardMessageCount(
+                starboardResponse.editStarboardMessageCount(
                     starboardChecker.numberOfReactions,
                     starboardChecker.messageIdInStarboardChannel!,
                 );
             } else {
-                await starboardResponse.addToStarboard(starboardChecker.numberOfReactions);
+                starboardResponse.addToStarboard(starboardChecker.numberOfReactions);
             }
         }
     }
