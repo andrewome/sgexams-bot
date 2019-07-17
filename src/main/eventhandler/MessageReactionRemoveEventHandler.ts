@@ -26,15 +26,12 @@ export class MessageReactionRemoveEventHandler extends EventHandler {
         const starboardChecker = new StarboardRemoveReactChecker(starboardSettings, this.reaction);
 
         // Check if the reaction removal qualifies for a change
-        const shouldMakeChanges = await starboardChecker.checkRemoveReact();
+        const pair = await starboardChecker.checkRemoveReact();
 
         // If it does, edit the starboard message, but don't delete to prevent abuse
-        if (shouldMakeChanges) {
+        if (pair !== null) {
             const starboardResponse = new StarboardResponse(starboardSettings, this.reaction);
-            starboardResponse.editStarboardMessageCount(
-                starboardChecker.numberOfReactions,
-                starboardChecker.messageIdInStarboardChannel!,
-            );
+            starboardResponse.editStarboardMessageCount(pair[0], pair[1]);
         }
     }
 }

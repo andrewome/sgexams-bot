@@ -9,10 +9,6 @@ export abstract class StarboardChecker {
 
     protected reaction: MessageReaction;
 
-    public numberOfReactions: number = NaN;
-
-    public messageIdInStarboardChannel: string | null = null;
-
     public constructor(starboardSettings: StarboardSettings,
                        reaction: MessageReaction) {
         this.starboardSettings = starboardSettings;
@@ -63,29 +59,28 @@ export abstract class StarboardChecker {
      * This function checks if the message being reacted exists inside
      * the Starboard channel already.
      *
-     * @returns Promise
+     * @returns string, starboard message id
      */
-    public checkIfMessageExists(): boolean {
+    public checkIfMessageExists(): string | null {
         const { starboardMessageCache } = StarboardCache;
         const { message } = this.reaction;
         const guildId = message.guild.id;
 
         if (!starboardMessageCache.has(guildId)) {
-            return false;
+            return null;
         }
 
         const serverCache = starboardMessageCache.get(guildId)!;
         if (!serverCache.messageExists(message.id)) {
-            return false;
+            return null;
         }
 
         const starboardMessageId = serverCache.getStarboardMessageId(message.id);
         if (starboardMessageId === null) {
-            return false;
+            return null;
         }
 
-        this.messageIdInStarboardChannel = starboardMessageId;
-        return true;
+        return starboardMessageId;
     }
 
     /**

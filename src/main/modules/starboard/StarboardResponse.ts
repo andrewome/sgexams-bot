@@ -2,6 +2,7 @@ import {
  MessageReaction, RichEmbed, TextChannel, Message, MessageAttachment, MessageEmbed, Collection,
 } from 'discord.js';
 import { StarboardSettings } from '../../storage/StarboardSettings';
+import { StarboardCache } from '../../storage/StarboardCache';
 
 export class StarboardResponse {
     public static EMBED_COLOUR = 'f6ff73';
@@ -69,6 +70,9 @@ export class StarboardResponse {
             } = message;
             const content = message.cleanContent;
 
+            // Add message to cache first
+            const cacheArr = StarboardCache.addMessageToCacheFirst(message.guild.id, id);
+
             // Generate embed
             let username = '';
             if (nickname === null) {
@@ -92,7 +96,11 @@ export class StarboardResponse {
 
             const outputMsg
                 = `**${numberOfReacts}** <:${emoji.name}:${emoji.id}> **In:** ${channel} **ID:** ${id}`;
-            (starboardChannel as TextChannel).send(outputMsg, embed);
+            (starboardChannel as TextChannel).send(outputMsg, embed)
+                // Don't forget to set the starboard channel in the cache.
+                .then((m: Message | Message[]): void => {
+                    if (m instanceof Message) cacheArr[1] = message.id;
+                });
         });
     }
 

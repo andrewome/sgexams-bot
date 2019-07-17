@@ -5,7 +5,7 @@ import { Storage } from './Storage';
 
 export class StarboardServerCache {
     /** [0] is messageId, [1] is starboard message id. */
-    private cache: [string, string][];
+    private cache: [string, string | null][];
 
     public static LIMIT = 200;
 
@@ -67,7 +67,20 @@ export class StarboardServerCache {
      * @returns void
      */
     public addToCache(messageId: string, starboardMessageId: string): void {
+        // Unshift (add to front) because that is how ids are fetched.
+        // Newest at the front, older at the back.
         this.cache.unshift([messageId, starboardMessageId]);
+    }
+
+    /**
+     * Allows for messageId to be added first, starboardmessageid is added later.
+     *
+     * @param  {string} id
+     * @returns reference to array that needs the starboard id to be added.
+     */
+    public addMessageIdToCacheFirst(id: string): [string, string | null] {
+        this.cache.unshift([id, null]);
+        return this.cache[0];
     }
 
     /**
@@ -148,5 +161,19 @@ export abstract class StarboardCache {
         const { starboardMessageCache } = StarboardCache;
         const serverCache = starboardMessageCache.get(guildId)!;
         serverCache.addToCache(messageId, starboardMessageId);
+        serverCache.trimCache();
+    }
+
+    /**
+     * Wrapper to add messageId first to cache
+     *
+     * @param  {string} guildId
+     * @returns reference to array that needs the starboard id to be added.
+     */
+    public static addMessageToCacheFirst(guildId: string,
+                                         messageId: string): [string, string | null] {
+        const { starboardMessageCache } = StarboardCache;
+        const serverCache = starboardMessageCache.get(guildId)!;
+        return serverCache.addMessageIdToCacheFirst(messageId);
     }
 }
