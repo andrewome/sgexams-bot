@@ -99,7 +99,9 @@ export class StarboardResponse {
             (starboardChannel as TextChannel).send(outputMsg, embed)
                 // Don't forget to set the starboard channel in the cache.
                 .then((m: Message | Message[]): void => {
-                    if (m instanceof Message) cacheArr[1] = message.id;
+                    if (m instanceof Message) {
+                        cacheArr[1] = m.id;
+                    }
                 });
         });
     }
