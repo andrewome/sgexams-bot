@@ -1,5 +1,5 @@
 import {
- Message, RichEmbed, Permissions, Emoji,
+ RichEmbed, Permissions, Emoji, Collection, Channel,
 } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
@@ -47,14 +47,19 @@ export class SetStarboardEmojiCommand extends Command {
      * @param  {Message} message Message object from the bot's on message event
      * @returns CommandResult
      */
-    public execute(server: Server, message: Message): CommandResult {
+    public execute(server: Server,
+                   memberPerms: Permissions,
+                   messageReply: Function,
+                   ...args:
+                    (Collection<string, Channel> | Collection<string, Emoji>)[]): CommandResult {
         // Check for permissions first
-        if (!this.hasPermissions(this.permissions, message.member.permissions)) {
+        if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Execute
         let embed: RichEmbed;
+        const emojis = args[1];
         if (this.args.length === 0) {
             embed = this.generateEmbed(ResponseType.RESET);
             this.changeServerSettings(server, null);
@@ -62,17 +67,17 @@ export class SetStarboardEmojiCommand extends Command {
             const emojiId = this.args[0];
 
             // Check if valid channel
-            const emoji = message.guild.emojis.get(emojiId);
+            const emoji = emojis.get(emojiId);
             if (typeof emoji === 'undefined') {
                 embed = this.generateEmbed(ResponseType.UNDEFINED);
             } else {
-                embed = this.generateEmbed(ResponseType.VALID, emoji);
+                embed = this.generateEmbed(ResponseType.VALID, (emoji as Emoji));
                 const simplifiedEmoji
-                    = new SimplifiedEmoji(emoji.name, emoji.id);
+                    = new SimplifiedEmoji((emoji as Emoji).name, emoji.id);
                 this.changeServerSettings(server, simplifiedEmoji);
             }
         }
-        message.channel.send(embed);
+       messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

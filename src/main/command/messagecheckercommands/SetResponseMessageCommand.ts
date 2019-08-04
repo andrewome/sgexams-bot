@@ -1,4 +1,4 @@
-import { Permissions, Message, RichEmbed } from 'discord.js';
+import { Permissions, RichEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
@@ -41,9 +41,11 @@ export class SetResponseMessageCommand extends Command {
      * @param  {Message} message Message object from the bot's on message event
      * @returns CommandResult
      */
-    public execute(server: Server, message: Message): CommandResult {
+    public execute(server: Server,
+                   memberPerms: Permissions,
+                   messageReply: Function): CommandResult {
         // Check for permissions first
-        if (!this.hasPermissions(this.permissions, message.member.permissions)) {
+        if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
@@ -61,7 +63,7 @@ export class SetResponseMessageCommand extends Command {
             embed = this.generateEmbed(ResponseType.VALID, msg);
         }
 
-        message.channel.send(embed);
+        messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

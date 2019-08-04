@@ -154,7 +154,7 @@ export class CommandParser {
      *
      * @param  {Server} server Server object of the message
      * @param  {Message} message Message object from the bot's on message event
-     * @returns void
+     * @returns {Command} Command object
      */
     public getCommand(): Command {
         const command = this.splittedContent[1].toLowerCase();

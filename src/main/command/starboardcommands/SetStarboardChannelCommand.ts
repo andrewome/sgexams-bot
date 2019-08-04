@@ -1,4 +1,6 @@
-import { Message, RichEmbed, Permissions } from 'discord.js';
+import {
+  RichEmbed, Permissions, Collection, Channel, Emoji,
+} from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
@@ -47,14 +49,19 @@ export class SetStarboardChannelCommand extends Command {
      * @param  {Message} message Message object from the bot's on message event
      * @returns CommandResult
      */
-    public execute(server: Server, message: Message): CommandResult {
+    public execute(server: Server,
+                   memberPerms: Permissions,
+                   messageReply: Function,
+                   ...args:
+                    (Collection<string, Channel> | Collection<string, Emoji>)[]): CommandResult {
         // Check for permissions first
-        if (!this.hasPermissions(this.permissions, message.member.permissions)) {
+        if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Execute
         let embed: RichEmbed;
+        const channels = args[0];
         if (this.args.length === 0) {
             embed = this.generateEmbed(ResponseType.RESET);
             this.changeServerSettings(server, null);
@@ -62,17 +69,17 @@ export class SetStarboardChannelCommand extends Command {
             const channelId = this.args[0];
 
             // Check if valid channel
-            const channel = message.guild.channels.get(channelId);
+            const channel = channels.get(channelId);
             if (typeof channel === 'undefined') {
                 embed = this.generateEmbed(ResponseType.UNDEFINED);
-            } else if (channel.type !== 'text') {
+            } else if ((channel as Channel).type !== 'text') {
                 embed = this.generateEmbed(ResponseType.NOT_TEXT_CHANNEL);
             } else {
                 embed = this.generateEmbed(ResponseType.VALID, channelId);
                 this.changeServerSettings(server, channelId);
             }
         }
-        message.channel.send(embed);
+        messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

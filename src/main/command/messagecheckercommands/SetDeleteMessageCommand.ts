@@ -1,4 +1,4 @@
-import { Permissions, Message, RichEmbed } from 'discord.js';
+import { Permissions, RichEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
@@ -45,21 +45,23 @@ export class SetDeleteMessageCommand extends Command {
      * @param  {Message} message Message object from the bot's on message event
      * @returns CommandResult
      */
-    public execute(server: Server, message: Message): CommandResult {
+    public execute(server: Server,
+                   memberPerms: Permissions,
+                   messageReply: Function): CommandResult {
         // Check for permissions first
-        if (!this.hasPermissions(this.permissions, message.member.permissions)) {
+        if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Execute
         if (this.args.length === 0) {
-            message.channel.send(this.generateEmbed(ResponseType.NO_ARGUMENTS));
+            messageReply(this.generateEmbed(ResponseType.NO_ARGUMENTS));
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
         const boolStr = this.args[0].toLowerCase();
         const trueFalseRegex = new RegExp(/\btrue\b|\bfalse\b/, 'g');
         if (!trueFalseRegex.test(boolStr)) {
-            message.channel.send(this.generateEmbed(ResponseType.WRONG_FORMAT));
+            messageReply(this.generateEmbed(ResponseType.WRONG_FORMAT));
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
@@ -73,7 +75,7 @@ export class SetDeleteMessageCommand extends Command {
         }
 
         this.changeServerSettings(server, bool!);
-        message.channel.send(this.generateEmbed(ResponseType.VALID_FORMAT, bool!));
+        messageReply(this.generateEmbed(ResponseType.VALID_FORMAT, bool!));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
