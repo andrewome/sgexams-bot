@@ -45,7 +45,6 @@ export class AddWordCommand extends Command {
         }
 
         // Execute
-
         const wordsAdded: string[] = [];
         const wordsNotAdded: string[] = [];
         this.changeServerSettings(server, wordsAdded, wordsNotAdded);

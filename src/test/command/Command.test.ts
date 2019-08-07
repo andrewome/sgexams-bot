@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
 /* eslint-disable no-underscore-dangle, no-unused-expressions, class-methods-use-this */
 import chai from 'chai';
-import { Permissions, RichEmbed, Message } from 'discord.js';
+import { Permissions } from 'discord.js';
 import { Command } from '../../main/command/Command';
 import { Server } from '../../main/storage/Server';
 import { CommandResult } from '../../main/command/classes/CommandResult';
@@ -9,15 +9,7 @@ import { CommandResult } from '../../main/command/classes/CommandResult';
 chai.should();
 
 class CommandStub extends Command {
-    public execute(server: Server, message: Message): CommandResult {
-        throw new Error('Method not implemented.');
-    }
-
-    public generateEmbed(...args: any): RichEmbed {
-        throw new Error('Method not implemented.');
-    }
-
-    public changeServerSettings(server: Server, ...args: any): void {
+    public execute(server: Server, perms: Permissions, messageReply: Function): CommandResult {
         throw new Error('Method not implemented.');
     }
 }

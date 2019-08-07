@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
+import {
+ RichEmbed, Permissions, Collection, Channel, Client,
+} from 'discord.js';
 import { SetReportChannelCommand, ResponseType } from '../../../main/command/messagecheckercommands/SetReportChannelCommand';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -10,8 +13,18 @@ import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 should();
 
 let server: Server;
-// can't test args because it is changed in execute function
-const command = new SetReportChannelCommand(['arbitrary']);
+let command: SetReportChannelCommand;
+const channels = new Collection<string, Channel>();
+
+// Setting up mock channels.
+let channel = new Channel(new Client(), {});
+channel.type = 'text';
+channels.set('text_channel', channel);
+channel = new Channel(new Client(), {});
+channel.type = 'voice';
+channels.set('not_text_channel', channel);
+
+const adminPerms = new Permissions(['ADMINISTRATOR']);
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { ERROR_EMBED_TITLE } = Command;
@@ -32,60 +45,81 @@ beforeEach((): void => {
 });
 
 describe('SetReportChannelCommand test suite', (): void => {
-    describe('changeServerSettings test', (): void => {
-        it('Change reporting channel', (): void => {
-            const channelId = '12345';
-            command.changeServerSettings(server, channelId);
-            server.messageCheckerSettings.getReportingChannelId()!.should.equals(channelId);
-        });
-        it('Reset reporting channel', (): void => {
-            const channelId = '12345';
-            command.changeServerSettings(server, channelId);
-            command.changeServerSettings(server, undefined);
-            (server.messageCheckerSettings.getReportingChannelId() === undefined).should.be.true;
-        });
-    });
-    describe('generateEmbed test', (): void => {
-        it('reset channel', (): void => {
-            const embed = command.generateEmbed(ResponseType.RESET);
+    it('reset channel', (): void => {
+        server.messageCheckerSettings.setReportingChannelId('123');
+        command = new SetReportChannelCommand([]);
+
+        const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
             field.value.should.equals(CHANNEL_RESETTED);
-        });
-        it('not text channel', (): void => {
-            const embed = command.generateEmbed(ResponseType.NOT_TEXT_CHANNEL);
+        };
+
+        const commandResult = command.execute(server, adminPerms, checkEmbed, channels);
+
+        // Check command result
+        commandResult.shouldCheckMessage.should.be.true;
+        commandResult.shouldSaveServers.should.be.true;
+
+        // Check server
+        (server.messageCheckerSettings.getReportingChannelId() === undefined).should.be.true;
+    });
+    it('not text channel', (): void => {
+        command = new SetReportChannelCommand(['not_text_channel']);
+
+        const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
             field.value.should.equals(NOT_TEXT_CHANNEL);
-        });
-        it('cannot find channel', (): void => {
-            const embed = command.generateEmbed(ResponseType.UNDEFINED);
+        };
+
+        const commandResult = command.execute(server, adminPerms, checkEmbed, channels);
+
+        // Check command result
+        commandResult.shouldCheckMessage.should.be.true;
+        commandResult.shouldSaveServers.should.be.true;
+    });
+    it('cannot find channel', (): void => {
+        command = new SetReportChannelCommand(['does_not_exist']);
+
+        const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
             field.value.should.equals(CHANNEL_NOT_FOUND);
-        });
-        it('Valid channelid', (): void => {
-            const channelId = '12345';
-            const msg = `Reporting Channel set to <#${channelId}>.`;
-            const embed = command.generateEmbed(ResponseType.VALID, channelId);
+        };
+
+        const commandResult = command.execute(server, adminPerms, checkEmbed, channels);
+
+        // Check command result
+        commandResult.shouldCheckMessage.should.be.true;
+        commandResult.shouldSaveServers.should.be.true;
+    });
+    it('Valid channelid', (): void => {
+        const channelId = 'text_channel';
+        const msg = `Reporting Channel set to <#${channelId}>.`;
+        command = new SetReportChannelCommand([channelId]);
+
+        const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
             field.value.should.equals(msg);
-        });
-        it('Valid, but no channelid', (): void => {
-            try {
-                const embed = command.generateEmbed(ResponseType.VALID);
-            } catch (err) {
-                err.message.should.equals(CHANNELID_CANNOT_BE_UNDEFINED);
-            }
-        });
+        };
+
+        const commandResult = command.execute(server, adminPerms, checkEmbed, channels);
+
+        // Check command result
+        commandResult.shouldCheckMessage.should.be.true;
+        commandResult.shouldSaveServers.should.be.true;
+
+        // Check server
+        server.messageCheckerSettings.getReportingChannelId()!.should.equals(channelId);
     });
 });

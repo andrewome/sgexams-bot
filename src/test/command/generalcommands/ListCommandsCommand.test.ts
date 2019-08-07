@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, guard-for-in, no-restricted-syntax */
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
+import { Permissions, RichEmbed } from 'discord.js';
 import { ListCommandsCommand } from '../../../main/command/generalcommands/ListCommandsCommand';
 import { CommandParser } from '../../../main/command/CommandParser';
 import { Command } from '../../../main/command/Command';
@@ -12,7 +13,8 @@ should();
 
 const command = new ListCommandsCommand();
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
-const { THIS_METHOD_SHOULD_NOT_BE_CALLED } = Command;
+const server = new Server('test', new MessageCheckerSettings(), new StarboardSettings(null, null, null));
+const adminPerms = new Permissions(['ADMINISTRATOR']);
 
 describe('ListCommandsCommand test suite', (): void => {
     it('Embed should generate all names + description of commands inclusive of headers', (): void => {
@@ -35,27 +37,22 @@ describe('ListCommandsCommand test suite', (): void => {
         fields.push([curTitle, output]);
 
         // Compare with generated embed field.
-        const embed = command.generateEmbed();
+        const checkEmbed = (embed: RichEmbed): void => {
+            // Check colour
+            embed.color!.toString(16).should.equal(EMBED_DEFAULT_COLOUR);
 
-        // Check colour
-        embed.color!.toString(16).should.equal(EMBED_DEFAULT_COLOUR);
+            // Check fields
+            embed.fields!.length.should.be.equals(fields.length);
+            for (let i = 0; i < embed.fields!.length; i++) {
+                embed.fields![i].name.should.equals(fields[i][0]);
+                embed.fields![i].value.should.equals(fields[i][1]);
+            }
+        };
 
-        // Check fields
-        embed.fields!.length.should.be.equals(fields.length);
-        for (let i = 0; i < embed.fields!.length; i++) {
-            embed.fields![i].name.should.equals(fields[i][0]);
-            embed.fields![i].value.should.equals(fields[i][1]);
-        }
-    });
-    it('changeServerSettings should throw error', (): void => {
-        try {
-            command.changeServerSettings(new Server(
-                                         '1',
-                                         new MessageCheckerSettings(),
-                                         new StarboardSettings(null, null, null),
-));
-        } catch (err) {
-            err.message.should.equals(THIS_METHOD_SHOULD_NOT_BE_CALLED);
-        }
+        const commandResult = command.execute(server, adminPerms, checkEmbed);
+
+        // Check command result
+        commandResult.shouldCheckMessage.should.be.true;
+        commandResult.shouldSaveServers.should.be.false;
     });
 });
