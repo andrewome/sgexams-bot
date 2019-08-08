@@ -19,7 +19,6 @@ const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
-const { THIS_METHOD_SHOULD_NOT_BE_CALLED } = Command;
 const { MESSAGE_RESETTED } = SetResponseMessageCommand;
 const { EMBED_TITLE } = SetResponseMessageCommand;
 const { RESPONSE_MESSAGE_CANNOT_BE_UNDEFINED } = SetResponseMessageCommand;

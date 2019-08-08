@@ -29,7 +29,6 @@ const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
-const { THIS_METHOD_SHOULD_NOT_BE_CALLED } = Command;
 const { CHANNEL_NOT_FOUND } = SetReportChannelCommand;
 const { NOT_TEXT_CHANNEL } = SetReportChannelCommand;
 const { EMBED_TITLE } = SetReportChannelCommand;

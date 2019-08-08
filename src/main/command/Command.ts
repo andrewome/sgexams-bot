@@ -14,8 +14,6 @@ export abstract class Command {
 
     public static ERROR_EMBED_TITLE = '❌ Error';
 
-    public static THIS_METHOD_SHOULD_NOT_BE_CALLED = 'This Method should not be called.';
-
     public NO_PERMISSIONS_COMMANDRESULT = new CommandResult(false, true);
 
     /**

@@ -29,7 +29,6 @@ const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
-const { THIS_METHOD_SHOULD_NOT_BE_CALLED } = Command;
 const { EMBED_TITLE } = SetStarboardThresholdCommand;
 const { THRESHOLD_RESETTED } = SetStarboardThresholdCommand;
 const { THRESHOLD_CANNOT_BE_UNDEFINED } = SetStarboardThresholdCommand;

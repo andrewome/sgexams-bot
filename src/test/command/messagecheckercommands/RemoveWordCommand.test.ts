@@ -15,7 +15,6 @@ const adminPerms = new Permissions(['ADMINISTRATOR']);
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { ERROR_EMBED_TITLE } = Command;
-const { THIS_METHOD_SHOULD_NOT_BE_CALLED } = Command;
 const { REMOVED_WORDS } = RemoveWordCommand;
 const { MAYBE_WORDS_NOT_INSIDE } = RemoveWordCommand;
 const { UNABLE_TO_REMOVE_WORDS } = RemoveWordCommand;

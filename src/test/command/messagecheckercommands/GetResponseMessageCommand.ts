@@ -14,7 +14,6 @@ const adminPerms = new Permissions(['ADMINISTRATOR']);
 const command = new GetResponseMessageCommand();
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
-const { THIS_METHOD_SHOULD_NOT_BE_CALLED } = Command;
 const { CHANNEL_NOT_SET } = GetResponseMessageCommand;
 const { EMBED_TITLE } = GetResponseMessageCommand;
 

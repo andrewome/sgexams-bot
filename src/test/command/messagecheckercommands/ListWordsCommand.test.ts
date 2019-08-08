@@ -14,7 +14,6 @@ let server: Server;
 const adminPerms = new Permissions(['ADMINISTRATOR']);
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
-const { THIS_METHOD_SHOULD_NOT_BE_CALLED } = Command;
 const { EMBED_TITLE } = ListWordsCommand;
 const { NO_WORDS_FOUND } = ListWordsCommand;
 
