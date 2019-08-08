@@ -25,37 +25,12 @@ export abstract class Command {
      * @param  {Message} message Discord Message from message event
      * @returns CommandResult
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public abstract execute(server: Server,
                             memberPerms: Permissions,
                             messageReply: Function,
                             ...args:
                             (Collection<string, Channel> | Collection<string, Emoji>)[]
                             ): CommandResult;
-
-    /**
-     * Generates the embed to be sent back to the user
-     * Made this a thing just for unit testing because
-     * of the difficulty of mocking the Discord library
-     * classes.
-     *
-     * @param  {any} ...args
-     * @returns RichEmbed
-     */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // public abstract generateEmbed(...args: any): RichEmbed;
-
-    /**
-     * Sets server settings (if any) during a command
-     * Same as generateEmbed, made it a thing because
-     * unit testing.
-     *
-     * @param  {Server} server
-     * @param  {any} ...args
-     * @returns void
-     */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // public abstract changeServerSettings(server: Server, ...args: any): void;
 
     /**
      * This function checks if a given guildmember has the permissions required

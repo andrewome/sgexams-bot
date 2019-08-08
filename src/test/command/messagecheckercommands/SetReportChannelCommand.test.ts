@@ -4,7 +4,7 @@ import { should } from 'chai';
 import {
  RichEmbed, Permissions, Collection, Channel, Client,
 } from 'discord.js';
-import { SetReportChannelCommand, ResponseType } from '../../../main/command/messagecheckercommands/SetReportChannelCommand';
+import { SetReportChannelCommand } from '../../../main/command/messagecheckercommands/SetReportChannelCommand';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { Server } from '../../../main/storage/Server';
@@ -81,7 +81,7 @@ describe('SetReportChannelCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.true;
+        commandResult.shouldSaveServers.should.be.false;
     });
     it('cannot find channel', (): void => {
         command = new SetReportChannelCommand(['does_not_exist']);
@@ -98,7 +98,7 @@ describe('SetReportChannelCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.true;
+        commandResult.shouldSaveServers.should.be.false;
     });
     it('Valid channelid', (): void => {
         const channelId = 'text_channel';

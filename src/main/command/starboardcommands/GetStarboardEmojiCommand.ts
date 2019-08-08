@@ -2,6 +2,7 @@ import { Permissions, RichEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
+import { SimplifiedEmoji } from '../../storage/StarboardSettings';
 
 export class GetStarboardEmojiCommand extends Command {
     public static COMMAND_NAME = 'GetStarboardEmoji';
@@ -36,34 +37,43 @@ export class GetStarboardEmojiCommand extends Command {
         }
 
         // Execute
-        messageReply(this.generateEmbed(server));
+        const emoji = server.starboardSettings.getEmoji();
+
+        // Check if emoji is set
+        if (emoji === null) {
+            messageReply(this.generateNotSetEmbed());
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        }
+
+        messageReply(this.generateValidEmbed(emoji));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
     /**
-     * Generates embed that is sent back to user
+     * Generates embed if emoji is not set
      *
-     * @param  {Server} server
      * @returns RichEmbed
      */
-    /* eslint-disable class-methods-use-this */
-    public generateEmbed(server: Server): RichEmbed {
-        const emoji = server.starboardSettings.getEmoji();
+    // eslint-disable-next-line class-methods-use-this
+    private generateNotSetEmbed(): RichEmbed {
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
-        if (emoji === null) {
-            embed.addField(GetStarboardEmojiCommand.EMBED_TITLE,
-                GetStarboardEmojiCommand.EMOJI_NOT_SET);
-        } else {
-            const msg = `Starboard emoji is currently set to <:${emoji.name}:${emoji.id}>.`;
-            embed.addField(GetStarboardEmojiCommand.EMBED_TITLE, msg);
-        }
+        embed.addField(GetStarboardEmojiCommand.EMBED_TITLE,
+            GetStarboardEmojiCommand.EMOJI_NOT_SET);
+
         return embed;
     }
 
-    // eslint-disable-next-line max-len
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-    public changeServerSettings(server: Server, ...args: any): void {
-        throw new Error(Command.THIS_METHOD_SHOULD_NOT_BE_CALLED);
+    /**
+     * Generates embed if emoji is set
+     *
+     * @param  {SimplifiedEmoji} emoji
+     */
+    // eslint-disable-next-line class-methods-use-this
+    private generateValidEmbed(emoji: SimplifiedEmoji): RichEmbed {
+        const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
+        const msg = `Starboard emoji is currently set to <:${emoji.name}:${emoji.id}>.`;
+        embed.addField(GetStarboardEmojiCommand.EMBED_TITLE, msg);
+
+        return embed;
     }
-    /* eslint-enable class-methods-use-this */
 }

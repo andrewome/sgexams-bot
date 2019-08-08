@@ -4,7 +4,7 @@ import { should } from 'chai';
 import {
  RichEmbed, Permissions, Channel, Collection, Client,
 } from 'discord.js';
-import { SetResponseMessageCommand, ResponseType } from '../../../main/command/messagecheckercommands/SetResponseMessageCommand';
+import { SetResponseMessageCommand } from '../../../main/command/messagecheckercommands/SetResponseMessageCommand';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { Server } from '../../../main/storage/Server';

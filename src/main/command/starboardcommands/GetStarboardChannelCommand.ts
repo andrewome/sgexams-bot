@@ -36,34 +36,46 @@ export class GetStarboardChannelCommand extends Command {
         }
 
         // Execute
-        messageReply(this.generateEmbed(server));
+        const channelId = server.starboardSettings.getChannel();
+
+        // Check if channel is set
+        if (channelId === null) {
+            messageReply(this.generateNotSetEmbed);
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        }
+
+        messageReply(this.generateValidEmbed(channelId));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
     /**
-     * Generates embed that is sent back to user
+     * Generates embed for if channel is not set
      *
-     * @param  {Server} server
      * @returns RichEmbed
      */
-    /* eslint-disable class-methods-use-this */
-    public generateEmbed(server: Server): RichEmbed {
-        const channelId = server.starboardSettings.getChannel();
-        const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
-        if (channelId === null) {
-            embed.addField(GetStarboardChannelCommand.EMBED_TITLE,
-                GetStarboardChannelCommand.CHANNEL_NOT_SET);
-        } else {
-            const msg = `Starboard Channel is currently set to <#${channelId}>.`;
-            embed.addField(GetStarboardChannelCommand.EMBED_TITLE, msg);
-        }
+    // eslint-disable-next-line class-methods-use-this
+    private generateNotSetEmbed(): RichEmbed {
+        const embed = new RichEmbed();
+        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
+        embed.addField(GetStarboardChannelCommand.EMBED_TITLE,
+            GetStarboardChannelCommand.CHANNEL_NOT_SET);
+
         return embed;
     }
 
-    // eslint-disable-next-line max-len
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-    public changeServerSettings(server: Server, ...args: any): void {
-        throw new Error(Command.THIS_METHOD_SHOULD_NOT_BE_CALLED);
+    /**
+     * Generates embed if channel exists
+     *
+     * @param  {string} channelId
+     * @returns RichEmbed
+     */
+    // eslint-disable-next-line class-methods-use-this
+    private generateValidEmbed(channelId: string): RichEmbed {
+        const embed = new RichEmbed();
+        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
+        const msg = `Starboard Channel is currently set to <#${channelId}>.`;
+        embed.addField(GetStarboardChannelCommand.EMBED_TITLE, msg);
+
+        return embed;
     }
-    /* eslint-enable class-methods-use-this */
 }

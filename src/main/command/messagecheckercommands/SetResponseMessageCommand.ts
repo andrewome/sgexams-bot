@@ -3,11 +3,6 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
-export enum ResponseType {
-    RESET = 0,
-    VALID = 1
-}
-
 export class SetResponseMessageCommand extends Command {
     public static COMMAND_NAME = 'SetResponseMessage';
 
@@ -50,60 +45,54 @@ export class SetResponseMessageCommand extends Command {
         }
 
         let embed: RichEmbed;
+
+        // Check if no args
         if (this.args.length === 0) {
-            this.changeServerSettings(server, undefined);
-            embed = this.generateEmbed(ResponseType.RESET);
-        } else {
-            let msg = '';
-            for (let i = 0; i < this.args.length; i++) {
-                msg += this.args[i];
-                msg += (i !== this.args.length - 1) ? ' ' : '';
-            }
-            this.changeServerSettings(server, msg);
-            embed = this.generateEmbed(ResponseType.VALID, msg);
+            server.messageCheckerSettings.setResponseMessage(undefined);
+            embed = this.generateResetEmbed();
+            messageReply(embed);
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
+        let msg = '';
+        for (let i = 0; i < this.args.length; i++) {
+            msg += this.args[i];
+            msg += (i !== this.args.length - 1) ? ' ' : '';
+        }
+        server.messageCheckerSettings.setResponseMessage(msg);
+        embed = this.generateValidEmbed(msg);
         messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
     /**
-     * Generates embed that is sent back to user
+     * Generates reset embed
      *
-     * @param  {ResponseType} type VALID/RESET
-     * @param  {string} msg? Response Message
      * @returns RichEmbed
      */
-    /* eslint-disable class-methods-use-this */
-    public generateEmbed(type: ResponseType, msg?: string): RichEmbed {
-        const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
-        if (type === ResponseType.RESET) {
-            embed.addField(SetResponseMessageCommand.EMBED_TITLE,
-                SetResponseMessageCommand.MESSAGE_RESETTED);
-        }
-        if (type === ResponseType.VALID) {
-            if (msg === undefined) {
-                throw new Error(SetResponseMessageCommand.RESPONSE_MESSAGE_CANNOT_BE_UNDEFINED);
-            }
-            const responseMessage = `Response Message set to ${msg}`;
-            embed.addField(SetResponseMessageCommand.EMBED_TITLE, responseMessage);
-        }
+    // eslint-disable-next-line class-methods-use-this
+    private generateResetEmbed(): RichEmbed {
+        const embed = new RichEmbed();
+        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
+        embed.addField(SetResponseMessageCommand.EMBED_TITLE,
+            SetResponseMessageCommand.MESSAGE_RESETTED);
+
         return embed;
     }
 
     /**
-     * Sets the response message of the server
+     * Generates valid embed
      *
-     * @param  {Server} server
-     * @param  {string|undefined} responseMessage
-     * @returns void
+     * @param  {string} msg
+     * @returns RichEmbed
      */
-    public changeServerSettings(server: Server, responseMessage: string|undefined): void {
-        if (responseMessage === undefined) {
-            server.messageCheckerSettings.setResponseMessage(undefined);
-        } else {
-            server.messageCheckerSettings.setResponseMessage(responseMessage);
-        }
+    // eslint-disable-next-line class-methods-use-this
+    private generateValidEmbed(msg: string): RichEmbed {
+        const embed = new RichEmbed();
+        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
+        const responseMessage = `Response Message set to ${msg}`;
+        embed.addField(SetResponseMessageCommand.EMBED_TITLE, responseMessage);
+
+        return embed;
     }
-    /* eslint-enable class-methods-use-this */
 }

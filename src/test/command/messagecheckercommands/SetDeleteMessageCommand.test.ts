@@ -2,12 +2,11 @@
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { RichEmbed, Permissions } from 'discord.js';
-import { SetDeleteMessageCommand, ResponseType } from '../../../main/command/messagecheckercommands/SetDeleteMessageCommand';
+import { SetDeleteMessageCommand } from '../../../main/command/messagecheckercommands/SetDeleteMessageCommand';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { Server } from '../../../main/storage/Server';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
-import { CommandResult } from '../../../main/command/classes/CommandResult';
 
 should();
 

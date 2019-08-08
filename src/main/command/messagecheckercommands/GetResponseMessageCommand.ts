@@ -35,19 +35,7 @@ export class GetResponseMessageCommand extends Command {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        // Execute
-        messageReply(this.generateEmbed(server));
-        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
-    }
-
-    /**
-     * Generates embed that is sent back to user
-     *
-     * @param  {Server} server
-     * @returns RichEmbed
-     */
-    /* eslint-disable class-methods-use-this */
-    public generateEmbed(server: Server): RichEmbed {
+        // Get embed
         const responseMessage = server.messageCheckerSettings.getResponseMessage();
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if (typeof responseMessage === 'undefined') {
@@ -57,13 +45,9 @@ export class GetResponseMessageCommand extends Command {
             const msg = `Response message is ${responseMessage}.`;
             embed.addField(GetResponseMessageCommand.EMBED_TITLE, msg);
         }
-        return embed;
-    }
 
-    // eslint-disable-next-line max-len
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-    public changeServerSettings(server: Server, ...args: any): void {
-        throw new Error(Command.THIS_METHOD_SHOULD_NOT_BE_CALLED);
+        // Execute
+        messageReply(embed);
+        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
-    /* eslint-enable class-methods-use-this */
 }
