@@ -4,16 +4,16 @@ import { should } from 'chai';
 import {
  RichEmbed, Permissions, Collection, Channel, Client,
 } from 'discord.js';
-import { SetReportChannelCommand } from '../../../main/command/messagecheckercommands/SetReportChannelCommand';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { Server } from '../../../main/storage/Server';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
+import { SetStarboardChannelCommand } from '../../../main/command/starboardcommands/SetStarboardChannelCommand';
 
 should();
 
 let server: Server;
-let command: SetReportChannelCommand;
+let command: SetStarboardChannelCommand;
 const channels = new Collection<string, Channel>();
 
 // Setting up mock channels.
@@ -29,11 +29,11 @@ const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
-const { CHANNEL_NOT_FOUND } = SetReportChannelCommand;
-const { NOT_TEXT_CHANNEL } = SetReportChannelCommand;
-const { EMBED_TITLE } = SetReportChannelCommand;
-const { CHANNEL_RESETTED } = SetReportChannelCommand;
-const { CHANNELID_CANNOT_BE_UNDEFINED } = SetReportChannelCommand;
+const { CHANNEL_NOT_FOUND } = SetStarboardChannelCommand;
+const { NOT_TEXT_CHANNEL } = SetStarboardChannelCommand;
+const { EMBED_TITLE } = SetStarboardChannelCommand;
+const { CHANNEL_RESETTED } = SetStarboardChannelCommand;
+const { CHANNELID_CANNOT_BE_UNDEFINED } = SetStarboardChannelCommand;
 
 beforeEach((): void => {
     server = new Server(
@@ -45,8 +45,8 @@ beforeEach((): void => {
 
 describe('SetReportChannelCommand test suite', (): void => {
     it('reset channel', (): void => {
-        server.messageCheckerSettings.setReportingChannelId('123');
-        command = new SetReportChannelCommand([]);
+        server.starboardSettings.setChannel('123');
+        command = new SetStarboardChannelCommand([]);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -63,10 +63,10 @@ describe('SetReportChannelCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.true;
 
         // Check server
-        (server.messageCheckerSettings.getReportingChannelId() === undefined).should.be.true;
+        (server.starboardSettings.getChannel() === null).should.be.true;
     });
     it('not text channel', (): void => {
-        command = new SetReportChannelCommand(['not_text_channel']);
+        command = new SetStarboardChannelCommand(['not_text_channel']);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
@@ -83,7 +83,7 @@ describe('SetReportChannelCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.false;
     });
     it('cannot find channel', (): void => {
-        command = new SetReportChannelCommand(['does_not_exist']);
+        command = new SetStarboardChannelCommand(['does_not_exist']);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
@@ -101,8 +101,8 @@ describe('SetReportChannelCommand test suite', (): void => {
     });
     it('Valid channelid', (): void => {
         const channelId = 'text_channel';
-        const msg = `Reporting Channel set to <#${channelId}>.`;
-        command = new SetReportChannelCommand([channelId]);
+        const msg = `Starboard Channel set to <#${channelId}>.`;
+        command = new SetStarboardChannelCommand([channelId]);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -119,6 +119,6 @@ describe('SetReportChannelCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.true;
 
         // Check server
-        server.messageCheckerSettings.getReportingChannelId()!.should.equals(channelId);
+        server.starboardSettings.getChannel()!.should.equals(channelId);
     });
 });

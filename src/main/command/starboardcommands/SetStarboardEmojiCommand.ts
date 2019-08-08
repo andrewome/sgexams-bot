@@ -1,16 +1,10 @@
 import {
- Message, RichEmbed, Permissions, Emoji,
+ RichEmbed, Permissions, Emoji, Collection, Channel,
 } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 import { SimplifiedEmoji } from '../../storage/StarboardSettings';
-
-export enum ResponseType {
-    RESET = 0,
-    UNDEFINED = 1,
-    VALID = 2
-}
 
 export class SetStarboardEmojiCommand extends Command {
     public static COMMAND_NAME = 'SetStarboardEmoji';
@@ -30,6 +24,8 @@ export class SetStarboardEmojiCommand extends Command {
     /** SaveServer: true, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, true);
 
+    private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
+
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
     private args: string[];
@@ -47,75 +43,89 @@ export class SetStarboardEmojiCommand extends Command {
      * @param  {Message} message Message object from the bot's on message event
      * @returns CommandResult
      */
-    public execute(server: Server, message: Message): CommandResult {
+    public execute(server: Server,
+                   memberPerms: Permissions,
+                   messageReply: Function,
+                   ...args:
+                    (Collection<string, Channel> | Collection<string, Emoji>)[]): CommandResult {
         // Check for permissions first
-        if (!this.hasPermissions(this.permissions, message.member.permissions)) {
+        if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Execute
         let embed: RichEmbed;
-        if (this.args.length === 0) {
-            embed = this.generateEmbed(ResponseType.RESET);
-            this.changeServerSettings(server, null);
-        } else {
-            const emojiId = this.args[0];
+        const emojis = args[1];
 
-            // Check if valid channel
-            const emoji = message.guild.emojis.get(emojiId);
-            if (typeof emoji === 'undefined') {
-                embed = this.generateEmbed(ResponseType.UNDEFINED);
-            } else {
-                embed = this.generateEmbed(ResponseType.VALID, emoji);
-                const simplifiedEmoji
-                    = new SimplifiedEmoji(emoji.name, emoji.id);
-                this.changeServerSettings(server, simplifiedEmoji);
-            }
+        // If no args
+        if (this.args.length === 0) {
+            embed = this.generateResetEmbed();
+            server.starboardSettings.setEmoji(null);
+            messageReply(embed);
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
-        message.channel.send(embed);
+
+        const emojiId = this.args[0];
+
+        // Check if valid emoji
+        const emoji = emojis.get(emojiId);
+        if (typeof emoji === 'undefined') {
+            embed = this.generateNotFoundEmbed();
+            messageReply(embed);
+            return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
+        }
+
+        embed = this.generateValidEmbed(emoji as Emoji);
+        const simplifiedEmoji
+            = new SimplifiedEmoji((emoji as Emoji).name, emoji.id);
+        server.starboardSettings.setEmoji(simplifiedEmoji);
+        messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
     /**
-     * Generates embed that is sent back to user
+     * Generates embed for reset
      *
-     * @param  {ResponseType} type RESET/UNDEFINED/VALID
-     * @param  {Emnoji} emoji?
      * @returns RichEmbed
      */
-    /* eslint-disable class-methods-use-this */
-    public generateEmbed(type: ResponseType, emoji?: Emoji): RichEmbed {
+    // eslint-disable-next-line class-methods-use-this
+    private generateResetEmbed(): RichEmbed {
         const embed = new RichEmbed();
-        if (type === ResponseType.RESET) {
-            embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(SetStarboardEmojiCommand.EMBED_TITLE,
-                SetStarboardEmojiCommand.EMOJI_RESETTED);
-        }
-        if (type === ResponseType.UNDEFINED) {
-            embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(SetStarboardEmojiCommand.EMBED_TITLE,
-                SetStarboardEmojiCommand.EMOJI_NOT_FOUND);
-        }
-        if (type === ResponseType.VALID) {
-            if (emoji === undefined) {
-                throw new Error(SetStarboardEmojiCommand.EMOJIID_CANNOT_BE_UNDEFINED);
-            }
-            const msg = `Starboard Emoji set to <:${emoji.name}:${emoji.id}>.`;
-            embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(SetStarboardEmojiCommand.EMBED_TITLE, msg);
-        }
+        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
+        embed.addField(SetStarboardEmojiCommand.EMBED_TITLE,
+            SetStarboardEmojiCommand.EMOJI_RESETTED);
+
         return embed;
     }
 
     /**
-     * Sets the starboard channel of the server
+     * Generates embed if emoji not found
      *
-     * @param  {Server} server
-     * @param  {emoji|null} emoji emoji.
-     * @returns void
+     * @returns RichEmbed
      */
-    public changeServerSettings(server: Server, emoji: SimplifiedEmoji | null): void {
-        server.starboardSettings.setEmoji(emoji);
+    // eslint-disable-next-line class-methods-use-this
+    private generateNotFoundEmbed(): RichEmbed {
+        const embed = new RichEmbed();
+        embed.setColor(Command.EMBED_ERROR_COLOUR);
+        embed.addField(SetStarboardEmojiCommand.EMBED_TITLE,
+            SetStarboardEmojiCommand.EMOJI_NOT_FOUND);
+
+        return embed;
     }
-    /* eslint-enable class-methods-use-this */
+
+    /**
+     * Generates embed for valid emoji
+     *
+     * @param  {Emoji} emoji
+     * @returns RichEmbed
+     */
+    // eslint-disable-next-line class-methods-use-this
+    private generateValidEmbed(emoji: Emoji): RichEmbed {
+        const embed = new RichEmbed();
+        const msg = `Starboard Emoji set to <:${emoji.name}:${emoji.id}>.`;
+        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
+        embed.addField(SetStarboardEmojiCommand.EMBED_TITLE, msg);
+
+        return embed;
+    }
 }

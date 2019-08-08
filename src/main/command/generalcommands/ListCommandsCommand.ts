@@ -1,4 +1,4 @@
-import { Permissions, Message, RichEmbed } from 'discord.js';
+import { Permissions, RichEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
@@ -37,14 +37,16 @@ export class ListCommandsCommand extends Command {
      * @param  {Message} message
      * @returns CommandResult
      */
-    public execute(server: Server, message: Message): CommandResult {
+    public execute(server: Server,
+                   memberPerms: Permissions,
+                   messageReply: Function): CommandResult {
         // Check for permissions first
-        if (!this.hasPermissions(this.permissions, message.member.permissions)) {
+        if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Generate embed and send
-        message.channel.send(this.generateEmbed());
+        messageReply(this.generateEmbed());
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
@@ -73,11 +75,4 @@ export class ListCommandsCommand extends Command {
         embed.addField(curTitle, output);
         return embed;
     }
-
-    // eslint-disable-next-line max-len
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-    public changeServerSettings(server: Server, ...args: any): void {
-        throw new Error(Command.THIS_METHOD_SHOULD_NOT_BE_CALLED);
-    }
-    /* eslint-enable class-methods-use-this */
 }

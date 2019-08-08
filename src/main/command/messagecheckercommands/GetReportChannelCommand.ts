@@ -1,4 +1,4 @@
-import { Permissions, Message, RichEmbed } from 'discord.js';
+import { Permissions, RichEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
@@ -27,25 +27,15 @@ export class GetReportChannelCommand extends Command {
      * @param  {Message} message Message object from the bot's on message event
      * @returns CommandResult
      */
-    public execute(server: Server, message: Message): CommandResult {
+    public execute(server: Server,
+                   memberPerms: Permissions,
+                   messageReply: Function): CommandResult {
         // Check for permissions first
-        if (!this.hasPermissions(this.permissions, message.member.permissions)) {
+        if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        // Execute
-        message.channel.send(this.generateEmbed(server));
-        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
-    }
-
-    /**
-     * Generates embed that is sent back to user
-     *
-     * @param  {Server} server
-     * @returns RichEmbed
-     */
-    /* eslint-disable class-methods-use-this */
-    public generateEmbed(server: Server): RichEmbed {
+        // Generate embed
         const channelId = server.messageCheckerSettings.getReportingChannelId();
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if (typeof channelId === 'undefined') {
@@ -55,13 +45,10 @@ export class GetReportChannelCommand extends Command {
             const msg = `Reporting Channel is currently set to <#${channelId}>.`;
             embed.addField(GetReportChannelCommand.EMBED_TITLE, msg);
         }
-        return embed;
-    }
 
-    // eslint-disable-next-line max-len
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-    public changeServerSettings(server: Server, ...args: any): void {
-        throw new Error(Command.THIS_METHOD_SHOULD_NOT_BE_CALLED);
+        // Execute
+        messageReply(embed);
+
+        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
-    /* eslint-enable class-methods-use-this */
 }

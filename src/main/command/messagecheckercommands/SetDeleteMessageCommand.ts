@@ -1,13 +1,7 @@
-import { Permissions, Message, RichEmbed } from 'discord.js';
+import { Permissions, RichEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
-
-export enum ResponseType {
-    NO_ARGUMENTS = 0,
-    WRONG_FORMAT = 1,
-    VALID_FORMAT = 2
-}
 
 export class SetDeleteMessageCommand extends Command {
     public static COMMAND_NAME = 'SetDeleteMessage';
@@ -45,21 +39,24 @@ export class SetDeleteMessageCommand extends Command {
      * @param  {Message} message Message object from the bot's on message event
      * @returns CommandResult
      */
-    public execute(server: Server, message: Message): CommandResult {
+    public execute(server: Server,
+                   memberPerms: Permissions,
+                   messageReply: Function): CommandResult {
         // Check for permissions first
-        if (!this.hasPermissions(this.permissions, message.member.permissions)) {
+        if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Execute
         if (this.args.length === 0) {
-            message.channel.send(this.generateEmbed(ResponseType.NO_ARGUMENTS));
+            messageReply(this.generateNoArgsEmbed());
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
+
         const boolStr = this.args[0].toLowerCase();
         const trueFalseRegex = new RegExp(/\btrue\b|\bfalse\b/, 'g');
         if (!trueFalseRegex.test(boolStr)) {
-            message.channel.send(this.generateEmbed(ResponseType.WRONG_FORMAT));
+            messageReply(this.generateWrongFormatEmbed());
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
@@ -72,51 +69,54 @@ export class SetDeleteMessageCommand extends Command {
             bool = false;
         }
 
-        this.changeServerSettings(server, bool!);
-        message.channel.send(this.generateEmbed(ResponseType.VALID_FORMAT, bool!));
+        server.messageCheckerSettings.setDeleteMessage(bool!);
+        messageReply(this.generateValidEmbed(bool!));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
     /**
-     * Generates embed that is sent back to user
+     * Generate valid embed
      *
-     * @param  {ResponseType} type VALID_FORMAT/NO_ARGUMENTS/WRONG_FORMAT
-     * @param  {boolean} bool? boolean value if delete message is true or false
+     * @param  {boolean} bool
      * @returns RichEmbed
      */
-    /* eslint-disable class-methods-use-this */
-    public generateEmbed(type: ResponseType, bool?: boolean): RichEmbed {
+    // eslint-disable-next-line class-methods-use-this
+    private generateValidEmbed(bool: boolean): RichEmbed {
         const embed = new RichEmbed();
-        if (type === ResponseType.VALID_FORMAT) {
-            if (bool === undefined) {
-                throw new Error(SetDeleteMessageCommand.BOOL_CANNOT_BE_UNDEFINED);
-            }
-            const msg = `Delete Message set to: **${bool ? 'TRUE' : 'FALSE'}**`;
-            embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(SetDeleteMessageCommand.EMBED_TITLE, msg);
-        }
-        if (type === ResponseType.NO_ARGUMENTS) {
-            embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(SetDeleteMessageCommand.EMBED_TITLE,
-                SetDeleteMessageCommand.NO_ARGUMENTS);
-        }
-        if (type === ResponseType.WRONG_FORMAT) {
-            embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(SetDeleteMessageCommand.EMBED_TITLE,
-                SetDeleteMessageCommand.INCORRECT_FORMAT);
-        }
+        const msg = `Delete Message set to: **${bool ? 'TRUE' : 'FALSE'}**`;
+        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
+        embed.addField(SetDeleteMessageCommand.EMBED_TITLE, msg);
+
         return embed;
     }
 
     /**
-     * Sets if the server should deletemessages
+     * Generate no args embed
      *
-     * @param  {Server} server Server
-     * @param  {boolean} bool deletemessage true or false
-     * @returns void
+     * @returns RichEmbed
      */
-    public changeServerSettings(server: Server, bool: boolean): void {
-        server.messageCheckerSettings.setDeleteMessage(bool);
+    // eslint-disable-next-line class-methods-use-this
+    private generateNoArgsEmbed(): RichEmbed {
+        const embed = new RichEmbed();
+        embed.setColor(Command.EMBED_ERROR_COLOUR);
+        embed.addField(SetDeleteMessageCommand.EMBED_TITLE,
+            SetDeleteMessageCommand.NO_ARGUMENTS);
+
+        return embed;
     }
-    /* eslint-enable class-methods-use-this */
+
+    /**
+     * Generate wrong format embed
+     *
+     * @returns RichEmbed
+     */
+    // eslint-disable-next-line class-methods-use-this
+    private generateWrongFormatEmbed(): RichEmbed {
+        const embed = new RichEmbed();
+        embed.setColor(Command.EMBED_ERROR_COLOUR);
+        embed.addField(SetDeleteMessageCommand.EMBED_TITLE,
+            SetDeleteMessageCommand.INCORRECT_FORMAT);
+
+        return embed;
+    }
 }

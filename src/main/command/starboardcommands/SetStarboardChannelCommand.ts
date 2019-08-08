@@ -1,14 +1,9 @@
-import { Message, RichEmbed, Permissions } from 'discord.js';
+import {
+  RichEmbed, Permissions, Collection, Channel, Emoji,
+} from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
-
-export enum ResponseType {
-    RESET = 0,
-    UNDEFINED = 1,
-    NOT_TEXT_CHANNEL = 2,
-    VALID = 3
-}
 
 export class SetStarboardChannelCommand extends Command {
     public static COMMAND_NAME = 'SetStarboardChannel';
@@ -30,6 +25,8 @@ export class SetStarboardChannelCommand extends Command {
     /** SaveServer: true, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, true);
 
+    private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
+
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
     private args: string[];
@@ -47,80 +44,110 @@ export class SetStarboardChannelCommand extends Command {
      * @param  {Message} message Message object from the bot's on message event
      * @returns CommandResult
      */
-    public execute(server: Server, message: Message): CommandResult {
+    public execute(server: Server,
+                   memberPerms: Permissions,
+                   messageReply: Function,
+                   ...args:
+                    (Collection<string, Channel> | Collection<string, Emoji>)[]): CommandResult {
         // Check for permissions first
-        if (!this.hasPermissions(this.permissions, message.member.permissions)) {
+        if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Execute
         let embed: RichEmbed;
-        if (this.args.length === 0) {
-            embed = this.generateEmbed(ResponseType.RESET);
-            this.changeServerSettings(server, null);
-        } else {
-            const channelId = this.args[0];
+        const channels = args[0];
 
-            // Check if valid channel
-            const channel = message.guild.channels.get(channelId);
-            if (typeof channel === 'undefined') {
-                embed = this.generateEmbed(ResponseType.UNDEFINED);
-            } else if (channel.type !== 'text') {
-                embed = this.generateEmbed(ResponseType.NOT_TEXT_CHANNEL);
-            } else {
-                embed = this.generateEmbed(ResponseType.VALID, channelId);
-                this.changeServerSettings(server, channelId);
-            }
+        // If no args
+        if (this.args.length === 0) {
+            embed = this.generateResetEmbed();
+            messageReply(embed);
+            server.starboardSettings.setChannel(null);
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
-        message.channel.send(embed);
+
+        const channelId = this.args[0];
+        const channel = channels.get(channelId);
+
+        // Check if valid channel
+        if (typeof channel === 'undefined') {
+            embed = this.generateNotFoundEmbed();
+            messageReply(embed);
+            return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
+        }
+
+        // If not text channel
+        if ((channel as Channel).type !== 'text') {
+            embed = this.generateNotTextChannelEmbed();
+            messageReply(embed);
+            return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
+        }
+
+        embed = this.generateValidEmbed(channelId);
+        server.starboardSettings.setChannel(channelId);
+        messageReply(embed);
+        server.starboardSettings.setChannel(channelId);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
     /**
-     * Generates embed that is sent back to user
+     * Generates embed for reset
      *
-     * @param  {ResponseType} type RESET/UNDEFINED/NOT_TEXT_CHANNEL/VALID
-     * @param  {string} channelId?
      * @returns RichEmbed
      */
-    /* eslint-disable class-methods-use-this */
-    public generateEmbed(type: ResponseType, channelId?: string): RichEmbed {
+    // eslint-disable-next-line class-methods-use-this
+    private generateResetEmbed(): RichEmbed {
         const embed = new RichEmbed();
-        if (type === ResponseType.RESET) {
-            embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(SetStarboardChannelCommand.EMBED_TITLE,
-                SetStarboardChannelCommand.CHANNEL_RESETTED);
-        }
-        if (type === ResponseType.UNDEFINED) {
-            embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(SetStarboardChannelCommand.EMBED_TITLE,
-                SetStarboardChannelCommand.CHANNEL_NOT_FOUND);
-        }
-        if (type === ResponseType.NOT_TEXT_CHANNEL) {
-            embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(SetStarboardChannelCommand.EMBED_TITLE,
-                SetStarboardChannelCommand.NOT_TEXT_CHANNEL);
-        }
-        if (type === ResponseType.VALID) {
-            if (channelId === undefined) {
-                throw new Error(SetStarboardChannelCommand.CHANNELID_CANNOT_BE_UNDEFINED);
-            }
-            const msg = `Starboard Channel set to <#${channelId}>.`;
-            embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(SetStarboardChannelCommand.EMBED_TITLE, msg);
-        }
+        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
+        embed.addField(SetStarboardChannelCommand.EMBED_TITLE,
+            SetStarboardChannelCommand.CHANNEL_RESETTED);
+
         return embed;
     }
 
     /**
-     * Sets the starboard channel of the server
+     * Generate embed if channel is not found
      *
-     * @param  {Server} server
-     * @param  {string|undefined} channelId channel id.
-     * @returns void
+     * @returns RichEmbed
      */
-    public changeServerSettings(server: Server, channelId: string | null): void {
-        server.starboardSettings.setChannel(channelId);
+    // eslint-disable-next-line class-methods-use-this
+    private generateNotFoundEmbed(): RichEmbed {
+        const embed = new RichEmbed();
+        embed.setColor(Command.EMBED_ERROR_COLOUR);
+        embed.addField(SetStarboardChannelCommand.EMBED_TITLE,
+            SetStarboardChannelCommand.CHANNEL_NOT_FOUND);
+
+        return embed;
     }
-    /* eslint-enable class-methods-use-this */
+
+    /**
+     * Generates embed if not text channel
+     *
+     * @returns RichEmbed
+     */
+    // eslint-disable-next-line class-methods-use-this
+    private generateNotTextChannelEmbed(): RichEmbed {
+        const embed = new RichEmbed();
+        embed.setColor(Command.EMBED_ERROR_COLOUR);
+        embed.addField(SetStarboardChannelCommand.EMBED_TITLE,
+            SetStarboardChannelCommand.NOT_TEXT_CHANNEL);
+
+        return embed;
+    }
+
+    /**
+     * Generate embed for valid channel
+     *
+     * @param  {string} channelId
+     * @returns RichEmbed
+     */
+    // eslint-disable-next-line class-methods-use-this
+    private generateValidEmbed(channelId: string): RichEmbed {
+        const embed = new RichEmbed();
+        const msg = `Starboard Channel set to <#${channelId}>.`;
+        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
+        embed.addField(SetStarboardChannelCommand.EMBED_TITLE, msg);
+
+        return embed;
+    }
 }

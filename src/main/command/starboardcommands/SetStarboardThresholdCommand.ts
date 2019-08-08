@@ -1,13 +1,7 @@
-import { Message, RichEmbed, Permissions } from 'discord.js';
+import { RichEmbed, Permissions } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
-
-export enum ResponseType {
-    RESET = 0,
-    NOT_VALID = 1,
-    VALID = 2
-}
 
 export class SetStarboardThresholdCommand extends Command {
     public static COMMAND_NAME = 'SetStarboardThreshold';
@@ -28,6 +22,8 @@ export class SetStarboardThresholdCommand extends Command {
     /** SaveServer: true, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, true);
 
+    private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
+
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
     private args: string[];
@@ -45,73 +41,79 @@ export class SetStarboardThresholdCommand extends Command {
      * @param  {Message} message Message object from the bot's on message event
      * @returns CommandResult
      */
-    public execute(server: Server, message: Message): CommandResult {
+    public execute(server: Server,
+                   memberPerms: Permissions,
+                   messageReply: Function): CommandResult {
         // Check for permissions first
-        if (!this.hasPermissions(this.permissions, message.member.permissions)) {
+        if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Execute
         let embed: RichEmbed;
         if (this.args.length === 0) {
-            embed = this.generateEmbed(ResponseType.RESET);
-            this.changeServerSettings(server, null);
-        } else {
-            const threshold = this.args[0];
-
-            // Check if valid number
-            const thresholdVal = parseInt(threshold, 10);
-            if (Number.isNaN(thresholdVal) || thresholdVal < 1) {
-                embed = this.generateEmbed(ResponseType.NOT_VALID);
-            } else {
-                embed = this.generateEmbed(ResponseType.VALID, thresholdVal);
-                this.changeServerSettings(server, thresholdVal);
-            }
+            embed = this.generateResetEmbed();
+            server.starboardSettings.setThreshold(null);
+            messageReply(embed);
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
-        message.channel.send(embed);
+
+        const threshold = this.args[0];
+
+        // Check if invalid number
+        const thresholdVal = parseInt(threshold, 10);
+        if (Number.isNaN(thresholdVal) || thresholdVal < 1) {
+            embed = this.generateInvalidEmbed();
+            messageReply(embed);
+            return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
+        }
+
+        embed = this.generateValidEmbed(thresholdVal);
+        server.starboardSettings.setThreshold(thresholdVal);
+        messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
     /**
-     * Generates embed that is sent back to user
+     * Generates embed if resetting
      *
-     * @param  {ResponseType} type RESET/UNDEFINED/VALID
-     * @param  {string} channelId?
      * @returns RichEmbed
      */
-    /* eslint-disable class-methods-use-this */
-    public generateEmbed(type: ResponseType, threshold?: number): RichEmbed {
+    // eslint-disable-next-line class-methods-use-this
+    private generateResetEmbed(): RichEmbed {
         const embed = new RichEmbed();
-        if (type === ResponseType.RESET) {
-            embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(SetStarboardThresholdCommand.EMBED_TITLE,
-                SetStarboardThresholdCommand.THRESHOLD_RESETTED);
-        }
-        if (type === ResponseType.NOT_VALID) {
-            embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(SetStarboardThresholdCommand.EMBED_TITLE,
-                SetStarboardThresholdCommand.NOT_AN_INTEGER);
-        }
-        if (type === ResponseType.VALID) {
-            if (threshold === undefined) {
-                throw new Error(SetStarboardThresholdCommand.THRESHOLD_CANNOT_BE_UNDEFINED);
-            }
-            const msg = `Starboard threshold set to ${threshold}.`;
-            embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(SetStarboardThresholdCommand.EMBED_TITLE, msg);
-        }
+        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
+        embed.addField(SetStarboardThresholdCommand.EMBED_TITLE,
+            SetStarboardThresholdCommand.THRESHOLD_RESETTED);
         return embed;
     }
 
     /**
-     * Sets the starboard channel of the server
+     * Generates embed if invalid
      *
-     * @param  {Server} server
-     * @param  {number|undefined} threshold threshold
-     * @returns void
+     * @returns RichEmbed
      */
-    public changeServerSettings(server: Server, threshold: number | null): void {
-        server.starboardSettings.setThreshold(threshold);
+    // eslint-disable-next-line class-methods-use-this
+    private generateInvalidEmbed(): RichEmbed {
+        const embed = new RichEmbed();
+        embed.setColor(Command.EMBED_ERROR_COLOUR);
+        embed.addField(SetStarboardThresholdCommand.EMBED_TITLE,
+            SetStarboardThresholdCommand.NOT_AN_INTEGER);
+        return embed;
     }
-    /* eslint-enable class-methods-use-this */
+
+    /**
+     * Generates embed if valid
+     *
+     * @param  {number} threshold
+     * @returns RichEmbed
+     */
+    // eslint-disable-next-line class-methods-use-this
+    private generateValidEmbed(threshold: number): RichEmbed {
+        const embed = new RichEmbed();
+        const msg = `Starboard threshold set to ${threshold}.`;
+        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
+        embed.addField(SetStarboardThresholdCommand.EMBED_TITLE, msg);
+        return embed;
+    }
 }

@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, no-restricted-syntax */
+/* eslint-disable @typescript-eslint/no-unused-vars, no-restricted-syntax, no-unused-expressions */
 import { should } from 'chai';
+import { RichEmbed, Permissions } from 'discord.js';
 import { ListWordsCommand } from '../../../main/command/messagecheckercommands/ListWordsCommand';
 import { Command } from '../../../main/command/Command';
 import { Server } from '../../../main/storage/Server';
@@ -10,9 +11,9 @@ should();
 
 const command = new ListWordsCommand();
 let server: Server;
+const adminPerms = new Permissions(['ADMINISTRATOR']);
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
-const { THIS_METHOD_SHOULD_NOT_BE_CALLED } = Command;
 const { EMBED_TITLE } = ListWordsCommand;
 const { NO_WORDS_FOUND } = ListWordsCommand;
 
@@ -32,42 +33,45 @@ describe('ListCommandsCommand test suite', (): void => {
             server.messageCheckerSettings.addbannedWord(word);
         }
 
-        // Get output string
-        let output = '';
-        for (const word of bannedWords) {
-            output += `${word}\n`;
-        }
+        const checkEmbed = (embed: RichEmbed): void => {
+            // Get output string
+            let output = '';
+            for (const word of bannedWords) {
+                output += `${word}\n`;
+            }
 
-        // Compare with generated embed field.
-        const embed = command.generateEmbed(server);
+            // Check colour
+            embed.color!.toString(16).should.equal(EMBED_DEFAULT_COLOUR);
 
-        // Check colour
-        embed.color!.toString(16).should.equal(EMBED_DEFAULT_COLOUR);
+            // Check field
+            embed.fields!.length.should.be.equals(1);
+            const field = embed.fields![0];
+            field.name.should.equals(EMBED_TITLE);
+            field.value.should.equals(output);
+        };
 
-        // Check field
-        embed.fields!.length.should.be.equals(1);
-        const field = embed.fields![0];
-        field.name.should.equals(EMBED_TITLE);
-        field.value.should.equals(output);
+        const commandResult = command.execute(server, adminPerms, checkEmbed);
+
+        // Check command result
+        commandResult.shouldCheckMessage.should.be.true;
+        commandResult.shouldSaveServers.should.be.false;
     });
     it('Embed should show if no bannedWords', (): void => {
-        // Compare with generated embed field.
-        const embed = command.generateEmbed(server);
+        const checkEmbed = (embed: RichEmbed): void => {
+            // Check colour
+            embed.color!.toString(16).should.equal(EMBED_DEFAULT_COLOUR);
 
-        // Check colour
-        embed.color!.toString(16).should.equal(EMBED_DEFAULT_COLOUR);
+            // Check field
+            embed.fields!.length.should.be.equals(1);
+            const field = embed.fields![0];
+            field.name.should.equals(EMBED_TITLE);
+            field.value.should.equals(NO_WORDS_FOUND);
+        };
 
-        // Check field
-        embed.fields!.length.should.be.equals(1);
-        const field = embed.fields![0];
-        field.name.should.equals(EMBED_TITLE);
-        field.value.should.equals(NO_WORDS_FOUND);
-    });
-    it('changeServerSettings should throw error', (): void => {
-        try {
-            command.changeServerSettings(server);
-        } catch (err) {
-            err.message.should.equals(THIS_METHOD_SHOULD_NOT_BE_CALLED);
-        }
+        const commandResult = command.execute(server, adminPerms, checkEmbed);
+
+        // Check command result
+        commandResult.shouldCheckMessage.should.be.true;
+        commandResult.shouldSaveServers.should.be.false;
     });
 });

@@ -1,4 +1,4 @@
-import { Permissions, Message, RichEmbed } from 'discord.js';
+import { Permissions, RichEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
@@ -27,41 +27,51 @@ export class GetStarboardThresholdCommand extends Command {
      * @param  {Message} message Message object from the bot's on message event
      * @returns CommandResult
      */
-    public execute(server: Server, message: Message): CommandResult {
+    public execute(server: Server,
+                   memberPerms: Permissions,
+                   messageReply: Function): CommandResult {
         // Check for permissions first
-        if (!this.hasPermissions(this.permissions, message.member.permissions)) {
+        if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        // Execute
-        message.channel.send(this.generateEmbed(server));
+        const threshold = server.starboardSettings.getThreshold();
+        // Check if threshold is set
+        if (threshold === null) {
+            messageReply(this.generateNotSetEmbed());
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        }
+
+        messageReply(this.generateValidEmbed(threshold));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
     /**
-     * Generates embed that is sent back to user
+     * Generates embed if theshold is not set
      *
-     * @param  {Server} server
      * @returns RichEmbed
      */
-    /* eslint-disable class-methods-use-this */
-    public generateEmbed(server: Server): RichEmbed {
-        const threshold = server.starboardSettings.getThreshold();
+    // eslint-disable-next-line class-methods-use-this
+    private generateNotSetEmbed(): RichEmbed {
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
-        if (threshold === null) {
-            embed.addField(GetStarboardThresholdCommand.EMBED_TITLE,
-                GetStarboardThresholdCommand.THRESHOLD_NOT_SET);
-        } else {
-            const msg = `The emoji threshold is currently ${threshold}.`;
-            embed.addField(GetStarboardThresholdCommand.EMBED_TITLE, msg);
-        }
+        embed.addField(GetStarboardThresholdCommand.EMBED_TITLE,
+            GetStarboardThresholdCommand.THRESHOLD_NOT_SET);
+
         return embed;
     }
 
-    // eslint-disable-next-line max-len
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-    public changeServerSettings(server: Server, ...args: any): void {
-        throw new Error(Command.THIS_METHOD_SHOULD_NOT_BE_CALLED);
+    /**
+     * Generates embed if threshold is set
+     *
+     * @param  {number} threshold
+     * @returns RichEmbed
+     */
+    // eslint-disable-next-line class-methods-use-this
+    private generateValidEmbed(threshold: number): RichEmbed {
+        const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
+        const msg = `The emoji threshold is currently ${threshold}.`;
+        embed.addField(GetStarboardThresholdCommand.EMBED_TITLE, msg);
+
+        return embed;
     }
-    /* eslint-enable class-methods-use-this */
 }
