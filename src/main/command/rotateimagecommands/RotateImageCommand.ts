@@ -48,9 +48,9 @@ export class RotateImageCommand extends Command {
 
             // rotate image
             if (dir === this.CLOCKWISE) {
-                resultImg = img.rotate(90);
-            } else {
                 resultImg = img.rotate(270);
+            } else {
+                resultImg = img.rotate(90);
             }
 
             // Convert to buffer
