@@ -15,6 +15,7 @@ import { SetStarboardEmojiCommand } from './starboardcommands/SetStarboardEmojiC
 import { GetStarboardEmojiCommand } from './starboardcommands/GetStarboardEmojiCommand';
 import { GetStarboardThresholdCommand } from './starboardcommands/GetStarboardThresholdCommand';
 import { SetStarboardThresholdCommand } from './starboardcommands/SetStarboardThresholdCommand';
+import { RotateImageCommand } from './rotateimagecommands/RotateImageCommand';
 
 export class CommandParser {
     public static EMPTY_STRING = '\u200b';
@@ -69,7 +70,8 @@ export class CommandParser {
                            SetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE,
                            GetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE,
                            SetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE,
-                           GetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE]);
+                           GetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE,
+                           RotateImageCommand.COMMAND_NAME_LOWER_CASE]);
 
     public static descriptions: string[]
         = [CommandParser.EMPTY_STRING,
@@ -190,6 +192,8 @@ export class CommandParser {
                 return new GetStarboardThresholdCommand();
             case SetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE:
                 return new SetStarboardThresholdCommand(args);
+            case RotateImageCommand.COMMAND_NAME_LOWER_CASE:
+                return new RotateImageCommand(args);
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }
