@@ -40,7 +40,7 @@ export class GetStarboardChannelCommand extends Command {
 
         // Check if channel is set
         if (channelId === null) {
-            messageReply(this.generateNotSetEmbed);
+            messageReply(this.generateNotSetEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
