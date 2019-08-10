@@ -48,7 +48,9 @@ export class SetStarboardChannelCommand extends Command {
                    memberPerms: Permissions,
                    messageReply: Function,
                    ...args:
-                    (Collection<string, Channel> | Collection<string, Emoji>)[]): CommandResult {
+                    (Collection<string, Channel> |
+                     Collection<string, Emoji> |
+                     Channel)[]): CommandResult {
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
@@ -67,7 +69,7 @@ export class SetStarboardChannelCommand extends Command {
         }
 
         const channelId = this.args[0];
-        const channel = channels.get(channelId);
+        const channel = (channels as Collection<string, Channel>).get(channelId);
 
         // Check if valid channel
         if (typeof channel === 'undefined') {

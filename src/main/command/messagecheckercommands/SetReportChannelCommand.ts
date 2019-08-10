@@ -48,7 +48,9 @@ export class SetReportChannelCommand extends Command {
                    memberPerms: Permissions,
                    messageReply: Function,
                    ...args:
-                    (Collection<string, Channel> | Collection<string, Emoji>)[]): CommandResult {
+                    (Collection<string, Channel> |
+                     Collection<string, Emoji> |
+                     Channel)[]): CommandResult {
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
@@ -66,7 +68,7 @@ export class SetReportChannelCommand extends Command {
         const channelId = this.args[0];
 
         // Check if valid channel
-        const channel = channels.get(channelId);
+        const channel = (channels as Collection<string, Channel>).get(channelId);
         if (typeof channel === 'undefined') {
             embed = this.generateInvalidEmbed();
             messageReply(embed);

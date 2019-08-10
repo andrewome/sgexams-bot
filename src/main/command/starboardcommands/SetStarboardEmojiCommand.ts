@@ -47,7 +47,9 @@ export class SetStarboardEmojiCommand extends Command {
                    memberPerms: Permissions,
                    messageReply: Function,
                    ...args:
-                    (Collection<string, Channel> | Collection<string, Emoji>)[]): CommandResult {
+                    (Collection<string, Channel> |
+                     Collection<string, Emoji> |
+                     Channel)[]): CommandResult {
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
@@ -68,7 +70,7 @@ export class SetStarboardEmojiCommand extends Command {
         const emojiId = this.args[0];
 
         // Check if valid emoji
-        const emoji = emojis.get(emojiId);
+        const emoji = (emojis as Collection<string, Emoji>).get(emojiId);
         if (typeof emoji === 'undefined') {
             embed = this.generateNotFoundEmbed();
             messageReply(embed);
