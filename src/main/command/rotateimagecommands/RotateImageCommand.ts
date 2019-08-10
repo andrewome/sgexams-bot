@@ -59,71 +59,79 @@ export class RotateImageCommand extends Command {
                 let img: Sharp;
                 let angle = 0;
                 const { data } = await axios.get(url, { responseType: 'arraybuffer' });
-                    img = sharp(data);
+                img = sharp(data);
+                const buff = await img.toBuffer();
+                const sentMessage = await messageReply({
+                    files: [{
+                        attachment: buff,
+                    }],
+                });
+                await sentMessage.react(this.ANTICLOCKWISE);
+                await sentMessage.react(this.CLOCKWISE);
+
+                // Filter for reaction collector
+                const filter = (reaction: MessageReaction, user: User): boolean => {
+                    const { name } = reaction.emoji;
+
+                    // Bot was picking up its own reacts
+                    if (user.bot) return false;
+
+                    // If it's of the correct reactions, emit event
+                    if (name === this.CLOCKWISE || name === this.ANTICLOCKWISE) {
+                        return true;
+                    }
+
+                    return false;
+                };
+
+                // Options
+                const options: ReactionCollectorOptions = { time: 15000, max: 1 };
+                const collector = sentMessage.createReactionCollector(filter, options);
+                const COLLECT = 'collect';
+
+                // onReaction function to handle the event. This is a recursive function to
+                // create a new collector because the original message is deleted after each
+                // reaction. That's why max is also set to 1. Because we do not want the
+                // collector to remain hanging around in the stack for too long when
+                // 1 is enough.
+                const onReaction = async (reaction: MessageReaction): Promise<void> => {
+                    const { name } = reaction.emoji;
+                    const { message } = reaction;
+
+                    // Apparently you have to add/minus the 90's. Probably an absolute scale.
+                    if (name === this.ANTICLOCKWISE) {
+                        angle -= 90;
+                        img = img.rotate(angle);
+                    }
+
+                    if (name === this.CLOCKWISE) {
+                        angle += 90;
+                        img = img.rotate(angle);
+                    }
+
                     const buff = await img.toBuffer();
+
+                    // Delete message and send new message.
+                    // This is because attachments cannot be edited.
+                    await message.delete();
                     const sentMessage = await messageReply({
                         files: [{
                             attachment: buff,
                         }],
                     });
-                    await sentMessage.react(this.ANTICLOCKWISE);
-                    await sentMessage.react(this.CLOCKWISE);
+                    await (sentMessage as Message).react(this.ANTICLOCKWISE);
+                    await (sentMessage as Message).react(this.CLOCKWISE);
 
-                    // Filter for reaction collector
-                    const filter = (reaction: MessageReaction, user: User): boolean => {
-                        const { name } = reaction.emoji;
+                    // Set up a new collector
+                    const collector
+                        = (sentMessage as Message).createReactionCollector(filter, options);
 
-                        // Bot was picking up its own reacts
-                        if (user.bot) return false;
-
-                        // If it's of the correct reactions, emit event
-                        if (name === this.CLOCKWISE || name === this.ANTICLOCKWISE) {
-                            return true;
-                        }
-
-                        return false;
-                    };
-
-                    // Options
-                    const options: ReactionCollectorOptions = { time: 15000, max: 1 };
-                    const collector = sentMessage.createReactionCollector(filter, options);
-                    const COLLECT = 'collect';
-
-                    // onReaction function to handle the event. This is a recursive function to
-                    // create a new collector because the original message is deleted after each
-                    // reaction. That's why max is also set to 1. Because we do not want the
-                    // collector to remain hanging around in the stack for too long when
-                    // 1 is enough.
-                    const onReaction = async (reaction: MessageReaction): Promise<void> => {
-                        const { name } = reaction.emoji;
-                        const { message } = reaction;
-
-                        if (name === this.ANTICLOCKWISE) {
-                            angle -= 90;
-                            img = img.rotate(angle);
-                        }
-
-                        if (name === this.CLOCKWISE) {
-                            angle += 90;
-                            img = img.rotate(angle);
-                        }
-
-                        const buff = await img.toBuffer();
-                        await message.delete();
-                        const sentMessage = await messageReply({
-                            files: [{
-                                attachment: buff,
-                            }],
-                        });
-                        await (sentMessage as Message).react(this.ANTICLOCKWISE);
-                        await (sentMessage as Message).react(this.CLOCKWISE);
-                        const collector
-                            = (sentMessage as Message).createReactionCollector(filter, options);
-                        collector.on(COLLECT, onReaction);
-                    };
-
-                    // Set up initial even handler.
+                    // Make it listen
                     collector.on(COLLECT, onReaction);
+                };
+
+                // Set up initial event handler.
+                collector.on(COLLECT, onReaction);
             })
             .catch((err): void => {
                 messageReply('Not a valid message ID.\n' +
