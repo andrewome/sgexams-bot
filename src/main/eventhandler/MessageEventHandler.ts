@@ -42,10 +42,11 @@ export class MessageEventHandler extends EventHandler {
         if (commandParser.isCommand(this.botId)) {
             const { permissions } = this.message.member;
             const { channels, emojis } = this.message.guild;
+            const { channel } = this.message;
             const sendFunction = this.message.channel.send.bind(this.message.channel);
             commandResult = commandParser
                 .getCommand()
-                .execute(server, permissions, sendFunction, channels, emojis);
+                .execute(server, permissions, sendFunction, channels, emojis, channel);
         }
 
         if (commandResult.shouldSaveServers) this.storage.saveServers();

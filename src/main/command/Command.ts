@@ -27,7 +27,9 @@ export abstract class Command {
                             memberPerms: Permissions,
                             messageReply: Function,
                             ...args:
-                            (Collection<string, Channel> | Collection<string, Emoji>)[]
+                            (Collection<string, Channel> |
+                             Collection<string, Emoji> |
+                             Channel)[]
                             ): CommandResult;
 
     /**

@@ -21,15 +21,16 @@
   "homepage": "https://github.com/andrewome/discord-bad-words-bot#readme",
   "dependencies": {
     "@types/dotenv": "^6.1.1",
+    "@types/sharp": "^0.22.2",
     "axios": "^0.19.0",
     "discord.js": "^11.5.1",
     "dotenv": "^8.0.0",
     "fs": "0.0.1-security",
     "https": "^1.0.0",
-    "jimp": "^0.6.4",
     "lodash": "^4.17.14",
     "loglevel": "^1.6.3",
-    "npm": "^6.10.1"
+    "npm": "^6.10.1",
+    "sharp": "^0.23.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
