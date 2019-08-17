@@ -4,7 +4,7 @@ import { should } from 'chai';
 import {
  RichEmbed, Permissions, Collection, Channel, Client,
 } from 'discord.js';
-import { SetReportChannelCommand } from '../../../main/command/messagecheckercommands/SetReportChannelCommand';
+import { MsgCheckerSetReportChannelCommand } from '../../../main/command/messagecheckercommands/MsgCheckerSetReportChannelCommand';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { Server } from '../../../main/storage/Server';
@@ -13,7 +13,7 @@ import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 should();
 
 let server: Server;
-let command: SetReportChannelCommand;
+let command: MsgCheckerSetReportChannelCommand;
 const channels = new Collection<string, Channel>();
 
 // Setting up mock channels.
@@ -29,11 +29,11 @@ const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
-const { CHANNEL_NOT_FOUND } = SetReportChannelCommand;
-const { NOT_TEXT_CHANNEL } = SetReportChannelCommand;
-const { EMBED_TITLE } = SetReportChannelCommand;
-const { CHANNEL_RESETTED } = SetReportChannelCommand;
-const { CHANNELID_CANNOT_BE_UNDEFINED } = SetReportChannelCommand;
+const { CHANNEL_NOT_FOUND } = MsgCheckerSetReportChannelCommand;
+const { NOT_TEXT_CHANNEL } = MsgCheckerSetReportChannelCommand;
+const { EMBED_TITLE } = MsgCheckerSetReportChannelCommand;
+const { CHANNEL_RESETTED } = MsgCheckerSetReportChannelCommand;
+const { CHANNELID_CANNOT_BE_UNDEFINED } = MsgCheckerSetReportChannelCommand;
 
 beforeEach((): void => {
     server = new Server(
@@ -43,10 +43,10 @@ beforeEach((): void => {
 );
 });
 
-describe('SetReportChannelCommand test suite', (): void => {
+describe('MsgCheckerSetReportChannelCommand test suite', (): void => {
     it('reset channel', (): void => {
         server.messageCheckerSettings.setReportingChannelId('123');
-        command = new SetReportChannelCommand([]);
+        command = new MsgCheckerSetReportChannelCommand([]);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -66,7 +66,7 @@ describe('SetReportChannelCommand test suite', (): void => {
         (server.messageCheckerSettings.getReportingChannelId() === undefined).should.be.true;
     });
     it('not text channel', (): void => {
-        command = new SetReportChannelCommand(['not_text_channel']);
+        command = new MsgCheckerSetReportChannelCommand(['not_text_channel']);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
@@ -83,7 +83,7 @@ describe('SetReportChannelCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.false;
     });
     it('cannot find channel', (): void => {
-        command = new SetReportChannelCommand(['does_not_exist']);
+        command = new MsgCheckerSetReportChannelCommand(['does_not_exist']);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
@@ -102,7 +102,7 @@ describe('SetReportChannelCommand test suite', (): void => {
     it('Valid channelid', (): void => {
         const channelId = 'text_channel';
         const msg = `Reporting Channel set to <#${channelId}>.`;
-        command = new SetReportChannelCommand([channelId]);
+        command = new MsgCheckerSetReportChannelCommand([channelId]);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);

@@ -3,10 +3,10 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
-export class RemoveWordCommand extends Command {
+export class MsgCheckerRemoveWordCommand extends Command {
     public static COMMAND_NAME = 'RemoveWords';
 
-    public static COMMAND_NAME_LOWER_CASE = RemoveWordCommand.COMMAND_NAME.toLowerCase();
+    public static COMMAND_NAME_LOWER_CASE = MsgCheckerRemoveWordCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Remove word(s) from the blacklist.';
 
@@ -74,7 +74,7 @@ export class RemoveWordCommand extends Command {
                 output += wordsRemoved[i];
                 output += '\n';
             }
-            embed.addField(RemoveWordCommand.REMOVED_WORDS, output, false);
+            embed.addField(MsgCheckerRemoveWordCommand.REMOVED_WORDS, output, false);
         }
 
         if (wordsNotRemoved.length !== 0) {
@@ -83,15 +83,15 @@ export class RemoveWordCommand extends Command {
                 output += wordsNotRemoved[i];
                 output += '\n';
             }
-            output += RemoveWordCommand.MAYBE_WORDS_NOT_INSIDE;
-            embed.addField(RemoveWordCommand.UNABLE_TO_REMOVE_WORDS, output, false);
+            output += MsgCheckerRemoveWordCommand.MAYBE_WORDS_NOT_INSIDE;
+            embed.addField(MsgCheckerRemoveWordCommand.UNABLE_TO_REMOVE_WORDS, output, false);
         }
 
         if (words.length === 0) {
             embed = new RichEmbed()
                 .setColor(Command.EMBED_ERROR_COLOUR)
                 .addField(Command.ERROR_EMBED_TITLE,
-                    RemoveWordCommand.NO_ARGUMENTS);
+                    MsgCheckerRemoveWordCommand.NO_ARGUMENTS);
         }
 
         return embed;

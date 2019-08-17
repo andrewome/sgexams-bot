@@ -3,10 +3,10 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
-export class AddWordCommand extends Command {
+export class MsgCheckerAddWordCommand extends Command {
     public static COMMAND_NAME = 'AddWords';
 
-    public static COMMAND_NAME_LOWER_CASE = AddWordCommand.COMMAND_NAME.toLowerCase();
+    public static COMMAND_NAME_LOWER_CASE = MsgCheckerAddWordCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Add word(s) to the blacklist.';
 
@@ -74,7 +74,7 @@ export class AddWordCommand extends Command {
                 output += wordsAdded[i];
                 output += '\n';
             }
-            embed.addField(AddWordCommand.ADDED_WORDS, output, false);
+            embed.addField(MsgCheckerAddWordCommand.ADDED_WORDS, output, false);
         }
 
         if (wordsNotAdded.length !== 0) {
@@ -83,14 +83,17 @@ export class AddWordCommand extends Command {
                 output += wordsNotAdded[i];
                 output += '\n';
             }
-            output += AddWordCommand.MAYBE_WORDS_ALREADY_ADDED;
-            embed.addField(AddWordCommand.UNABLE_TO_ADD_WORDS, output, false);
+            output += MsgCheckerAddWordCommand.MAYBE_WORDS_ALREADY_ADDED;
+            embed.addField(MsgCheckerAddWordCommand.UNABLE_TO_ADD_WORDS, output, false);
         }
 
         if (words.length === 0) {
             embed = new RichEmbed()
                 .setColor(Command.EMBED_ERROR_COLOUR)
-                .addField(AddWordCommand.ERROR_EMBED_TITLE, AddWordCommand.NO_ARGUMENTS);
+                .addField(
+                    MsgCheckerAddWordCommand.ERROR_EMBED_TITLE,
+                    MsgCheckerAddWordCommand.NO_ARGUMENTS,
+                );
         }
 
         return embed;

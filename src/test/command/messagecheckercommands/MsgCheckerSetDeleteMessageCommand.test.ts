@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { RichEmbed, Permissions } from 'discord.js';
-import { SetDeleteMessageCommand } from '../../../main/command/messagecheckercommands/SetDeleteMessageCommand';
+import { MsgCheckerSetDeleteMessageCommand } from '../../../main/command/messagecheckercommands/MsgCheckerSetDeleteMessageCommand';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { Server } from '../../../main/storage/Server';
@@ -11,15 +11,15 @@ import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 should();
 
 let server: Server;
-let command: SetDeleteMessageCommand;
+let command: MsgCheckerSetDeleteMessageCommand;
 const adminPerms = new Permissions(['ADMINISTRATOR']);
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
-const { INCORRECT_FORMAT } = SetDeleteMessageCommand;
-const { EMBED_TITLE } = SetDeleteMessageCommand;
-const { BOOL_CANNOT_BE_UNDEFINED } = SetDeleteMessageCommand;
+const { INCORRECT_FORMAT } = MsgCheckerSetDeleteMessageCommand;
+const { EMBED_TITLE } = MsgCheckerSetDeleteMessageCommand;
+const { BOOL_CANNOT_BE_UNDEFINED } = MsgCheckerSetDeleteMessageCommand;
 
 beforeEach((): void => {
     server = new Server(
@@ -29,9 +29,9 @@ beforeEach((): void => {
 );
 });
 
-describe('SetDeleteMessageCommand test suite', (): void => {
+describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
     it('No arguments', (): void => {
-        command = new SetDeleteMessageCommand([]);
+        command = new MsgCheckerSetDeleteMessageCommand([]);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
@@ -48,7 +48,7 @@ describe('SetDeleteMessageCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.false;
     });
     it('Wrong format', (): void => {
-        command = new SetDeleteMessageCommand(['something']);
+        command = new MsgCheckerSetDeleteMessageCommand(['something']);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
@@ -65,7 +65,7 @@ describe('SetDeleteMessageCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.false;
     });
     it('Correct format, true', (): void => {
-        command = new SetDeleteMessageCommand(['true']);
+        command = new MsgCheckerSetDeleteMessageCommand(['true']);
         const msg = 'Delete Message set to: **TRUE**';
 
         const checkEmbed = (embed: RichEmbed): void => {
@@ -86,7 +86,7 @@ describe('SetDeleteMessageCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.true;
     });
     it('Correct format, true all caps', (): void => {
-        command = new SetDeleteMessageCommand(['TRUE']);
+        command = new MsgCheckerSetDeleteMessageCommand(['TRUE']);
         const msg = 'Delete Message set to: **TRUE**';
 
         const checkEmbed = (embed: RichEmbed): void => {
@@ -107,7 +107,7 @@ describe('SetDeleteMessageCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.true;
     });
     it('Correct format, true mixed caps', (): void => {
-        command = new SetDeleteMessageCommand(['TRuE']);
+        command = new MsgCheckerSetDeleteMessageCommand(['TRuE']);
         const msg = 'Delete Message set to: **TRUE**';
 
         const checkEmbed = (embed: RichEmbed): void => {
@@ -128,7 +128,7 @@ describe('SetDeleteMessageCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.true;
     });
     it('Correct format, false', (): void => {
-        command = new SetDeleteMessageCommand(['false']);
+        command = new MsgCheckerSetDeleteMessageCommand(['false']);
         const msg = 'Delete Message set to: **FALSE**';
 
         const checkEmbed = (embed: RichEmbed): void => {

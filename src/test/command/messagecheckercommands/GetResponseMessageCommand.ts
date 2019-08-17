@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, no-unused-expressions */
 import { should } from 'chai';
 import { RichEmbed, Permissions } from 'discord.js';
-import { GetResponseMessageCommand } from '../../../main/command/messagecheckercommands/GetResponseMessageCommand';
+import { MsgCheckerGetResponseMessageCommand } from '../../../main/command/messagecheckercommands/MsgCheckerGetResponseMessageCommand';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -11,11 +11,11 @@ should();
 
 let server: Server;
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const command = new GetResponseMessageCommand();
+const command = new MsgCheckerGetResponseMessageCommand();
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
-const { CHANNEL_NOT_SET } = GetResponseMessageCommand;
-const { EMBED_TITLE } = GetResponseMessageCommand;
+const { CHANNEL_NOT_SET } = MsgCheckerGetResponseMessageCommand;
+const { EMBED_TITLE } = MsgCheckerGetResponseMessageCommand;
 
 beforeEach((): void => {
     server = new Server(
@@ -25,7 +25,7 @@ beforeEach((): void => {
 );
 });
 
-describe('GetResponseMessageCommand class test suite', (): void => {
+describe('MsgCheckerGetResponseMessageCommand class test suite', (): void => {
     it('Message not set', (): void => {
         const checkEmbed = (embed: RichEmbed): void => {
             // Check embed

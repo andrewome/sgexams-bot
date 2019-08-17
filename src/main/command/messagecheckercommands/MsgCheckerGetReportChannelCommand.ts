@@ -3,10 +3,11 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
-export class GetReportChannelCommand extends Command {
+export class MsgCheckerGetReportChannelCommand extends Command {
     public static COMMAND_NAME = 'GetReportChannel';
 
-    public static COMMAND_NAME_LOWER_CASE = GetReportChannelCommand.COMMAND_NAME.toLowerCase();
+    public static COMMAND_NAME_LOWER_CASE
+        = MsgCheckerGetReportChannelCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Displays the reporting channel to post incident reports for this server when blacklisted words are used.';
 
@@ -39,11 +40,11 @@ export class GetReportChannelCommand extends Command {
         const channelId = server.messageCheckerSettings.getReportingChannelId();
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if (typeof channelId === 'undefined') {
-            embed.addField(GetReportChannelCommand.EMBED_TITLE,
-                GetReportChannelCommand.CHANNEL_NOT_SET);
+            embed.addField(MsgCheckerGetReportChannelCommand.EMBED_TITLE,
+                MsgCheckerGetReportChannelCommand.CHANNEL_NOT_SET);
         } else {
             const msg = `Reporting Channel is currently set to <#${channelId}>.`;
-            embed.addField(GetReportChannelCommand.EMBED_TITLE, msg);
+            embed.addField(MsgCheckerGetReportChannelCommand.EMBED_TITLE, msg);
         }
 
         // Execute

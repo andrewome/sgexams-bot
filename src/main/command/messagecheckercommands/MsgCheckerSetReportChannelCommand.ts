@@ -6,10 +6,11 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 import { RotateImageCommandData } from '../rotateimagecommands/RotateImageCommandData';
 
-export class SetReportChannelCommand extends Command {
+export class MsgCheckerSetReportChannelCommand extends Command {
     public static COMMAND_NAME = 'SetReportChannel';
 
-    public static COMMAND_NAME_LOWER_CASE = SetReportChannelCommand.COMMAND_NAME.toLowerCase();
+    public static COMMAND_NAME_LOWER_CASE =
+        MsgCheckerSetReportChannelCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Sets the reporting channel to post incident reports for this server when blacklisted words are used.';
 
@@ -99,8 +100,8 @@ export class SetReportChannelCommand extends Command {
     private generateResetEmbed(): RichEmbed {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(SetReportChannelCommand.EMBED_TITLE,
-        SetReportChannelCommand.CHANNEL_RESETTED);
+        embed.addField(MsgCheckerSetReportChannelCommand.EMBED_TITLE,
+        MsgCheckerSetReportChannelCommand.CHANNEL_RESETTED);
 
         return embed;
     }
@@ -115,8 +116,8 @@ export class SetReportChannelCommand extends Command {
     private generateInvalidEmbed(): RichEmbed {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(SetReportChannelCommand.EMBED_TITLE,
-            SetReportChannelCommand.CHANNEL_NOT_FOUND);
+        embed.addField(MsgCheckerSetReportChannelCommand.EMBED_TITLE,
+            MsgCheckerSetReportChannelCommand.CHANNEL_NOT_FOUND);
 
         return embed;
     }
@@ -131,8 +132,8 @@ export class SetReportChannelCommand extends Command {
     private generateNotTextChannelEmbed(): RichEmbed {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(SetReportChannelCommand.EMBED_TITLE,
-            SetReportChannelCommand.NOT_TEXT_CHANNEL);
+        embed.addField(MsgCheckerSetReportChannelCommand.EMBED_TITLE,
+            MsgCheckerSetReportChannelCommand.NOT_TEXT_CHANNEL);
 
         return embed;
     }
@@ -148,7 +149,7 @@ export class SetReportChannelCommand extends Command {
         const embed = new RichEmbed();
         const msg = `Reporting Channel set to <#${channelId}>.`;
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(SetReportChannelCommand.EMBED_TITLE, msg);
+        embed.addField(MsgCheckerSetReportChannelCommand.EMBED_TITLE, msg);
 
         return embed;
     }

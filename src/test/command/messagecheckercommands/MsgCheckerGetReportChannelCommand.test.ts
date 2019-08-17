@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, no-unused-expressions */
 import { should } from 'chai';
 import { Permissions, RichEmbed } from 'discord.js';
-import { GetReportChannelCommand } from '../../../main/command/messagecheckercommands/GetReportChannelCommand';
+import { MsgCheckerGetReportChannelCommand } from '../../../main/command/messagecheckercommands/MsgCheckerGetReportChannelCommand';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -11,11 +11,11 @@ should();
 
 let server: Server;
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const command = new GetReportChannelCommand();
+const command = new MsgCheckerGetReportChannelCommand();
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
-const { CHANNEL_NOT_SET } = GetReportChannelCommand;
-const { EMBED_TITLE } = GetReportChannelCommand;
+const { CHANNEL_NOT_SET } = MsgCheckerGetReportChannelCommand;
+const { EMBED_TITLE } = MsgCheckerGetReportChannelCommand;
 
 beforeEach((): void => {
     server = new Server(
@@ -25,7 +25,7 @@ beforeEach((): void => {
 );
 });
 
-describe('GetReportChannelCommand class test suite', (): void => {
+describe('MsgCheckerGetReportChannelCommand class test suite', (): void => {
     it('Channel not set', (): void => {
         const checkEmbed = (embed: RichEmbed): void => {
             // Check embed
