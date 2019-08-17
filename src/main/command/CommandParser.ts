@@ -1,20 +1,20 @@
 import { Command } from './Command';
-import { ListWordsCommand } from './messagecheckercommands/ListWordsCommand';
-import { SetReportChannelCommand } from './messagecheckercommands/SetReportChannelCommand';
-import { AddWordCommand } from './messagecheckercommands/AddWordCommand';
-import { RemoveWordCommand } from './messagecheckercommands/RemoveWordCommand';
+import { MsgCheckerListWordsCommand } from './messagecheckercommands/MsgCheckerListWordsCommand';
+import { MsgCheckerSetReportChannelCommand } from './messagecheckercommands/MsgCheckerSetReportChannelCommand';
+import { MsgCheckerAddWordCommand } from './messagecheckercommands/MsgCheckerAddWordCommand';
+import { MsgCheckerRemoveWordCommand } from './messagecheckercommands/MsgCheckerRemoveWordCommand';
 import { NoSuchCommandError } from './error/NoSuchCommandError';
-import { GetReportChannelCommand } from './messagecheckercommands/GetReportChannelCommand';
+import { MsgCheckerGetReportChannelCommand } from './messagecheckercommands/MsgCheckerGetReportChannelCommand';
 import { ListCommandsCommand } from './generalcommands/ListCommandsCommand';
-import { SetResponseMessageCommand } from './messagecheckercommands/SetResponseMessageCommand';
-import { GetResponseMessageCommand } from './messagecheckercommands/GetResponseMessageCommand';
-import { SetDeleteMessageCommand } from './messagecheckercommands/SetDeleteMessageCommand';
-import { SetStarboardChannelCommand } from './starboardcommands/SetStarboardChannelCommand';
-import { GetStarboardChannelCommand } from './starboardcommands/GetStarboardChannelCommand';
-import { SetStarboardEmojiCommand } from './starboardcommands/SetStarboardEmojiCommand';
-import { GetStarboardEmojiCommand } from './starboardcommands/GetStarboardEmojiCommand';
-import { GetStarboardThresholdCommand } from './starboardcommands/GetStarboardThresholdCommand';
-import { SetStarboardThresholdCommand } from './starboardcommands/SetStarboardThresholdCommand';
+import { MsgCheckerSetResponseMessageCommand } from './messagecheckercommands/MsgCheckerSetResponseMessageCommand';
+import { MsgCheckerGetResponseMessageCommand } from './messagecheckercommands/MsgCheckerGetResponseMessageCommand';
+import { MsgCheckerSetDeleteMessageCommand } from './messagecheckercommands/MsgCheckerSetDeleteMessageCommand';
+import { StarboardSetChannelCommand } from './starboardcommands/StarboardSetChannelCommand';
+import { StarboardGetChannelCommand } from './starboardcommands/StarboardGetChannelCommand';
+import { StarboardSetEmojiCommand } from './starboardcommands/StarboardSetEmojiCommand';
+import { StarboardGetEmojiCommand } from './starboardcommands/StarboardGetEmojiCommand';
+import { StarboardGetThresholdCommand } from './starboardcommands/StarboardGetThresholdCommand';
+import { StarboardSetThresholdCommand } from './starboardcommands/StarboardSetThresholdCommand';
 import { RotateImageCommand } from './rotateimagecommands/RotateImageCommand';
 
 export class CommandParser {
@@ -37,61 +37,61 @@ export class CommandParser {
         = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
                            ListCommandsCommand.COMMAND_NAME,
                            CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER,
-                           ListWordsCommand.COMMAND_NAME,
-                           AddWordCommand.COMMAND_NAME,
-                           RemoveWordCommand.COMMAND_NAME,
-                           SetReportChannelCommand.COMMAND_NAME,
-                           GetReportChannelCommand.COMMAND_NAME,
-                           SetResponseMessageCommand.COMMAND_NAME,
-                           GetResponseMessageCommand.COMMAND_NAME,
-                           SetDeleteMessageCommand.COMMAND_NAME,
+                           MsgCheckerListWordsCommand.COMMAND_NAME,
+                           MsgCheckerAddWordCommand.COMMAND_NAME,
+                           MsgCheckerRemoveWordCommand.COMMAND_NAME,
+                           MsgCheckerSetReportChannelCommand.COMMAND_NAME,
+                           MsgCheckerGetReportChannelCommand.COMMAND_NAME,
+                           MsgCheckerSetResponseMessageCommand.COMMAND_NAME,
+                           MsgCheckerGetResponseMessageCommand.COMMAND_NAME,
+                           MsgCheckerSetDeleteMessageCommand.COMMAND_NAME,
                            CommandParser.STARBOARD_COMMANDS_HEADER,
-                           SetStarboardChannelCommand.COMMAND_NAME,
-                           GetStarboardChannelCommand.COMMAND_NAME,
-                           SetStarboardEmojiCommand.COMMAND_NAME,
-                           GetStarboardEmojiCommand.COMMAND_NAME,
-                           SetStarboardThresholdCommand.COMMAND_NAME,
-                           GetStarboardThresholdCommand.COMMAND_NAME]);
+                           StarboardSetChannelCommand.COMMAND_NAME,
+                           StarboardGetChannelCommand.COMMAND_NAME,
+                           StarboardSetEmojiCommand.COMMAND_NAME,
+                           StarboardGetEmojiCommand.COMMAND_NAME,
+                           StarboardSetThresholdCommand.COMMAND_NAME,
+                           StarboardGetThresholdCommand.COMMAND_NAME]);
 
     public static commandsLowerCase: Set<string>
         = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
                            ListCommandsCommand.COMMAND_NAME_LOWER_CASE,
                            CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER,
-                           ListWordsCommand.COMMAND_NAME_LOWER_CASE,
-                           AddWordCommand.COMMAND_NAME_LOWER_CASE,
-                           RemoveWordCommand.COMMAND_NAME_LOWER_CASE,
-                           SetReportChannelCommand.COMMAND_NAME_LOWER_CASE,
-                           GetReportChannelCommand.COMMAND_NAME_LOWER_CASE,
-                           SetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
-                           GetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
-                           SetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE,
-                           SetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE,
-                           GetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE,
-                           SetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE,
-                           GetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE,
-                           SetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE,
-                           GetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE,
+                           MsgCheckerListWordsCommand.COMMAND_NAME_LOWER_CASE,
+                           MsgCheckerAddWordCommand.COMMAND_NAME_LOWER_CASE,
+                           MsgCheckerRemoveWordCommand.COMMAND_NAME_LOWER_CASE,
+                           MsgCheckerSetReportChannelCommand.COMMAND_NAME_LOWER_CASE,
+                           MsgCheckerGetReportChannelCommand.COMMAND_NAME_LOWER_CASE,
+                           MsgCheckerSetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
+                           MsgCheckerGetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
+                           MsgCheckerSetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE,
+                           StarboardSetChannelCommand.COMMAND_NAME_LOWER_CASE,
+                           StarboardGetChannelCommand.COMMAND_NAME_LOWER_CASE,
+                           StarboardSetEmojiCommand.COMMAND_NAME_LOWER_CASE,
+                           StarboardGetEmojiCommand.COMMAND_NAME_LOWER_CASE,
+                           StarboardSetThresholdCommand.COMMAND_NAME_LOWER_CASE,
+                           StarboardGetThresholdCommand.COMMAND_NAME_LOWER_CASE,
                            RotateImageCommand.COMMAND_NAME_LOWER_CASE]);
 
     public static descriptions: string[]
         = [CommandParser.EMPTY_STRING,
            ListCommandsCommand.DESCRIPTION,
            CommandParser.EMPTY_STRING,
-           ListWordsCommand.DESCRIPTION,
-           AddWordCommand.DESCRIPTION,
-           RemoveWordCommand.DESCRIPTION,
-           SetReportChannelCommand.DESCRIPTION,
-           GetReportChannelCommand.DESCRIPTION,
-           SetResponseMessageCommand.DESCRIPTION,
-           GetResponseMessageCommand.DESCRIPTION,
-           SetDeleteMessageCommand.DESCRIPTION,
+           MsgCheckerListWordsCommand.DESCRIPTION,
+           MsgCheckerAddWordCommand.DESCRIPTION,
+           MsgCheckerRemoveWordCommand.DESCRIPTION,
+           MsgCheckerSetReportChannelCommand.DESCRIPTION,
+           MsgCheckerGetReportChannelCommand.DESCRIPTION,
+           MsgCheckerSetResponseMessageCommand.DESCRIPTION,
+           MsgCheckerGetResponseMessageCommand.DESCRIPTION,
+           MsgCheckerSetDeleteMessageCommand.DESCRIPTION,
            CommandParser.EMPTY_STRING,
-           SetStarboardChannelCommand.DESCRIPTION,
-           GetStarboardChannelCommand.DESCRIPTION,
-           SetStarboardEmojiCommand.DESCRIPTION,
-           GetStarboardEmojiCommand.DESCRIPTION,
-           SetStarboardThresholdCommand.DESCRIPTION,
-           GetStarboardThresholdCommand.DESCRIPTION];
+           StarboardSetChannelCommand.DESCRIPTION,
+           StarboardGetChannelCommand.DESCRIPTION,
+           StarboardSetEmojiCommand.DESCRIPTION,
+           StarboardGetEmojiCommand.DESCRIPTION,
+           StarboardSetThresholdCommand.DESCRIPTION,
+           StarboardGetThresholdCommand.DESCRIPTION];
 
     private content: string;
 
@@ -162,36 +162,36 @@ export class CommandParser {
         const command = this.splittedContent[1].toLowerCase();
         const args = this.getArgs();
         switch (command) {
-            case ListWordsCommand.COMMAND_NAME_LOWER_CASE:
-                return new ListWordsCommand();
-            case SetReportChannelCommand.COMMAND_NAME_LOWER_CASE:
-                return new SetReportChannelCommand(args);
-            case AddWordCommand.COMMAND_NAME_LOWER_CASE:
-                return new AddWordCommand(args);
-            case RemoveWordCommand.COMMAND_NAME_LOWER_CASE:
-                return new RemoveWordCommand(args);
-            case GetReportChannelCommand.COMMAND_NAME_LOWER_CASE:
-                return new GetReportChannelCommand();
+            case MsgCheckerListWordsCommand.COMMAND_NAME_LOWER_CASE:
+                return new MsgCheckerListWordsCommand();
+            case MsgCheckerSetReportChannelCommand.COMMAND_NAME_LOWER_CASE:
+                return new MsgCheckerSetReportChannelCommand(args);
+            case MsgCheckerAddWordCommand.COMMAND_NAME_LOWER_CASE:
+                return new MsgCheckerAddWordCommand(args);
+            case MsgCheckerRemoveWordCommand.COMMAND_NAME_LOWER_CASE:
+                return new MsgCheckerRemoveWordCommand(args);
+            case MsgCheckerGetReportChannelCommand.COMMAND_NAME_LOWER_CASE:
+                return new MsgCheckerGetReportChannelCommand();
             case ListCommandsCommand.COMMAND_NAME_LOWER_CASE:
                 return new ListCommandsCommand();
-            case SetResponseMessageCommand.COMMAND_NAME_LOWER_CASE:
-                return new SetResponseMessageCommand(args);
-            case GetResponseMessageCommand.COMMAND_NAME_LOWER_CASE:
-                return new GetResponseMessageCommand();
-            case SetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE:
-                return new SetDeleteMessageCommand(args);
-            case SetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE:
-                return new SetStarboardChannelCommand(args);
-            case GetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE:
-                return new GetStarboardChannelCommand();
-            case GetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE:
-                return new GetStarboardEmojiCommand();
-            case SetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE:
-                return new SetStarboardEmojiCommand(args);
-            case GetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE:
-                return new GetStarboardThresholdCommand();
-            case SetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE:
-                return new SetStarboardThresholdCommand(args);
+            case MsgCheckerSetResponseMessageCommand.COMMAND_NAME_LOWER_CASE:
+                return new MsgCheckerSetResponseMessageCommand(args);
+            case MsgCheckerGetResponseMessageCommand.COMMAND_NAME_LOWER_CASE:
+                return new MsgCheckerGetResponseMessageCommand();
+            case MsgCheckerSetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE:
+                return new MsgCheckerSetDeleteMessageCommand(args);
+            case StarboardSetChannelCommand.COMMAND_NAME_LOWER_CASE:
+                return new StarboardSetChannelCommand(args);
+            case StarboardGetChannelCommand.COMMAND_NAME_LOWER_CASE:
+                return new StarboardGetChannelCommand();
+            case StarboardGetEmojiCommand.COMMAND_NAME_LOWER_CASE:
+                return new StarboardGetEmojiCommand();
+            case StarboardSetEmojiCommand.COMMAND_NAME_LOWER_CASE:
+                return new StarboardSetEmojiCommand(args);
+            case StarboardGetThresholdCommand.COMMAND_NAME_LOWER_CASE:
+                return new StarboardGetThresholdCommand();
+            case StarboardSetThresholdCommand.COMMAND_NAME_LOWER_CASE:
+                return new StarboardSetThresholdCommand(args);
             case RotateImageCommand.COMMAND_NAME_LOWER_CASE:
                 return new RotateImageCommand(args);
             default:

@@ -3,10 +3,10 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
-export class GetStarboardChannelCommand extends Command {
+export class StarboardGetChannelCommand extends Command {
     public static COMMAND_NAME = 'GetStarboardChannel';
 
-    public static COMMAND_NAME_LOWER_CASE = GetStarboardChannelCommand.COMMAND_NAME.toLowerCase();
+    public static COMMAND_NAME_LOWER_CASE = StarboardGetChannelCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Displays the currently set Starboard channel';
 
@@ -57,8 +57,8 @@ export class GetStarboardChannelCommand extends Command {
     private generateNotSetEmbed(): RichEmbed {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(GetStarboardChannelCommand.EMBED_TITLE,
-            GetStarboardChannelCommand.CHANNEL_NOT_SET);
+        embed.addField(StarboardGetChannelCommand.EMBED_TITLE,
+            StarboardGetChannelCommand.CHANNEL_NOT_SET);
 
         return embed;
     }
@@ -74,7 +74,7 @@ export class GetStarboardChannelCommand extends Command {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         const msg = `Starboard Channel is currently set to <#${channelId}>.`;
-        embed.addField(GetStarboardChannelCommand.EMBED_TITLE, msg);
+        embed.addField(StarboardGetChannelCommand.EMBED_TITLE, msg);
 
         return embed;
     }

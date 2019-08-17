@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, no-unused-expressions */
 import { should } from 'chai';
-import { Permissions, RichEmbed } from 'discord.js';
+import { RichEmbed, Permissions } from 'discord.js';
+import { MsgCheckerGetResponseMessageCommand } from '../../../main/command/messagecheckercommands/MsgCheckerGetResponseMessageCommand';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
-import { GetStarboardChannelCommand } from '../../../main/command/starboardcommands/GetStarboardChannelCommand';
 
 should();
 
 let server: Server;
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const command = new GetStarboardChannelCommand();
+const command = new MsgCheckerGetResponseMessageCommand();
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
-const { CHANNEL_NOT_SET } = GetStarboardChannelCommand;
-const { EMBED_TITLE } = GetStarboardChannelCommand;
+const { CHANNEL_NOT_SET } = MsgCheckerGetResponseMessageCommand;
+const { EMBED_TITLE } = MsgCheckerGetResponseMessageCommand;
 
 beforeEach((): void => {
     server = new Server(
@@ -25,8 +25,8 @@ beforeEach((): void => {
 );
 });
 
-describe('GetStarboardChannelCommand class test suite', (): void => {
-    it('Channel not set', (): void => {
+describe('MsgCheckerGetResponseMessageCommand class test suite', (): void => {
+    it('Message not set', (): void => {
         const checkEmbed = (embed: RichEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -42,9 +42,9 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
         commandResult.shouldCheckMessage.should.be.true;
         commandResult.shouldSaveServers.should.be.false;
     });
-    it('Channel set', (): void => {
-        const channelId = '111';
-        server.starboardSettings.setChannel(channelId);
+    it('Message set', (): void => {
+        const responseMessage = 'testing';
+        server.messageCheckerSettings.setResponseMessage(responseMessage);
 
         const checkEmbed = (embed: RichEmbed): void => {
             // Check embed
@@ -52,7 +52,7 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
-            field.value.should.equals(`Starboard Channel is currently set to <#${channelId}>.`);
+            field.value.should.equals(`Response message is ${responseMessage}.`);
         };
 
         const commandResult = command.execute(server, adminPerms, checkEmbed);

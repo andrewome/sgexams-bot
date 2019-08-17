@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, no-unused-expressions */
 import { should } from 'chai';
 import { Permissions, RichEmbed } from 'discord.js';
-import { GetReportChannelCommand } from '../../../main/command/messagecheckercommands/GetReportChannelCommand';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
+import { StarboardGetChannelCommand } from '../../../main/command/starboardcommands/StarboardGetChannelCommand';
 
 should();
 
 let server: Server;
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const command = new GetReportChannelCommand();
+const command = new StarboardGetChannelCommand();
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
-const { CHANNEL_NOT_SET } = GetReportChannelCommand;
-const { EMBED_TITLE } = GetReportChannelCommand;
+const { CHANNEL_NOT_SET } = StarboardGetChannelCommand;
+const { EMBED_TITLE } = StarboardGetChannelCommand;
 
 beforeEach((): void => {
     server = new Server(
@@ -25,7 +25,7 @@ beforeEach((): void => {
 );
 });
 
-describe('GetReportChannelCommand class test suite', (): void => {
+describe('StarboardGetChannelCommand class test suite', (): void => {
     it('Channel not set', (): void => {
         const checkEmbed = (embed: RichEmbed): void => {
             // Check embed
@@ -44,7 +44,7 @@ describe('GetReportChannelCommand class test suite', (): void => {
     });
     it('Channel set', (): void => {
         const channelId = '111';
-        server.messageCheckerSettings.setReportingChannelId(channelId);
+        server.starboardSettings.setChannel(channelId);
 
         const checkEmbed = (embed: RichEmbed): void => {
             // Check embed
@@ -52,7 +52,7 @@ describe('GetReportChannelCommand class test suite', (): void => {
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
-            field.value.should.equals(`Reporting Channel is currently set to <#${channelId}>.`);
+            field.value.should.equals(`Starboard Channel is currently set to <#${channelId}>.`);
         };
 
         const commandResult = command.execute(server, adminPerms, checkEmbed);

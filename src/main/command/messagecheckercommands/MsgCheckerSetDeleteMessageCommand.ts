@@ -3,10 +3,11 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
-export class SetDeleteMessageCommand extends Command {
+export class MsgCheckerSetDeleteMessageCommand extends Command {
     public static COMMAND_NAME = 'SetDeleteMessage';
 
-    public static COMMAND_NAME_LOWER_CASE = SetDeleteMessageCommand.COMMAND_NAME.toLowerCase();
+    public static COMMAND_NAME_LOWER_CASE =
+        MsgCheckerSetDeleteMessageCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Sets whether the bot should delete instances of blacklisted words being used.';
 
@@ -85,7 +86,7 @@ export class SetDeleteMessageCommand extends Command {
         const embed = new RichEmbed();
         const msg = `Delete Message set to: **${bool ? 'TRUE' : 'FALSE'}**`;
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(SetDeleteMessageCommand.EMBED_TITLE, msg);
+        embed.addField(MsgCheckerSetDeleteMessageCommand.EMBED_TITLE, msg);
 
         return embed;
     }
@@ -99,8 +100,8 @@ export class SetDeleteMessageCommand extends Command {
     private generateNoArgsEmbed(): RichEmbed {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(SetDeleteMessageCommand.EMBED_TITLE,
-            SetDeleteMessageCommand.NO_ARGUMENTS);
+        embed.addField(MsgCheckerSetDeleteMessageCommand.EMBED_TITLE,
+            MsgCheckerSetDeleteMessageCommand.NO_ARGUMENTS);
 
         return embed;
     }
@@ -114,8 +115,8 @@ export class SetDeleteMessageCommand extends Command {
     private generateWrongFormatEmbed(): RichEmbed {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(SetDeleteMessageCommand.EMBED_TITLE,
-            SetDeleteMessageCommand.INCORRECT_FORMAT);
+        embed.addField(MsgCheckerSetDeleteMessageCommand.EMBED_TITLE,
+            MsgCheckerSetDeleteMessageCommand.INCORRECT_FORMAT);
 
         return embed;
     }

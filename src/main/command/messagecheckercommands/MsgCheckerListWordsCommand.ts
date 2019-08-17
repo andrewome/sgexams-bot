@@ -3,10 +3,10 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
-export class ListWordsCommand extends Command {
+export class MsgCheckerListWordsCommand extends Command {
     public static COMMAND_NAME = 'ListWords';
 
-    public static COMMAND_NAME_LOWER_CASE = ListWordsCommand.COMMAND_NAME.toLowerCase();
+    public static COMMAND_NAME_LOWER_CASE = MsgCheckerListWordsCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Displays all blacklisted words.';
 
@@ -41,14 +41,17 @@ export class ListWordsCommand extends Command {
 
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if (bannedWords.length === 0) {
-            embed.addField(ListWordsCommand.EMBED_TITLE, ListWordsCommand.NO_WORDS_FOUND);
+            embed.addField(
+                MsgCheckerListWordsCommand.EMBED_TITLE,
+                MsgCheckerListWordsCommand.NO_WORDS_FOUND,
+            );
         } else {
             let output = '';
             for (const word of bannedWords) {
                 output += `${word}\n`;
             }
             embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(ListWordsCommand.EMBED_TITLE, output);
+            embed.addField(MsgCheckerListWordsCommand.EMBED_TITLE, output);
         }
 
         // Execute Command

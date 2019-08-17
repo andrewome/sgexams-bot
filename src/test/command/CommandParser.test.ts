@@ -3,14 +3,14 @@
 import { should } from 'chai';
 import { CommandParser } from '../../main/command/CommandParser';
 import { ListCommandsCommand } from '../../main/command/generalcommands/ListCommandsCommand';
-import { ListWordsCommand } from '../../main/command/messagecheckercommands/ListWordsCommand';
-import { AddWordCommand } from '../../main/command/messagecheckercommands/AddWordCommand';
-import { RemoveWordCommand } from '../../main/command/messagecheckercommands/RemoveWordCommand';
-import { SetReportChannelCommand } from '../../main/command/messagecheckercommands/SetReportChannelCommand';
-import { GetReportChannelCommand } from '../../main/command/messagecheckercommands/GetReportChannelCommand';
-import { SetResponseMessageCommand } from '../../main/command/messagecheckercommands/SetResponseMessageCommand';
-import { GetResponseMessageCommand } from '../../main/command/messagecheckercommands/GetResponseMessageCommand';
-import { SetDeleteMessageCommand } from '../../main/command/messagecheckercommands/SetDeleteMessageCommand';
+import { MsgCheckerListWordsCommand } from '../../main/command/messagecheckercommands/MsgCheckerListWordsCommand';
+import { MsgCheckerAddWordCommand } from '../../main/command/messagecheckercommands/MsgCheckerAddWordCommand';
+import { MsgCheckerRemoveWordCommand } from '../../main/command/messagecheckercommands/MsgCheckerRemoveWordCommand';
+import { MsgCheckerSetReportChannelCommand } from '../../main/command/messagecheckercommands/MsgCheckerSetReportChannelCommand';
+import { MsgCheckerGetReportChannelCommand } from '../../main/command/messagecheckercommands/MsgCheckerGetReportChannelCommand';
+import { MsgCheckerSetResponseMessageCommand } from '../../main/command/messagecheckercommands/MsgCheckerSetResponseMessageCommand';
+import { MsgCheckerGetResponseMessageCommand } from '../../main/command/messagecheckercommands/MsgCheckerGetResponseMessageCommand';
+import { MsgCheckerSetDeleteMessageCommand } from '../../main/command/messagecheckercommands/MsgCheckerSetDeleteMessageCommand';
 import { NoSuchCommandError } from '../../main/command/error/NoSuchCommandError';
 
 should();
@@ -55,11 +55,11 @@ describe('CommandParser test suite', (): void => {
             new CommandParser(content).isCommand(botId).should.be.true;
         });
         it('tagging the bot correctly 2', (): void => {
-            const content = `<@!123456789> ${ListWordsCommand.COMMAND_NAME}`;
+            const content = `<@!123456789> ${MsgCheckerListWordsCommand.COMMAND_NAME}`;
             new CommandParser(content).isCommand(botId).should.be.true;
         });
         it('tagging the bot correctly 3', (): void => {
-            const content = `<@!123456789> ${AddWordCommand.COMMAND_NAME}`;
+            const content = `<@!123456789> ${MsgCheckerAddWordCommand.COMMAND_NAME}`;
             new CommandParser(content).isCommand(botId).should.be.true;
         });
         it('tagging the bot correctly 4', (): void => {
@@ -75,44 +75,44 @@ describe('CommandParser test suite', (): void => {
             (command instanceof ListCommandsCommand).should.be.true;
         });
         it('Listwords command', (): void => {
-            const content = `<@123456789> ${ListWordsCommand.COMMAND_NAME}`;
+            const content = `<@123456789> ${MsgCheckerListWordsCommand.COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
-            (command instanceof ListWordsCommand).should.be.true;
+            (command instanceof MsgCheckerListWordsCommand).should.be.true;
         });
         it('Addwords command', (): void => {
-            const content = `<@123456789> ${AddWordCommand.COMMAND_NAME}`;
+            const content = `<@123456789> ${MsgCheckerAddWordCommand.COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
-            (command instanceof AddWordCommand).should.be.true;
+            (command instanceof MsgCheckerAddWordCommand).should.be.true;
         });
         it('Removewords command', (): void => {
-            const content = `<@123456789> ${RemoveWordCommand.COMMAND_NAME}`;
+            const content = `<@123456789> ${MsgCheckerRemoveWordCommand.COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
-            (command instanceof RemoveWordCommand).should.be.true;
+            (command instanceof MsgCheckerRemoveWordCommand).should.be.true;
         });
         it('Setchannel command', (): void => {
-            const content = `<@123456789> ${SetReportChannelCommand.COMMAND_NAME}`;
+            const content = `<@123456789> ${MsgCheckerSetReportChannelCommand.COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
-            (command instanceof SetReportChannelCommand).should.be.true;
+            (command instanceof MsgCheckerSetReportChannelCommand).should.be.true;
         });
         it('Getchannel command', (): void => {
-            const content = `<@123456789> ${GetReportChannelCommand.COMMAND_NAME}`;
+            const content = `<@123456789> ${MsgCheckerGetReportChannelCommand.COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
-            (command instanceof GetReportChannelCommand).should.be.true;
+            (command instanceof MsgCheckerGetReportChannelCommand).should.be.true;
         });
         it('Setresponsemessage command', (): void => {
-            const content = `<@123456789> ${SetResponseMessageCommand.COMMAND_NAME}`;
+            const content = `<@123456789> ${MsgCheckerSetResponseMessageCommand.COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
-            (command instanceof SetResponseMessageCommand).should.be.true;
+            (command instanceof MsgCheckerSetResponseMessageCommand).should.be.true;
         });
         it('Getresponsemessage command', (): void => {
-            const content = `<@123456789> ${GetResponseMessageCommand.COMMAND_NAME}`;
+            const content = `<@123456789> ${MsgCheckerGetResponseMessageCommand.COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
-            (command instanceof GetResponseMessageCommand).should.be.true;
+            (command instanceof MsgCheckerGetResponseMessageCommand).should.be.true;
         });
         it('Setdeletemessage command', (): void => {
-            const content = `<@123456789> ${SetDeleteMessageCommand.COMMAND_NAME}`;
+            const content = `<@123456789> ${MsgCheckerSetDeleteMessageCommand.COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
-            (command instanceof SetDeleteMessageCommand).should.be.true;
+            (command instanceof MsgCheckerSetDeleteMessageCommand).should.be.true;
         });
         it('Command that does not exist', (): void => {
             const content = '<@123456789> huh?';

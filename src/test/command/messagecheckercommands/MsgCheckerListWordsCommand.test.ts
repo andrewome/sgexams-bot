@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, no-restricted-syntax, no-unused-expressions */
 import { should } from 'chai';
 import { RichEmbed, Permissions } from 'discord.js';
-import { ListWordsCommand } from '../../../main/command/messagecheckercommands/ListWordsCommand';
+import { MsgCheckerListWordsCommand } from '../../../main/command/messagecheckercommands/MsgCheckerListWordsCommand';
 import { Command } from '../../../main/command/Command';
 import { Server } from '../../../main/storage/Server';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -9,13 +9,13 @@ import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 
 should();
 
-const command = new ListWordsCommand();
+const command = new MsgCheckerListWordsCommand();
 let server: Server;
 const adminPerms = new Permissions(['ADMINISTRATOR']);
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
-const { EMBED_TITLE } = ListWordsCommand;
-const { NO_WORDS_FOUND } = ListWordsCommand;
+const { EMBED_TITLE } = MsgCheckerListWordsCommand;
+const { NO_WORDS_FOUND } = MsgCheckerListWordsCommand;
 
 beforeEach((): void => {
     server = new Server(

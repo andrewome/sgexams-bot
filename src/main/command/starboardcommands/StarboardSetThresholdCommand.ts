@@ -3,11 +3,11 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
-export class SetStarboardThresholdCommand extends Command {
+export class StarboardSetThresholdCommand extends Command {
     public static COMMAND_NAME = 'SetStarboardThreshold';
 
     public static COMMAND_NAME_LOWER_CASE
-        = SetStarboardThresholdCommand.COMMAND_NAME.toLowerCase();
+        = StarboardSetThresholdCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Sets the emoji threshold for a message to be starred.'
 
@@ -83,8 +83,8 @@ export class SetStarboardThresholdCommand extends Command {
     private generateResetEmbed(): RichEmbed {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(SetStarboardThresholdCommand.EMBED_TITLE,
-            SetStarboardThresholdCommand.THRESHOLD_RESETTED);
+        embed.addField(StarboardSetThresholdCommand.EMBED_TITLE,
+            StarboardSetThresholdCommand.THRESHOLD_RESETTED);
         return embed;
     }
 
@@ -97,8 +97,8 @@ export class SetStarboardThresholdCommand extends Command {
     private generateInvalidEmbed(): RichEmbed {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(SetStarboardThresholdCommand.EMBED_TITLE,
-            SetStarboardThresholdCommand.NOT_AN_INTEGER);
+        embed.addField(StarboardSetThresholdCommand.EMBED_TITLE,
+            StarboardSetThresholdCommand.NOT_AN_INTEGER);
         return embed;
     }
 
@@ -113,7 +113,7 @@ export class SetStarboardThresholdCommand extends Command {
         const embed = new RichEmbed();
         const msg = `Starboard threshold set to ${threshold}.`;
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(SetStarboardThresholdCommand.EMBED_TITLE, msg);
+        embed.addField(StarboardSetThresholdCommand.EMBED_TITLE, msg);
         return embed;
     }
 }

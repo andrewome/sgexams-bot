@@ -3,10 +3,11 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
-export class SetResponseMessageCommand extends Command {
+export class MsgCheckerSetResponseMessageCommand extends Command {
     public static COMMAND_NAME = 'SetResponseMessage';
 
-    public static COMMAND_NAME_LOWER_CASE = SetResponseMessageCommand.COMMAND_NAME.toLowerCase();
+    public static COMMAND_NAME_LOWER_CASE =
+        MsgCheckerSetResponseMessageCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Sets the response message to the user upon detection of blacklisted words for this server.';
 
@@ -74,8 +75,8 @@ export class SetResponseMessageCommand extends Command {
     private generateResetEmbed(): RichEmbed {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(SetResponseMessageCommand.EMBED_TITLE,
-            SetResponseMessageCommand.MESSAGE_RESETTED);
+        embed.addField(MsgCheckerSetResponseMessageCommand.EMBED_TITLE,
+            MsgCheckerSetResponseMessageCommand.MESSAGE_RESETTED);
 
         return embed;
     }
@@ -91,7 +92,7 @@ export class SetResponseMessageCommand extends Command {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         const responseMessage = `Response Message set to ${msg}`;
-        embed.addField(SetResponseMessageCommand.EMBED_TITLE, responseMessage);
+        embed.addField(MsgCheckerSetResponseMessageCommand.EMBED_TITLE, responseMessage);
 
         return embed;
     }

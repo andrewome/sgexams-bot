@@ -3,10 +3,11 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
-export class GetResponseMessageCommand extends Command {
+export class MsgCheckerGetResponseMessageCommand extends Command {
     public static COMMAND_NAME = 'GetResponseMessage';
 
-    public static COMMAND_NAME_LOWER_CASE = GetResponseMessageCommand.COMMAND_NAME.toLowerCase();
+    public static COMMAND_NAME_LOWER_CASE =
+    MsgCheckerGetResponseMessageCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Displays the response message to the user upon detection of blacklisted words for this server.';
 
@@ -39,11 +40,11 @@ export class GetResponseMessageCommand extends Command {
         const responseMessage = server.messageCheckerSettings.getResponseMessage();
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if (typeof responseMessage === 'undefined') {
-            embed.addField(GetResponseMessageCommand.EMBED_TITLE,
-                GetResponseMessageCommand.CHANNEL_NOT_SET);
+            embed.addField(MsgCheckerGetResponseMessageCommand.EMBED_TITLE,
+                MsgCheckerGetResponseMessageCommand.CHANNEL_NOT_SET);
         } else {
             const msg = `Response message is ${responseMessage}.`;
-            embed.addField(GetResponseMessageCommand.EMBED_TITLE, msg);
+            embed.addField(MsgCheckerGetResponseMessageCommand.EMBED_TITLE, msg);
         }
 
         // Execute

@@ -1,25 +1,25 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, no-restricted-syntax, no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-underscore-dangle, no-unused-expressions */
+import { Permissions, RichEmbed } from 'discord.js';
 import { should } from 'chai';
-import { RichEmbed, Permissions } from 'discord.js';
 import { Server } from '../../../main/storage/Server';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
-import { RemoveWordCommand } from '../../../main/command/messagecheckercommands/RemoveWordCommand';
+import { MsgCheckerAddWordCommand } from '../../../main/command/messagecheckercommands/MsgCheckerAddWordCommand';
 import { Command } from '../../../main/command/Command';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 
 should();
 
 let server: Server;
-let command: RemoveWordCommand;
+let command: MsgCheckerAddWordCommand;
 const adminPerms = new Permissions(['ADMINISTRATOR']);
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { ERROR_EMBED_TITLE } = Command;
-const { REMOVED_WORDS } = RemoveWordCommand;
-const { MAYBE_WORDS_NOT_INSIDE } = RemoveWordCommand;
-const { UNABLE_TO_REMOVE_WORDS } = RemoveWordCommand;
-const { NO_ARGUMENTS } = RemoveWordCommand;
-const words = ['word1', 'word2', 'word3'];
+const { NO_ARGUMENTS } = Command;
+const { ADDED_WORDS } = MsgCheckerAddWordCommand;
+const { MAYBE_WORDS_ALREADY_ADDED } = MsgCheckerAddWordCommand;
+const { UNABLE_TO_ADD_WORDS } = MsgCheckerAddWordCommand;
 
 beforeEach((): void => {
     server = new Server(
@@ -27,22 +27,22 @@ beforeEach((): void => {
         new MessageCheckerSettings(),
         new StarboardSettings(null, null, null),
 );
-    for (const word of words) server.messageCheckerSettings.addbannedWord(word);
 });
 
-describe('RemoveWordCommand test suite', (): void => {
-    it('Removing words, no duplicates', (): void => {
+describe('MsgCheckerAddWordCommand test suite', (): void => {
+    it('Adding words, no duplicates', (): void => {
+        // Add some words
         const args = ['word1', 'word2', 'word3'];
-        const removedWordsStr = `${args[0]}\n${args[1]}\n${args[2]}\n`;
-        command = new RemoveWordCommand(args);
+        const addedWordsStr = `${args[0]}\n${args[1]}\n${args[2]}\n`;
+        command = new MsgCheckerAddWordCommand(args);
 
+        // Embed check
         const checkEmbed = (embed: RichEmbed): void => {
-            // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(1);
             const field = embed.fields![0];
-            field.name.should.equals(REMOVED_WORDS);
-            field.value.should.equals(removedWordsStr);
+            field.name.should.equals(ADDED_WORDS);
+            field.value.should.equals(addedWordsStr);
         };
 
         // Execute
@@ -54,62 +54,68 @@ describe('RemoveWordCommand test suite', (): void => {
 
         // Check if server has been updated
         const bannedWords = server.messageCheckerSettings.getBannedWords();
-        bannedWords.length.should.equal(0);
+        bannedWords.length.should.equal(args.length);
+        bannedWords.includes(args[0]).should.be.true;
+        bannedWords.includes(args[1]).should.be.true;
+        bannedWords.includes(args[2]).should.be.true;
     });
-    it('Removing words, with some removed already', (): void => {
-        // Remove some words first
+    it('Adding words, with duplicates', (): void => {
+        // Add some words first
         const args = ['word1', 'word2', 'word3'];
-        command = new RemoveWordCommand(args.slice(0, 2));
+        command = new MsgCheckerAddWordCommand(args.slice(0, 2));
         command.changeServerSettings(server, [], []);
 
-        const unableToRemoveWordsStr = `${args[0]}\n${args[1]}\n${MAYBE_WORDS_NOT_INSIDE}`;
-        const removedWordsStr = `${args[2]}\n`;
+        const unableToAddWordsStr = `${args[0]}\n${args[1]}\n${MAYBE_WORDS_ALREADY_ADDED}`;
+        const addedWordsStr = `${args[2]}\n`;
 
+        // Embed Check
         const checkEmbed = (embed: RichEmbed): void => {
-            // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(2);
 
             const addedWordsField = embed.fields![0];
-            addedWordsField.name.should.equals(REMOVED_WORDS);
-            addedWordsField.value.should.equals(removedWordsStr);
+            addedWordsField.name.should.equals(ADDED_WORDS);
+            addedWordsField.value.should.equals(addedWordsStr);
 
             const unableToAddWordsField = embed.fields![1];
-            unableToAddWordsField.name.should.equals(UNABLE_TO_REMOVE_WORDS);
-            unableToAddWordsField.value.should.equals(unableToRemoveWordsStr);
+            unableToAddWordsField.name.should.equals(UNABLE_TO_ADD_WORDS);
+            unableToAddWordsField.value.should.equals(unableToAddWordsStr);
         };
 
-
         // Execute
-        command = new RemoveWordCommand(args);
+        command = new MsgCheckerAddWordCommand(args);
         const commandResult = command.execute(server, adminPerms, checkEmbed);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;
         commandResult.shouldSaveServers.should.be.true;
 
-        // Check if server has been updated
+        // Check if server has been updated, no duplicates inside
         const bannedWords = server.messageCheckerSettings.getBannedWords();
-        bannedWords.length.should.equal(0);
+        bannedWords.length.should.equal(args.length);
+        bannedWords.includes(args[0]).should.be.true;
+        bannedWords.includes(args[1]).should.be.true;
+        bannedWords.includes(args[2]).should.be.true;
     });
-    it('Removing words, with duplicates in args', (): void => {
+    it('Adding words, with duplicates in args', (): void => {
+        // Add some words first
         const args = ['word1', 'word2', 'word3', 'word3'];
-        command = new RemoveWordCommand(args);
-        const removedWordsStr = `${args[0]}\n${args[1]}\n${args[2]}\n`;
-        const unableToRemoveWordsStr = `${args[3]}\n${MAYBE_WORDS_NOT_INSIDE}`;
+        command = new MsgCheckerAddWordCommand(args);
+        const addedWordsStr = `${args[0]}\n${args[1]}\n${args[2]}\n`;
+        const unableToAddWordsStr = `${args[3]}\n${MAYBE_WORDS_ALREADY_ADDED}`;
 
+        // Embed check
         const checkEmbed = (embed: RichEmbed): void => {
-            // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(2);
 
             const addedWordsField = embed.fields![0];
-            addedWordsField.name.should.equals(REMOVED_WORDS);
-            addedWordsField.value.should.equals(removedWordsStr);
+            addedWordsField.name.should.equals(ADDED_WORDS);
+            addedWordsField.value.should.equals(addedWordsStr);
 
             const unableToAddWordsField = embed.fields![1];
-            unableToAddWordsField.name.should.equals(UNABLE_TO_REMOVE_WORDS);
-            unableToAddWordsField.value.should.equals(unableToRemoveWordsStr);
+            unableToAddWordsField.name.should.equals(UNABLE_TO_ADD_WORDS);
+            unableToAddWordsField.value.should.equals(unableToAddWordsStr);
         };
 
         // Execute
@@ -119,16 +125,19 @@ describe('RemoveWordCommand test suite', (): void => {
         commandResult.shouldCheckMessage.should.be.false;
         commandResult.shouldSaveServers.should.be.true;
 
-        // Check if server has been updated
+        // Check if server has been updated, no duplicates inside
         const bannedWords = server.messageCheckerSettings.getBannedWords();
-        bannedWords.length.should.equal(0);
+        bannedWords.length.should.equal(args.length - 1);
+        bannedWords.includes(args[0]).should.be.true;
+        bannedWords.includes(args[1]).should.be.true;
+        bannedWords.includes(args[2]).should.be.true;
     });
     it('No arguments', (): void => {
         const args: string[] = [];
-        command = new RemoveWordCommand(args);
+        command = new MsgCheckerAddWordCommand(args);
 
+        // Check embed
         const checkEmbed = (embed: RichEmbed): void => {
-            // Check embed
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
@@ -145,6 +154,6 @@ describe('RemoveWordCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.true;
 
         // Check if server has been updated
-        server.messageCheckerSettings.getBannedWords().length.should.equals(words.length);
+        server.messageCheckerSettings.getBannedWords().length.should.equals(0);
     });
 });

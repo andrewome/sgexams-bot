@@ -8,6 +8,7 @@ import axios from 'axios';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
+import { RotateImageCommandData } from './RotateImageCommandData';
 
 export class RotateImageCommand extends Command {
     public static COMMAND_NAME = 'Rotate';
@@ -36,8 +37,8 @@ export class RotateImageCommand extends Command {
                    ...arg:
                     (Collection<string, Channel> |
                      Collection<string, Emoji> |
-                     Channel)[]): CommandResult {
-        const channel = arg[2];
+                     RotateImageCommandData)[]): CommandResult {
+        const { channel, userId } = (arg[0] as RotateImageCommandData);
         const messageId = this.commandArgs[0];
 
         // Check if messageId quoted is in in the channel
@@ -72,9 +73,12 @@ export class RotateImageCommand extends Command {
                 // Filter for reaction collector
                 const filter = (reaction: MessageReaction, user: User): boolean => {
                     const { name } = reaction.emoji;
+                    const reactionUserId = user.id;
 
-                    // Bot was picking up its own reacts
-                    if (user.bot) return false;
+                    // Only respond to reactions by the person who requested it.
+                    if (reactionUserId !== userId) {
+                        return false;
+                    }
 
                     // If it's of the correct reactions, emit event
                     if (name === this.CLOCKWISE || name === this.ANTICLOCKWISE) {
@@ -85,7 +89,7 @@ export class RotateImageCommand extends Command {
                 };
 
                 // Options
-                const options: ReactionCollectorOptions = { time: 15000, max: 1 };
+                const options: ReactionCollectorOptions = { time: 30000, max: 1 };
                 const collector = sentMessage.createReactionCollector(filter, options);
                 const COLLECT = 'collect';
 
