@@ -4,6 +4,7 @@ import {
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
+import { RotateImageCommandData } from '../rotateimagecommands/RotateImageCommandData';
 
 export class SetReportChannelCommand extends Command {
     public static COMMAND_NAME = 'SetReportChannel';
@@ -50,7 +51,7 @@ export class SetReportChannelCommand extends Command {
                    ...args:
                     (Collection<string, Channel> |
                      Collection<string, Emoji> |
-                     Channel)[]): CommandResult {
+                     RotateImageCommandData)[]): CommandResult {
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;

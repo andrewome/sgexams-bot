@@ -5,6 +5,7 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 import { SimplifiedEmoji } from '../../storage/StarboardSettings';
+import { RotateImageCommandData } from '../rotateimagecommands/RotateImageCommandData';
 
 export class SetStarboardEmojiCommand extends Command {
     public static COMMAND_NAME = 'SetStarboardEmoji';
@@ -49,7 +50,7 @@ export class SetStarboardEmojiCommand extends Command {
                    ...args:
                     (Collection<string, Channel> |
                      Collection<string, Emoji> |
-                     Channel)[]): CommandResult {
+                     RotateImageCommandData)[]): CommandResult {
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             return this.NO_PERMISSIONS_COMMANDRESULT;
@@ -57,7 +58,7 @@ export class SetStarboardEmojiCommand extends Command {
 
         // Execute
         let embed: RichEmbed;
-        const emojis = args[1];
+        const emojis = args[0];
 
         // If no args
         if (this.args.length === 0) {

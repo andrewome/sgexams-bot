@@ -57,7 +57,7 @@ describe('SetReportChannelCommand test suite', (): void => {
             field.value.should.equals(EMOJI_RESETTED);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed, channels, emojis);
+        const commandResult = command.execute(server, adminPerms, checkEmbed, emojis);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -77,7 +77,7 @@ describe('SetReportChannelCommand test suite', (): void => {
             field.value.should.equals(EMOJI_NOT_FOUND);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed, channels, emojis);
+        const commandResult = command.execute(server, adminPerms, checkEmbed, emojis);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -96,7 +96,7 @@ describe('SetReportChannelCommand test suite', (): void => {
             field.value.should.equals(msg);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed, channels, emojis);
+        const commandResult = command.execute(server, adminPerms, checkEmbed, emojis);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;

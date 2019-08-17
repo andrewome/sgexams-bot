@@ -3,6 +3,7 @@ import {
 } from 'discord.js';
 import { Server } from '../storage/Server';
 import { CommandResult } from './classes/CommandResult';
+import { RotateImageCommandData } from './rotateimagecommands/RotateImageCommandData';
 
 /** Base class of the Commands */
 export abstract class Command {
@@ -29,7 +30,7 @@ export abstract class Command {
                             ...args:
                             (Collection<string, Channel> |
                              Collection<string, Emoji> |
-                             Channel)[]
+                             RotateImageCommandData)[]
                             ): CommandResult;
 
     /**
