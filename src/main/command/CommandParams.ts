@@ -6,13 +6,13 @@ import { MsgCheckerListWordsCommand } from './messagecheckercommands/MsgCheckerL
 import { MsgCheckerRemoveWordCommand } from './messagecheckercommands/MsgCheckerRemoveWordCommand';
 import { MsgCheckerSetDeleteMessageCommand } from './messagecheckercommands/MsgCheckerSetDeleteMessageCommand';
 import { MsgCheckerSetResponseMessageCommand } from './messagecheckercommands/MsgCheckerSetResponseMessageCommand';
-import { GetStarboardChannelCommand } from './starboardcommands/GetStarboardChannelCommand';
-import { GetStarboardEmojiCommand } from './starboardcommands/GetStarboardEmojiCommand';
-import { GetStarboardThresholdCommand } from './starboardcommands/GetStarboardThresholdCommand';
-import { SetStarboardThresholdCommand } from './starboardcommands/SetStarboardThresholdCommand';
+import { StarboardGetChannelCommand } from './starboardcommands/StarboardGetChannelCommand';
+import { StarboardGetEmojiCommand } from './starboardcommands/StarboardGetEmojiCommand';
+import { StarboardGetThresholdCommand } from './starboardcommands/StarboardGetThresholdCommand';
+import { StarboardSetThresholdCommand } from './starboardcommands/StarboardSetThresholdCommand';
 import { MsgCheckerSetReportChannelCommand } from './messagecheckercommands/MsgCheckerSetReportChannelCommand';
-import { SetStarboardChannelCommand } from './starboardcommands/SetStarboardChannelCommand';
-import { SetStarboardEmojiCommand } from './starboardcommands/SetStarboardEmojiCommand';
+import { StarboardSetChannelCommand } from './starboardcommands/StarboardSetChannelCommand';
+import { StarboardSetEmojiCommand } from './starboardcommands/StarboardSetEmojiCommand';
 import { RotateImageCommand } from './rotateimagecommands/RotateImageCommand';
 
 export class CommandParams {
@@ -29,10 +29,10 @@ export class CommandParams {
         MsgCheckerSetDeleteMessageCommand.name,
         MsgCheckerSetResponseMessageCommand.name,
         // Starboard Commands
-        GetStarboardChannelCommand.name,
-        GetStarboardEmojiCommand.name,
-        GetStarboardThresholdCommand.name,
-        SetStarboardThresholdCommand.name,
+        StarboardGetChannelCommand.name,
+        StarboardGetEmojiCommand.name,
+        StarboardGetThresholdCommand.name,
+        StarboardSetThresholdCommand.name,
     ]
 
     /** Requires Collection of Channels from Guild on top of defaults */
@@ -40,12 +40,12 @@ export class CommandParams {
         // Message Checker Commands
         MsgCheckerSetReportChannelCommand.name,
         // Starboard Commands
-        SetStarboardChannelCommand.name,
+        StarboardSetChannelCommand.name,
     ]
 
     /** Requires Collection of Emojis from Guild on top of defaults */
     public static requiresEmojis = [
-        SetStarboardEmojiCommand.name,
+        StarboardSetEmojiCommand.name,
     ]
 
     /** Requires Channel and userId invoker on top of defaults */

@@ -8,12 +8,12 @@ import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { Server } from '../../../main/storage/Server';
 import { StarboardSettings, SimplifiedEmoji } from '../../../main/storage/StarboardSettings';
-import { SetStarboardEmojiCommand } from '../../../main/command/starboardcommands/SetStarboardEmojiCommand';
+import { StarboardSetEmojiCommand } from '../../../main/command/starboardcommands/StarboardSetEmojiCommand';
 
 should();
 
 let server: Server;
-let command: SetStarboardEmojiCommand;
+let command: StarboardSetEmojiCommand;
 const emojis = new Collection<string, Emoji>();
 const channels = new Collection<string, Channel>();
 // Setting up mock emojis.
@@ -30,10 +30,10 @@ const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
-const { EMOJI_NOT_FOUND } = SetStarboardEmojiCommand;
-const { EMBED_TITLE } = SetStarboardEmojiCommand;
-const { EMOJI_RESETTED } = SetStarboardEmojiCommand;
-const { EMOJIID_CANNOT_BE_UNDEFINED } = SetStarboardEmojiCommand;
+const { EMOJI_NOT_FOUND } = StarboardSetEmojiCommand;
+const { EMBED_TITLE } = StarboardSetEmojiCommand;
+const { EMOJI_RESETTED } = StarboardSetEmojiCommand;
+const { EMOJIID_CANNOT_BE_UNDEFINED } = StarboardSetEmojiCommand;
 
 beforeEach((): void => {
     server = new Server(
@@ -47,7 +47,7 @@ describe('SetReportChannelCommand test suite', (): void => {
     it('Reset emoji', (): void => {
         const emoji = new SimplifiedEmoji('test', 'test');
         server.starboardSettings.setEmoji(emoji);
-        command = new SetStarboardEmojiCommand([]);
+        command = new StarboardSetEmojiCommand([]);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -67,7 +67,7 @@ describe('SetReportChannelCommand test suite', (): void => {
         (server.starboardSettings.getChannel() === null).should.be.true;
     });
     it('Cannot find emoji', (): void => {
-        command = new SetStarboardEmojiCommand(['does_not_exist']);
+        command = new StarboardSetEmojiCommand(['does_not_exist']);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
@@ -86,7 +86,7 @@ describe('SetReportChannelCommand test suite', (): void => {
     it('Valid emoji', (): void => {
         const emoji = new SimplifiedEmoji('test', 'test');
         const msg = `Starboard Emoji set to <:${emoji.name}:${emoji.id}>.`;
-        command = new SetStarboardEmojiCommand(['test']);
+        command = new StarboardSetEmojiCommand(['test']);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);

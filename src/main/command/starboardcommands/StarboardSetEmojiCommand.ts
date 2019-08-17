@@ -1,27 +1,26 @@
 import {
-  RichEmbed, Permissions, Collection, Channel, Emoji,
+ RichEmbed, Permissions, Emoji, Collection, Channel,
 } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
+import { SimplifiedEmoji } from '../../storage/StarboardSettings';
 import { RotateImageCommandData } from '../rotateimagecommands/RotateImageCommandData';
 
-export class SetStarboardChannelCommand extends Command {
-    public static COMMAND_NAME = 'SetStarboardChannel';
+export class StarboardSetEmojiCommand extends Command {
+    public static COMMAND_NAME = 'SetStarboardEmoji';
 
-    public static COMMAND_NAME_LOWER_CASE = SetStarboardChannelCommand.COMMAND_NAME.toLowerCase();
+    public static COMMAND_NAME_LOWER_CASE = StarboardSetEmojiCommand.COMMAND_NAME.toLowerCase();
 
-    public static DESCRIPTION = 'Sets the Starboard channel where the bot will star messages.'
+    public static DESCRIPTION = 'Sets the Starboard emoji that the bot will look out for.'
 
-    public static NOT_TEXT_CHANNEL = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
+    public static EMOJI_NOT_FOUND = 'Emoji was not found. Please submit a valid Emoji ID.';
 
-    public static CHANNEL_NOT_FOUND = 'Channel was not found. Please submit a valid channel ID.';
+    public static EMBED_TITLE = 'Starboard Emoji';
 
-    public static EMBED_TITLE = 'Starboard Channel';
+    public static EMOJI_RESETTED = 'Starboard Emoji has been resetted because there were no arguments. Please set a new one.';
 
-    public static CHANNEL_RESETTED = 'Starboard Channel has been resetted because there were no arguments. Please set a new one.';
-
-    public static CHANNELID_CANNOT_BE_UNDEFINED = 'Channel ID cannot be undefined!';
+    public static EMOJIID_CANNOT_BE_UNDEFINED = 'Emoji ID cannot be undefined!';
 
     /** SaveServer: true, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, true);
@@ -59,37 +58,31 @@ export class SetStarboardChannelCommand extends Command {
 
         // Execute
         let embed: RichEmbed;
-        const channels = args[0];
+        const emojis = args[0];
 
         // If no args
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
+            server.starboardSettings.setEmoji(null);
             messageReply(embed);
-            server.starboardSettings.setChannel(null);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        const channelId = this.args[0];
-        const channel = (channels as Collection<string, Channel>).get(channelId);
+        const emojiId = this.args[0];
 
-        // Check if valid channel
-        if (typeof channel === 'undefined') {
+        // Check if valid emoji
+        const emoji = (emojis as Collection<string, Emoji>).get(emojiId);
+        if (typeof emoji === 'undefined') {
             embed = this.generateNotFoundEmbed();
             messageReply(embed);
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
-        // If not text channel
-        if ((channel as Channel).type !== 'text') {
-            embed = this.generateNotTextChannelEmbed();
-            messageReply(embed);
-            return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
-        }
-
-        embed = this.generateValidEmbed(channelId);
-        server.starboardSettings.setChannel(channelId);
+        embed = this.generateValidEmbed(emoji as Emoji);
+        const simplifiedEmoji
+            = new SimplifiedEmoji((emoji as Emoji).name, emoji.id);
+        server.starboardSettings.setEmoji(simplifiedEmoji);
         messageReply(embed);
-        server.starboardSettings.setChannel(channelId);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
@@ -102,14 +95,14 @@ export class SetStarboardChannelCommand extends Command {
     private generateResetEmbed(): RichEmbed {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(SetStarboardChannelCommand.EMBED_TITLE,
-            SetStarboardChannelCommand.CHANNEL_RESETTED);
+        embed.addField(StarboardSetEmojiCommand.EMBED_TITLE,
+            StarboardSetEmojiCommand.EMOJI_RESETTED);
 
         return embed;
     }
 
     /**
-     * Generate embed if channel is not found
+     * Generates embed if emoji not found
      *
      * @returns RichEmbed
      */
@@ -117,39 +110,24 @@ export class SetStarboardChannelCommand extends Command {
     private generateNotFoundEmbed(): RichEmbed {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(SetStarboardChannelCommand.EMBED_TITLE,
-            SetStarboardChannelCommand.CHANNEL_NOT_FOUND);
+        embed.addField(StarboardSetEmojiCommand.EMBED_TITLE,
+            StarboardSetEmojiCommand.EMOJI_NOT_FOUND);
 
         return embed;
     }
 
     /**
-     * Generates embed if not text channel
+     * Generates embed for valid emoji
      *
+     * @param  {Emoji} emoji
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateNotTextChannelEmbed(): RichEmbed {
+    private generateValidEmbed(emoji: Emoji): RichEmbed {
         const embed = new RichEmbed();
-        embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(SetStarboardChannelCommand.EMBED_TITLE,
-            SetStarboardChannelCommand.NOT_TEXT_CHANNEL);
-
-        return embed;
-    }
-
-    /**
-     * Generate embed for valid channel
-     *
-     * @param  {string} channelId
-     * @returns RichEmbed
-     */
-    // eslint-disable-next-line class-methods-use-this
-    private generateValidEmbed(channelId: string): RichEmbed {
-        const embed = new RichEmbed();
-        const msg = `Starboard Channel set to <#${channelId}>.`;
+        const msg = `Starboard Emoji set to <:${emoji.name}:${emoji.id}>.`;
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(SetStarboardChannelCommand.EMBED_TITLE, msg);
+        embed.addField(StarboardSetEmojiCommand.EMBED_TITLE, msg);
 
         return embed;
     }

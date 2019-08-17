@@ -4,10 +4,10 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 import { SimplifiedEmoji } from '../../storage/StarboardSettings';
 
-export class GetStarboardEmojiCommand extends Command {
+export class StarboardGetEmojiCommand extends Command {
     public static COMMAND_NAME = 'GetStarboardEmoji';
 
-    public static COMMAND_NAME_LOWER_CASE = GetStarboardEmojiCommand.COMMAND_NAME.toLowerCase();
+    public static COMMAND_NAME_LOWER_CASE = StarboardGetEmojiCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Displays the currently set Starboard emoji';
 
@@ -57,8 +57,8 @@ export class GetStarboardEmojiCommand extends Command {
     // eslint-disable-next-line class-methods-use-this
     private generateNotSetEmbed(): RichEmbed {
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(GetStarboardEmojiCommand.EMBED_TITLE,
-            GetStarboardEmojiCommand.EMOJI_NOT_SET);
+        embed.addField(StarboardGetEmojiCommand.EMBED_TITLE,
+            StarboardGetEmojiCommand.EMOJI_NOT_SET);
 
         return embed;
     }
@@ -72,7 +72,7 @@ export class GetStarboardEmojiCommand extends Command {
     private generateValidEmbed(emoji: SimplifiedEmoji): RichEmbed {
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         const msg = `Starboard emoji is currently set to <:${emoji.name}:${emoji.id}>.`;
-        embed.addField(GetStarboardEmojiCommand.EMBED_TITLE, msg);
+        embed.addField(StarboardGetEmojiCommand.EMBED_TITLE, msg);
 
         return embed;
     }

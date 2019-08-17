@@ -9,12 +9,12 @@ import { ListCommandsCommand } from './generalcommands/ListCommandsCommand';
 import { MsgCheckerSetResponseMessageCommand } from './messagecheckercommands/MsgCheckerSetResponseMessageCommand';
 import { MsgCheckerGetResponseMessageCommand } from './messagecheckercommands/MsgCheckerGetResponseMessageCommand';
 import { MsgCheckerSetDeleteMessageCommand } from './messagecheckercommands/MsgCheckerSetDeleteMessageCommand';
-import { SetStarboardChannelCommand } from './starboardcommands/SetStarboardChannelCommand';
-import { GetStarboardChannelCommand } from './starboardcommands/GetStarboardChannelCommand';
-import { SetStarboardEmojiCommand } from './starboardcommands/SetStarboardEmojiCommand';
-import { GetStarboardEmojiCommand } from './starboardcommands/GetStarboardEmojiCommand';
-import { GetStarboardThresholdCommand } from './starboardcommands/GetStarboardThresholdCommand';
-import { SetStarboardThresholdCommand } from './starboardcommands/SetStarboardThresholdCommand';
+import { StarboardSetChannelCommand } from './starboardcommands/StarboardSetChannelCommand';
+import { StarboardGetChannelCommand } from './starboardcommands/StarboardGetChannelCommand';
+import { StarboardSetEmojiCommand } from './starboardcommands/StarboardSetEmojiCommand';
+import { StarboardGetEmojiCommand } from './starboardcommands/StarboardGetEmojiCommand';
+import { StarboardGetThresholdCommand } from './starboardcommands/StarboardGetThresholdCommand';
+import { StarboardSetThresholdCommand } from './starboardcommands/StarboardSetThresholdCommand';
 import { RotateImageCommand } from './rotateimagecommands/RotateImageCommand';
 
 export class CommandParser {
@@ -46,12 +46,12 @@ export class CommandParser {
                            MsgCheckerGetResponseMessageCommand.COMMAND_NAME,
                            MsgCheckerSetDeleteMessageCommand.COMMAND_NAME,
                            CommandParser.STARBOARD_COMMANDS_HEADER,
-                           SetStarboardChannelCommand.COMMAND_NAME,
-                           GetStarboardChannelCommand.COMMAND_NAME,
-                           SetStarboardEmojiCommand.COMMAND_NAME,
-                           GetStarboardEmojiCommand.COMMAND_NAME,
-                           SetStarboardThresholdCommand.COMMAND_NAME,
-                           GetStarboardThresholdCommand.COMMAND_NAME]);
+                           StarboardSetChannelCommand.COMMAND_NAME,
+                           StarboardGetChannelCommand.COMMAND_NAME,
+                           StarboardSetEmojiCommand.COMMAND_NAME,
+                           StarboardGetEmojiCommand.COMMAND_NAME,
+                           StarboardSetThresholdCommand.COMMAND_NAME,
+                           StarboardGetThresholdCommand.COMMAND_NAME]);
 
     public static commandsLowerCase: Set<string>
         = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
@@ -65,12 +65,12 @@ export class CommandParser {
                            MsgCheckerSetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
                            MsgCheckerGetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
                            MsgCheckerSetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE,
-                           SetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE,
-                           GetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE,
-                           SetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE,
-                           GetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE,
-                           SetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE,
-                           GetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE,
+                           StarboardSetChannelCommand.COMMAND_NAME_LOWER_CASE,
+                           StarboardGetChannelCommand.COMMAND_NAME_LOWER_CASE,
+                           StarboardSetEmojiCommand.COMMAND_NAME_LOWER_CASE,
+                           StarboardGetEmojiCommand.COMMAND_NAME_LOWER_CASE,
+                           StarboardSetThresholdCommand.COMMAND_NAME_LOWER_CASE,
+                           StarboardGetThresholdCommand.COMMAND_NAME_LOWER_CASE,
                            RotateImageCommand.COMMAND_NAME_LOWER_CASE]);
 
     public static descriptions: string[]
@@ -86,12 +86,12 @@ export class CommandParser {
            MsgCheckerGetResponseMessageCommand.DESCRIPTION,
            MsgCheckerSetDeleteMessageCommand.DESCRIPTION,
            CommandParser.EMPTY_STRING,
-           SetStarboardChannelCommand.DESCRIPTION,
-           GetStarboardChannelCommand.DESCRIPTION,
-           SetStarboardEmojiCommand.DESCRIPTION,
-           GetStarboardEmojiCommand.DESCRIPTION,
-           SetStarboardThresholdCommand.DESCRIPTION,
-           GetStarboardThresholdCommand.DESCRIPTION];
+           StarboardSetChannelCommand.DESCRIPTION,
+           StarboardGetChannelCommand.DESCRIPTION,
+           StarboardSetEmojiCommand.DESCRIPTION,
+           StarboardGetEmojiCommand.DESCRIPTION,
+           StarboardSetThresholdCommand.DESCRIPTION,
+           StarboardGetThresholdCommand.DESCRIPTION];
 
     private content: string;
 
@@ -180,18 +180,18 @@ export class CommandParser {
                 return new MsgCheckerGetResponseMessageCommand();
             case MsgCheckerSetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE:
                 return new MsgCheckerSetDeleteMessageCommand(args);
-            case SetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE:
-                return new SetStarboardChannelCommand(args);
-            case GetStarboardChannelCommand.COMMAND_NAME_LOWER_CASE:
-                return new GetStarboardChannelCommand();
-            case GetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE:
-                return new GetStarboardEmojiCommand();
-            case SetStarboardEmojiCommand.COMMAND_NAME_LOWER_CASE:
-                return new SetStarboardEmojiCommand(args);
-            case GetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE:
-                return new GetStarboardThresholdCommand();
-            case SetStarboardThresholdCommand.COMMAND_NAME_LOWER_CASE:
-                return new SetStarboardThresholdCommand(args);
+            case StarboardSetChannelCommand.COMMAND_NAME_LOWER_CASE:
+                return new StarboardSetChannelCommand(args);
+            case StarboardGetChannelCommand.COMMAND_NAME_LOWER_CASE:
+                return new StarboardGetChannelCommand();
+            case StarboardGetEmojiCommand.COMMAND_NAME_LOWER_CASE:
+                return new StarboardGetEmojiCommand();
+            case StarboardSetEmojiCommand.COMMAND_NAME_LOWER_CASE:
+                return new StarboardSetEmojiCommand(args);
+            case StarboardGetThresholdCommand.COMMAND_NAME_LOWER_CASE:
+                return new StarboardGetThresholdCommand();
+            case StarboardSetThresholdCommand.COMMAND_NAME_LOWER_CASE:
+                return new StarboardSetThresholdCommand(args);
             case RotateImageCommand.COMMAND_NAME_LOWER_CASE:
                 return new RotateImageCommand(args);
             default:

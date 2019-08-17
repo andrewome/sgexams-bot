@@ -3,10 +3,10 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
-export class GetStarboardThresholdCommand extends Command {
+export class StarboardGetThresholdCommand extends Command {
     public static COMMAND_NAME = 'GetStarboardThreshold';
 
-    public static COMMAND_NAME_LOWER_CASE = GetStarboardThresholdCommand.COMMAND_NAME.toLowerCase();
+    public static COMMAND_NAME_LOWER_CASE = StarboardGetThresholdCommand.COMMAND_NAME.toLowerCase();
 
     public static DESCRIPTION = 'Displays the emoji threshold for a message to be starred.';
 
@@ -54,8 +54,8 @@ export class GetStarboardThresholdCommand extends Command {
     // eslint-disable-next-line class-methods-use-this
     private generateNotSetEmbed(): RichEmbed {
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(GetStarboardThresholdCommand.EMBED_TITLE,
-            GetStarboardThresholdCommand.THRESHOLD_NOT_SET);
+        embed.addField(StarboardGetThresholdCommand.EMBED_TITLE,
+            StarboardGetThresholdCommand.THRESHOLD_NOT_SET);
 
         return embed;
     }
@@ -70,7 +70,7 @@ export class GetStarboardThresholdCommand extends Command {
     private generateValidEmbed(threshold: number): RichEmbed {
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         const msg = `The emoji threshold is currently ${threshold}.`;
-        embed.addField(GetStarboardThresholdCommand.EMBED_TITLE, msg);
+        embed.addField(StarboardGetThresholdCommand.EMBED_TITLE, msg);
 
         return embed;
     }

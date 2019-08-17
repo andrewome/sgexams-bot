@@ -8,12 +8,12 @@ import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { Server } from '../../../main/storage/Server';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
-import { SetStarboardThresholdCommand } from '../../../main/command/starboardcommands/SetStarboardThresholdCommand';
+import { StarboardSetThresholdCommand } from '../../../main/command/starboardcommands/StarboardSetThresholdCommand';
 
 should();
 
 let server: Server;
-let command: SetStarboardThresholdCommand;
+let command: StarboardSetThresholdCommand;
 const channels = new Collection<string, Channel>();
 
 // Setting up mock channels.
@@ -29,10 +29,10 @@ const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
-const { EMBED_TITLE } = SetStarboardThresholdCommand;
-const { THRESHOLD_RESETTED } = SetStarboardThresholdCommand;
-const { THRESHOLD_CANNOT_BE_UNDEFINED } = SetStarboardThresholdCommand;
-const { NOT_AN_INTEGER } = SetStarboardThresholdCommand;
+const { EMBED_TITLE } = StarboardSetThresholdCommand;
+const { THRESHOLD_RESETTED } = StarboardSetThresholdCommand;
+const { THRESHOLD_CANNOT_BE_UNDEFINED } = StarboardSetThresholdCommand;
+const { NOT_AN_INTEGER } = StarboardSetThresholdCommand;
 
 beforeEach((): void => {
     server = new Server(
@@ -46,7 +46,7 @@ describe('SetReportChannelCommand test suite', (): void => {
     it('reset threshold', (): void => {
         const threshold = 10;
         server.starboardSettings.setThreshold(threshold);
-        command = new SetStarboardThresholdCommand([]);
+        command = new StarboardSetThresholdCommand([]);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -68,7 +68,7 @@ describe('SetReportChannelCommand test suite', (): void => {
     it('Valid threshold', (): void => {
         const threshold = 10;
         const msg = `Starboard threshold set to ${threshold}.`;
-        command = new SetStarboardThresholdCommand([threshold.toString(10)]);
+        command = new StarboardSetThresholdCommand([threshold.toString(10)]);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -88,7 +88,7 @@ describe('SetReportChannelCommand test suite', (): void => {
         server.starboardSettings.getThreshold()!.should.equals(threshold);
     });
     it('Invalid threshold - String', (): void => {
-        command = new SetStarboardThresholdCommand(['haha']);
+        command = new StarboardSetThresholdCommand(['haha']);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
@@ -105,7 +105,7 @@ describe('SetReportChannelCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.false;
     });
     it('Invalid threshold - Out of range value 1', (): void => {
-        command = new SetStarboardThresholdCommand(['0']);
+        command = new StarboardSetThresholdCommand(['0']);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
@@ -122,7 +122,7 @@ describe('SetReportChannelCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.false;
     });
     it('Invalid threshold - Out of range value 2', (): void => {
-        command = new SetStarboardThresholdCommand(['-5']);
+        command = new StarboardSetThresholdCommand(['-5']);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);

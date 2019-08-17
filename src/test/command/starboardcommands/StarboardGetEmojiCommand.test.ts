@@ -5,17 +5,17 @@ import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { StarboardSettings, SimplifiedEmoji } from '../../../main/storage/StarboardSettings';
-import { GetStarboardEmojiCommand } from '../../../main/command/starboardcommands/GetStarboardEmojiCommand';
+import { StarboardGetEmojiCommand } from '../../../main/command/starboardcommands/StarboardGetEmojiCommand';
 
 should();
 
 let server: Server;
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const command = new GetStarboardEmojiCommand();
+const command = new StarboardGetEmojiCommand();
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
-const { EMOJI_NOT_SET } = GetStarboardEmojiCommand;
-const { EMBED_TITLE } = GetStarboardEmojiCommand;
+const { EMOJI_NOT_SET } = StarboardGetEmojiCommand;
+const { EMBED_TITLE } = StarboardGetEmojiCommand;
 
 beforeEach((): void => {
     server = new Server(
