@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { CommandParser } from '../../main/command/CommandParser';
-import { ListCommandsCommand } from '../../main/command/generalcommands/ListCommandsCommand';
+import { ListCommandsCommand } from '../../main/command/helpcommands/ListCommandsCommand';
 import { MsgCheckerListWordsCommand } from '../../main/command/messagecheckercommands/MsgCheckerListWordsCommand';
 import { MsgCheckerAddWordCommand } from '../../main/command/messagecheckercommands/MsgCheckerAddWordCommand';
 import { MsgCheckerRemoveWordCommand } from '../../main/command/messagecheckercommands/MsgCheckerRemoveWordCommand';

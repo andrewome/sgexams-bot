@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { Permissions, RichEmbed } from 'discord.js';
-import { ListCommandsCommand } from '../../../main/command/generalcommands/ListCommandsCommand';
+import { ListCommandsCommand } from '../../../main/command/helpcommands/ListCommandsCommand';
 import { CommandParser } from '../../../main/command/CommandParser';
 import { Command } from '../../../main/command/Command';
 import { Server } from '../../../main/storage/Server';

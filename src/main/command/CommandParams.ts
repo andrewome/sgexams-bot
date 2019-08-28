@@ -1,4 +1,4 @@
-import { ListCommandsCommand } from './generalcommands/ListCommandsCommand';
+import { ListCommandsCommand } from './helpcommands/ListCommandsCommand';
 import { MsgCheckerAddWordCommand } from './messagecheckercommands/MsgCheckerAddWordCommand';
 import { MsgCheckerGetReportChannelCommand } from './messagecheckercommands/MsgCheckerGetReportChannelCommand';
 import { MsgCheckerGetResponseMessageCommand } from './messagecheckercommands/MsgCheckerGetResponseMessageCommand';

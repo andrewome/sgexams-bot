@@ -5,7 +5,7 @@ import { MsgCheckerAddWordCommand } from './messagecheckercommands/MsgCheckerAdd
 import { MsgCheckerRemoveWordCommand } from './messagecheckercommands/MsgCheckerRemoveWordCommand';
 import { NoSuchCommandError } from './error/NoSuchCommandError';
 import { MsgCheckerGetReportChannelCommand } from './messagecheckercommands/MsgCheckerGetReportChannelCommand';
-import { ListCommandsCommand } from './generalcommands/ListCommandsCommand';
+import { ListCommandsCommand } from './helpcommands/ListCommandsCommand';
 import { MsgCheckerSetResponseMessageCommand } from './messagecheckercommands/MsgCheckerSetResponseMessageCommand';
 import { MsgCheckerGetResponseMessageCommand } from './messagecheckercommands/MsgCheckerGetResponseMessageCommand';
 import { MsgCheckerSetDeleteMessageCommand } from './messagecheckercommands/MsgCheckerSetDeleteMessageCommand';
