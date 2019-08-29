@@ -11,12 +11,6 @@ import { CommandResult } from '../classes/CommandResult';
 import { RotateImageCommandData } from './RotateImageCommandData';
 
 export class RotateImageCommand extends Command {
-    public static COMMAND_NAME = 'Rotate';
-
-    public static COMMAND_NAME_LOWER_CASE = RotateImageCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Rotates an image by 90 degrees via reactions.';
-
     /** SaveServer: false, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
 

@@ -4,13 +4,6 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class MsgCheckerGetReportChannelCommand extends Command {
-    public static COMMAND_NAME = 'GetReportChannel';
-
-    public static COMMAND_NAME_LOWER_CASE
-        = MsgCheckerGetReportChannelCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Displays the reporting channel to post incident reports for this server when blacklisted words are used.';
-
     public static CHANNEL_NOT_SET = 'There is no reporting channel set for this server.';
 
     public static EMBED_TITLE = 'Reporting Channel';

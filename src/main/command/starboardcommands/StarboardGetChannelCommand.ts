@@ -4,12 +4,6 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class StarboardGetChannelCommand extends Command {
-    public static COMMAND_NAME = 'GetStarboardChannel';
-
-    public static COMMAND_NAME_LOWER_CASE = StarboardGetChannelCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Displays the currently set Starboard channel';
-
     public static CHANNEL_NOT_SET = 'There is no Starboard channel set for this server.';
 
     public static EMBED_TITLE = 'Starboard Channel';

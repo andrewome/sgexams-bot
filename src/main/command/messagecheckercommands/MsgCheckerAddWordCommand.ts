@@ -4,12 +4,6 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class MsgCheckerAddWordCommand extends Command {
-    public static COMMAND_NAME = 'AddWords';
-
-    public static COMMAND_NAME_LOWER_CASE = MsgCheckerAddWordCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Add word(s) to the blacklist.';
-
     public static ADDED_WORDS = '✅Added Words(s):';
 
     public static MAYBE_WORDS_ALREADY_ADDED = 'Perhaps those word(s) are already added?';

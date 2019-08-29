@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { CommandParser } from '../../main/command/CommandParser';
-import { ListCommandsCommand } from '../../main/command/helpcommands/ListCommandsCommand';
+import { HelpCommand } from '../../main/command/helpcommands/HelpCommand';
 import { MsgCheckerListWordsCommand } from '../../main/command/messagecheckercommands/MsgCheckerListWordsCommand';
 import { MsgCheckerAddWordCommand } from '../../main/command/messagecheckercommands/MsgCheckerAddWordCommand';
 import { MsgCheckerRemoveWordCommand } from '../../main/command/messagecheckercommands/MsgCheckerRemoveWordCommand';
@@ -70,9 +70,9 @@ describe('CommandParser test suite', (): void => {
 
     describe('getCommand test', (): void => {
         it('Help command', (): void => {
-            const content = `<@123456789> ${ListCommandsCommand.COMMAND_NAME}`;
+            const content = `<@123456789> ${HelpCommand.COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
-            (command instanceof ListCommandsCommand).should.be.true;
+            (command instanceof HelpCommand).should.be.true;
         });
         it('Listwords command', (): void => {
             const content = `<@123456789> ${MsgCheckerListWordsCommand.COMMAND_NAME}`;

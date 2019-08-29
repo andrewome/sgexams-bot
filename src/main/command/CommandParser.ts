@@ -5,7 +5,7 @@ import { MsgCheckerAddWordCommand } from './messagecheckercommands/MsgCheckerAdd
 import { MsgCheckerRemoveWordCommand } from './messagecheckercommands/MsgCheckerRemoveWordCommand';
 import { NoSuchCommandError } from './error/NoSuchCommandError';
 import { MsgCheckerGetReportChannelCommand } from './messagecheckercommands/MsgCheckerGetReportChannelCommand';
-import { ListCommandsCommand } from './helpcommands/ListCommandsCommand';
+import { HelpCommand } from './helpcommands/HelpCommand';
 import { MsgCheckerSetResponseMessageCommand } from './messagecheckercommands/MsgCheckerSetResponseMessageCommand';
 import { MsgCheckerGetResponseMessageCommand } from './messagecheckercommands/MsgCheckerGetResponseMessageCommand';
 import { MsgCheckerSetDeleteMessageCommand } from './messagecheckercommands/MsgCheckerSetDeleteMessageCommand';
@@ -16,82 +16,21 @@ import { StarboardGetEmojiCommand } from './starboardcommands/StarboardGetEmojiC
 import { StarboardGetThresholdCommand } from './starboardcommands/StarboardGetThresholdCommand';
 import { StarboardSetThresholdCommand } from './starboardcommands/StarboardSetThresholdCommand';
 import { RotateImageCommand } from './rotateimagecommands/RotateImageCommand';
+import { CommandNamesAndDescriptions } from './classes/CommandNamesAndDescriptions';
+import { MsgCheckerHelpCommand } from './helpcommands/MsgCheckerHelpCommand';
+import { StarboardHelpCommand } from './helpcommands/StarboardHelpCommand';
+import { RotateImageHelpCommand } from './helpcommands/RotateImageHelpCommand';
 
 export class CommandParser {
-    public static EMPTY_STRING = '\u200b';
-
-    public static GENERAL_COMMANDS_HEADER = '__General Commands__';
-
-    public static MESSAGE_CHECKER_COMMANDS_HEADER = '__Message Checker Commands__';
-
-    public static STARBOARD_COMMANDS_HEADER = '__Starboard Commands__';
-
     public static NO_SUCH_COMMAND = 'No such command!';
 
-    public static notCommands: Set<string>
-        = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER.toLowerCase(),
-                           CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER.toLowerCase(),
-                           CommandParser.STARBOARD_COMMANDS_HEADER.toLowerCase()]);
-
-    public static commands: Set<string>
-        = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
-                           ListCommandsCommand.COMMAND_NAME,
-                           CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER,
-                           MsgCheckerListWordsCommand.COMMAND_NAME,
-                           MsgCheckerAddWordCommand.COMMAND_NAME,
-                           MsgCheckerRemoveWordCommand.COMMAND_NAME,
-                           MsgCheckerSetReportChannelCommand.COMMAND_NAME,
-                           MsgCheckerGetReportChannelCommand.COMMAND_NAME,
-                           MsgCheckerSetResponseMessageCommand.COMMAND_NAME,
-                           MsgCheckerGetResponseMessageCommand.COMMAND_NAME,
-                           MsgCheckerSetDeleteMessageCommand.COMMAND_NAME,
-                           CommandParser.STARBOARD_COMMANDS_HEADER,
-                           StarboardSetChannelCommand.COMMAND_NAME,
-                           StarboardGetChannelCommand.COMMAND_NAME,
-                           StarboardSetEmojiCommand.COMMAND_NAME,
-                           StarboardGetEmojiCommand.COMMAND_NAME,
-                           StarboardSetThresholdCommand.COMMAND_NAME,
-                           StarboardGetThresholdCommand.COMMAND_NAME]);
-
     public static commandsLowerCase: Set<string>
-        = new Set<string>([CommandParser.GENERAL_COMMANDS_HEADER,
-                           ListCommandsCommand.COMMAND_NAME_LOWER_CASE,
-                           CommandParser.MESSAGE_CHECKER_COMMANDS_HEADER,
-                           MsgCheckerListWordsCommand.COMMAND_NAME_LOWER_CASE,
-                           MsgCheckerAddWordCommand.COMMAND_NAME_LOWER_CASE,
-                           MsgCheckerRemoveWordCommand.COMMAND_NAME_LOWER_CASE,
-                           MsgCheckerSetReportChannelCommand.COMMAND_NAME_LOWER_CASE,
-                           MsgCheckerGetReportChannelCommand.COMMAND_NAME_LOWER_CASE,
-                           MsgCheckerSetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
-                           MsgCheckerGetResponseMessageCommand.COMMAND_NAME_LOWER_CASE,
-                           MsgCheckerSetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE,
-                           StarboardSetChannelCommand.COMMAND_NAME_LOWER_CASE,
-                           StarboardGetChannelCommand.COMMAND_NAME_LOWER_CASE,
-                           StarboardSetEmojiCommand.COMMAND_NAME_LOWER_CASE,
-                           StarboardGetEmojiCommand.COMMAND_NAME_LOWER_CASE,
-                           StarboardSetThresholdCommand.COMMAND_NAME_LOWER_CASE,
-                           StarboardGetThresholdCommand.COMMAND_NAME_LOWER_CASE,
-                           RotateImageCommand.COMMAND_NAME_LOWER_CASE]);
-
-    public static descriptions: string[]
-        = [CommandParser.EMPTY_STRING,
-           ListCommandsCommand.DESCRIPTION,
-           CommandParser.EMPTY_STRING,
-           MsgCheckerListWordsCommand.DESCRIPTION,
-           MsgCheckerAddWordCommand.DESCRIPTION,
-           MsgCheckerRemoveWordCommand.DESCRIPTION,
-           MsgCheckerSetReportChannelCommand.DESCRIPTION,
-           MsgCheckerGetReportChannelCommand.DESCRIPTION,
-           MsgCheckerSetResponseMessageCommand.DESCRIPTION,
-           MsgCheckerGetResponseMessageCommand.DESCRIPTION,
-           MsgCheckerSetDeleteMessageCommand.DESCRIPTION,
-           CommandParser.EMPTY_STRING,
-           StarboardSetChannelCommand.DESCRIPTION,
-           StarboardGetChannelCommand.DESCRIPTION,
-           StarboardSetEmojiCommand.DESCRIPTION,
-           StarboardGetEmojiCommand.DESCRIPTION,
-           StarboardSetThresholdCommand.DESCRIPTION,
-           StarboardGetThresholdCommand.DESCRIPTION];
+        = new Set<string>(([] as string[]).concat(
+            CommandNamesAndDescriptions.MSGCHECKER_COMMANDS_LOWERCASE,
+            CommandNamesAndDescriptions.ROTATEIMAGE_COMMANDS_LOWERCASE,
+            CommandNamesAndDescriptions.STARBOARD_COMMANDS_LOWERCASE,
+            CommandNamesAndDescriptions.HELP_COMMANDS_LOWERCASE,
+        ));
 
     private content: string;
 
@@ -128,10 +67,6 @@ export class CommandParser {
             return false;
         }
 
-        if (CommandParser.notCommands.has(command)) {
-            return false;
-        }
-
         return true;
     }
 
@@ -162,38 +97,44 @@ export class CommandParser {
         const command = this.splittedContent[1].toLowerCase();
         const args = this.getArgs();
         switch (command) {
-            case MsgCheckerListWordsCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.MSGCHECKER_LIST_WORDS_COMMAND_NAME.toLowerCase():
                 return new MsgCheckerListWordsCommand();
-            case MsgCheckerSetReportChannelCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.MSGCHECKER_SET_REPORT_CHANNEL_COMMAND_NAME.toLowerCase():
                 return new MsgCheckerSetReportChannelCommand(args);
-            case MsgCheckerAddWordCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.MSGCHECKER_ADD_WORD_COMMAND_NAME.toLowerCase():
                 return new MsgCheckerAddWordCommand(args);
-            case MsgCheckerRemoveWordCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.MSGCHECKER_REMOVE_WORD_COMMAND_NAME.toLowerCase():
                 return new MsgCheckerRemoveWordCommand(args);
-            case MsgCheckerGetReportChannelCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.MSGCHECKER_GET_REPORT_CHANNEL_COMMAND_NAME.toLowerCase():
                 return new MsgCheckerGetReportChannelCommand();
-            case ListCommandsCommand.COMMAND_NAME_LOWER_CASE:
-                return new ListCommandsCommand();
-            case MsgCheckerSetResponseMessageCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.MSGCHECKER_SET_RESPONSE_MESSAGE_COMMAND_NAME.toLowerCase():
                 return new MsgCheckerSetResponseMessageCommand(args);
-            case MsgCheckerGetResponseMessageCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.MSGCHECKER_GET_RESPONSE_MESSAGE_COMMAND_NAME.toLowerCase():
                 return new MsgCheckerGetResponseMessageCommand();
-            case MsgCheckerSetDeleteMessageCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.MSGCHECKER_SET_DELETE_MESSAGE_COMMAND_NAME.toLowerCase():
                 return new MsgCheckerSetDeleteMessageCommand(args);
-            case StarboardSetChannelCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.STARBOARD_SET_CHANNEL_COMMAND_NAME.toLowerCase():
                 return new StarboardSetChannelCommand(args);
-            case StarboardGetChannelCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.STARBOARD_GET_CHANNEL_COMMAND_NAME.toLowerCase():
                 return new StarboardGetChannelCommand();
-            case StarboardGetEmojiCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.STARBOARD_GET_EMOJI_COMMAND_NAME.toLowerCase():
                 return new StarboardGetEmojiCommand();
-            case StarboardSetEmojiCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.STARBOARD_SET_EMOJI_COMMAND_NAME.toLowerCase():
                 return new StarboardSetEmojiCommand(args);
-            case StarboardGetThresholdCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.STARBOARD_GET_THRESHOLD_COMMAND_NAME.toLowerCase():
                 return new StarboardGetThresholdCommand();
-            case StarboardSetThresholdCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.STARBOARD_SET_THRESHOLD_COMMAND_NAME.toLowerCase():
                 return new StarboardSetThresholdCommand(args);
-            case RotateImageCommand.COMMAND_NAME_LOWER_CASE:
+            case CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME.toLowerCase():
                 return new RotateImageCommand(args);
+            case CommandNamesAndDescriptions.HELP_COMMAND_NAME.toLowerCase():
+                return new HelpCommand();
+            case CommandNamesAndDescriptions.MSGCHECKER_HELP_COMMAND_NAME.toLowerCase():
+                return new MsgCheckerHelpCommand();
+            case CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_NAME.toLowerCase():
+                return new StarboardHelpCommand();
+            case CommandNamesAndDescriptions.ROTATE_IMAGE_HELP_COMMAND_NAME.toLowerCase():
+                return new RotateImageHelpCommand();
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }

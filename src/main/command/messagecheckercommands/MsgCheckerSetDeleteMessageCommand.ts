@@ -4,13 +4,6 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class MsgCheckerSetDeleteMessageCommand extends Command {
-    public static COMMAND_NAME = 'SetDeleteMessage';
-
-    public static COMMAND_NAME_LOWER_CASE =
-        MsgCheckerSetDeleteMessageCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Sets whether the bot should delete instances of blacklisted words being used.';
-
     public static INCORRECT_FORMAT = 'Incorrect format. Use only "true" or "false".'
 
     public static EMBED_TITLE = 'Delete Message';

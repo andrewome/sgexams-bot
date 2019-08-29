@@ -4,12 +4,6 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class StarboardGetThresholdCommand extends Command {
-    public static COMMAND_NAME = 'GetStarboardThreshold';
-
-    public static COMMAND_NAME_LOWER_CASE = StarboardGetThresholdCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Displays the emoji threshold for a message to be starred.';
-
     public static THRESHOLD_NOT_SET = 'Threshold has not been set!';
 
     public static EMBED_TITLE = 'Starboard Threshold';

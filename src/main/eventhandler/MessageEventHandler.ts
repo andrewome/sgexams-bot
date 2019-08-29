@@ -6,7 +6,7 @@ import { Server } from '../storage/Server';
 import { MessageChecker } from '../modules/messagechecker/MessageChecker';
 import { MessageResponse } from '../modules/messagechecker/response/MessageResponse';
 import { EventHandler } from './EventHandler';
-import { CommandParams } from '../command/CommandParams';
+import { CommandParams } from '../command/classes/CommandParams';
 import { RotateImageCommandData } from '../command/rotateimagecommands/RotateImageCommandData';
 
 export class MessageEventHandler extends EventHandler {

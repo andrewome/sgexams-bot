@@ -7,12 +7,6 @@ import { CommandResult } from '../classes/CommandResult';
 import { RotateImageCommandData } from '../rotateimagecommands/RotateImageCommandData';
 
 export class StarboardSetChannelCommand extends Command {
-    public static COMMAND_NAME = 'SetStarboardChannel';
-
-    public static COMMAND_NAME_LOWER_CASE = StarboardSetChannelCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Sets the Starboard channel where the bot will star messages.'
-
     public static NOT_TEXT_CHANNEL = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
 
     public static CHANNEL_NOT_FOUND = 'Channel was not found. Please submit a valid channel ID.';
