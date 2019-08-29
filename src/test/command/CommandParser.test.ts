@@ -12,6 +12,17 @@ import { MsgCheckerSetResponseMessageCommand } from '../../main/command/messagec
 import { MsgCheckerGetResponseMessageCommand } from '../../main/command/messagecheckercommands/MsgCheckerGetResponseMessageCommand';
 import { MsgCheckerSetDeleteMessageCommand } from '../../main/command/messagecheckercommands/MsgCheckerSetDeleteMessageCommand';
 import { NoSuchCommandError } from '../../main/command/error/NoSuchCommandError';
+import { CommandNamesAndDescriptions } from '../../main/command/classes/CommandNamesAndDescriptions';
+import { StarboardGetChannelCommand } from '../../main/command/starboardcommands/StarboardGetChannelCommand';
+import { StarboardGetEmojiCommand } from '../../main/command/starboardcommands/StarboardGetEmojiCommand';
+import { StarboardGetThresholdCommand } from '../../main/command/starboardcommands/StarboardGetThresholdCommand';
+import { StarboardSetChannelCommand } from '../../main/command/starboardcommands/StarboardSetChannelCommand';
+import { StarboardSetEmojiCommand } from '../../main/command/starboardcommands/StarboardSetEmojiCommand';
+import { MsgCheckerHelpCommand } from '../../main/command/helpcommands/MsgCheckerHelpCommand';
+import { StarboardHelpCommand } from '../../main/command/helpcommands/StarboardHelpCommand';
+import { RotateImageHelpCommand } from '../../main/command/helpcommands/RotateImageHelpCommand';
+import { StarboardSetThresholdCommand } from '../../main/command/starboardcommands/StarboardSetThresholdCommand';
+import { RotateImageCommand } from '../../main/command/rotateimagecommands/RotateImageCommand';
 
 should();
 
@@ -55,64 +66,114 @@ describe('CommandParser test suite', (): void => {
             new CommandParser(content).isCommand(botId).should.be.true;
         });
         it('tagging the bot correctly 2', (): void => {
-            const content = `<@!123456789> ${MsgCheckerListWordsCommand.COMMAND_NAME}`;
+            const content = `<@!123456789> ${CommandNamesAndDescriptions.MSGCHECKER_LIST_WORDS_COMMAND_NAME}`;
             new CommandParser(content).isCommand(botId).should.be.true;
         });
         it('tagging the bot correctly 3', (): void => {
-            const content = `<@!123456789> ${MsgCheckerAddWordCommand.COMMAND_NAME}`;
+            const content = `<@!123456789> ${CommandNamesAndDescriptions.MSGCHECKER_ADD_WORD_COMMAND_NAME}`;
             new CommandParser(content).isCommand(botId).should.be.true;
         });
         it('tagging the bot correctly 4', (): void => {
-            const content = '<@!123456789> HeLp';
+            const content = `<@!123456789> ${CommandNamesAndDescriptions.HELP_COMMAND_NAME}`;
             new CommandParser(content).isCommand(botId).should.be.true;
         });
     });
 
     describe('getCommand test', (): void => {
         it('Help command', (): void => {
-            const content = `<@123456789> ${HelpCommand.COMMAND_NAME}`;
+            const content = `<@123456789> ${CommandNamesAndDescriptions.HELP_COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
             (command instanceof HelpCommand).should.be.true;
         });
-        it('Listwords command', (): void => {
-            const content = `<@123456789> ${MsgCheckerListWordsCommand.COMMAND_NAME}`;
+        it('MsgChecker Help command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.MSGCHECKER_HELP_COMMAND_NAME}`;
+            const command = new CommandParser(content).getCommand();
+            (command instanceof MsgCheckerHelpCommand).should.be.true;
+        });
+        it('Starboard Help command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_NAME}`;
+            const command = new CommandParser(content).getCommand();
+            (command instanceof StarboardHelpCommand).should.be.true;
+        });
+        it('Rotate Image Help command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.ROTATE_IMAGE_HELP_COMMAND_NAME}`;
+            const command = new CommandParser(content).getCommand();
+            (command instanceof RotateImageHelpCommand).should.be.true;
+        });
+        it('MsgChecker Listwords command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.MSGCHECKER_LIST_WORDS_COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
             (command instanceof MsgCheckerListWordsCommand).should.be.true;
         });
-        it('Addwords command', (): void => {
-            const content = `<@123456789> ${MsgCheckerAddWordCommand.COMMAND_NAME}`;
+        it('MsgChecker Addwords command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.MSGCHECKER_ADD_WORD_COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
             (command instanceof MsgCheckerAddWordCommand).should.be.true;
         });
-        it('Removewords command', (): void => {
-            const content = `<@123456789> ${MsgCheckerRemoveWordCommand.COMMAND_NAME}`;
+        it('MsgChecker Removewords command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.MSGCHECKER_REMOVE_WORD_COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
             (command instanceof MsgCheckerRemoveWordCommand).should.be.true;
         });
-        it('Setchannel command', (): void => {
-            const content = `<@123456789> ${MsgCheckerSetReportChannelCommand.COMMAND_NAME}`;
+        it('MsgChecker Setchannel command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.MSGCHECKER_SET_REPORT_CHANNEL_COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
             (command instanceof MsgCheckerSetReportChannelCommand).should.be.true;
         });
-        it('Getchannel command', (): void => {
-            const content = `<@123456789> ${MsgCheckerGetReportChannelCommand.COMMAND_NAME}`;
+        it('MsgChecker Getchannel command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.MSGCHECKER_GET_REPORT_CHANNEL_COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
             (command instanceof MsgCheckerGetReportChannelCommand).should.be.true;
         });
-        it('Setresponsemessage command', (): void => {
-            const content = `<@123456789> ${MsgCheckerSetResponseMessageCommand.COMMAND_NAME}`;
+        it('MsgChecker Setresponsemessage command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.MSGCHECKER_SET_RESPONSE_MESSAGE_COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
             (command instanceof MsgCheckerSetResponseMessageCommand).should.be.true;
         });
-        it('Getresponsemessage command', (): void => {
-            const content = `<@123456789> ${MsgCheckerGetResponseMessageCommand.COMMAND_NAME}`;
+        it('MsgChecker Getresponsemessage command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.MSGCHECKER_GET_RESPONSE_MESSAGE_COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
             (command instanceof MsgCheckerGetResponseMessageCommand).should.be.true;
         });
-        it('Setdeletemessage command', (): void => {
-            const content = `<@123456789> ${MsgCheckerSetDeleteMessageCommand.COMMAND_NAME}`;
+        it('MsgChecker Setdeletemessage command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.MSGCHECKER_SET_DELETE_MESSAGE_COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
             (command instanceof MsgCheckerSetDeleteMessageCommand).should.be.true;
+        });
+        it('Starboard GetChannel command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.STARBOARD_GET_CHANNEL_COMMAND_NAME}`;
+            const command = new CommandParser(content).getCommand();
+            (command instanceof StarboardGetChannelCommand).should.be.true;
+        });
+        it('Starboard GetEmoji command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.STARBOARD_GET_EMOJI_COMMAND_NAME}`;
+            const command = new CommandParser(content).getCommand();
+            (command instanceof StarboardGetEmojiCommand).should.be.true;
+        });
+        it('Starboard GetThreshold command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.STARBOARD_GET_THRESHOLD_COMMAND_NAME}`;
+            const command = new CommandParser(content).getCommand();
+            (command instanceof StarboardGetThresholdCommand).should.be.true;
+        });
+        it('Starboard SetChannel command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.STARBOARD_SET_CHANNEL_COMMAND_NAME}`;
+            const command = new CommandParser(content).getCommand();
+            (command instanceof StarboardSetChannelCommand).should.be.true;
+        });
+        it('Starboard SetEmoji command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.STARBOARD_SET_EMOJI_COMMAND_NAME}`;
+            const command = new CommandParser(content).getCommand();
+            (command instanceof StarboardSetEmojiCommand).should.be.true;
+        });
+        it('Starboard SetThreshold command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.STARBOARD_SET_THRESHOLD_COMMAND_NAME}`;
+            const command = new CommandParser(content).getCommand();
+            (command instanceof StarboardSetThresholdCommand).should.be.true;
+        });
+        it('Rotate Image command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME}`;
+            const command = new CommandParser(content).getCommand();
+            (command instanceof RotateImageCommand).should.be.true;
         });
         it('Command that does not exist', (): void => {
             const content = '<@123456789> huh?';
