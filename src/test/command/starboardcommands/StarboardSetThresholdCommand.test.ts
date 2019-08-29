@@ -42,7 +42,25 @@ beforeEach((): void => {
 );
 });
 
-describe('SetReportChannelCommand test suite', (): void => {
+describe('StarboardSetThresholdCommand test suite', (): void => {
+    it('No permission check', (): void => {
+        command = new StarboardSetThresholdCommand([]);
+        const checkEmbed = (embed: RichEmbed): void => {
+            embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
+            embed.fields!.length.should.be.equals(1);
+
+            const field = embed.fields![0];
+            field.name.should.equals(Command.ERROR_EMBED_TITLE);
+            field.value.should.equals(Command.NO_PERMISSIONS_MSG);
+        }
+
+        const noPerms = new Permissions([]);
+        const commandResult = command.execute(server, noPerms, checkEmbed);
+
+        // Check command result
+        commandResult.shouldCheckMessage.should.be.true;
+        commandResult.shouldSaveServers.should.be.false;
+    });
     it('reset threshold', (): void => {
         const threshold = 10;
         server.starboardSettings.setThreshold(threshold);

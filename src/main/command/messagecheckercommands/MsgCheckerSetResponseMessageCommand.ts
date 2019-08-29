@@ -35,6 +35,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
                    messageReply: Function): CommandResult {
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
+            this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
