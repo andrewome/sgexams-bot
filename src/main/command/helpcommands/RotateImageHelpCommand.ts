@@ -11,7 +11,7 @@ export class RotateImageHelpCommand extends HelpCommandBase {
 
     public static DESCRIPTION = 'Displays available commands for the Rotate Image function.';
 
-    public static HEADER = '_Rotate Image Commands__'
+    public static HEADER = '__Rotate Image Commands__'
 
     public execute(server: Server,
                    memberPerms: Permissions,
