@@ -4,12 +4,6 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class MsgCheckerRemoveWordCommand extends Command {
-    public static COMMAND_NAME = 'RemoveWords';
-
-    public static COMMAND_NAME_LOWER_CASE = MsgCheckerRemoveWordCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Remove word(s) from the blacklist.';
-
     public static REMOVED_WORDS = '✅Removed Word(s)';
 
     public static MAYBE_WORDS_NOT_INSIDE = 'Perhaps those word(s) are not inside the list?';

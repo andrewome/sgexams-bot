@@ -8,12 +8,6 @@ import { SimplifiedEmoji } from '../../storage/StarboardSettings';
 import { RotateImageCommandData } from '../rotateimagecommands/RotateImageCommandData';
 
 export class StarboardSetEmojiCommand extends Command {
-    public static COMMAND_NAME = 'SetStarboardEmoji';
-
-    public static COMMAND_NAME_LOWER_CASE = StarboardSetEmojiCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Sets the Starboard emoji that the bot will look out for.'
-
     public static EMOJI_NOT_FOUND = 'Emoji was not found. Please submit a valid Emoji ID.';
 
     public static EMBED_TITLE = 'Starboard Emoji';

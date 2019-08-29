@@ -7,13 +7,6 @@ import { CommandResult } from '../classes/CommandResult';
 import { RotateImageCommandData } from '../rotateimagecommands/RotateImageCommandData';
 
 export class MsgCheckerSetReportChannelCommand extends Command {
-    public static COMMAND_NAME = 'SetReportChannel';
-
-    public static COMMAND_NAME_LOWER_CASE =
-        MsgCheckerSetReportChannelCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Sets the reporting channel to post incident reports for this server when blacklisted words are used.';
-
     public static CHANNEL_NOT_FOUND = 'Channel was not found. Please submit a valid channel ID.';
 
     public static NOT_TEXT_CHANNEL = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';

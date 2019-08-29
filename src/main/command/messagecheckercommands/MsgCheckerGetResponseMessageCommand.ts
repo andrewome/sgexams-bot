@@ -4,13 +4,6 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class MsgCheckerGetResponseMessageCommand extends Command {
-    public static COMMAND_NAME = 'GetResponseMessage';
-
-    public static COMMAND_NAME_LOWER_CASE =
-    MsgCheckerGetResponseMessageCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Displays the response message to the user upon detection of blacklisted words for this server.';
-
     public static CHANNEL_NOT_SET = 'There is no message set for this server.';
 
     public static EMBED_TITLE = 'Response Message'

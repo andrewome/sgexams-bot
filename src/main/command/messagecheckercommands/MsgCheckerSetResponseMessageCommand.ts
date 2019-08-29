@@ -4,13 +4,6 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class MsgCheckerSetResponseMessageCommand extends Command {
-    public static COMMAND_NAME = 'SetResponseMessage';
-
-    public static COMMAND_NAME_LOWER_CASE =
-        MsgCheckerSetResponseMessageCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Sets the response message to the user upon detection of blacklisted words for this server.';
-
     public static EMBED_TITLE = 'Reponse Message';
 
     public static MESSAGE_RESETTED = 'Response Message has been resetted because there was no arguments.';

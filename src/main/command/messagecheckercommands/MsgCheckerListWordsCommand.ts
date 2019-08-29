@@ -4,12 +4,6 @@ import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 
 export class MsgCheckerListWordsCommand extends Command {
-    public static COMMAND_NAME = 'ListWords';
-
-    public static COMMAND_NAME_LOWER_CASE = MsgCheckerListWordsCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Displays all blacklisted words.';
-
     public static NO_WORDS_FOUND = 'There are no words set for this server!';
 
     public static EMBED_TITLE = 'Blacklisted Words';

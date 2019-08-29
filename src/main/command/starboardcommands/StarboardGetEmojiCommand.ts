@@ -5,12 +5,6 @@ import { CommandResult } from '../classes/CommandResult';
 import { SimplifiedEmoji } from '../../storage/StarboardSettings';
 
 export class StarboardGetEmojiCommand extends Command {
-    public static COMMAND_NAME = 'GetStarboardEmoji';
-
-    public static COMMAND_NAME_LOWER_CASE = StarboardGetEmojiCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Displays the currently set Starboard emoji';
-
     public static EMOJI_NOT_SET = 'There is no Starboard emoji set for this server.';
 
     public static EMBED_TITLE = 'Starboard Emoji';
