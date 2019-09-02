@@ -4,7 +4,7 @@ import {
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
-import { RotateImageCommandData } from '../rotateimagecommands/RotateImageCommandData';
+import { CommandArgs } from '../classes/CommandArgs';
 
 export class StarboardSetChannelCommand extends Command {
     public static NOT_TEXT_CHANNEL = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
@@ -45,7 +45,7 @@ export class StarboardSetChannelCommand extends Command {
                    ...args:
                     (Collection<string, Channel> |
                      Collection<string, Emoji> |
-                     RotateImageCommandData)[]): CommandResult {
+                     CommandArgs)[]): CommandResult {
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             this.sendNoPermissionsMessage(messageReply);

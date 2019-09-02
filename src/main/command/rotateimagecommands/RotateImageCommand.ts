@@ -9,6 +9,7 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 import { RotateImageCommandData } from './RotateImageCommandData';
+import { CommandArgs } from '../classes/CommandArgs';
 
 export class RotateImageCommand extends Command {
     /** SaveServer: false, CheckMessage: true */
@@ -31,7 +32,7 @@ export class RotateImageCommand extends Command {
                    ...arg:
                     (Collection<string, Channel> |
                      Collection<string, Emoji> |
-                     RotateImageCommandData)[]): CommandResult {
+                     CommandArgs)[]): CommandResult {
         const { channel, userId } = (arg[0] as RotateImageCommandData);
         const messageId = this.commandArgs[0];
 

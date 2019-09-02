@@ -6,4 +6,4 @@ before_script:
   - npm install
 script:
   - npm test
-  - eslint "src/**"
+  - eslint "./src/**"

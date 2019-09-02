@@ -93,6 +93,7 @@ export class CommandParser {
      * @param  {Message} message Message object from the bot's on message event
      * @returns {Command} Command object
      */
+    /* eslint-disable max-len */
     public getCommand(): Command {
         const command = this.splittedContent[1].toLowerCase();
         const args = this.getArgs();

@@ -3,7 +3,7 @@ import {
 } from 'discord.js';
 import { Server } from '../storage/Server';
 import { CommandResult } from './classes/CommandResult';
-import { RotateImageCommandData } from './rotateimagecommands/RotateImageCommandData';
+import { CommandArgs } from './classes/CommandArgs';
 
 /** Base class of the Commands */
 export abstract class Command {
@@ -32,7 +32,7 @@ export abstract class Command {
                             ...args:
                             (Collection<string, Channel> |
                              Collection<string, Emoji> |
-                             RotateImageCommandData)[]
+                             CommandArgs)[]
                             ): CommandResult;
 
     /**
@@ -53,7 +53,7 @@ export abstract class Command {
 
     /**
      * This function sends the no permissions reply
-     * 
+     *
      * @param  {Function} messageReply
      * @returns void
      */
@@ -62,7 +62,7 @@ export abstract class Command {
         const embed = new RichEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR)
             .addField(Command.ERROR_EMBED_TITLE, Command.NO_PERMISSIONS_MSG);
-        
+
         messageReply(embed);
     }
 }

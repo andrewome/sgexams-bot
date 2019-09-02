@@ -41,7 +41,7 @@ describe('MsgCheckerSetResponseMessageCommand test suite', (): void => {
             const field = embed.fields![0];
             field.name.should.equals(Command.ERROR_EMBED_TITLE);
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
-        }
+        };
 
         const noPerms = new Permissions([]);
         const commandResult = command.execute(server, noPerms, checkEmbed);
