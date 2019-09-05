@@ -1,5 +1,5 @@
 import {
-  RichEmbed, Permissions, Collection, Channel, Emoji,
+  RichEmbed, Permissions, Collection, Channel,
 } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
@@ -42,10 +42,7 @@ export class StarboardSetChannelCommand extends Command {
     public execute(server: Server,
                    memberPerms: Permissions,
                    messageReply: Function,
-                   ...args:
-                    (Collection<string, Channel> |
-                     Collection<string, Emoji> |
-                     CommandArgs)[]): CommandResult {
+                   ...args: CommandArgs[]): CommandResult {
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             this.sendNoPermissionsMessage(messageReply);

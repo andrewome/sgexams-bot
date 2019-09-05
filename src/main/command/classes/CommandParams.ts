@@ -54,7 +54,7 @@ export abstract class CommandParams {
         StarboardSetEmojiCommand.name,
     ]
 
-    /** Requires Channel and userId invoker on top of defaults */
+    /** Requires Channel and userId on top of defaults */
     public static requiresRotateImageData = [
         RotateImageCommand.name,
     ]

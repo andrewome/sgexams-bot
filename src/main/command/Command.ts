@@ -1,5 +1,5 @@
 import {
- Permissions, Collection, Channel, Emoji, RichEmbed,
+ Permissions, RichEmbed,
 } from 'discord.js';
 import { Server } from '../storage/Server';
 import { CommandResult } from './classes/CommandResult';
@@ -29,10 +29,7 @@ export abstract class Command {
     public abstract execute(server: Server,
                             memberPerms: Permissions,
                             messageReply: Function,
-                            ...args:
-                            (Collection<string, Channel> |
-                             Collection<string, Emoji> |
-                             CommandArgs)[]
+                            ...args: CommandArgs[]
                             ): CommandResult;
 
     /**

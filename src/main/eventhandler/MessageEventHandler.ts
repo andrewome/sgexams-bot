@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message, Emoji, Channel } from 'discord.js';
 import { CommandParser } from '../command/CommandParser';
 import { CommandResult } from '../command/classes/CommandResult';
 import { Storage } from '../storage/Storage';
@@ -8,6 +8,7 @@ import { MessageResponse } from '../modules/messagechecker/response/MessageRespo
 import { EventHandler } from './EventHandler';
 import { CommandParams } from '../command/classes/CommandParams';
 import { RotateImageCommandData } from '../command/rotateimagecommands/RotateImageCommandData';
+import { CollectionWrapper } from '../command/classes/CollectionWrapper';
 
 export class MessageEventHandler extends EventHandler {
     public static EVENT_NAME = 'message';
@@ -102,11 +103,11 @@ export class MessageEventHandler extends EventHandler {
             } if (requiresChannels.includes(commandType)) {
                 // Requires channels param
                 const { channels } = this.message.guild;
-                return command.execute(server, permissions, sendFunction, channels);
+                return command.execute(server, permissions, sendFunction, channels as CollectionWrapper<string, Channel>);
             } if (requiresEmojis.includes(commandType)) {
                 // Requires emojis
                 const { emojis } = this.message.guild;
-                return command.execute(server, permissions, sendFunction, emojis);
+                return command.execute(server, permissions, sendFunction, emojis as CollectionWrapper<string, Emoji>);
             } if (requiresRotateImageData.includes(commandType)) {
                 // Requires rotateimage
                 const { channel, author } = this.message;

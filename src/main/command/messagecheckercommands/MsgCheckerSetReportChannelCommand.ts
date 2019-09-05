@@ -1,5 +1,5 @@
 import {
- Permissions, RichEmbed, Channel, Collection, Emoji,
+ Permissions, RichEmbed, Channel, Collection,
 } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
@@ -42,10 +42,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
     public execute(server: Server,
                    memberPerms: Permissions,
                    messageReply: Function,
-                   ...args:
-                    (Collection<string, Channel> |
-                     Collection<string, Emoji> |
-                     CommandArgs)[]): CommandResult {
+                   ...args: CommandArgs[]): CommandResult {
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             this.sendNoPermissionsMessage(messageReply);
