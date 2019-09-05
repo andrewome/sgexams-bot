@@ -19,6 +19,7 @@
     "rules": {
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/indent": "off",
+        "@typescript-eslint/no-empty-interface": "off",
         "no-cond-assign": "off",
         "no-plusplus": "off",
         "no-restricted-syntax": "off",
@@ -26,7 +27,7 @@
         "no-prototype-builtins": "off",
         "no-underscore-dangle": "off",
         "no-continue": "off",
-        "class-methods-use-this": "warn",
+        "class-methods-use-this": "off",
         "import/prefer-default-export": "off",
         "import/no-extraneous-dependencies": "off"
     },

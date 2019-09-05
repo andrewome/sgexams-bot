@@ -34,7 +34,7 @@ export abstract class CommandParams {
         StarboardGetEmojiCommand.name,
         StarboardGetThresholdCommand.name,
         StarboardSetThresholdCommand.name,
-        //Help Commands
+        // Help Commands
         HelpCommand.name,
         MsgCheckerHelpCommand.name,
         StarboardHelpCommand.name,

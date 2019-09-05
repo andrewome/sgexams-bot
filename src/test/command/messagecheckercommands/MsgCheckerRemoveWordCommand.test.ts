@@ -31,6 +31,24 @@ beforeEach((): void => {
 });
 
 describe('MsgCheckerRemoveWordCommand test suite', (): void => {
+    it('No permission check', (): void => {
+        command = new MsgCheckerRemoveWordCommand([]);
+        const checkEmbed = (embed: RichEmbed): void => {
+            embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
+            embed.fields!.length.should.be.equals(1);
+
+            const field = embed.fields![0];
+            field.name.should.equals(Command.ERROR_EMBED_TITLE);
+            field.value.should.equals(Command.NO_PERMISSIONS_MSG);
+        };
+
+        const noPerms = new Permissions([]);
+        const commandResult = command.execute(server, noPerms, checkEmbed);
+
+        // Check command result
+        commandResult.shouldCheckMessage.should.be.true;
+        commandResult.shouldSaveServers.should.be.false;
+    });
     it('Removing words, no duplicates', (): void => {
         const args = ['word1', 'word2', 'word3'];
         const removedWordsStr = `${args[0]}\n${args[1]}\n${args[2]}\n`;
