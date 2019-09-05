@@ -1,6 +1,6 @@
 /* eslint-disable prefer-destructuring, no-shadow */
 import {
- Permissions, Channel, Collection, Emoji, TextChannel, Message, MessageReaction,
+ Permissions, TextChannel, Message, MessageReaction,
  User, ReactionCollectorOptions,
 } from 'discord.js';
 import sharp, { Sharp } from 'sharp';
@@ -9,6 +9,7 @@ import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 import { RotateImageCommandData } from './RotateImageCommandData';
+import { CommandArgs } from '../classes/CommandArgs';
 
 export class RotateImageCommand extends Command {
     /** SaveServer: false, CheckMessage: true */
@@ -28,11 +29,8 @@ export class RotateImageCommand extends Command {
     public execute(server: Server,
                    userPerms: Permissions,
                    messageReply: Function,
-                   ...arg:
-                    (Collection<string, Channel> |
-                     Collection<string, Emoji> |
-                     RotateImageCommandData)[]): CommandResult {
-        const { channel, userId } = (arg[0] as RotateImageCommandData);
+                   ...args: CommandArgs[]): CommandResult {
+        const { channel, userId } = (args[0] as RotateImageCommandData);
         const messageId = this.commandArgs[0];
 
         // Check if messageId quoted is in in the channel

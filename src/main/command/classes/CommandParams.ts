@@ -18,6 +18,13 @@ import { MsgCheckerHelpCommand } from '../helpcommands/MsgCheckerHelpCommand';
 import { StarboardHelpCommand } from '../helpcommands/StarboardHelpCommand';
 import { RotateImageHelpCommand } from '../helpcommands/RotateImageHelpCommand';
 
+export enum CommandType {
+    requiresDefault,
+    requiresChannels,
+    requiresEmojis,
+    requiresRotateImageData
+}
+
 export abstract class CommandParams {
     /** Default params: server, memberperms, messageReply */
     public static requiresDefaults = [
@@ -34,7 +41,7 @@ export abstract class CommandParams {
         StarboardGetEmojiCommand.name,
         StarboardGetThresholdCommand.name,
         StarboardSetThresholdCommand.name,
-        //Help Commands
+        // Help Commands
         HelpCommand.name,
         MsgCheckerHelpCommand.name,
         StarboardHelpCommand.name,
@@ -54,8 +61,28 @@ export abstract class CommandParams {
         StarboardSetEmojiCommand.name,
     ]
 
-    /** Requires Channel and userId invoker on top of defaults */
+    /** Requires Channel and userId on top of defaults */
     public static requiresRotateImageData = [
         RotateImageCommand.name,
     ]
+
+    public static checkCommandType(type: string): CommandType {
+        if (this.requiresDefaults.includes(type)) {
+            return CommandType.requiresDefault;
+        }
+
+        if (this.requiresChannels.includes(type)) {
+            return CommandType.requiresChannels;
+        }
+
+        if (this.requiresEmojis.includes(type)) {
+            return CommandType.requiresEmojis;
+        }
+
+        if (this.requiresRotateImageData.includes(type)) {
+            return CommandType.requiresRotateImageData;
+        }
+
+        throw new Error(`Command ${type} does not exist in CommandParams!`);
+    }
 }

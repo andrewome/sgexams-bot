@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { should } from 'chai';
 import { RichEmbed, Permissions } from 'discord.js';
 import { Server } from '../../../main/storage/Server';
@@ -29,7 +30,7 @@ describe('Help Command Test Suite', (): void => {
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(HEADER);
-    
+
             // Check field value
             let output = '';
             const { HELP_COMMANDS, HELP_DESCRIPTIONS } = CommandNamesAndDescriptions;
@@ -37,12 +38,12 @@ describe('Help Command Test Suite', (): void => {
                 output += `**${HELP_COMMANDS[i]}** - ${HELP_DESCRIPTIONS[i]}\n`;
             }
             field.value.should.equals(output);
-        }
-    
+        };
+
         const commandResult = command.execute(server, new Permissions([]), checkEmbed);
-    
+
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
         commandResult.shouldSaveServers.should.be.false;
-    })
-})
+    });
+});

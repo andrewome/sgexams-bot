@@ -1,10 +1,10 @@
 import {
- Permissions, RichEmbed, Channel, Collection, Emoji,
+ Permissions, RichEmbed, Channel, Collection,
 } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
-import { RotateImageCommandData } from '../rotateimagecommands/RotateImageCommandData';
+import { CommandArgs } from '../classes/CommandArgs';
 
 export class MsgCheckerSetReportChannelCommand extends Command {
     public static CHANNEL_NOT_FOUND = 'Channel was not found. Please submit a valid channel ID.';
@@ -42,10 +42,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
     public execute(server: Server,
                    memberPerms: Permissions,
                    messageReply: Function,
-                   ...args:
-                    (Collection<string, Channel> |
-                     Collection<string, Emoji> |
-                     RotateImageCommandData)[]): CommandResult {
+                   ...args: CommandArgs[]): CommandResult {
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             this.sendNoPermissionsMessage(messageReply);

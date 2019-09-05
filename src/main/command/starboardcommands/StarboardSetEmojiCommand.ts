@@ -1,11 +1,11 @@
 import {
- RichEmbed, Permissions, Emoji, Collection, Channel,
+ RichEmbed, Permissions, Emoji, Collection,
 } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 import { SimplifiedEmoji } from '../../storage/StarboardSettings';
-import { RotateImageCommandData } from '../rotateimagecommands/RotateImageCommandData';
+import { CommandArgs } from '../classes/CommandArgs';
 
 export class StarboardSetEmojiCommand extends Command {
     public static EMOJI_NOT_FOUND = 'Emoji was not found. Please submit a valid Emoji ID.';
@@ -41,10 +41,7 @@ export class StarboardSetEmojiCommand extends Command {
     public execute(server: Server,
                    memberPerms: Permissions,
                    messageReply: Function,
-                   ...args:
-                    (Collection<string, Channel> |
-                     Collection<string, Emoji> |
-                     RotateImageCommandData)[]): CommandResult {
+                   ...args: CommandArgs[]): CommandResult {
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             this.sendNoPermissionsMessage(messageReply);

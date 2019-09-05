@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message, Emoji, Channel } from 'discord.js';
 import { CommandParser } from '../command/CommandParser';
 import { CommandResult } from '../command/classes/CommandResult';
 import { Storage } from '../storage/Storage';
@@ -6,8 +6,9 @@ import { Server } from '../storage/Server';
 import { MessageChecker } from '../modules/messagechecker/MessageChecker';
 import { MessageResponse } from '../modules/messagechecker/response/MessageResponse';
 import { EventHandler } from './EventHandler';
-import { CommandParams } from '../command/classes/CommandParams';
+import { CommandParams, CommandType } from '../command/classes/CommandParams';
 import { RotateImageCommandData } from '../command/rotateimagecommands/RotateImageCommandData';
+import { CollectionWrapper } from '../command/classes/CollectionWrapper';
 
 export class MessageEventHandler extends EventHandler {
     public static EVENT_NAME = 'message';
@@ -79,10 +80,6 @@ export class MessageEventHandler extends EventHandler {
      * @returns CommandResult
      */
     private handleCommand(server: Server): CommandResult {
-        const {
-            requiresDefaults, requiresChannels, requiresEmojis, requiresRotateImageData,
-        } = CommandParams;
-
         // Default command result - do not save, check messages.
         const defaultCommandResult = new CommandResult(false, true);
 
@@ -96,27 +93,28 @@ export class MessageEventHandler extends EventHandler {
             const commandType = command.constructor.name;
 
             // Execute the correct execute function based on the command object returned.
-            if (requiresDefaults.includes(commandType)) {
-                // Default params
-                return command.execute(server, permissions, sendFunction);
-            } if (requiresChannels.includes(commandType)) {
-                // Requires channels param
-                const { channels } = this.message.guild;
-                return command.execute(server, permissions, sendFunction, channels);
-            } if (requiresEmojis.includes(commandType)) {
-                // Requires emojis
-                const { emojis } = this.message.guild;
-                return command.execute(server, permissions, sendFunction, emojis);
-            } if (requiresRotateImageData.includes(commandType)) {
-                // Requires rotateimage
-                const { channel, author } = this.message;
-                const { id } = author;
-                const data = new RotateImageCommandData(channel, id);
-                return command.execute(server, permissions, sendFunction, data);
+            switch (CommandParams.checkCommandType(commandType)) {
+                case CommandType.requiresDefault: {
+                    return command.execute(server, permissions, sendFunction);
+                }
+                case CommandType.requiresChannels: {
+                    const { channels } = this.message.guild;
+                    return command.execute(server, permissions, sendFunction, channels as CollectionWrapper<string, Channel>);
+                }
+                case CommandType.requiresEmojis: {
+                    const { emojis } = this.message.guild;
+                    return command.execute(server, permissions, sendFunction, emojis as CollectionWrapper<string, Emoji>);
+                }
+                case CommandType.requiresRotateImageData: {
+                    const { channel, author } = this.message;
+                    const { id } = author;
+                    const data = new RotateImageCommandData(channel, id);
+                    return command.execute(server, permissions, sendFunction, data);
+                }
             }
         }
-
-        // else return the default command result
+        
+        // Not a command, return default command result
         return defaultCommandResult;
     }
 }
