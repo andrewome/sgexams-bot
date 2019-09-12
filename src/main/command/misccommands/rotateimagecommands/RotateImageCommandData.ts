@@ -1,5 +1,5 @@
 import { Channel } from 'discord.js';
-import { CommandArgs } from '../classes/CommandArgs';
+import { CommandArgs } from '../../classes/CommandArgs';
 
 export class RotateImageCommandData implements CommandArgs {
     public channel: Channel;

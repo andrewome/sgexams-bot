@@ -128,29 +128,31 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.STARBOARD_GET_THRESHOLD_COMMAND_NAME.toLowerCase(),
     ];
 
-    /** Rotate Image Command */
+    /** Misc Commands */
     public static readonly ROTATE_IMAGE_COMMAND_NAME = 'Rotate';
 
     public static readonly ROTATE_IMAGE_COMMAND_DESCRIPTION
         = 'Rotates an image by 90 degrees via reactions.';
 
-    public static readonly ROTATEIMAGE_COMMANDS = [
+    public static readonly STATUS_CHECK_COMMAND_NAME = 'Status';
+
+    public static readonly STATUS_CHECK_COMMAND_DESCRIPTION = 
+        'Returns how long the bot has been online for.';
+
+    public static readonly MISC_COMMANDS = [
         CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME,
+        CommandNamesAndDescriptions.STATUS_CHECK_COMMAND_NAME,
     ];
 
-    public static readonly ROTATEIMAGE_DESCRIPTIONS = [
+    public static readonly MISC_DESCRIPTIONS = [
         CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.STATUS_CHECK_COMMAND_DESCRIPTION,
     ];
 
-    public static readonly ROTATEIMAGE_COMMANDS_LOWERCASE = [
+    public static readonly MISC_COMMANDS_LOWERCASE = [
         CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME.toLowerCase(),
+        CommandNamesAndDescriptions.STATUS_CHECK_COMMAND_NAME.toLowerCase(),
     ];
-
-    public static readonly STATUSCHECK_COMMAND_NAME = 'Status';
-
-    public static readonly STATUSCHECK_COMMANDS_LOWERCASE = [
-        CommandNamesAndDescriptions.STATUSCHECK_COMMAND_NAME.toLowerCase(),
-    ]
 
     /** Help Commands */
     public static readonly HELP_COMMAND_NAME = 'Help';
@@ -168,39 +170,30 @@ export abstract class CommandNamesAndDescriptions {
     public static readonly STARBOARD_HELP_COMMAND_DESCRIPTION
         = 'Displays available commands for the Starboard function.';
 
-    public static readonly ROTATE_IMAGE_HELP_COMMAND_NAME = 'RotateImgHelp';
+    public static readonly MISC_COMMAND_HELP_COMMAND_NAME = 'MiscHelp';
 
-    public static readonly ROTATE_IMAGE_HELP_COMMAND_DESCRIPTION
-        = 'Displays available commands for the Rotate Image function.';
+    public static readonly MISC_COMMAND_HELP_COMMAND_DESCRIPTION
+        = 'Displays other Miscellaneous commands';
 
     public static readonly HELP_COMMANDS = [
         CommandNamesAndDescriptions.HELP_COMMAND_NAME,
         CommandNamesAndDescriptions.MSGCHECKER_HELP_COMMAND_NAME,
         CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_NAME,
-        CommandNamesAndDescriptions.ROTATE_IMAGE_HELP_COMMAND_NAME,
+        CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME,
     ];
 
     public static readonly HELP_DESCRIPTIONS = [
         CommandNamesAndDescriptions.HELP_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.MSGCHECKER_HELP_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_DESCRIPTION,
-        CommandNamesAndDescriptions.ROTATE_IMAGE_HELP_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_DESCRIPTION,
     ];
 
     public static readonly HELP_COMMANDS_LOWERCASE = [
         CommandNamesAndDescriptions.HELP_COMMAND_NAME.toLowerCase(),
         CommandNamesAndDescriptions.MSGCHECKER_HELP_COMMAND_NAME.toLowerCase(),
         CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.ROTATE_IMAGE_HELP_COMMAND_NAME.toLowerCase(),
+        CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME.toLowerCase(),
     ];
-    
-    public static readonly STATUS_CHECK_COMMAND_NAME = 'status';
-    
-    public static readonly STATUS_CHECK_COMMAND_DESCRIPTION 
-        = 'Displays server uptime in hours, minutes and seconds.';
-
-    public static readonly STATUS_CHECK_COMMANDS_LOWERCASE = [
-        CommandNamesAndDescriptions.STATUSCHECK_COMMAND_NAME.toLowerCase(),
-    ]
 }
     

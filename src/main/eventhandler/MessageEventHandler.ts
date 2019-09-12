@@ -7,9 +7,9 @@ import { MessageChecker } from '../modules/messagechecker/MessageChecker';
 import { MessageResponse } from '../modules/messagechecker/response/MessageResponse';
 import { EventHandler } from './EventHandler';
 import { CommandParams, CommandType } from '../command/classes/CommandParams';
-import { RotateImageCommandData } from '../command/rotateimagecommands/RotateImageCommandData';
+import { RotateImageCommandData } from '../command/misccommands/rotateimagecommands/RotateImageCommandData';
 import { CollectionWrapper } from '../command/classes/CollectionWrapper';
-import { StatusCheckCommandData } from '../command/statuscheckcommands/StatusCheckCommandData';
+import { StatusCheckCommandData } from '../command/misccommands/statuscheckcommands/StatusCheckCommandData';
 
 export class MessageEventHandler extends EventHandler {
     public static EVENT_NAME = 'message';

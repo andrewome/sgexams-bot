@@ -1,4 +1,4 @@
-import { CommandArgs } from '../classes/CommandArgs';
+import { CommandArgs } from '../../classes/CommandArgs';
 
 export class StatusCheckCommandData implements CommandArgs {
     public uptime: number;

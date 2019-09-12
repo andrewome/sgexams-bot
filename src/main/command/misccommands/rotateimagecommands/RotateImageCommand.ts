@@ -5,11 +5,11 @@ import {
 } from 'discord.js';
 import sharp, { Sharp } from 'sharp';
 import axios from 'axios';
-import { Command } from '../Command';
-import { Server } from '../../storage/Server';
-import { CommandResult } from '../classes/CommandResult';
+import { Command } from '../../Command';
+import { Server } from '../../../storage/Server';
+import { CommandResult } from '../../classes/CommandResult';
 import { RotateImageCommandData } from './RotateImageCommandData';
-import { CommandArgs } from '../classes/CommandArgs';
+import { CommandArgs } from '../../classes/CommandArgs';
 
 export class RotateImageCommand extends Command {
     /** SaveServer: false, CheckMessage: true */

@@ -20,9 +20,9 @@ import { StarboardSetChannelCommand } from '../../main/command/starboardcommands
 import { StarboardSetEmojiCommand } from '../../main/command/starboardcommands/StarboardSetEmojiCommand';
 import { MsgCheckerHelpCommand } from '../../main/command/helpcommands/MsgCheckerHelpCommand';
 import { StarboardHelpCommand } from '../../main/command/helpcommands/StarboardHelpCommand';
-import { RotateImageHelpCommand } from '../../main/command/helpcommands/RotateImageHelpCommand';
+import { MiscCommandHelpCommand } from '../../main/command/helpcommands/MiscCommandHelpCommand';
 import { StarboardSetThresholdCommand } from '../../main/command/starboardcommands/StarboardSetThresholdCommand';
-import { RotateImageCommand } from '../../main/command/rotateimagecommands/RotateImageCommand';
+import { RotateImageCommand } from '../../main/command/misccommands/rotateimagecommands/RotateImageCommand';
 
 should();
 
@@ -96,9 +96,9 @@ describe('CommandParser test suite', (): void => {
             (command instanceof StarboardHelpCommand).should.be.true;
         });
         it('Rotate Image Help command', (): void => {
-            const content = `<@123456789> ${CommandNamesAndDescriptions.ROTATE_IMAGE_HELP_COMMAND_NAME}`;
+            const content = `<@123456789> ${CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
-            (command instanceof RotateImageHelpCommand).should.be.true;
+            (command instanceof MiscCommandHelpCommand).should.be.true;
         });
         it('MsgChecker Listwords command', (): void => {
             const content = `<@123456789> ${CommandNamesAndDescriptions.MSGCHECKER_LIST_WORDS_COMMAND_NAME}`;

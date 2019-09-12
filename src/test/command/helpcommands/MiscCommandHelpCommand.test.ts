@@ -6,14 +6,14 @@ import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 import { CommandNamesAndDescriptions } from '../../../main/command/classes/CommandNamesAndDescriptions';
-import { RotateImageHelpCommand } from '../../../main/command/helpcommands/RotateImageHelpCommand';
+import { MiscCommandHelpCommand } from '../../../main/command/helpcommands/MiscCommandHelpCommand';
 
 should();
 
 let server: Server;
-const command = new RotateImageHelpCommand();
+const command = new MiscCommandHelpCommand();
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
-const { HEADER } = RotateImageHelpCommand;
+const { HEADER } = MiscCommandHelpCommand;
 beforeEach((): void => {
     server = new Server(
         '123',
@@ -22,7 +22,7 @@ beforeEach((): void => {
 );
 });
 
-describe('Help Command Test Suite', (): void => {
+describe('MiscHelp Command Test Suite', (): void => {
     it('Execute test', (): void => {
         const checkEmbed = (embed: RichEmbed): void => {
             // Check embed
@@ -33,9 +33,9 @@ describe('Help Command Test Suite', (): void => {
 
             // Check field value
             let output = '';
-            const { ROTATEIMAGE_COMMANDS, ROTATEIMAGE_DESCRIPTIONS } = CommandNamesAndDescriptions;
-            for (let i = 0; i < ROTATEIMAGE_COMMANDS.length; i++) {
-                output += `**${ROTATEIMAGE_COMMANDS[i]}** - ${ROTATEIMAGE_DESCRIPTIONS[i]}\n`;
+            const { MISC_COMMANDS, MISC_DESCRIPTIONS } = CommandNamesAndDescriptions;
+            for (let i = 0; i < MISC_COMMANDS.length; i++) {
+                output += `**${MISC_COMMANDS[i]}** - ${MISC_DESCRIPTIONS[i]}\n`;
             }
             field.value.should.equals(output);
         };

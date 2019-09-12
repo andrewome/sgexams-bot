@@ -4,14 +4,8 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandNamesAndDescriptions } from '../classes/CommandNamesAndDescriptions';
 import { HelpCommandBase } from './HelpCommandBase';
 
-export class RotateImageHelpCommand extends HelpCommandBase {
-    public static COMMAND_NAME = 'RotateImageHelp';
-
-    public static COMMAND_NAME_LOWER_CASE = RotateImageHelpCommand.COMMAND_NAME.toLowerCase();
-
-    public static DESCRIPTION = 'Displays available commands for the Rotate Image function.';
-
-    public static HEADER = '__Rotate Image Commands__'
+export class MiscCommandHelpCommand extends HelpCommandBase {
+    public static HEADER = '__Miscellaneous Commands__'
 
     /**
      * This method sends a help embed for the RotateImage module.
@@ -26,9 +20,9 @@ export class RotateImageHelpCommand extends HelpCommandBase {
                    messageReply: Function): CommandResult {
         // Generate embed and send
         messageReply(this.generateEmbed(
-            RotateImageHelpCommand.HEADER,
-            CommandNamesAndDescriptions.ROTATEIMAGE_COMMANDS,
-            CommandNamesAndDescriptions.ROTATEIMAGE_DESCRIPTIONS,
+            MiscCommandHelpCommand.HEADER,
+            CommandNamesAndDescriptions.MISC_COMMANDS,
+            CommandNamesAndDescriptions.MISC_DESCRIPTIONS,
         ));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
