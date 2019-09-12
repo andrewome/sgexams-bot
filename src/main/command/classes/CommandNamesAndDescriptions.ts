@@ -1,5 +1,3 @@
-import { Command } from "../Command";
-
 export abstract class CommandNamesAndDescriptions {
     /** Message Checker Commands */
     public static readonly MSGCHECKER_LIST_WORDS_COMMAND_NAME = 'MsgCheckerListWords';
