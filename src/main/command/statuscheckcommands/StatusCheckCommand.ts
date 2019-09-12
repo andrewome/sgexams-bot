@@ -7,6 +7,7 @@ import { StatusCheckCommandData } from './StatusCheckCommandData';
 
 export class StatusCheckCommand extends Command {
     /**
+     * This function executes the statuscheck command.
      * @param  {Server} server
      * @param  {Permissions} userPerms
      * @param  {Function} messageReply
@@ -20,7 +21,7 @@ export class StatusCheckCommand extends Command {
         //Calculation For Bot Uptime In Hours, Minutes and Seconds
         const { uptime } = args[0] as StatusCheckCommandData;
         //Hours
-        let upTimeInHours = (uptime / 1000) / 3600;
+        const upTimeInHours = (uptime / 1000) / 3600;
         let rupTimeInHours = Math.floor(upTimeInHours);
         //Minutes
         let upTimeInMinutes = (upTimeInHours - rupTimeInHours) * 60;
