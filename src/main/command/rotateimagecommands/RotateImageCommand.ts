@@ -26,11 +26,23 @@ export class RotateImageCommand extends Command {
         this.commandArgs = args;
     }
 
+    /**
+     * This method executes the rotate image command.
+     * It fetches the image, and sends it back in the channel.
+     * A reaction collector is set up to respond to ↪ ↩ reacts
+     * which will rotate the image accordingly.
+     * 
+     * @param  {Server} server
+     * @param  {Permissions} userPerms
+     * @param  {Function} messageReply
+     * @param  {CommandArgs[]} ...args
+     * @returns CommandResult
+     */
     public execute(server: Server,
                    userPerms: Permissions,
                    messageReply: Function,
                    ...args: CommandArgs[]): CommandResult {
-        const { channel, userId } = (args[0] as RotateImageCommandData);
+        const { channel, userId } = args[0] as RotateImageCommandData;
         const messageId = this.commandArgs[0];
 
         // Check if messageId quoted is in in the channel
