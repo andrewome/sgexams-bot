@@ -23,7 +23,8 @@ export enum CommandType {
     requiresDefault,
     requiresChannels,
     requiresEmojis,
-    requiresRotateImageData
+    requiresRotateImageData,
+    requiresStatusCheckData
 }
 
 export abstract class CommandParams {
@@ -71,6 +72,7 @@ export abstract class CommandParams {
     public static requiresStatusCheckData = [
         StatusCheckCommand.name,
     ]
+    
     public static checkCommandType(type: string): CommandType {
         if (this.requiresDefaults.includes(type)) {
             return CommandType.requiresDefault;

@@ -148,6 +148,12 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME.toLowerCase(),
     ];
 
+    public static readonly STATUSCHECK_COMMAND_NAME = 'status';
+
+    public static readonly STATUSCHECK_COMMANDS_LOWERCASE = [
+        CommandNamesAndDescriptions.STATUSCHECK_COMMAND_NAME.toLowerCase(),
+    ]
+
     /** Help Commands */
     public static readonly HELP_COMMAND_NAME = 'Help';
 
@@ -193,13 +199,13 @@ export abstract class CommandNamesAndDescriptions {
     /* Status Command */
 
     //Command Name
-    public static readonly STATUSCHECK_COMMAND_NAME = 'status';
+    public static readonly STATUS_CHECK_COMMAND_NAME = 'status';
     
     //Command Description
-    public static readonly STATUSCHECK_COMMAND_DESCRIPTION 
+    public static readonly STATUS_CHECK_COMMAND_DESCRIPTION 
         = 'Displays server uptime in hours, minutes and seconds.';
 
-    public static readonly STATUSCHECK_COMMANDS_LOWERCASE = [
+    public static readonly STATUS_CHECK_COMMANDS_LOWERCASE = [
         CommandNamesAndDescriptions.STATUSCHECK_COMMAND_NAME.toLowerCase(),
     ]
 }

@@ -6,19 +6,31 @@ import { CommandResult } from '../classes/CommandResult';
 import { StatusCheckCommandData } from './StatusCheckCommandData';
 
 export class StatusCheckCommand extends Command {
+    /**
+     * @param  {Server} server
+     * @param  {Permissions} userPerms
+     * @param  {Function} messageReply
+     * @param  {CommandArgs[]} ...args
+     * @returns CommandResult
+     */
     public execute(server: Server,
                    userPerms: Permissions,
                    messageReply: Function,
                    ...args: CommandArgs[]): CommandResult {
-
+        //Calculation For Bot Uptime In Hours, Minutes and Seconds
         const { uptime } = args[0] as StatusCheckCommandData;
-        let upTimeInHours = (uptime/1000) / 3600;
+        //Hours
+        let upTimeInHours = (uptime / 1000) / 3600;
         let rupTimeInHours = Math.floor(upTimeInHours);
+        //Minutes
         let upTimeInMinutes = (upTimeInHours - rupTimeInHours) * 60;
         let rupTimeInMinutes = Math.floor(upTimeInMinutes);
+        //Seconds
         let upTimeInSeconds = (upTimeInMinutes - rupTimeInMinutes) * 60;
         let rupTimeInSeconds = Math.floor(upTimeInSeconds);
-        messageReply(`Keesiao Bot has gone keesiao for ${rupTimeInHours} hours, ${rupTimeInMinutes} minutes and ${rupTimeInSeconds} seconds.`);
+        //Output
+        messageReply(`Uptime: ${rupTimeInHours} hours, ${rupTimeInMinutes} minutes and ${rupTimeInSeconds} seconds.`);
+
         return new CommandResult(false, true);
     }
 }
