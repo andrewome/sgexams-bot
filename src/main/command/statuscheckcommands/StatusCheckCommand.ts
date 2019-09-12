@@ -6,8 +6,13 @@ import { CommandResult } from '../classes/CommandResult';
 import { StatusCheckCommandData } from './StatusCheckCommandData';
 
 export class StatusCheckCommand extends Command {
+
     /**
-     * This function executes the statuscheck command.
+     * This method returns the uptime of the bot in hours,
+     * minutes and seconds to the channel which this command
+     * was called in. Hours, minutes and seconds are rounded down
+     * to the nearest integer.
+     * 
      * @param  {Server} server
      * @param  {Permissions} userPerms
      * @param  {Function} messageReply
@@ -18,20 +23,24 @@ export class StatusCheckCommand extends Command {
                    userPerms: Permissions,
                    messageReply: Function,
                    ...args: CommandArgs[]): CommandResult {
-        //Calculation For Bot Uptime In Hours, Minutes and Seconds
         const { uptime } = args[0] as StatusCheckCommandData;
-        //Hours
-        const upTimeInHours = (uptime / 1000) / 3600;
-        let rupTimeInHours = Math.floor(upTimeInHours);
-        //Minutes
-        let upTimeInMinutes = (upTimeInHours - rupTimeInHours) * 60;
-        let rupTimeInMinutes = Math.floor(upTimeInMinutes);
-        //Seconds
-        let upTimeInSeconds = (upTimeInMinutes - rupTimeInMinutes) * 60;
-        let rupTimeInSeconds = Math.floor(upTimeInSeconds);
-        //Output
-        messageReply(`Uptime: ${rupTimeInHours} hours, ${rupTimeInMinutes} minutes and ${rupTimeInSeconds} seconds.`);
 
+        // Calculate hours
+        const upTimeInHours = (uptime / 1000) / 3600;
+        const roundedUpTimeInHours = Math.floor(upTimeInHours);
+
+        // Calculate minutes
+        const upTimeInMinutes = (upTimeInHours - roundedUpTimeInHours) * 60;
+        const roundedUpTimeInMinutes = Math.floor(upTimeInMinutes);
+
+        // Calculate seconds
+        const upTimeInSeconds = (upTimeInMinutes - roundedUpTimeInMinutes) * 60;
+        const roundedUpTimeInSeconds = Math.floor(upTimeInSeconds);
+
+        // Send output
+        messageReply(`Uptime: ${roundedUpTimeInHours} hour(s), ${roundedUpTimeInMinutes} minute(s) and ${roundedUpTimeInSeconds} second(s).`);
+        
+        /* Save servers false, Check messages true*/
         return new CommandResult(false, true);
     }
 }
