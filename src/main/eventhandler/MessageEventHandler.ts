@@ -9,6 +9,7 @@ import { EventHandler } from './EventHandler';
 import { CommandParams, CommandType } from '../command/classes/CommandParams';
 import { RotateImageCommandData } from '../command/rotateimagecommands/RotateImageCommandData';
 import { CollectionWrapper } from '../command/classes/CollectionWrapper';
+import { StatusCheckCommandData } from '../command/statuscheckcommands/StatusCheckCommandData';
 
 export class MessageEventHandler extends EventHandler {
     public static EVENT_NAME = 'message';
@@ -109,6 +110,11 @@ export class MessageEventHandler extends EventHandler {
                     const { channel, author } = this.message;
                     const { id } = author;
                     const data = new RotateImageCommandData(channel, id);
+                    return command.execute(server, permissions, sendFunction, data);
+                }
+                case CommandType.requiresStatusCheckData: {
+                    const { uptime } = this.message.client;
+                    const data = new StatusCheckCommandData(uptime);
                     return command.execute(server, permissions, sendFunction, data);
                 }
             }

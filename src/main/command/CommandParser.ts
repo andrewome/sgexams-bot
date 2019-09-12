@@ -20,6 +20,7 @@ import { CommandNamesAndDescriptions } from './classes/CommandNamesAndDescriptio
 import { MsgCheckerHelpCommand } from './helpcommands/MsgCheckerHelpCommand';
 import { StarboardHelpCommand } from './helpcommands/StarboardHelpCommand';
 import { RotateImageHelpCommand } from './helpcommands/RotateImageHelpCommand';
+import { StatusCheckCommand } from './statuscheckcommands/StatusCheckCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -30,6 +31,7 @@ export class CommandParser {
             CommandNamesAndDescriptions.ROTATEIMAGE_COMMANDS_LOWERCASE,
             CommandNamesAndDescriptions.STARBOARD_COMMANDS_LOWERCASE,
             CommandNamesAndDescriptions.HELP_COMMANDS_LOWERCASE,
+            CommandNamesAndDescriptions.STATUSCHECK_COMMANDS_LOWERCASE,
         ));
 
     private content: string;
@@ -136,6 +138,8 @@ export class CommandParser {
                 return new StarboardHelpCommand();
             case CommandNamesAndDescriptions.ROTATE_IMAGE_HELP_COMMAND_NAME.toLowerCase():
                 return new RotateImageHelpCommand();
+            case CommandNamesAndDescriptions.STATUSCHECK_COMMAND_NAME.toLowerCase():
+                return new StatusCheckCommand();
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }

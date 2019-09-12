@@ -1,3 +1,5 @@
+import { Command } from "../Command";
+
 export abstract class CommandNamesAndDescriptions {
     /** Message Checker Commands */
     public static readonly MSGCHECKER_LIST_WORDS_COMMAND_NAME = 'MsgCheckerListWords';
@@ -187,4 +189,18 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_NAME.toLowerCase(),
         CommandNamesAndDescriptions.ROTATE_IMAGE_HELP_COMMAND_NAME.toLowerCase(),
     ];
+    
+    /* Status Command */
+
+    //Command Name
+    public static readonly STATUSCHECK_COMMAND_NAME = 'status';
+    
+    //Command Description
+    public static readonly STATUSCHECK_COMMAND_DESCRIPTION 
+        = 'Displays server uptime in hours, minutes and seconds.';
+
+    public static readonly STATUSCHECK_COMMANDS_LOWERCASE = [
+        CommandNamesAndDescriptions.STATUSCHECK_COMMAND_NAME.toLowerCase(),
+    ]
 }
+    
