@@ -17,12 +17,14 @@ import { RotateImageCommand } from '../rotateimagecommands/RotateImageCommand';
 import { MsgCheckerHelpCommand } from '../helpcommands/MsgCheckerHelpCommand';
 import { StarboardHelpCommand } from '../helpcommands/StarboardHelpCommand';
 import { RotateImageHelpCommand } from '../helpcommands/RotateImageHelpCommand';
+import { StatusCheckCommand } from '../statuscheckcommands/StatusCheckCommand';
 
 export enum CommandType {
     requiresDefault,
     requiresChannels,
     requiresEmojis,
-    requiresRotateImageData
+    requiresRotateImageData,
+    requiresStatusCheckData
 }
 
 export abstract class CommandParams {
@@ -66,6 +68,11 @@ export abstract class CommandParams {
         RotateImageCommand.name,
     ]
 
+    /** Requires Status Check Wrapper*/
+    public static requiresStatusCheckData = [
+        StatusCheckCommand.name,
+    ]
+    
     public static checkCommandType(type: string): CommandType {
         if (this.requiresDefaults.includes(type)) {
             return CommandType.requiresDefault;
@@ -81,6 +88,10 @@ export abstract class CommandParams {
 
         if (this.requiresRotateImageData.includes(type)) {
             return CommandType.requiresRotateImageData;
+        }
+
+        if (this.requiresStatusCheckData.includes(type)){
+            return CommandType.requiresStatusCheckData;
         }
 
         throw new Error(`Command ${type} does not exist in CommandParams!`);
