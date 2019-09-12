@@ -3,6 +3,7 @@ import { Storage } from '../storage/Storage';
 import { MessageCheckerSettings } from '../storage/MessageCheckerSettings';
 import { StarboardSettings } from '../storage/StarboardSettings';
 
+/** Base class of Event Handlers */
 export abstract class EventHandler {
     protected storage: Storage;
 
