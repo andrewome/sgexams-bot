@@ -15,12 +15,12 @@ import { StarboardSetEmojiCommand } from './starboardcommands/StarboardSetEmojiC
 import { StarboardGetEmojiCommand } from './starboardcommands/StarboardGetEmojiCommand';
 import { StarboardGetThresholdCommand } from './starboardcommands/StarboardGetThresholdCommand';
 import { StarboardSetThresholdCommand } from './starboardcommands/StarboardSetThresholdCommand';
-import { RotateImageCommand } from './rotateimagecommands/RotateImageCommand';
+import { RotateImageCommand } from './misccommands/rotateimagecommands/RotateImageCommand';
 import { CommandNamesAndDescriptions } from './classes/CommandNamesAndDescriptions';
 import { MsgCheckerHelpCommand } from './helpcommands/MsgCheckerHelpCommand';
 import { StarboardHelpCommand } from './helpcommands/StarboardHelpCommand';
-import { RotateImageHelpCommand } from './helpcommands/RotateImageHelpCommand';
-import { StatusCheckCommand } from './statuscheckcommands/StatusCheckCommand';
+import { MiscCommandHelpCommand } from './helpcommands/MiscCommandHelpCommand';
+import { StatusCheckCommand } from './misccommands/statuscheckcommands/StatusCheckCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -29,10 +29,9 @@ export class CommandParser {
     public static commandsLowerCase: Set<string>
         = new Set<string>(([] as string[]).concat(
             CommandNamesAndDescriptions.MSGCHECKER_COMMANDS_LOWERCASE,
-            CommandNamesAndDescriptions.ROTATEIMAGE_COMMANDS_LOWERCASE,
+            CommandNamesAndDescriptions.MISC_COMMANDS_LOWERCASE,
             CommandNamesAndDescriptions.STARBOARD_COMMANDS_LOWERCASE,
             CommandNamesAndDescriptions.HELP_COMMANDS_LOWERCASE,
-            CommandNamesAndDescriptions.STATUSCHECK_COMMANDS_LOWERCASE,
         ));
 
     private content: string;
@@ -135,9 +134,9 @@ export class CommandParser {
                 return new MsgCheckerHelpCommand();
             case CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_NAME.toLowerCase():
                 return new StarboardHelpCommand();
-            case CommandNamesAndDescriptions.ROTATE_IMAGE_HELP_COMMAND_NAME.toLowerCase():
-                return new RotateImageHelpCommand();
-            case CommandNamesAndDescriptions.STATUSCHECK_COMMAND_NAME.toLowerCase():
+            case CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME.toLowerCase():
+                return new MiscCommandHelpCommand();
+            case CommandNamesAndDescriptions.STATUS_CHECK_COMMAND_NAME.toLowerCase():
                 return new StatusCheckCommand();
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);

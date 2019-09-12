@@ -1,8 +1,8 @@
 import { Permissions, RichEmbed } from 'discord.js';
-import { Command } from '../Command';
-import { Server } from '../../storage/Server';
-import { CommandArgs } from '../classes/CommandArgs';
-import { CommandResult } from '../classes/CommandResult';
+import { Command } from '../../Command';
+import { Server } from '../../../storage/Server';
+import { CommandArgs } from '../../classes/CommandArgs';
+import { CommandResult } from '../../classes/CommandResult';
 import { StatusCheckCommandData } from './StatusCheckCommandData';
 
 export class StatusCheckCommand extends Command {

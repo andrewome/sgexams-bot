@@ -22,7 +22,7 @@ beforeEach((): void => {
 );
 });
 
-describe('Help Command Test Suite', (): void => {
+describe('MsgCheckerHelp Command Test Suite', (): void => {
     it('Execute test', (): void => {
         const checkEmbed = (embed: RichEmbed): void => {
             // Check embed

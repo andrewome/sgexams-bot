@@ -13,11 +13,11 @@ import { StarboardSetThresholdCommand } from '../starboardcommands/StarboardSetT
 import { MsgCheckerSetReportChannelCommand } from '../messagecheckercommands/MsgCheckerSetReportChannelCommand';
 import { StarboardSetChannelCommand } from '../starboardcommands/StarboardSetChannelCommand';
 import { StarboardSetEmojiCommand } from '../starboardcommands/StarboardSetEmojiCommand';
-import { RotateImageCommand } from '../rotateimagecommands/RotateImageCommand';
+import { RotateImageCommand } from '../misccommands/rotateimagecommands/RotateImageCommand';
 import { MsgCheckerHelpCommand } from '../helpcommands/MsgCheckerHelpCommand';
 import { StarboardHelpCommand } from '../helpcommands/StarboardHelpCommand';
-import { RotateImageHelpCommand } from '../helpcommands/RotateImageHelpCommand';
-import { StatusCheckCommand } from '../statuscheckcommands/StatusCheckCommand';
+import { MiscCommandHelpCommand } from '../helpcommands/MiscCommandHelpCommand';
+import { StatusCheckCommand } from '../misccommands/statuscheckcommands/StatusCheckCommand';
 
 export enum CommandType {
     requiresDefault,
@@ -47,7 +47,7 @@ export abstract class CommandParams {
         HelpCommand.name,
         MsgCheckerHelpCommand.name,
         StarboardHelpCommand.name,
-        RotateImageHelpCommand.name,
+        MiscCommandHelpCommand.name,
     ]
 
     /** Requires Collection of Channels from Guild on top of defaults */
