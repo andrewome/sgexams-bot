@@ -20,10 +20,10 @@ export abstract class Command {
     public NO_PERMISSIONS_COMMANDRESULT = new CommandResult(false, true);
 
     /**
-     * Each command class must implement an execute method.
-     *
-     * @param  {Server} server Server storage class
-     * @param  {Message} message Discord Message from message event
+     * @param  {Server} server Server settings for the specific guild
+     * @param  {Permissions} memberPerms Perms of member who initiated command
+     * @param  {Function} messageReply Message reply method which sends to the channel that the command was invoked in.
+     * @param  {CommandArgs[]} ...args Other objects that the command requires. Must implement CommandArgs interface.
      * @returns CommandResult
      */
     public abstract execute(server: Server,

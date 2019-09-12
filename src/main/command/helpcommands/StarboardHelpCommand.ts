@@ -7,6 +7,14 @@ import { HelpCommandBase } from './HelpCommandBase';
 export class StarboardHelpCommand extends HelpCommandBase {
     public static HEADER = '__Starboard Commands__';
 
+    /**
+     * This method sends a help embed for the Starboard module.
+     * 
+     * @param  {Server} server
+     * @param  {Permissions} memberPerms
+     * @param  {Function} messageReply
+     * @returns CommandResult
+     */
     public execute(server: Server,
                    memberPerms: Permissions,
                    messageReply: Function): CommandResult {

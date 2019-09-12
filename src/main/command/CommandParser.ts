@@ -24,6 +24,7 @@ import { RotateImageHelpCommand } from './helpcommands/RotateImageHelpCommand';
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
 
+    /** Set of all Command Names from CommandNamesAndDescriptions */
     public static commandsLowerCase: Set<string>
         = new Set<string>(([] as string[]).concat(
             CommandNamesAndDescriptions.MSGCHECKER_COMMANDS_LOWERCASE,
@@ -48,7 +49,7 @@ export class CommandParser {
     }
 
     /**
-     * This function returns if the content was a command
+     * This method returns true if the content was a command. False if not
      *
      * @param  {string} selfId self id of the bot itself
      * @returns boolean
@@ -85,13 +86,11 @@ export class CommandParser {
         return [];
     }
 
+    
     /**
-     * This function executes the listword command
-     * Returns the words in the server's banned list array
-     *
-     * @param  {Server} server Server object of the message
-     * @param  {Message} message Message object from the bot's on message event
-     * @returns {Command} Command object
+     * This method returns the Command object based on the Command word mentioned.
+     * 
+     * @returns Command
      */
     /* eslint-disable max-len */
     public getCommand(): Command {
