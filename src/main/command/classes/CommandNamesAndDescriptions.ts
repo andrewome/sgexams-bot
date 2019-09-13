@@ -134,24 +134,24 @@ export abstract class CommandNamesAndDescriptions {
     public static readonly ROTATE_IMAGE_COMMAND_DESCRIPTION
         = 'Rotates an image by 90 degrees via reactions.';
 
-    public static readonly STATUS_CHECK_COMMAND_NAME = 'Status';
+    public static readonly UPTIME_CHECK_COMMAND_NAME = 'Uptime';
 
-    public static readonly STATUS_CHECK_COMMAND_DESCRIPTION = 
+    public static readonly UPTIME_CHECK_COMMAND_DESCRIPTION = 
         'Returns how long the bot has been online for.';
 
     public static readonly MISC_COMMANDS = [
         CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME,
-        CommandNamesAndDescriptions.STATUS_CHECK_COMMAND_NAME,
+        CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME,
     ];
 
     public static readonly MISC_DESCRIPTIONS = [
         CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_DESCRIPTION,
-        CommandNamesAndDescriptions.STATUS_CHECK_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_DESCRIPTION,
     ];
 
     public static readonly MISC_COMMANDS_LOWERCASE = [
         CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STATUS_CHECK_COMMAND_NAME.toLowerCase(),
+        CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME.toLowerCase(),
     ];
 
     /** Help Commands */
