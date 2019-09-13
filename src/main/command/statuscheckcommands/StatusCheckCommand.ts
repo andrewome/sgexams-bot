@@ -29,11 +29,8 @@ export class StatusCheckCommand extends Command {
         //Seconds
         let upTimeInSeconds = (upTimeInMinutes - rupTimeInMinutes) * 60;
         let rupTimeInSeconds = Math.floor(upTimeInSeconds);
-        //Days
-        let upTimeInDays = (upTimeInHours / 24);
-        let rupTimeInDays = Math.floor(upTimeInDays);
         //Output
-        messageReply(`Uptime: ${rupTimeInDays} days, ${rupTimeInHours} hours, ${rupTimeInMinutes} minutes and ${rupTimeInSeconds} seconds.`);
+        messageReply(`Uptime: ${rupTimeInHours} hours, ${rupTimeInMinutes} minutes and ${rupTimeInSeconds} seconds.`);
 
         return new CommandResult(false, true);
     }

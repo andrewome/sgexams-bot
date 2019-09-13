@@ -148,7 +148,7 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME.toLowerCase(),
     ];
 
-    public static readonly STATUSCHECK_COMMAND_NAME = 'Uptime';
+    public static readonly STATUSCHECK_COMMAND_NAME = 'Status';
 
     public static readonly STATUSCHECK_COMMANDS_LOWERCASE = [
         CommandNamesAndDescriptions.STATUSCHECK_COMMAND_NAME.toLowerCase(),
