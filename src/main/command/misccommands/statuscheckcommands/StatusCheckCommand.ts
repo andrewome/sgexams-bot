@@ -26,9 +26,13 @@ export class StatusCheckCommand extends Command {
                    messageReply: Function,
                    ...args: CommandArgs[]): CommandResult {
         const { uptime } = args[0] as StatusCheckCommandData;
+        
+        // Calculate days
+        const upTimeInDays = ((uptime / 1000) / 3600) / 24;
+        const roundedUpTimeInDays = Math.floor(upTimeInDays);
 
         // Calculate hours
-        const upTimeInHours = (uptime / 1000) / 3600;
+        const upTimeInHours = (upTimeInDays - roundedUpTimeInDays) * 24;
         const roundedUpTimeInHours = Math.floor(upTimeInHours);
 
         // Calculate minutes
@@ -38,10 +42,6 @@ export class StatusCheckCommand extends Command {
         // Calculate seconds
         const upTimeInSeconds = (upTimeInMinutes - roundedUpTimeInMinutes) * 60;
         const roundedUpTimeInSeconds = Math.floor(upTimeInSeconds);
-
-        // Calculate days
-        const upTimeInDays = (upTimeInHours / 24);
-        const roundedUpTimeInDays = Math.floor(upTimeInDays);
 
         // Generate and send output
         const upTimeDaysStr = `${roundedUpTimeInDays} day` + this.addSIfPlural(roundedUpTimeInDays);
