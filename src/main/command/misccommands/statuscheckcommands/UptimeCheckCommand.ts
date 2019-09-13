@@ -3,9 +3,9 @@ import { Command } from '../../Command';
 import { Server } from '../../../storage/Server';
 import { CommandArgs } from '../../classes/CommandArgs';
 import { CommandResult } from '../../classes/CommandResult';
-import { StatusCheckCommandData } from './StatusCheckCommandData';
+import { UptimeCheckCommandData } from './UptimeCheckCommandData';
 
-export class StatusCheckCommand extends Command {
+export class UptimeCheckCommand extends Command {
 
     public static EMBED_TITLE = 'Uptime Status:';
 
@@ -25,7 +25,7 @@ export class StatusCheckCommand extends Command {
                    userPerms: Permissions,
                    messageReply: Function,
                    ...args: CommandArgs[]): CommandResult {
-        const { uptime } = args[0] as StatusCheckCommandData;
+        const { uptime } = args[0] as UptimeCheckCommandData;
         
         // Calculate days
         const upTimeInDays = ((uptime / 1000) / 3600) / 24;
@@ -51,7 +51,7 @@ export class StatusCheckCommand extends Command {
         
         messageReply(
             new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR)
-                .addField(StatusCheckCommand.EMBED_TITLE, `${upTimeDaysStr}, ${upTimeHoursStr}, ${upTimeMinutesStr} and ${upTimeSecondsStr}`)
+                .addField(UptimeCheckCommand.EMBED_TITLE, `${upTimeDaysStr}, ${upTimeHoursStr}, ${upTimeMinutesStr} and ${upTimeSecondsStr}`)
         );
 
         /* Save servers false, Check messages true */

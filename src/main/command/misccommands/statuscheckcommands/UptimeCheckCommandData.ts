@@ -1,6 +1,6 @@
 import { CommandArgs } from '../../classes/CommandArgs';
 
-export class StatusCheckCommandData implements CommandArgs {
+export class UptimeCheckCommandData implements CommandArgs {
     public uptime: number;
 
     public constructor(uptime: number) {

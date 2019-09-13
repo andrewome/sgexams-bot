@@ -20,7 +20,7 @@ import { CommandNamesAndDescriptions } from './classes/CommandNamesAndDescriptio
 import { MsgCheckerHelpCommand } from './helpcommands/MsgCheckerHelpCommand';
 import { StarboardHelpCommand } from './helpcommands/StarboardHelpCommand';
 import { MiscCommandHelpCommand } from './helpcommands/MiscCommandHelpCommand';
-import { StatusCheckCommand } from './misccommands/statuscheckcommands/StatusCheckCommand';
+import { UptimeCheckCommand } from './misccommands/statuscheckcommands/UptimeCheckCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -136,8 +136,8 @@ export class CommandParser {
                 return new StarboardHelpCommand();
             case CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME.toLowerCase():
                 return new MiscCommandHelpCommand();
-            case CommandNamesAndDescriptions.STATUS_CHECK_COMMAND_NAME.toLowerCase():
-                return new StatusCheckCommand();
+            case CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME.toLowerCase():
+                return new UptimeCheckCommand();
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }
