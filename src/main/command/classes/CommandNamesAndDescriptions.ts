@@ -134,7 +134,7 @@ export abstract class CommandNamesAndDescriptions {
     public static readonly ROTATE_IMAGE_COMMAND_DESCRIPTION
         = 'Rotates an image by 90 degrees via reactions.';
 
-    public static readonly STATUS_CHECK_COMMAND_NAME = 'Status';
+    public static readonly STATUS_CHECK_COMMAND_NAME = 'Uptime';
 
     public static readonly STATUS_CHECK_COMMAND_DESCRIPTION = 
         'Returns how long the bot has been online for.';

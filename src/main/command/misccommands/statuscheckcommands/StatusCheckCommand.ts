@@ -39,14 +39,19 @@ export class StatusCheckCommand extends Command {
         const upTimeInSeconds = (upTimeInMinutes - roundedUpTimeInMinutes) * 60;
         const roundedUpTimeInSeconds = Math.floor(upTimeInSeconds);
 
+        // Calculate days
+        const upTimeInDays = (upTimeInHours / 24);
+        const roundedUpTimeInDays = Math.floor(upTimeInDays);
+
         // Generate and send output
+        const upTimeDaysStr = `${roundedUpTimeInDays} day` + this.addSIfPlural(roundedUpTimeInDays);
         const upTimeHoursStr = `${roundedUpTimeInHours} hour` + this.addSIfPlural(roundedUpTimeInHours);
         const upTimeMinutesStr = `${roundedUpTimeInMinutes} minute` + this.addSIfPlural(roundedUpTimeInMinutes);
         const upTimeSecondsStr = `${roundedUpTimeInSeconds} second` + this.addSIfPlural(roundedUpTimeInSeconds);
         
         messageReply(
             new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR)
-                .addField(StatusCheckCommand.EMBED_TITLE, `${upTimeHoursStr}, ${upTimeMinutesStr} and ${upTimeSecondsStr}`)
+                .addField(StatusCheckCommand.EMBED_TITLE, `${upTimeDaysStr}, ${upTimeHoursStr}, ${upTimeMinutesStr} and ${upTimeSecondsStr}`)
         );
 
         /* Save servers false, Check messages true */
