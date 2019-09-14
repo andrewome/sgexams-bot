@@ -20,7 +20,7 @@ import { CommandNamesAndDescriptions } from './classes/CommandNamesAndDescriptio
 import { MsgCheckerHelpCommand } from './helpcommands/MsgCheckerHelpCommand';
 import { StarboardHelpCommand } from './helpcommands/StarboardHelpCommand';
 import { MiscCommandHelpCommand } from './helpcommands/MiscCommandHelpCommand';
-import { UptimeCheckCommand } from './misccommands/statuscheckcommands/UptimeCheckCommand';
+import { UptimeCheckCommand } from './misccommands/uptimecheckcommands/UptimeCheckCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';

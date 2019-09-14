@@ -7,13 +7,13 @@ import { UptimeCheckCommandData } from './UptimeCheckCommandData';
 
 export class UptimeCheckCommand extends Command {
 
-    public static EMBED_TITLE = 'Uptime Status:';
+    public static EMBED_TITLE = 'Uptime Status';
 
     /**
-     * This method returns the uptime of the bot in hours,
+     * This method returns the uptime of the bot in days, hours,
      * minutes and seconds to the channel which this command
-     * was called in. Hours, minutes and seconds are rounded down
-     * to the nearest integer.
+     * was called in. Days, hours, minutes and seconds are rounded
+     * down to the nearest integer.
      * 
      * @param  {Server} server
      * @param  {Permissions} userPerms
@@ -25,32 +25,36 @@ export class UptimeCheckCommand extends Command {
                    userPerms: Permissions,
                    messageReply: Function,
                    ...args: CommandArgs[]): CommandResult {
-        const { uptime } = args[0] as UptimeCheckCommandData;
+        let { uptime } = args[0] as UptimeCheckCommandData;
+        const oneSecondInMs = 1000;
+        const oneMinuteInMs = oneSecondInMs * 60;
+        const oneHourInMs = oneMinuteInMs * 60;
+        const oneDayInMs = oneHourInMs * 24;
         
         // Calculate days
-        const upTimeInDays = ((uptime / 1000) / 3600) / 24;
-        const roundedUpTimeInDays = Math.floor(upTimeInDays);
+        const upTimeInDays = Math.floor(uptime / oneDayInMs);
+        uptime -= upTimeInDays * oneDayInMs;
 
         // Calculate hours
-        const upTimeInHours = (upTimeInDays - roundedUpTimeInDays) * 24;
-        const roundedUpTimeInHours = Math.floor(upTimeInHours);
+        const upTimeInHours = Math.floor(uptime / oneHourInMs);
+        uptime -= upTimeInHours * oneHourInMs;
 
         // Calculate minutes
-        const upTimeInMinutes = (upTimeInHours - roundedUpTimeInHours) * 60;
-        const roundedUpTimeInMinutes = Math.floor(upTimeInMinutes);
+        const upTimeInMinutes = Math.floor(uptime / oneMinuteInMs)
+        uptime -= upTimeInMinutes * oneMinuteInMs;
 
         // Calculate seconds
-        const upTimeInSeconds = (upTimeInMinutes - roundedUpTimeInMinutes) * 60;
-        const roundedUpTimeInSeconds = Math.floor(upTimeInSeconds);
+        const upTimeInSeconds = Math.floor(uptime / oneSecondInMs);
 
         // Generate and send output
-        const upTimeDaysStr = `${roundedUpTimeInDays} day` + this.addSIfPlural(roundedUpTimeInDays);
-        const upTimeHoursStr = `${roundedUpTimeInHours} hour` + this.addSIfPlural(roundedUpTimeInHours);
-        const upTimeMinutesStr = `${roundedUpTimeInMinutes} minute` + this.addSIfPlural(roundedUpTimeInMinutes);
-        const upTimeSecondsStr = `${roundedUpTimeInSeconds} second` + this.addSIfPlural(roundedUpTimeInSeconds);
+        const upTimeDaysStr = `${upTimeInDays} day` + this.addSIfPlural(upTimeInDays);
+        const upTimeHoursStr = `${upTimeInHours} hour` + this.addSIfPlural(upTimeInHours);
+        const upTimeMinutesStr = `${upTimeInMinutes} minute` + this.addSIfPlural(upTimeInMinutes);
+        const upTimeSecondsStr = `${upTimeInSeconds} second` + this.addSIfPlural(upTimeInSeconds);
         
         messageReply(
-            new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR)
+            new RichEmbed()
+                .setColor(Command.EMBED_DEFAULT_COLOUR)
                 .addField(UptimeCheckCommand.EMBED_TITLE, `${upTimeDaysStr}, ${upTimeHoursStr}, ${upTimeMinutesStr} and ${upTimeSecondsStr}`)
         );
 
