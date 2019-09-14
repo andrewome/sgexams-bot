@@ -23,6 +23,7 @@ import { StarboardHelpCommand } from '../../main/command/helpcommands/StarboardH
 import { MiscCommandHelpCommand } from '../../main/command/helpcommands/MiscCommandHelpCommand';
 import { StarboardSetThresholdCommand } from '../../main/command/starboardcommands/StarboardSetThresholdCommand';
 import { RotateImageCommand } from '../../main/command/misccommands/rotateimagecommands/RotateImageCommand';
+import { UptimeCheckCommand } from '../../main/command/misccommands/uptimecheckcommands/UptimeCheckCommand';
 
 should();
 
@@ -174,6 +175,11 @@ describe('CommandParser test suite', (): void => {
             const content = `<@123456789> ${CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
             (command instanceof RotateImageCommand).should.be.true;
+        });
+        it('Uptime Check command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME}`;
+            const command = new CommandParser(content).getCommand();
+            (command instanceof UptimeCheckCommand).should.be.true;
         });
         it('Command that does not exist', (): void => {
             const content = '<@123456789> huh?';

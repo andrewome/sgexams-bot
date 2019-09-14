@@ -9,7 +9,7 @@ import { EventHandler } from './EventHandler';
 import { CommandParams, CommandType } from '../command/classes/CommandParams';
 import { RotateImageCommandData } from '../command/misccommands/rotateimagecommands/RotateImageCommandData';
 import { CollectionWrapper } from '../command/classes/CollectionWrapper';
-import { UptimeCheckCommandData } from '../command/misccommands/statuscheckcommands/UptimeCheckCommandData';
+import { UptimeCheckCommandData } from '../command/misccommands/uptimecheckcommands/UptimeCheckCommandData';
 
 export class MessageEventHandler extends EventHandler {
     public static EVENT_NAME = 'message';
