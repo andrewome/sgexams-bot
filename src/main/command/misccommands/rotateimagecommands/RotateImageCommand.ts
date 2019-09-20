@@ -46,6 +46,7 @@ export class RotateImageCommand extends Command {
         const messageId = this.commandArgs[0];
 
         // Check if messageId quoted is in in the channel
+        (channel as TextChannel).startTyping();
         (channel as TextChannel).fetchMessage(messageId)
             .then(async (message: Message): Promise<void> => {
                 const { embeds, attachments } = message;
@@ -73,6 +74,7 @@ export class RotateImageCommand extends Command {
                 });
                 await sentMessage.react(this.ANTICLOCKWISE);
                 await sentMessage.react(this.CLOCKWISE);
+                (channel as TextChannel).stopTyping(true);
 
                 // Filter for reaction collector
                 const filter = (reaction: MessageReaction, user: User): boolean => {
@@ -103,6 +105,7 @@ export class RotateImageCommand extends Command {
                 // collector to remain hanging around in the stack for too long when
                 // 1 is enough.
                 const onReaction = async (reaction: MessageReaction): Promise<void> => {
+                    (channel as TextChannel).startTyping();
                     const { name } = reaction.emoji;
                     const { message } = reaction;
 
@@ -129,6 +132,7 @@ export class RotateImageCommand extends Command {
                     });
                     await (sentMessage as Message).react(this.ANTICLOCKWISE);
                     await (sentMessage as Message).react(this.CLOCKWISE);
+                    (channel as TextChannel).stopTyping(true);
 
                     // Set up a new collector
                     const collector
