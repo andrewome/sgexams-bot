@@ -150,6 +150,7 @@ export class RotateImageCommand extends Command {
                              'Please check if the message\n' +
                              '1) contains an image\n2) is in this channel.\n\n' +
                              '**Usage:** @bot rotate <message ID>\n');
+                (channel as TextChannel).stopTyping(true);
             });
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
