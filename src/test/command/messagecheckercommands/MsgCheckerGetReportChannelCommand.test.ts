@@ -21,7 +21,7 @@ const { EMBED_TITLE } = MsgCheckerGetReportChannelCommand;
 beforeEach((): void => {
     server = new Server(
         '123',
-        new MessageCheckerSettings(),
+        new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
 );
 });

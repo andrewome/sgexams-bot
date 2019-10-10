@@ -49,7 +49,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         let embed: RichEmbed;
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
-            server.messageCheckerSettings.setReportingChannelId(undefined);
+            server.messageCheckerSettings.setReportingChannelId(null);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 

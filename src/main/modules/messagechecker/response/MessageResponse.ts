@@ -37,9 +37,9 @@ export class MessageResponse {
      * @returns MessageResponse
      */
     public sendReport(result: MessageCheckerResult,
-                      reportingChannelId: string | undefined): MessageResponse {
+                      reportingChannelId: string | null): MessageResponse {
         // If not set, don't send anything
-        if (reportingChannelId === undefined) {
+        if (reportingChannelId === null) {
             return this;
         }
 
@@ -128,12 +128,12 @@ export class MessageResponse {
      * @param  {string|undefined} message Message to send to user
      * @returns MessageResponse
      */
-    public sendMessageToUser(message: string | undefined): MessageResponse {
+    public sendMessageToUser(message: string | null): MessageResponse {
         const { channel } = this.message;
         const user = `<@${this.message.author.id}>`;
 
-        // If message is undefined, don't do anything
-        if (message === undefined) return this;
+        // If message is null, don't do anything
+        if (message === null) return this;
 
         // Send message
         const replacedMessage = message.replace(/{user}/g, user);

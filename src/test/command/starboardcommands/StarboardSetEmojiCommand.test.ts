@@ -39,7 +39,7 @@ const { EMOJIID_CANNOT_BE_UNDEFINED } = StarboardSetEmojiCommand;
 beforeEach((): void => {
     server = new Server(
         '123',
-        new MessageCheckerSettings(),
+        new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
 );
 });

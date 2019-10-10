@@ -29,12 +29,12 @@ let server2: Server;
 beforeEach((): void => {
     server1 = new Server(
         '111',
-        new MessageCheckerSettings(),
+        new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
 );
     server2 = new Server(
         '112',
-        new MessageCheckerSettings(),
+        new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
 );
 });
