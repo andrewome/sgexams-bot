@@ -1,7 +1,6 @@
 import {
  Permissions, RichEmbed,
 } from 'discord.js';
-import { Server } from '../storage/Server';
 import { CommandResult } from './classes/CommandResult';
 import { CommandArgs } from './classes/CommandArgs';
 
@@ -19,18 +18,15 @@ export abstract class Command {
 
     public NO_PERMISSIONS_COMMANDRESULT = new CommandResult(false, true);
 
+    
     /**
-     * @param  {Server} server Server settings for the specific guild
-     * @param  {Permissions} memberPerms Perms of member who initiated command
-     * @param  {Function} messageReply Message reply method which sends to the channel that the command was invoked in.
-     * @param  {CommandArgs[]} ...args Other objects that the command requires. Must implement CommandArgs interface.
+     * This function executes the command.
+     * 
+     * @param  {CommandArgs} commandArgs CommandArgs containing arguments that 
+     *                                   a command may use.
      * @returns CommandResult
      */
-    public abstract execute(server: Server,
-                            memberPerms: Permissions,
-                            messageReply: Function,
-                            ...args: CommandArgs[]
-                            ): CommandResult;
+    public abstract execute(commandArgs: CommandArgs): CommandResult;
 
     /**
      * This function checks if a given guildmember has the permissions required

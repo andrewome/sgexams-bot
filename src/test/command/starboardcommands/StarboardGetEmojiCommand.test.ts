@@ -6,6 +6,7 @@ import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { StarboardSettings, SimplifiedEmoji } from '../../../main/storage/StarboardSettings';
 import { StarboardGetEmojiCommand } from '../../../main/command/starboardcommands/StarboardGetEmojiCommand';
+import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 
 should();
 
@@ -36,8 +37,8 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const noPerms = new Permissions([]);
-        const commandResult = command.execute(server, noPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -53,7 +54,8 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             field.value.should.equals(EMOJI_NOT_SET);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -72,7 +74,8 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             field.value.should.equals(`Starboard emoji is currently set to <:${emoji.name}:${emoji.id}>.`);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;

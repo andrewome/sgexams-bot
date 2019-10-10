@@ -1,14 +1,12 @@
 /* eslint-disable prefer-destructuring, no-shadow */
 import {
- Permissions, TextChannel, Message, MessageReaction,
+ TextChannel, Message, MessageReaction,
  User, ReactionCollectorOptions,
 } from 'discord.js';
 import sharp, { Sharp } from 'sharp';
 import axios from 'axios';
 import { Command } from '../../Command';
-import { Server } from '../../../storage/Server';
 import { CommandResult } from '../../classes/CommandResult';
-import { RotateImageCommandData } from './RotateImageCommandData';
 import { CommandArgs } from '../../classes/CommandArgs';
 
 export class RotateImageCommand extends Command {
@@ -32,17 +30,11 @@ export class RotateImageCommand extends Command {
      * A reaction collector is set up to respond to ↪ ↩ reacts
      * which will rotate the image accordingly.
      * 
-     * @param  {Server} server
-     * @param  {Permissions} userPerms
-     * @param  {Function} messageReply
-     * @param  {CommandArgs[]} ...args
+     * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(server: Server,
-                   userPerms: Permissions,
-                   messageReply: Function,
-                   ...args: CommandArgs[]): CommandResult {
-        const { channel, userId } = args[0] as RotateImageCommandData;
+    public execute(commandArgs: CommandArgs): CommandResult {
+        const { messageReply, channel, userId } = commandArgs;
         const messageId = this.commandArgs[0];
 
         // Check if messageId quoted is in in the channel

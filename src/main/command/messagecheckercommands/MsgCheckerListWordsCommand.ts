@@ -1,7 +1,7 @@
 import { Permissions, RichEmbed } from 'discord.js';
 import { Command } from '../Command';
-import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
+import { CommandArgs } from '../classes/CommandArgs';
 
 export class MsgCheckerListWordsCommand extends Command {
     public static NO_WORDS_FOUND = 'There are no words set for this server!';
@@ -17,13 +17,12 @@ export class MsgCheckerListWordsCommand extends Command {
      * This function executes the list words command.
      * Lists out all the banned words that the server has.
      *
-     * @param  {Server} server
-     * @param  {Message} message
+     * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(server: Server,
-                   memberPerms: Permissions,
-                   messageReply: Function): CommandResult {
+    public execute(commandArgs: CommandArgs): CommandResult {
+        const { server, memberPerms, messageReply } = commandArgs;
+        
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             this.sendNoPermissionsMessage(messageReply);

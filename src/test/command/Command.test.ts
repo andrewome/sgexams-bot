@@ -5,11 +5,12 @@ import { Permissions } from 'discord.js';
 import { Command } from '../../main/command/Command';
 import { Server } from '../../main/storage/Server';
 import { CommandResult } from '../../main/command/classes/CommandResult';
+import { CommandArgs } from '../../main/command/classes/CommandArgs';
 
 chai.should();
 
 class CommandStub extends Command {
-    public execute(server: Server, perms: Permissions, messageReply: Function): CommandResult {
+    public execute(commandArgs: CommandArgs): CommandResult {
         throw new Error('Method not implemented.');
     }
 }

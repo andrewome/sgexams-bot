@@ -1,7 +1,7 @@
 import { RichEmbed, Permissions } from 'discord.js';
 import { Command } from '../Command';
-import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
+import { CommandArgs } from '../classes/CommandArgs';
 
 export class StarboardSetThresholdCommand extends Command {
     public static NOT_AN_INTEGER = 'Threshold not a positive integer.';
@@ -30,13 +30,12 @@ export class StarboardSetThresholdCommand extends Command {
      * This function executes the setstarboardchannel command
      * Sets the starboard channel of the server.
      *
-     * @param  {Server} server Server object of the message
-     * @param  {Message} message Message object from the bot's on message event
+     * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(server: Server,
-                   memberPerms: Permissions,
-                   messageReply: Function): CommandResult {
+    public execute(commandArgs: CommandArgs): CommandResult {
+        const { server, memberPerms, messageReply } = commandArgs;
+        
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             this.sendNoPermissionsMessage(messageReply);

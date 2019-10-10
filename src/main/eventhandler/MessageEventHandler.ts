@@ -1,4 +1,4 @@
-import { Message, Emoji, Channel } from 'discord.js';
+import { Message } from 'discord.js';
 import { CommandParser } from '../command/CommandParser';
 import { CommandResult } from '../command/classes/CommandResult';
 import { Storage } from '../storage/Storage';
@@ -6,10 +6,7 @@ import { Server } from '../storage/Server';
 import { MessageChecker } from '../modules/messagechecker/MessageChecker';
 import { MessageResponse } from '../modules/messagechecker/response/MessageResponse';
 import { EventHandler } from './EventHandler';
-import { CommandParams, CommandType } from '../command/classes/CommandParams';
-import { RotateImageCommandData } from '../command/misccommands/rotateimagecommands/RotateImageCommandData';
-import { CollectionWrapper } from '../command/classes/CollectionWrapper';
-import { UptimeCheckCommandData } from '../command/misccommands/uptimecheckcommands/UptimeCheckCommandData';
+import { CommandArgs } from '../command/classes/CommandArgs';
 
 export class MessageEventHandler extends EventHandler {
     public static EVENT_NAME = 'message';
@@ -87,37 +84,23 @@ export class MessageEventHandler extends EventHandler {
         // If it's a command, execute the command
         const commandParser = new CommandParser(this.message.content);
         if (commandParser.isCommand(this.botId)) {
+            // Get args required for the command
             const { permissions } = this.message.member;
-
+            const { channels } = this.message.guild;
+            const { emojis } = this.message.guild;
+            const { channel, author } = this.message;
+            const { id } = author;
+            const { uptime } = this.message.client;
             const sendFunction = this.message.channel.send.bind(this.message.channel);
+            const commandArgs = new CommandArgs(server, permissions,
+                                                sendFunction, uptime,
+                                                channels, emojis,
+                                                channel, id);
+            
+            // Execute command with commandArgs.
             const command = commandParser.getCommand();
-            const commandType = command.constructor.name;
+            command.execute(commandArgs);
 
-            // Execute the correct execute function based on the command object returned.
-            switch (CommandParams.checkCommandType(commandType)) {
-                case CommandType.requiresDefault: {
-                    return command.execute(server, permissions, sendFunction);
-                }
-                case CommandType.requiresChannels: {
-                    const { channels } = this.message.guild;
-                    return command.execute(server, permissions, sendFunction, channels as CollectionWrapper<string, Channel>);
-                }
-                case CommandType.requiresEmojis: {
-                    const { emojis } = this.message.guild;
-                    return command.execute(server, permissions, sendFunction, emojis as CollectionWrapper<string, Emoji>);
-                }
-                case CommandType.requiresRotateImageData: {
-                    const { channel, author } = this.message;
-                    const { id } = author;
-                    const data = new RotateImageCommandData(channel, id);
-                    return command.execute(server, permissions, sendFunction, data);
-                }
-                case CommandType.requiresUptimeCheckData: {
-                    const { uptime } = this.message.client;
-                    const data = new UptimeCheckCommandData(uptime);
-                    return command.execute(server, permissions, sendFunction, data);
-                }
-            }
         }
         
         // Not a command, return default command result

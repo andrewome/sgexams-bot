@@ -9,6 +9,7 @@ import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSett
 import { Server } from '../../../main/storage/Server';
 import { StarboardSettings, SimplifiedEmoji } from '../../../main/storage/StarboardSettings';
 import { StarboardSetEmojiCommand } from '../../../main/command/starboardcommands/StarboardSetEmojiCommand';
+import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 
 should();
 
@@ -55,8 +56,8 @@ describe('StarboardSetEmojiCommand test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const noPerms = new Permissions([]);
-        const commandResult = command.execute(server, noPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -75,7 +76,9 @@ describe('StarboardSetEmojiCommand test suite', (): void => {
             field.value.should.equals(EMOJI_RESETTED);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed, emojis);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        commandArgs.emojis = emojis;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -95,7 +98,9 @@ describe('StarboardSetEmojiCommand test suite', (): void => {
             field.value.should.equals(EMOJI_NOT_FOUND);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed, emojis);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        commandArgs.emojis = emojis;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -114,7 +119,9 @@ describe('StarboardSetEmojiCommand test suite', (): void => {
             field.value.should.equals(msg);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed, emojis);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        commandArgs.emojis = emojis;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;

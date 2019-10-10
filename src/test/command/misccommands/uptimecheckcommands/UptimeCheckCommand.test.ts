@@ -3,10 +3,10 @@ import { should } from 'chai';
 import { RichEmbed, Permissions } from 'discord.js';
 import { MessageCheckerSettings } from '../../../../main/storage/MessageCheckerSettings';
 import { UptimeCheckCommand } from '../../../../main/command/misccommands/uptimecheckcommands/UptimeCheckCommand';
-import { UptimeCheckCommandData } from '../../../../main/command/misccommands/uptimecheckcommands/UptimeCheckCommandData';
 import { Command } from '../../../../main/command/Command';
 import { Server } from '../../../../main/storage/Server';
 import { StarboardSettings } from '../../../../main/storage/StarboardSettings';
+import { CommandArgs } from '../../../../main/command/classes/CommandArgs';
 
 should();
 
@@ -40,7 +40,9 @@ describe('UptimeCheck Command Test Suite', (): void => {
             field.value.should.equals(expectedOutput);
         };
 
-        const commandResult = command.execute(server, new Permissions([]), checkEmbed, new UptimeCheckCommandData(uptime));
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        commandArgs.uptime = uptime;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -62,7 +64,9 @@ describe('UptimeCheck Command Test Suite', (): void => {
             field.value.should.equals(expectedOutput);
         };
 
-        const commandResult = command.execute(server, new Permissions([]), checkEmbed, new UptimeCheckCommandData(uptime));
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        commandArgs.uptime = uptime;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -84,7 +88,9 @@ describe('UptimeCheck Command Test Suite', (): void => {
             field.value.should.equals(expectedOutput);
         };
 
-        const commandResult = command.execute(server, new Permissions([]), checkEmbed, new UptimeCheckCommandData(uptime));
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        commandArgs.uptime = uptime;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -106,7 +112,9 @@ describe('UptimeCheck Command Test Suite', (): void => {
             field.value.should.equals(expectedOutput);
         };
 
-        const commandResult = command.execute(server, new Permissions([]), checkEmbed, new UptimeCheckCommandData(uptime));
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        commandArgs.uptime = uptime;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -128,7 +136,9 @@ describe('UptimeCheck Command Test Suite', (): void => {
             field.value.should.equals(expectedOutput);
         };
 
-        const commandResult = command.execute(server, new Permissions([]), checkEmbed, new UptimeCheckCommandData(uptime));
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        commandArgs.uptime = uptime;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -150,7 +160,9 @@ describe('UptimeCheck Command Test Suite', (): void => {
             field.value.should.equals(expectedOutput);
         };
 
-        const commandResult = command.execute(server, new Permissions([]), checkEmbed, new UptimeCheckCommandData(uptime));
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        commandArgs.uptime = uptime;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -172,7 +184,9 @@ describe('UptimeCheck Command Test Suite', (): void => {
             field.value.should.equals(expectedOutput);
         };
 
-        const commandResult = command.execute(server, new Permissions([]), checkEmbed, new UptimeCheckCommandData(uptime));
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        commandArgs.uptime = uptime;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -194,7 +208,9 @@ describe('UptimeCheck Command Test Suite', (): void => {
             field.value.should.equals(expectedOutput);
         };
 
-        const commandResult = command.execute(server, new Permissions([]), checkEmbed, new UptimeCheckCommandData(uptime));
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        commandArgs.uptime = uptime;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -216,7 +232,9 @@ describe('UptimeCheck Command Test Suite', (): void => {
             field.value.should.equals(expectedOutput);
         };
 
-        const commandResult = command.execute(server, new Permissions([]), checkEmbed, new UptimeCheckCommandData(uptime));
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        commandArgs.uptime = uptime;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -238,7 +256,9 @@ describe('UptimeCheck Command Test Suite', (): void => {
             field.value.should.equals(expectedOutput);
         };
 
-        const commandResult = command.execute(server, new Permissions([]), checkEmbed, new UptimeCheckCommandData(uptime));
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed, uptime);
+        
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -260,7 +280,9 @@ describe('UptimeCheck Command Test Suite', (): void => {
             field.value.should.equals(expectedOutput);
         };
 
-        const commandResult = command.execute(server, new Permissions([]), checkEmbed, new UptimeCheckCommandData(uptime));
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        commandArgs.uptime = uptime;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;

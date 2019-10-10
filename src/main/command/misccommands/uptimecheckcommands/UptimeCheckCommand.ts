@@ -1,9 +1,7 @@
-import { Permissions, RichEmbed } from 'discord.js';
+import { RichEmbed } from 'discord.js';
 import { Command } from '../../Command';
-import { Server } from '../../../storage/Server';
 import { CommandArgs } from '../../classes/CommandArgs';
 import { CommandResult } from '../../classes/CommandResult';
-import { UptimeCheckCommandData } from './UptimeCheckCommandData';
 
 export class UptimeCheckCommand extends Command {
 
@@ -15,17 +13,12 @@ export class UptimeCheckCommand extends Command {
      * was called in. Days, hours, minutes and seconds are rounded
      * down to the nearest integer.
      * 
-     * @param  {Server} server
-     * @param  {Permissions} userPerms
-     * @param  {Function} messageReply
-     * @param  {CommandArgs[]} ...args
+     * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(server: Server,
-                   userPerms: Permissions,
-                   messageReply: Function,
-                   ...args: CommandArgs[]): CommandResult {
-        let { uptime } = args[0] as UptimeCheckCommandData;
+    public execute(commandArgs: CommandArgs): CommandResult {
+        const { messageReply } = commandArgs;
+        let uptime = commandArgs.uptime!;
         const oneSecondInMs = 1000;
         const oneMinuteInMs = oneSecondInMs * 60;
         const oneHourInMs = oneMinuteInMs * 60;
