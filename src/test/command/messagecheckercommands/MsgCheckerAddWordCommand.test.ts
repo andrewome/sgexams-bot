@@ -7,6 +7,7 @@ import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSett
 import { MsgCheckerAddWordCommand } from '../../../main/command/messagecheckercommands/MsgCheckerAddWordCommand';
 import { Command } from '../../../main/command/Command';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
+import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 
 should();
 
@@ -41,8 +42,9 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const noPerms = new Permissions([]);
-        const commandResult = command.execute(server, noPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -64,7 +66,8 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         };
 
         // Execute
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;
@@ -102,7 +105,8 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
 
         // Execute
         command = new MsgCheckerAddWordCommand(args);
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;
@@ -137,7 +141,8 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         };
 
         // Execute
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;
@@ -165,7 +170,8 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         };
 
         // Execute
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;

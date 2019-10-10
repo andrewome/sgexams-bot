@@ -1,8 +1,7 @@
-import { Permissions } from 'discord.js';
-import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandNamesAndDescriptions } from '../classes/CommandNamesAndDescriptions';
 import { HelpCommandBase } from './HelpCommandBase';
+import { CommandArgs } from '../classes/CommandArgs';
 
 export class MsgCheckerHelpCommand extends HelpCommandBase {
     public static HEADER = '__Message Checker Commands__'
@@ -10,14 +9,12 @@ export class MsgCheckerHelpCommand extends HelpCommandBase {
     /**
      * This method sends a help embed for the MsgChecker module.
      * 
-     * @param  {Server} server
-     * @param  {Permissions} memberPerms
-     * @param  {Function} messageReply
+     * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(server: Server,
-                   memberPerms: Permissions,
-                   messageReply: Function): CommandResult {
+    public execute(commandArgs: CommandArgs): CommandResult {
+        const { messageReply } = commandArgs; 
+        
         // Generate embed and send
         messageReply(this.generateEmbed(
             MsgCheckerHelpCommand.HEADER,

@@ -1,10 +1,9 @@
 import {
  Permissions, RichEmbed, Channel, Collection,
 } from 'discord.js';
-import { Command } from '../Command';
-import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
+import { Command } from '../Command';
 
 export class MsgCheckerSetReportChannelCommand extends Command {
     public static CHANNEL_NOT_FOUND = 'Channel was not found. Please submit a valid channel ID.';
@@ -35,14 +34,11 @@ export class MsgCheckerSetReportChannelCommand extends Command {
      * This function executes the setchannel command
      * Sets the reporting channel of the server.
      *
-     * @param  {Server} server Server object of the message
-     * @param  {Message} message Message object from the bot's on message event
+     * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(server: Server,
-                   memberPerms: Permissions,
-                   messageReply: Function,
-                   ...args: CommandArgs[]): CommandResult {
+    public execute(commandArgs: CommandArgs): CommandResult {
+        const { server, memberPerms, messageReply, channels } = commandArgs;
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             this.sendNoPermissionsMessage(messageReply);
@@ -51,7 +47,6 @@ export class MsgCheckerSetReportChannelCommand extends Command {
 
         // Execute
         let embed: RichEmbed;
-        const channels = args[0];
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
             server.messageCheckerSettings.setReportingChannelId(undefined);

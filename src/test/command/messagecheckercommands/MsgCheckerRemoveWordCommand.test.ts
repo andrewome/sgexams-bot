@@ -6,6 +6,7 @@ import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSett
 import { MsgCheckerRemoveWordCommand } from '../../../main/command/messagecheckercommands/MsgCheckerRemoveWordCommand';
 import { Command } from '../../../main/command/Command';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
+import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 
 should();
 
@@ -41,9 +42,10 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
             field.name.should.equals(Command.ERROR_EMBED_TITLE);
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
+        
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
 
-        const noPerms = new Permissions([]);
-        const commandResult = command.execute(server, noPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -64,7 +66,9 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         };
 
         // Execute
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;
@@ -100,7 +104,8 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
 
         // Execute
         command = new MsgCheckerRemoveWordCommand(args);
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;
@@ -131,7 +136,9 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         };
 
         // Execute
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;
@@ -156,7 +163,8 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         };
 
         // Execute
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;

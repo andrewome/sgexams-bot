@@ -7,6 +7,7 @@ import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSett
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 import { CommandNamesAndDescriptions } from '../../../main/command/classes/CommandNamesAndDescriptions';
 import { MiscCommandHelpCommand } from '../../../main/command/helpcommands/MiscCommandHelpCommand';
+import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 
 should();
 
@@ -40,7 +41,8 @@ describe('MiscHelp Command Test Suite', (): void => {
             field.value.should.equals(output);
         };
 
-        const commandResult = command.execute(server, new Permissions([]), checkEmbed);
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;

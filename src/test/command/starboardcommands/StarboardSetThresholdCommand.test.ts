@@ -9,6 +9,7 @@ import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSett
 import { Server } from '../../../main/storage/Server';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 import { StarboardSetThresholdCommand } from '../../../main/command/starboardcommands/StarboardSetThresholdCommand';
+import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 
 should();
 
@@ -54,8 +55,8 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const noPerms = new Permissions([]);
-        const commandResult = command.execute(server, noPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -74,7 +75,9 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
             field.value.should.equals(THRESHOLD_RESETTED);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
+
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -96,7 +99,8 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
             field.value.should.equals(msg);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -116,7 +120,8 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
             field.value.should.equals(NOT_AN_INTEGER);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -133,7 +138,8 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
             field.value.should.equals(NOT_AN_INTEGER);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -150,7 +156,8 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
             field.value.should.equals(NOT_AN_INTEGER);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;

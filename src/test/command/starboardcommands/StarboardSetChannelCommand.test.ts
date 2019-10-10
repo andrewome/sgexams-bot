@@ -9,6 +9,7 @@ import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSett
 import { Server } from '../../../main/storage/Server';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 import { StarboardSetChannelCommand } from '../../../main/command/starboardcommands/StarboardSetChannelCommand';
+import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 
 should();
 
@@ -55,8 +56,8 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const noPerms = new Permissions([]);
-        const commandResult = command.execute(server, noPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -74,7 +75,9 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
             field.value.should.equals(CHANNEL_RESETTED);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed, channels);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        commandArgs.channels = channels;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -94,7 +97,9 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
             field.value.should.equals(NOT_TEXT_CHANNEL);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed, channels);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        commandArgs.channels = channels;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -111,7 +116,9 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
             field.value.should.equals(CHANNEL_NOT_FOUND);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed, channels);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        commandArgs.channels = channels;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -130,7 +137,9 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
             field.value.should.equals(msg);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed, channels);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        commandArgs.channels = channels;
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;

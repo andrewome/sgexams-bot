@@ -6,6 +6,7 @@ import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 import { StarboardGetThresholdCommand } from '../../../main/command/starboardcommands/StarboardGetThresholdCommand';
+import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 
 should();
 
@@ -36,8 +37,8 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const noPerms = new Permissions([]);
-        const commandResult = command.execute(server, noPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -53,7 +54,8 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             field.value.should.equals(THRESHOLD_NOT_SET);
         };
 
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -71,8 +73,9 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             field.name.should.equals(EMBED_TITLE);
             field.value.should.equals(`The emoji threshold is currently ${threshold}.`);
         };
-
-        const commandResult = command.execute(server, adminPerms, checkEmbed);
+        
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
