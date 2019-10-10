@@ -99,8 +99,7 @@ export class MessageEventHandler extends EventHandler {
             
             // Execute command with commandArgs.
             const command = commandParser.getCommand();
-            command.execute(commandArgs);
-
+            return command.execute(commandArgs);
         }
         
         // Not a command, return default command result
