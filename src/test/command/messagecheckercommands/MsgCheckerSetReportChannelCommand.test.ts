@@ -39,7 +39,7 @@ const { CHANNELID_CANNOT_BE_UNDEFINED } = MsgCheckerSetReportChannelCommand;
 beforeEach((): void => {
     server = new Server(
         '123',
-        new MessageCheckerSettings(),
+        new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
 );
 });
@@ -84,7 +84,7 @@ describe('MsgCheckerSetReportChannelCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.true;
 
         // Check server
-        (server.messageCheckerSettings.getReportingChannelId() === undefined).should.be.true;
+        (server.messageCheckerSettings.getReportingChannelId() === null).should.be.true;
     });
     it('not text channel', (): void => {
         command = new MsgCheckerSetReportChannelCommand(['not_text_channel']);

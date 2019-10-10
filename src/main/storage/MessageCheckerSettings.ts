@@ -1,26 +1,26 @@
 export class MessageCheckerSettings {
-    private reportingChannelId: string | undefined;
+    private reportingChannelId: string | null;
 
-    private responseMessage: string | undefined;
+    private responseMessage: string | null;
 
     private bannedWords: Set<string>;
 
     private deleteMessage: boolean;
 
-    public constructor(reportingChannelId?: string,
-        responseMessage?: string,
-        bannedWords?: string[],
-        deleteMessage?: boolean) {
+    public constructor(reportingChannelId: string | null,
+                       responseMessage: string | null,
+                       bannedWords: string[] | null,
+                       deleteMessage: boolean | null) {
         this.reportingChannelId = reportingChannelId;
         this.responseMessage = responseMessage;
 
-        if (deleteMessage !== undefined) {
+        if (deleteMessage !== null) {
             this.deleteMessage = deleteMessage;
         } else {
             this.deleteMessage = false;
         }
 
-        if (bannedWords !== undefined) {
+        if (bannedWords !== null) {
             this.bannedWords = new Set<string>(bannedWords);
         } else {
             this.bannedWords = new Set<string>();
@@ -76,19 +76,19 @@ export class MessageCheckerSettings {
         return Array.from(this.bannedWords);
     }
 
-    public setReportingChannelId(id: string | undefined): void {
+    public setReportingChannelId(id: string | null): void {
         this.reportingChannelId = id;
     }
 
-    public getReportingChannelId(): string | undefined {
+    public getReportingChannelId(): string | null {
         return this.reportingChannelId;
     }
 
-    public setResponseMessage(responseMessage: string | undefined): void {
+    public setResponseMessage(responseMessage: string | null): void {
         this.responseMessage = responseMessage;
     }
 
-    public getResponseMessage(): string | undefined {
+    public getResponseMessage(): string | null {
         return this.responseMessage;
     }
 
@@ -113,19 +113,8 @@ export class MessageCheckerSettings {
 
         out.bannedWords = messageSettings.getBannedWords();
         out.deleteMessage = messageSettings.getDeleteMessage();
-        const reportingChannelId = messageSettings.getReportingChannelId();
-        if (reportingChannelId === undefined) {
-            out.reportingChannelId = null;
-        } else {
-            out.reportingChannelId = reportingChannelId;
-        }
-
-        const responseMessage = messageSettings.getResponseMessage();
-        if (responseMessage === undefined) {
-            out.responseMessage = null;
-        } else {
-            out.responseMessage = responseMessage;
-        }
+        out.reportingChannelId = messageSettings.getReportingChannelId();
+        out.responseMessage = messageSettings.getResponseMessage();
 
         return out;
     }
@@ -147,19 +136,11 @@ export class MessageCheckerSettings {
             throw new Error('Object is not valid');
         }
 
-        const { bannedWords } = obj;
-        let { reportingChannelId } = obj;
-        let { responseMessage } = obj;
-        const { deleteMessage } = obj;
+        const { bannedWords, reportingChannelId,
+                responseMessage, deleteMessage } = obj;
 
-        if (reportingChannelId === null) reportingChannelId = undefined;
-
-        if (responseMessage === null) responseMessage = undefined;
-
-        return new MessageCheckerSettings(reportingChannelId,
-            responseMessage,
-            bannedWords,
-            deleteMessage);
+        return new MessageCheckerSettings(reportingChannelId, responseMessage,
+                                          bannedWords, deleteMessage);
     }
     /* eslint-enable @typescript-eslint/no-explicit-any */
 }

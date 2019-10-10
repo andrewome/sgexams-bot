@@ -19,10 +19,14 @@ export abstract class EventHandler {
      */
     protected getServer(id: string): Server {
         if (this.storage.servers.has(id) === false) {
-            this.storage.servers.set(id,
-                                     new Server(id,
-                                     new MessageCheckerSettings(),
-                                     new StarboardSettings(null, null, null)));
+            this.storage.servers.set(
+                id,
+                new Server(
+                    id,
+                    new MessageCheckerSettings(null, null, null, null),
+                    new StarboardSettings(null, null, null)
+                )
+            );
         }
         return this.storage.servers.get(id)!;
     }

@@ -42,7 +42,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
 
         // Check if no args
         if (this.args.length === 0) {
-            server.messageCheckerSettings.setResponseMessage(undefined);
+            server.messageCheckerSettings.setResponseMessage(null);
             embed = this.generateResetEmbed();
             messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;

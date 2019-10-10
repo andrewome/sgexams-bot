@@ -27,7 +27,7 @@ const { RESPONSE_MESSAGE_CANNOT_BE_UNDEFINED } = MsgCheckerSetResponseMessageCom
 beforeEach((): void => {
     server = new Server(
         '123',
-        new MessageCheckerSettings(),
+        new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
 );
 });
@@ -71,7 +71,7 @@ describe('MsgCheckerSetResponseMessageCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.true;
 
         // Check server
-        (server.messageCheckerSettings.getResponseMessage() === undefined).should.be.true;
+        (server.messageCheckerSettings.getResponseMessage() === null).should.be.true;
     });
     it('Valid channelid', (): void => {
         const responseMessage = 'Hey there';

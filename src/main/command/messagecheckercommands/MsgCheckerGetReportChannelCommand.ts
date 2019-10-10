@@ -32,7 +32,7 @@ export class MsgCheckerGetReportChannelCommand extends Command {
         // Generate embed
         const channelId = server.messageCheckerSettings.getReportingChannelId();
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
-        if (typeof channelId === 'undefined') {
+        if (channelId === null) {
             embed.addField(MsgCheckerGetReportChannelCommand.EMBED_TITLE,
                 MsgCheckerGetReportChannelCommand.CHANNEL_NOT_SET);
         } else {

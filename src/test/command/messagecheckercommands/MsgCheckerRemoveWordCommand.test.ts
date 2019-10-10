@@ -25,7 +25,7 @@ const words = ['word1', 'word2', 'word3'];
 beforeEach((): void => {
     server = new Server(
         '123',
-        new MessageCheckerSettings(),
+        new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
 );
     for (const word of words) server.messageCheckerSettings.addbannedWord(word);

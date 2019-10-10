@@ -32,7 +32,7 @@ export class MsgCheckerGetResponseMessageCommand extends Command {
         // Get embed
         const responseMessage = server.messageCheckerSettings.getResponseMessage();
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
-        if (typeof responseMessage === 'undefined') {
+        if (responseMessage === null) {
             embed.addField(MsgCheckerGetResponseMessageCommand.EMBED_TITLE,
                 MsgCheckerGetResponseMessageCommand.CHANNEL_NOT_SET);
         } else {

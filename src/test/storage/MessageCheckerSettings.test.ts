@@ -7,7 +7,7 @@ should();
 
 let messageCheckerSettings: MessageCheckerSettings;
 beforeEach((): void => {
-    messageCheckerSettings = new MessageCheckerSettings();
+    messageCheckerSettings = new MessageCheckerSettings(null, null, null, null)
 });
 
 describe('messageCheckerSettings test suite', (): void => {
@@ -17,12 +17,12 @@ describe('messageCheckerSettings test suite', (): void => {
             messageCheckerSettings.getBannedWords().toString().should.equals(['test'].toString());
         });
         it('set & getReportingId test', (): void => {
-            (typeof messageCheckerSettings.getReportingChannelId()).should.equals('undefined');
+            (messageCheckerSettings.getReportingChannelId() === null).should.be.true;
             messageCheckerSettings.setReportingChannelId('123');
             messageCheckerSettings.getReportingChannelId()!.should.equals('123');
         });
         it('set & responseMessage test', (): void => {
-            (typeof messageCheckerSettings.getResponseMessage()).should.equals('undefined');
+            (messageCheckerSettings.getResponseMessage() === null).should.be.true;
             messageCheckerSettings.setResponseMessage('123');
             messageCheckerSettings.getResponseMessage()!.should.equals('123');
         });
@@ -86,7 +86,7 @@ describe('messageCheckerSettings test suite', (): void => {
             const messageCheckerSettings_ = MessageCheckerSettings.convertFromJsonFriendly(obj);
             messageCheckerSettings_.getBannedWords().toString().should.equals(['test'].toString());
             messageCheckerSettings_.getResponseMessage()!.should.equals('response msg');
-            (typeof messageCheckerSettings_.getReportingChannelId()).should.equals('undefined');
+            (messageCheckerSettings_.getReportingChannelId() === null).should.be.true;
         });
         it('Serialising test 2', (): void => {
             let obj: any = {};
@@ -100,7 +100,7 @@ describe('messageCheckerSettings test suite', (): void => {
 
             const messageCheckerSettings_ = MessageCheckerSettings.convertFromJsonFriendly(obj);
             messageCheckerSettings_.getBannedWords().toString().should.equals(['test'].toString());
-            (typeof messageCheckerSettings_.getResponseMessage()).should.equals('undefined');
+            (messageCheckerSettings_.getResponseMessage() === null).should.true;
             messageCheckerSettings_.getReportingChannelId()!.should.equals('123');
         });
         it('Serialising error test 1', (): void => {
