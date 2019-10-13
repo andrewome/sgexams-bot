@@ -61,17 +61,35 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
         commandResult.shouldCheckMessage.should.be.true;
         commandResult.shouldSaveServers.should.be.false;
     });
-    it('Emoji set', (): void => {
+    it('1 emoji set', (): void => {
         const emoji = new SimplifiedEmoji('test', 'test');
-        server.starboardSettings.setEmoji(emoji);
-
+        server.starboardSettings.addEmoji(emoji);
         const checkEmbed = (embed: RichEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
-            field.value.should.equals(`Starboard emoji is currently set to <:${emoji.name}:${emoji.id}>.`);
+            field.value.should.equals(`Starboard emoji(s): <:${emoji.name}:${emoji.id}>.`);
+        };
+
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
+
+        // Check command result
+        commandResult.shouldCheckMessage.should.be.true;
+        commandResult.shouldSaveServers.should.be.false;
+    });
+    it('2 emojis set', (): void => {
+        server.starboardSettings.addEmoji(new SimplifiedEmoji('test1', 'test1'));
+        server.starboardSettings.addEmoji(new SimplifiedEmoji('test2', 'test2'));
+        const checkEmbed = (embed: RichEmbed): void => {
+            // Check embed
+            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.fields!.length.should.equals(1);
+            const field = embed.fields![0];
+            field.name.should.equals(EMBED_TITLE);
+            field.value.should.equals('Starboard emoji(s): <:test1:test1>, <:test2:test2>.');
         };
 
         const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);

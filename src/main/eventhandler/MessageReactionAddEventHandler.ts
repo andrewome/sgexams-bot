@@ -30,14 +30,15 @@ export class MessageReactionAddEventHandler extends EventHandler {
         if (numberOfReactions !== null) {
             const starboardResponse = new StarboardResponse(starboardSettings, this.reaction);
 
-            // If message exists in starboard channel, edit the count, else add to starboard
             const messageId = starboardChecker.checkIfMessageExists();
+            // If message exists in starboard channel
             if (messageId !== null) {
-                starboardResponse.editStarboardMessageCount(
-                    numberOfReactions,
-                    messageId,
-                );
-            } else {
+                // Check if emoji in channel is the same as the emoji reacted.
+                const toEdit = await starboardChecker.checkEmojiInStarboardMessage(messageId);
+                if (toEdit === true) {
+                    starboardResponse.editStarboardMessageCount(numberOfReactions, messageId);
+                }
+            } else { // If does not exist, add to Starboard.
                 starboardResponse.addToStarboard(numberOfReactions);
             }
         }

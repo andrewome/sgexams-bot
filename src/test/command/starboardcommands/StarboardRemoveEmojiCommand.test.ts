@@ -8,15 +8,14 @@ import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { Server } from '../../../main/storage/Server';
 import { StarboardSettings, SimplifiedEmoji } from '../../../main/storage/StarboardSettings';
-import { StarboardSetEmojiCommand } from '../../../main/command/starboardcommands/StarboardSetEmojiCommand';
 import { CommandArgs } from '../../../main/command/classes/CommandArgs';
+import { StarboardRemoveEmojiCommand } from '../../../main/command/starboardcommands/StarboardRemoveEmojiCommand';
 
 should();
 
 let server: Server;
-let command: StarboardSetEmojiCommand;
+let command: StarboardRemoveEmojiCommand;
 const emojis = new Collection<string, Emoji>();
-const channels = new Collection<string, Channel>();
 // Setting up mock emojis.
 const emoji_ = new Emoji(
     new Guild(new Client(), { emojis: [] }),
@@ -31,10 +30,8 @@ const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
-const { EMOJI_NOT_FOUND } = StarboardSetEmojiCommand;
-const { EMBED_TITLE } = StarboardSetEmojiCommand;
-const { EMOJI_RESETTED } = StarboardSetEmojiCommand;
-const { EMOJIID_CANNOT_BE_UNDEFINED } = StarboardSetEmojiCommand;
+const { MAYBE_EMOJI_NOT_INSIDE } = StarboardRemoveEmojiCommand;
+const { EMBED_TITLE } = StarboardRemoveEmojiCommand;
 
 beforeEach((): void => {
     server = new Server(
@@ -44,9 +41,9 @@ beforeEach((): void => {
 );
 });
 
-describe('StarboardSetEmojiCommand test suite', (): void => {
+describe('StarboardAddEmojiCommand test suite', (): void => {
     it('No permission check', (): void => {
-        command = new StarboardSetEmojiCommand([]);
+        command = new StarboardRemoveEmojiCommand([]);
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
@@ -63,39 +60,15 @@ describe('StarboardSetEmojiCommand test suite', (): void => {
         commandResult.shouldCheckMessage.should.be.true;
         commandResult.shouldSaveServers.should.be.false;
     });
-    it('Reset emoji', (): void => {
-        const emoji = new SimplifiedEmoji('test', 'test');
-        server.starboardSettings.setEmoji(emoji);
-        command = new StarboardSetEmojiCommand([]);
-
-        const checkEmbed = (embed: RichEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
-            embed.fields!.length.should.equals(1);
-            const field = embed.fields![0];
-            field.name.should.equals(EMBED_TITLE);
-            field.value.should.equals(EMOJI_RESETTED);
-        };
-
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        commandArgs.emojis = emojis;
-        const commandResult = command.execute(commandArgs);
-
-        // Check command result
-        commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.true;
-
-        // Check server
-        (server.starboardSettings.getChannel() === null).should.be.true;
-    });
-    it('Cannot find emoji', (): void => {
-        command = new StarboardSetEmojiCommand(['does_not_exist']);
+    it('No arguments', (): void => {
+        command = new StarboardRemoveEmojiCommand([]);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
-            field.name.should.equals(EMBED_TITLE);
-            field.value.should.equals(EMOJI_NOT_FOUND);
+            field.name.should.equals(ERROR_EMBED_TITLE);
+            field.value.should.equals(NO_ARGUMENTS);
         };
 
         const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
@@ -105,11 +78,15 @@ describe('StarboardSetEmojiCommand test suite', (): void => {
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
         commandResult.shouldSaveServers.should.be.false;
+
+        // Check server
+        (server.starboardSettings.getChannel() === null).should.be.true;
     });
-    it('Valid emoji', (): void => {
+    it('Removing valid emoji', (): void => {
         const emoji = new SimplifiedEmoji('test', 'test');
-        const msg = `Starboard Emoji set to <:${emoji.name}:${emoji.id}>.`;
-        command = new StarboardSetEmojiCommand(['test']);
+        const msg = `✅Removed Emoji: <:${emoji.name}:${emoji.id}>`;
+        server.starboardSettings.addEmoji(emoji);
+        command = new StarboardRemoveEmojiCommand(['test']);
 
         const checkEmbed = (embed: RichEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -124,11 +101,30 @@ describe('StarboardSetEmojiCommand test suite', (): void => {
         const commandResult = command.execute(commandArgs);
 
         // Check command result
-        commandResult.shouldCheckMessage.should.be.true;
+        commandResult.shouldCheckMessage.should.be.false;
         commandResult.shouldSaveServers.should.be.true;
 
         // Check server
-        server.starboardSettings.getEmoji()!.id.should.equals(emoji.id);
-        server.starboardSettings.getEmoji()!.name.should.equals(emoji.name);
+        const serverEmojis = server.starboardSettings.getEmoji();
+        serverEmojis.length.should.equals(0);
+    });
+    it('Remove non existent emoji', (): void => {
+        command = new StarboardRemoveEmojiCommand(['test']);
+
+        const checkEmbed = (embed: RichEmbed): void => {
+            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+            embed.fields!.length.should.equals(1);
+            const field = embed.fields![0];
+            field.name.should.equals(EMBED_TITLE);
+            field.value.should.equals(MAYBE_EMOJI_NOT_INSIDE);
+        };
+
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        commandArgs.emojis = emojis;
+        const commandResult = command.execute(commandArgs);
+
+        // Check command result
+        commandResult.shouldCheckMessage.should.be.true;
+        commandResult.shouldSaveServers.should.be.false;
     });
 });
