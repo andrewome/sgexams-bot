@@ -34,7 +34,7 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
      */
     public execute(commandArgs: CommandArgs): CommandResult {
         const { server, memberPerms, messageReply } = commandArgs;
-        
+
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             this.sendNoPermissionsMessage(messageReply);

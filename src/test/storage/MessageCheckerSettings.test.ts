@@ -7,7 +7,7 @@ should();
 
 let messageCheckerSettings: MessageCheckerSettings;
 beforeEach((): void => {
-    messageCheckerSettings = new MessageCheckerSettings(null, null, null, null)
+    messageCheckerSettings = new MessageCheckerSettings(null, null, null, null);
 });
 
 describe('messageCheckerSettings test suite', (): void => {

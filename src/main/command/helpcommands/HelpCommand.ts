@@ -8,7 +8,7 @@ export class HelpCommand extends HelpCommandBase {
 
     /**
      * This function lists out the commands that the bot will respond to.
-     * 
+     *
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */

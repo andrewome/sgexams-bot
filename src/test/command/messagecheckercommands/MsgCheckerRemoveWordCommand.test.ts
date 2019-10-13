@@ -42,7 +42,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
             field.name.should.equals(Command.ERROR_EMBED_TITLE);
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
-        
+
         const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
 
         const commandResult = command.execute(commandArgs);
