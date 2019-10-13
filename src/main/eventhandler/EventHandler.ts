@@ -24,8 +24,8 @@ export abstract class EventHandler {
                 new Server(
                     id,
                     new MessageCheckerSettings(null, null, null, null),
-                    new StarboardSettings(null, null, null)
-                )
+                    new StarboardSettings(null, null, null),
+                ),
             );
         }
         return this.storage.servers.get(id)!;

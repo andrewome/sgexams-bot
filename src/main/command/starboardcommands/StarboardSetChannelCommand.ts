@@ -38,7 +38,9 @@ export class StarboardSetChannelCommand extends Command {
      * @returns CommandResult
      */
     public execute(commandArgs: CommandArgs): CommandResult {
-        const { server, memberPerms, messageReply, channels } = commandArgs;
+        const {
+ server, memberPerms, messageReply, channels,
+} = commandArgs;
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {

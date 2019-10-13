@@ -96,12 +96,12 @@ export class MessageEventHandler extends EventHandler {
                                                 sendFunction, uptime,
                                                 channels, emojis,
                                                 channel, id);
-            
+
             // Execute command with commandArgs.
             const command = commandParser.getCommand();
             return command.execute(commandArgs);
         }
-        
+
         // Not a command, return default command result
         return defaultCommandResult;
     }

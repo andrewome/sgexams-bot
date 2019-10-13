@@ -8,13 +8,13 @@ export class MiscCommandHelpCommand extends HelpCommandBase {
 
     /**
      * This method sends a help embed for the RotateImage module.
-     * 
+     *
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
     public execute(commandArgs: CommandArgs): CommandResult {
         const { messageReply } = commandArgs;
-        
+
         // Generate embed and send
         messageReply(this.generateEmbed(
             MiscCommandHelpCommand.HEADER,

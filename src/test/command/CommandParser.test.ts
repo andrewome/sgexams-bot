@@ -17,13 +17,14 @@ import { StarboardGetChannelCommand } from '../../main/command/starboardcommands
 import { StarboardGetEmojiCommand } from '../../main/command/starboardcommands/StarboardGetEmojiCommand';
 import { StarboardGetThresholdCommand } from '../../main/command/starboardcommands/StarboardGetThresholdCommand';
 import { StarboardSetChannelCommand } from '../../main/command/starboardcommands/StarboardSetChannelCommand';
-import { StarboardSetEmojiCommand } from '../../main/command/starboardcommands/StarboardSetEmojiCommand';
 import { MsgCheckerHelpCommand } from '../../main/command/helpcommands/MsgCheckerHelpCommand';
 import { StarboardHelpCommand } from '../../main/command/helpcommands/StarboardHelpCommand';
 import { MiscCommandHelpCommand } from '../../main/command/helpcommands/MiscCommandHelpCommand';
 import { StarboardSetThresholdCommand } from '../../main/command/starboardcommands/StarboardSetThresholdCommand';
 import { RotateImageCommand } from '../../main/command/misccommands/rotateimagecommands/RotateImageCommand';
 import { UptimeCheckCommand } from '../../main/command/misccommands/uptimecheckcommands/UptimeCheckCommand';
+import { StarboardAddEmojiCommand } from '../../main/command/starboardcommands/StarboardAddEmojiCommand';
+import { StarboardRemoveEmojiCommand } from '../../main/command/starboardcommands/StarboardRemoveEmojiCommand';
 
 should();
 
@@ -161,10 +162,15 @@ describe('CommandParser test suite', (): void => {
             const command = new CommandParser(content).getCommand();
             (command instanceof StarboardSetChannelCommand).should.be.true;
         });
-        it('Starboard SetEmoji command', (): void => {
-            const content = `<@123456789> ${CommandNamesAndDescriptions.STARBOARD_SET_EMOJI_COMMAND_NAME}`;
+        it('Starboard AddEmoji command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.STARBOARD_ADD_EMOJI_COMMAND_NAME}`;
             const command = new CommandParser(content).getCommand();
-            (command instanceof StarboardSetEmojiCommand).should.be.true;
+            (command instanceof StarboardAddEmojiCommand).should.be.true;
+        });
+        it('Starboard RemoveEmoji command', (): void => {
+            const content = `<@123456789> ${CommandNamesAndDescriptions.STARBOARD_REMOVE_EMOJI_COMMAND_NAME}`;
+            const command = new CommandParser(content).getCommand();
+            (command instanceof StarboardRemoveEmojiCommand).should.be.true;
         });
         it('Starboard SetThreshold command', (): void => {
             const content = `<@123456789> ${CommandNamesAndDescriptions.STARBOARD_SET_THRESHOLD_COMMAND_NAME}`;

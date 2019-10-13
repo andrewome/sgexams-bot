@@ -29,7 +29,7 @@ export class RotateImageCommand extends Command {
      * It fetches the image, and sends it back in the channel.
      * A reaction collector is set up to respond to ↪ ↩ reacts
      * which will rotate the image accordingly.
-     * 
+     *
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */

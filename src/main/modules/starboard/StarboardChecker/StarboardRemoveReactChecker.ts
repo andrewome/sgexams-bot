@@ -10,11 +10,7 @@ export class StarboardRemoveReactChecker extends StarboardChecker {
      */
     public async checkRemoveReact(): Promise<[number, string] | null> {
         return new Promise<[number, string] | null>((resolve): void => {
-            const starboardEmoji = this.starboardSettings.getEmoji();
-            const threshold = this.starboardSettings.getThreshold();
-            const channel = this.starboardSettings.getChannel();
-
-            if (!this.standardChecks(starboardEmoji, threshold, channel)) {
+            if (!this.standardChecks()) {
                 resolve(null);
                 return;
             }

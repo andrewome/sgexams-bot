@@ -8,13 +8,13 @@ export class StarboardHelpCommand extends HelpCommandBase {
 
     /**
      * This method sends a help embed for the Starboard module.
-     * 
+     *
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
     public execute(commandArgs: CommandArgs): CommandResult {
         const { messageReply } = commandArgs;
-        
+
         // Generate embed and send
         messageReply(this.generateEmbed(
             StarboardHelpCommand.HEADER,

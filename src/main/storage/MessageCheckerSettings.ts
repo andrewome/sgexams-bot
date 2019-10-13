@@ -136,8 +136,10 @@ export class MessageCheckerSettings {
             throw new Error('Object is not valid');
         }
 
-        const { bannedWords, reportingChannelId,
-                responseMessage, deleteMessage } = obj;
+        const {
+ bannedWords, reportingChannelId,
+                responseMessage, deleteMessage,
+} = obj;
 
         return new MessageCheckerSettings(reportingChannelId, responseMessage,
                                           bannedWords, deleteMessage);

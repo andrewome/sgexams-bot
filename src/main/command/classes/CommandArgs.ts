@@ -1,4 +1,6 @@
-import { Permissions, Collection, Emoji, Channel } from 'discord.js';
+import {
+ Permissions, Collection, Emoji, Channel,
+} from 'discord.js';
 import { Server } from '../../storage/Server';
 
 /** This class contains the arguments for the Command class */

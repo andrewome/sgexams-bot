@@ -73,7 +73,7 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             field.name.should.equals(EMBED_TITLE);
             field.value.should.equals(`The emoji threshold is currently ${threshold}.`);
         };
-        
+
         const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
         const commandResult = command.execute(commandArgs);
 

@@ -18,11 +18,11 @@ export abstract class Command {
 
     public NO_PERMISSIONS_COMMANDRESULT = new CommandResult(false, true);
 
-    
+
     /**
      * This function executes the command.
-     * 
-     * @param  {CommandArgs} commandArgs CommandArgs containing arguments that 
+     *
+     * @param  {CommandArgs} commandArgs CommandArgs containing arguments that
      *                                   a command may use.
      * @returns CommandResult
      */
