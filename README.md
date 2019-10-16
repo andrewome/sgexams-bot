@@ -16,6 +16,7 @@ This bot is written in `Typescript` using `Discord.js`  - [https://github.com/di
 
 # Guides
 [User Guide](docs/USERGUIDE.md)
+
 Dev Guide (Under construction indefinitely :)
 
 # Contributing

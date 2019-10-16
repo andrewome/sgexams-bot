@@ -6,6 +6,7 @@
 
 # Commands
 The bot listens to commands only if you tag it. Since this bot does not require constant commands, figured this was a better solution than using prefixes since it might clash with other bots.
+
 The commands that the bot listens out for is case-insensitive.
 
 # Miscallenous Commands
@@ -23,7 +24,9 @@ This module creates a `Starboard` in the server. Whenever a message receives eno
 For the Starboard module to work, a channel, an emoji and a threshold must be set first.
 
 This Starboard also supports multiple emojis, however the counts do not stack. An individual emoji reaction has to hit the threshold to make it to the Starboard.
+
 Additionally, once a message has been posted on the Starboard based on a specific emoji, the count will only be edited by that emoji that it was posted onto the Starboard with.
+
 If another emoji that the bot is listening to reaches the threshold on that message that already has been starred, nothing will happen.
 
 ##### Starboard Commands
@@ -84,4 +87,4 @@ Command | Example | Description | Permissions
 `MsgCheckerGetReportChannel`  | `@bot MsgCheckerGetReportChannel` | Displays the currently set reporting channel. | KICK_USERS, DELETE_USERS
 `MsgCheckerSetResponseMsg`  | `@bot MsgCheckerSetResponseMsg` [response message] | Sets the response message to the user upon detection of blacklisted words for this server. Use `{user}` inside the message to have the bot tag the user. If no message is given, the message is resetted. | KICK_USERS, DELETE_USERS
 `MsgCheckerGetResponseMsg`  | `@bot MsgCheckerGetResponseMsg` | Displays the response message to the user upon detection of blacklisted words for this server. | KICK_USERS, DELETE_USERS
-`MsgCheckerSetDeleteMsg`  | `@bot MsgCheckerSetDeleteMsg true|false` | Sets whether the bot should delete instances of blacklisted words being used. | KICK_USERS, DELETE_USERS
+`MsgCheckerSetDeleteMsg`  | `@bot MsgCheckerSetDeleteMsg true\|false` | Sets whether the bot should delete instances of blacklisted words being used. | KICK_USERS, DELETE_USERS
