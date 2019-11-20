@@ -9,6 +9,7 @@ export class OkBoomerCommand extends Command {
 	
 	private commandArgs: string[];
 
+	/** Emoji IDs/Unicode Emojis */
 	private emojiSequence = ['646591672276353034', '🇧','646589200195518464', '🇴', '🇲', '🇪', '🇷'];
 
     public constructor(args: string[]) {
@@ -16,15 +17,22 @@ export class OkBoomerCommand extends Command {
         this.commandArgs = args;
     }
 
+	/**
+     * This method executes the ok boomer command.
+     * It reacts ok boomer onto a specified message.
+     *
+     * @param { CommandArgs } commandArgs
+     * @returns CommandResult
+     */
 	public execute(commandArgs: CommandArgs): CommandResult {
-		const { messageReply, channel, userId } = commandArgs;
+		const { channel } = commandArgs;
 		const messageId = this.commandArgs[0];
 		
 		(channel as TextChannel).fetchMessage(messageId)
 			.then(async (message: Message): Promise<void> => {
 				for (let emoji of this.emojiSequence) {
 					await message.react(emoji);
-				};
+				}
 			})
 			.catch((err): void => {}); // Do nothing
 		
