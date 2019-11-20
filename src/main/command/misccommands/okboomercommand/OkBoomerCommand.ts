@@ -25,9 +25,12 @@ export class OkBoomerCommand extends Command {
      * @returns CommandResult
      */
 	public execute(commandArgs: CommandArgs): CommandResult {
-		const { channel } = commandArgs;
+		const { channel, deleteFunction } = commandArgs;
 		const messageId = this.commandArgs[0];
 		
+        // Delete message that sent this command to prevent spam.
+        deleteFunction!();
+
 		(channel as TextChannel).fetchMessage(messageId)
 			.then(async (message: Message): Promise<void> => {
 				for (let emoji of this.emojiSequence) {

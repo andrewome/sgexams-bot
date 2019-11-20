@@ -19,13 +19,16 @@ export class CommandArgs {
 
     public channel: Channel | undefined;
 
-    public userId: string | undefined;
+	public userId: string | undefined;
+	
+	public deleteFunction: Function | undefined;
 
     public constructor(server: Server, memberPerms: Permissions,
                        messageReply: Function, uptime?: number,
                        channels?: Collection<string, Channel>,
                        emojis?: Collection<string, Emoji>,
-                       channel?: Channel, userId?: string) {
+                       channel?: Channel, userId?: string,
+                       deleteFunction?: Function) {
         this.server = server;
         this.memberPerms = memberPerms;
         this.uptime = uptime;
@@ -33,6 +36,7 @@ export class CommandArgs {
         this.channels = channels;
         this.emojis = emojis;
         this.channel = channel;
-        this.userId = userId;
+		this.userId = userId;
+		this.deleteFunction = deleteFunction;
     }
 }
