@@ -22,6 +22,7 @@ import { MiscCommandHelpCommand } from './helpcommands/MiscCommandHelpCommand';
 import { UptimeCheckCommand } from './misccommands/uptimecheckcommands/UptimeCheckCommand';
 import { StarboardAddEmojiCommand } from './starboardcommands/StarboardAddEmojiCommand';
 import { StarboardRemoveEmojiCommand } from './starboardcommands/StarboardRemoveEmojiCommand';
+import { OkBoomerCommand } from './misccommands/okboomercommand/OkBoomerCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -140,7 +141,9 @@ export class CommandParser {
             case CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME.toLowerCase():
                 return new MiscCommandHelpCommand();
             case CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME.toLowerCase():
-                return new UptimeCheckCommand();
+				return new UptimeCheckCommand();
+			case CommandNamesAndDescriptions.OKBOOMER_COMMAND_NAME.toLowerCase():
+				return new OkBoomerCommand(args);
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }
