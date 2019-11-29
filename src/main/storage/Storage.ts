@@ -16,6 +16,7 @@ export class Storage {
      * @returns Storage
      */
     public loadServers(): Storage {
+        log.info('Loading Servers...');
         try {
             const servers = fs.readFileSync(this.STORAGE_PATH, 'utf8');
             const objects = JSON.parse(servers);
@@ -26,11 +27,13 @@ export class Storage {
         } catch (err) {
             // File not found, create empty file
             if (err.code === 'ENOENT') {
+                log.info('servers.json not found - creating empty file');
                 fs.writeFileSync(this.STORAGE_PATH, '');
             } else { // Other errors, throw up the chain
                 throw err;
             }
         }
+        log.info(`Loaded ${this.servers.size} server(s).`);
         return this;
     }
 
@@ -43,12 +46,14 @@ export class Storage {
      */
     public saveServers(): void {
         const serverJsons = [];
+        log.info('Saving Servers...');
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const [k, v] of this.servers) {
+            log.debug(`Serialising ${k}...`);
             serverJsons.push(Server.convertToJsonFriendly(v));
         }
         fs.writeFileSync(this.STORAGE_PATH, JSON.stringify(serverJsons));
-        log.info('Saving Servers...');
+        log.info('Saved Servers!');
     }
 
     public setStoragePath(str: string): void {
