@@ -10,7 +10,7 @@ export class OkBoomerCommand extends Command {
 	private commandArgs: string[];
 
 	/** Emoji IDs/Unicode Emojis */
-	private emojiSequence = ['646591672276353034', '🇧','646589200195518464', '🇴', '🇲', '🇪', '🇷'];
+	private emojiSequence = ['🆗', '🇧','🅾️', '🇴', '🇲', '🇪', '🇷'];
 
     public constructor(args: string[]) {
         super();
