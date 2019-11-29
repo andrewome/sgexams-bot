@@ -83,7 +83,8 @@ export class MessageEventHandler extends EventHandler {
         const defaultCommandResult = new CommandResult(false, true);
 
         // If it's a command, execute the command
-        const commandParser = new CommandParser(this.message.content);
+        const { content } = this.message;
+        const commandParser = new CommandParser(content);
         if (commandParser.isCommand(this.botId)) {
             // Get args required for the command
             const { permissions } = this.message.member;
@@ -100,7 +101,8 @@ export class MessageEventHandler extends EventHandler {
             // Execute command with commandArgs.
             const command = commandParser.getCommand();
             log.info(`${tag} issued command ${command.constructor.name} in ` +
-                     `#${(channel as TextChannel).name} of ${name}.`);
+                     `#${(channel as TextChannel).name} of ${name}.\n` +
+                     `Message sent: ${content}`);
 
             return command.execute(commandArgs);
         }
