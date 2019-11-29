@@ -19,6 +19,11 @@ export class RotateImageCommand extends Command {
 
     private CLOCKWISE = '↩';
 
+    private ERROR_MESSAGE = 'Not a valid message ID.\n' +
+                            'Please check if the message\n' +
+                            '1) contains an image\n2) is in this channel.\n\n' +
+                            '**Usage:** @bot rotate <message ID>\n'
+
     public constructor(args: string[]) {
         super();
         this.commandArgs = args;
@@ -36,6 +41,11 @@ export class RotateImageCommand extends Command {
     public execute(commandArgs: CommandArgs): CommandResult {
         const { messageReply, channel, userId } = commandArgs;
         const messageId = this.commandArgs[0];
+
+        if (messageId === undefined) {
+            messageReply(this.ERROR_MESSAGE);
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        }
 
         // Check if messageId quoted is in in the channel
         (channel as TextChannel).startTyping();
@@ -138,10 +148,7 @@ export class RotateImageCommand extends Command {
                 collector.on(COLLECT, onReaction);
             })
             .catch((err): void => {
-                messageReply('Not a valid message ID.\n' +
-                             'Please check if the message\n' +
-                             '1) contains an image\n2) is in this channel.\n\n' +
-                             '**Usage:** @bot rotate <message ID>\n');
+                messageReply(this.ERROR_MESSAGE);
                 (channel as TextChannel).stopTyping(true);
             });
 
