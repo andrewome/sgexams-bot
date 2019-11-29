@@ -61,26 +61,40 @@ export abstract class StarboardChecker {
      * This function checks if the message being reacted exists inside
      * the Starboard channel already.
      *
-     * @returns string, starboard message id
+     * @returns boolean
      */
-    public checkIfMessageExists(): string | null {
+    public checkIfMessageExists(): boolean {
         const { starboardMessageCache } = StarboardCache;
-        const { message } = this.reaction;
-        const guildId = message.guild.id;
+        const msgId = this.reaction.message.id;
+        const guildId = this.reaction.message.guild.id;
 
         if (!starboardMessageCache.has(guildId)) {
-            return null;
+            return false;
         }
 
         const serverCache = starboardMessageCache.get(guildId)!;
-        if (!serverCache.messageExists(message.id)) {
-            return null;
+        if (!serverCache.messageExists(msgId)) {
+            return false;
         }
 
-        const starboardMessageId = serverCache.getStarboardMessageId(message.id);
-        if (starboardMessageId === null) {
-            return null;
-        }
+        return true;
+    }
+
+    /**
+     * This function returns the starboard msg id of a starboarded mesg
+     * Returns null if message does not exist on the starboard channel.
+     *
+     * @returns string
+     */
+    public fetchStarboardId(): string | null {
+        if (!this.checkIfMessageExists()) return null;
+
+        const { starboardMessageCache } = StarboardCache;
+        const msgId = this.reaction.message.id;
+        const guildId = this.reaction.message.guild.id;
+
+        const serverCache = starboardMessageCache.get(guildId)!;
+        const starboardMessageId = serverCache.getStarboardMessageId(msgId);
 
         return starboardMessageId;
     }
