@@ -20,7 +20,6 @@ class App {
         this.bot = new Client();
         log.info('Logging the bot in...');
         this.bot.login(process.env.BOT_TOKEN);
-        log.info('Loading Servers...');
         this.storage = new Storage().loadServers();
     }
 

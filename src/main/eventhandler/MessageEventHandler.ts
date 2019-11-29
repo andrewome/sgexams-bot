@@ -1,4 +1,5 @@
-import { Message } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
+import log from 'loglevel';
 import { CommandParser } from '../command/CommandParser';
 import { CommandResult } from '../command/classes/CommandResult';
 import { Storage } from '../storage/Storage';
@@ -86,10 +87,9 @@ export class MessageEventHandler extends EventHandler {
         if (commandParser.isCommand(this.botId)) {
             // Get args required for the command
             const { permissions } = this.message.member;
-            const { channels } = this.message.guild;
-            const { emojis } = this.message.guild;
+            const { channels, emojis, name } = this.message.guild;
             const { channel, author } = this.message;
-            const { id } = author;
+            const { id, tag } = author;
             const { uptime } = this.message.client;
             const sendFunction = this.message.channel.send.bind(this.message.channel);
             const deleteFunction = this.message.delete.bind(this.message);
@@ -97,9 +97,11 @@ export class MessageEventHandler extends EventHandler {
                                                 sendFunction, uptime,
                                                 channels, emojis,
                                                 channel, id, deleteFunction);
-
             // Execute command with commandArgs.
             const command = commandParser.getCommand();
+            log.info(`${tag} issued command ${command.constructor.name} in ` +
+                     `#${(channel as TextChannel).name} of ${name}.`);
+
             return command.execute(commandArgs);
         }
 
