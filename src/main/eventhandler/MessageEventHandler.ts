@@ -91,8 +91,8 @@ export class MessageEventHandler extends EventHandler {
             const { channel, author } = this.message;
             const { id } = author;
             const { uptime } = this.message.client;
-			const sendFunction = this.message.channel.send.bind(this.message.channel);
-			const deleteFunction = this.message.delete.bind(this.message);
+            const sendFunction = this.message.channel.send.bind(this.message.channel);
+            const deleteFunction = this.message.delete.bind(this.message);
             const commandArgs = new CommandArgs(server, permissions,
                                                 sendFunction, uptime,
                                                 channels, emojis,

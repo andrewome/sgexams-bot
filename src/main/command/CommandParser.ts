@@ -141,9 +141,9 @@ export class CommandParser {
             case CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME.toLowerCase():
                 return new MiscCommandHelpCommand();
             case CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME.toLowerCase():
-				return new UptimeCheckCommand();
-			case CommandNamesAndDescriptions.OKBOOMER_COMMAND_NAME.toLowerCase():
-				return new OkBoomerCommand(args);
+                return new UptimeCheckCommand();
+            case CommandNamesAndDescriptions.OKBOOMER_COMMAND_NAME.toLowerCase():
+                return new OkBoomerCommand(args);
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }
