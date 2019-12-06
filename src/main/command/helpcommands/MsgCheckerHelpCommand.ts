@@ -8,13 +8,13 @@ export class MsgCheckerHelpCommand extends HelpCommandBase {
 
     /**
      * This method sends a help embed for the MsgChecker module.
-     * 
+     *
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
     public execute(commandArgs: CommandArgs): CommandResult {
-        const { messageReply } = commandArgs; 
-        
+        const { messageReply } = commandArgs;
+
         // Generate embed and send
         messageReply(this.generateEmbed(
             MsgCheckerHelpCommand.HEADER,

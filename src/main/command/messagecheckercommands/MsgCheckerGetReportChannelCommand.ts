@@ -16,13 +16,13 @@ export class MsgCheckerGetReportChannelCommand extends Command {
     /**
      * This function executes the getchannel command
      * Sets the reporting channel of the server.
-     * 
+     *
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
     public execute(commandArgs: CommandArgs): CommandResult {
         const { server, memberPerms, messageReply } = commandArgs;
-        
+
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             this.sendNoPermissionsMessage(messageReply);

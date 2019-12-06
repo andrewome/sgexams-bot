@@ -1,4 +1,5 @@
-import { Message } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
+import log from 'loglevel';
 import { CommandParser } from '../command/CommandParser';
 import { CommandResult } from '../command/classes/CommandResult';
 import { Storage } from '../storage/Storage';
@@ -82,26 +83,30 @@ export class MessageEventHandler extends EventHandler {
         const defaultCommandResult = new CommandResult(false, true);
 
         // If it's a command, execute the command
-        const commandParser = new CommandParser(this.message.content);
+        const { content } = this.message;
+        const commandParser = new CommandParser(content);
         if (commandParser.isCommand(this.botId)) {
             // Get args required for the command
             const { permissions } = this.message.member;
-            const { channels } = this.message.guild;
-            const { emojis } = this.message.guild;
+            const { channels, emojis, name } = this.message.guild;
             const { channel, author } = this.message;
-            const { id } = author;
+            const { id, tag } = author;
             const { uptime } = this.message.client;
             const sendFunction = this.message.channel.send.bind(this.message.channel);
+            const deleteFunction = this.message.delete.bind(this.message);
             const commandArgs = new CommandArgs(server, permissions,
                                                 sendFunction, uptime,
                                                 channels, emojis,
-                                                channel, id);
-            
+                                                channel, id, deleteFunction);
             // Execute command with commandArgs.
             const command = commandParser.getCommand();
+            log.info(`${tag} issued command ${command.constructor.name} in ` +
+                     `#${(channel as TextChannel).name} of ${name}.\n` +
+                     `Message sent: ${content}`);
+
             return command.execute(commandArgs);
         }
-        
+
         // Not a command, return default command result
         return defaultCommandResult;
     }

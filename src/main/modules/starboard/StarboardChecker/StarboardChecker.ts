@@ -1,7 +1,7 @@
 import {
- MessageReaction, User, Collection,
+ MessageReaction, User, Collection, TextChannel, Message,
 } from 'discord.js';
-import { StarboardSettings, SimplifiedEmoji } from '../../../storage/StarboardSettings';
+import { StarboardSettings } from '../../../storage/StarboardSettings';
 import { StarboardCache } from '../../../storage/StarboardCache';
 
 export abstract class StarboardChecker {
@@ -18,16 +18,18 @@ export abstract class StarboardChecker {
     /**
      * Standard checks.
      *
-     * @param  {Emoji|null} starboardEmoji
+     * @param  {SimplifiedEmoji[]} starboardEmojis
      * @param  {number|null} threshold
      * @param  {string|null} channel
      * @returns boolean false if failed, true if passed
      */
-    protected standardChecks(starboardEmoji: SimplifiedEmoji | null,
-                             threshold: number | null,
-                             channel: string | null): boolean {
+    protected standardChecks(): boolean {
+        const starboardEmojis = this.starboardSettings.getEmoji();
+        const threshold = this.starboardSettings.getThreshold();
+        const channel = this.starboardSettings.getChannel();
+
         // If any of the settings are null, starboard cannot work
-        if (starboardEmoji === null || threshold === null || channel === null) {
+        if (starboardEmojis.length === 0 || threshold === null || channel === null) {
             return false;
         }
 
@@ -47,8 +49,8 @@ export abstract class StarboardChecker {
             return false;
         }
 
-        // If the ID of the emoji being reacted is not the starboard emoji, ignore
-        if (this.reaction.emoji.id !== starboardEmoji!.id) {
+        // If the ID of the emoji being reacted is not the starboard emojis, ignore
+        if (!this.starboardSettings.hasEmojiById(this.reaction.emoji.id)) {
             return false;
         }
 
@@ -59,28 +61,69 @@ export abstract class StarboardChecker {
      * This function checks if the message being reacted exists inside
      * the Starboard channel already.
      *
-     * @returns string, starboard message id
+     * @returns boolean
      */
-    public checkIfMessageExists(): string | null {
+    public checkIfMessageExists(): boolean {
         const { starboardMessageCache } = StarboardCache;
-        const { message } = this.reaction;
-        const guildId = message.guild.id;
+        const msgId = this.reaction.message.id;
+        const guildId = this.reaction.message.guild.id;
 
         if (!starboardMessageCache.has(guildId)) {
-            return null;
+            return false;
         }
 
         const serverCache = starboardMessageCache.get(guildId)!;
-        if (!serverCache.messageExists(message.id)) {
-            return null;
+        if (!serverCache.messageExists(msgId)) {
+            return false;
         }
 
-        const starboardMessageId = serverCache.getStarboardMessageId(message.id);
-        if (starboardMessageId === null) {
-            return null;
-        }
+        return true;
+    }
+
+    /**
+     * This function returns the starboard msg id of a starboarded mesg
+     * Returns null if message does not exist on the starboard channel.
+     *
+     * @returns string
+     */
+    public fetchStarboardId(): string | null {
+        if (!this.checkIfMessageExists()) return null;
+
+        const { starboardMessageCache } = StarboardCache;
+        const msgId = this.reaction.message.id;
+        const guildId = this.reaction.message.guild.id;
+
+        const serverCache = starboardMessageCache.get(guildId)!;
+        const starboardMessageId = serverCache.getStarboardMessageId(msgId);
 
         return starboardMessageId;
+    }
+
+    /**
+     * Compares the emoji in the starboard channel with the emoji in the react.
+     * Returns true if the same, else returns false.
+     *
+     * @param  {string} messageId
+     * @returns Promise<boolean>
+     */
+    public checkEmojiInStarboardMessage(messageId: string): Promise<boolean> {
+        return new Promise<boolean>((resolve): void => {
+            // Get channel, then message
+            const starboardChannel
+                = this.reaction.message.guild.channels.get(this.starboardSettings.getChannel()!);
+            (starboardChannel as TextChannel).fetchMessage(messageId)
+                .then((message: Message): void => {
+                    // Check if emoji that's on the starboard is the same as the reaction
+                    const content = message.content.split(' ');
+                    const regexEmote = new RegExp('<a?:(.+):(\\d+)>', 'g');
+                    const match = regexEmote.exec(content[1])!;
+                    const name = match[1];
+                    const id = match[2];
+
+                    if (name === this.reaction.emoji.name
+                        && id === this.reaction.emoji.id) { resolve(true); } else resolve(false);
+                });
+        });
     }
 
     /**

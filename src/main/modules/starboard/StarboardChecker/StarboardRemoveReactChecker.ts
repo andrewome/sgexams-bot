@@ -10,24 +10,20 @@ export class StarboardRemoveReactChecker extends StarboardChecker {
      */
     public async checkRemoveReact(): Promise<[number, string] | null> {
         return new Promise<[number, string] | null>((resolve): void => {
-            const starboardEmoji = this.starboardSettings.getEmoji();
-            const threshold = this.starboardSettings.getThreshold();
-            const channel = this.starboardSettings.getChannel();
-
-            if (!this.standardChecks(starboardEmoji, threshold, channel)) {
+            if (!this.standardChecks()) {
                 resolve(null);
                 return;
             }
 
             // Check if id of message appears in the Starboard
             // If exists, definitely need to update (delete or edit)
-            const starboardChannelId = this.checkIfMessageExists();
-            if (starboardChannelId !== null) {
+            const starboardMsgId = this.fetchStarboardId();
+            if (starboardMsgId !== null) {
                // Get the count of the number of
                // reactions of starboard emoji.
                 this.getNumberOfReactions()
                     .then((size: number): void => {
-                        resolve([size, starboardChannelId]);
+                        resolve([size, starboardMsgId]);
                     });
             } else {
                 resolve(null);

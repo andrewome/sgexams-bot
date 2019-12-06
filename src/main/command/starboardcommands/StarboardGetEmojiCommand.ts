@@ -23,7 +23,7 @@ export class StarboardGetEmojiCommand extends Command {
      */
     public execute(commandArgs: CommandArgs): CommandResult {
         const { server, memberPerms, messageReply } = commandArgs;
-        
+
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             this.sendNoPermissionsMessage(messageReply);
@@ -31,15 +31,15 @@ export class StarboardGetEmojiCommand extends Command {
         }
 
         // Execute
-        const emoji = server.starboardSettings.getEmoji();
+        const emojis = server.starboardSettings.getEmoji();
 
         // Check if emoji is set
-        if (emoji === null) {
+        if (emojis.length === 0) {
             messageReply(this.generateNotSetEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        messageReply(this.generateValidEmbed(emoji));
+        messageReply(this.generateValidEmbed(emojis));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
@@ -63,9 +63,14 @@ export class StarboardGetEmojiCommand extends Command {
      * @param  {SimplifiedEmoji} emoji
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateValidEmbed(emoji: SimplifiedEmoji): RichEmbed {
+    private generateValidEmbed(emojis: SimplifiedEmoji[]): RichEmbed {
         const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
-        const msg = `Starboard emoji is currently set to <:${emoji.name}:${emoji.id}>.`;
+        let msg = '';
+        for (let i = 0; i < emojis.length; i++) {
+            msg += `<:${emojis[i].name}:${emojis[i].id}>`;
+            msg += (i === emojis.length - 1) ? '.' : ', ';
+        }
+        msg = `Starboard emoji(s): ${msg}`;
         embed.addField(StarboardGetEmojiCommand.EMBED_TITLE, msg);
 
         return embed;

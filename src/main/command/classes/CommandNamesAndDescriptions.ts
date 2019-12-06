@@ -81,15 +81,20 @@ export abstract class CommandNamesAndDescriptions {
     public static readonly STARBOARD_GET_CHANNEL_COMMAND_DESCRIPTION
         = 'Displays the currently set Starboard channel';
 
-    public static readonly STARBOARD_SET_EMOJI_COMMAND_NAME = 'StarboardSetEmoji';
+    public static readonly STARBOARD_ADD_EMOJI_COMMAND_NAME = 'StarboardAddEmoji';
 
-    public static readonly STARBOARD_SET_EMOJI_COMMAND_DESCRIPTION
-        = 'Sets the Starboard emoji that the bot will look out for.';
+    public static readonly STARBOARD_ADD_EMOJI_COMMAND_DESCRIPTION
+        = 'Adds a Starboard emoji that the bot will look out for.';
+
+    public static readonly STARBOARD_REMOVE_EMOJI_COMMAND_NAME = 'StarboardRemoveEmoji';
+
+    public static readonly STARBOARD_REMOVE_EMOJI_COMMAND_DESCRIPTION
+        = 'Removes a Starboard emoji.';
 
     public static readonly STARBOARD_GET_EMOJI_COMMAND_NAME = 'StarboardGetEmoji';
 
     public static readonly STARBOARD_GET_EMOJI_COMMAND_DESCRIPTION
-        = 'Displays the currently set Starboard emoji';
+        = 'Displays the currently set Starboard emojis';
 
     public static readonly STARBOARD_SET_THRESHOLD_COMMAND_NAME = 'StarboardSetThreshold';
 
@@ -104,7 +109,8 @@ export abstract class CommandNamesAndDescriptions {
     public static readonly STARBOARD_COMMANDS = [
         CommandNamesAndDescriptions.STARBOARD_SET_CHANNEL_COMMAND_NAME,
         CommandNamesAndDescriptions.STARBOARD_GET_CHANNEL_COMMAND_NAME,
-        CommandNamesAndDescriptions.STARBOARD_SET_EMOJI_COMMAND_NAME,
+        CommandNamesAndDescriptions.STARBOARD_ADD_EMOJI_COMMAND_NAME,
+        CommandNamesAndDescriptions.STARBOARD_REMOVE_EMOJI_COMMAND_NAME,
         CommandNamesAndDescriptions.STARBOARD_GET_EMOJI_COMMAND_NAME,
         CommandNamesAndDescriptions.STARBOARD_SET_THRESHOLD_COMMAND_NAME,
         CommandNamesAndDescriptions.STARBOARD_GET_THRESHOLD_COMMAND_NAME,
@@ -113,7 +119,8 @@ export abstract class CommandNamesAndDescriptions {
     public static readonly STARBOARD_DESCRIPTIONS = [
         CommandNamesAndDescriptions.STARBOARD_SET_CHANNEL_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.STARBOARD_GET_CHANNEL_COMMAND_DESCRIPTION,
-        CommandNamesAndDescriptions.STARBOARD_SET_EMOJI_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.STARBOARD_ADD_EMOJI_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.STARBOARD_REMOVE_EMOJI_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.STARBOARD_GET_EMOJI_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.STARBOARD_SET_THRESHOLD_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.STARBOARD_GET_THRESHOLD_COMMAND_DESCRIPTION,
@@ -122,7 +129,8 @@ export abstract class CommandNamesAndDescriptions {
     public static readonly STARBOARD_COMMANDS_LOWERCASE = [
         CommandNamesAndDescriptions.STARBOARD_SET_CHANNEL_COMMAND_NAME.toLowerCase(),
         CommandNamesAndDescriptions.STARBOARD_GET_CHANNEL_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_SET_EMOJI_COMMAND_NAME.toLowerCase(),
+        CommandNamesAndDescriptions.STARBOARD_ADD_EMOJI_COMMAND_NAME.toLowerCase(),
+        CommandNamesAndDescriptions.STARBOARD_REMOVE_EMOJI_COMMAND_NAME.toLowerCase(),
         CommandNamesAndDescriptions.STARBOARD_GET_EMOJI_COMMAND_NAME.toLowerCase(),
         CommandNamesAndDescriptions.STARBOARD_SET_THRESHOLD_COMMAND_NAME.toLowerCase(),
         CommandNamesAndDescriptions.STARBOARD_GET_THRESHOLD_COMMAND_NAME.toLowerCase(),
@@ -136,22 +144,30 @@ export abstract class CommandNamesAndDescriptions {
 
     public static readonly UPTIME_CHECK_COMMAND_NAME = 'Uptime';
 
-    public static readonly UPTIME_CHECK_COMMAND_DESCRIPTION = 
+    public static readonly UPTIME_CHECK_COMMAND_DESCRIPTION =
         'Returns how long the bot has been online for.';
+
+    public static readonly OKBOOMER_COMMAND_NAME = 'Okboomer';
+
+    public static readonly OKBOOMER_COMMAND_DESCRIPTION
+        = 'Reacts "Ok Boomer" onto a specified message.';
 
     public static readonly MISC_COMMANDS = [
         CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME,
         CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME,
+        CommandNamesAndDescriptions.OKBOOMER_COMMAND_NAME,
     ];
 
     public static readonly MISC_DESCRIPTIONS = [
         CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.OKBOOMER_COMMAND_DESCRIPTION,
     ];
 
     public static readonly MISC_COMMANDS_LOWERCASE = [
         CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME.toLowerCase(),
         CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME.toLowerCase(),
+        CommandNamesAndDescriptions.OKBOOMER_COMMAND_NAME.toLowerCase(),
     ];
 
     /** Help Commands */
@@ -196,4 +212,3 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME.toLowerCase(),
     ];
 }
-    

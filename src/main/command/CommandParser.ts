@@ -11,7 +11,6 @@ import { MsgCheckerGetResponseMessageCommand } from './messagecheckercommands/Ms
 import { MsgCheckerSetDeleteMessageCommand } from './messagecheckercommands/MsgCheckerSetDeleteMessageCommand';
 import { StarboardSetChannelCommand } from './starboardcommands/StarboardSetChannelCommand';
 import { StarboardGetChannelCommand } from './starboardcommands/StarboardGetChannelCommand';
-import { StarboardSetEmojiCommand } from './starboardcommands/StarboardSetEmojiCommand';
 import { StarboardGetEmojiCommand } from './starboardcommands/StarboardGetEmojiCommand';
 import { StarboardGetThresholdCommand } from './starboardcommands/StarboardGetThresholdCommand';
 import { StarboardSetThresholdCommand } from './starboardcommands/StarboardSetThresholdCommand';
@@ -21,6 +20,9 @@ import { MsgCheckerHelpCommand } from './helpcommands/MsgCheckerHelpCommand';
 import { StarboardHelpCommand } from './helpcommands/StarboardHelpCommand';
 import { MiscCommandHelpCommand } from './helpcommands/MiscCommandHelpCommand';
 import { UptimeCheckCommand } from './misccommands/uptimecheckcommands/UptimeCheckCommand';
+import { StarboardAddEmojiCommand } from './starboardcommands/StarboardAddEmojiCommand';
+import { StarboardRemoveEmojiCommand } from './starboardcommands/StarboardRemoveEmojiCommand';
+import { OkBoomerCommand } from './misccommands/okboomercommand/OkBoomerCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -87,10 +89,10 @@ export class CommandParser {
         return [];
     }
 
-    
+
     /**
      * This method returns the Command object based on the Command word mentioned.
-     * 
+     *
      * @returns Command
      */
     /* eslint-disable max-len */
@@ -120,8 +122,10 @@ export class CommandParser {
                 return new StarboardGetChannelCommand();
             case CommandNamesAndDescriptions.STARBOARD_GET_EMOJI_COMMAND_NAME.toLowerCase():
                 return new StarboardGetEmojiCommand();
-            case CommandNamesAndDescriptions.STARBOARD_SET_EMOJI_COMMAND_NAME.toLowerCase():
-                return new StarboardSetEmojiCommand(args);
+            case CommandNamesAndDescriptions.STARBOARD_ADD_EMOJI_COMMAND_NAME.toLowerCase():
+                return new StarboardAddEmojiCommand(args);
+            case CommandNamesAndDescriptions.STARBOARD_REMOVE_EMOJI_COMMAND_NAME.toLowerCase():
+                return new StarboardRemoveEmojiCommand(args);
             case CommandNamesAndDescriptions.STARBOARD_GET_THRESHOLD_COMMAND_NAME.toLowerCase():
                 return new StarboardGetThresholdCommand();
             case CommandNamesAndDescriptions.STARBOARD_SET_THRESHOLD_COMMAND_NAME.toLowerCase():
@@ -138,6 +142,8 @@ export class CommandParser {
                 return new MiscCommandHelpCommand();
             case CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME.toLowerCase():
                 return new UptimeCheckCommand();
+            case CommandNamesAndDescriptions.OKBOOMER_COMMAND_NAME.toLowerCase():
+                return new OkBoomerCommand(args);
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }
