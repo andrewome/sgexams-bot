@@ -29,7 +29,7 @@
     "https": "^1.0.0",
     "lodash": "^4.17.14",
     "loglevel": "^1.6.3",
-    "npm": "^6.13.1",
+    "npm": "^6.13.4",
     "sharp": "^0.23.0"
   },
   "devDependencies": {
