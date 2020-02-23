@@ -28,7 +28,7 @@ export class Storage {
             // File not found, create empty file
             if (err.code === 'ENOENT') {
                 log.info('servers.json not found - creating empty file');
-                fs.writeFileSync(this.STORAGE_PATH, '');
+                fs.writeFileSync(this.STORAGE_PATH, '[]');
             } else { // Other errors, throw up the chain
                 throw err;
             }
