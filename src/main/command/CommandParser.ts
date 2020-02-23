@@ -23,6 +23,7 @@ import { UptimeCheckCommand } from './misccommands/uptimecheckcommands/UptimeChe
 import { StarboardAddEmojiCommand } from './starboardcommands/StarboardAddEmojiCommand';
 import { StarboardRemoveEmojiCommand } from './starboardcommands/StarboardRemoveEmojiCommand';
 import { OkBoomerCommand } from './misccommands/okboomercommand/OkBoomerCommand';
+import { OkZoomerCommand } from './misccommands/okzoomercommand/OkZoomerCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -144,6 +145,8 @@ export class CommandParser {
                 return new UptimeCheckCommand();
             case CommandNamesAndDescriptions.OKBOOMER_COMMAND_NAME.toLowerCase():
                 return new OkBoomerCommand(args);
+            case CommandNamesAndDescriptions.OKZOOMER_COMMAND_NAME.toLowerCase():
+                return new OkZoomerCommand(args);
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }

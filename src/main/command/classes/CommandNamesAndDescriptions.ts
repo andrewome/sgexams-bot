@@ -152,22 +152,30 @@ export abstract class CommandNamesAndDescriptions {
     public static readonly OKBOOMER_COMMAND_DESCRIPTION
         = 'Reacts "Ok Boomer" onto a specified message.';
 
+    public static readonly OKZOOMER_COMMAND_NAME = 'Okzoomer';
+
+    public static readonly OKZOOMER_COMMAND_DESCRIPTION
+        = 'Reacts "Ok Zoomer" onto a specified message.';
+
     public static readonly MISC_COMMANDS = [
         CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME,
         CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME,
         CommandNamesAndDescriptions.OKBOOMER_COMMAND_NAME,
+        CommandNamesAndDescriptions.OKZOOMER_COMMAND_NAME,
     ];
 
     public static readonly MISC_DESCRIPTIONS = [
         CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.OKBOOMER_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.OKZOOMER_COMMAND_DESCRIPTION,
     ];
 
     public static readonly MISC_COMMANDS_LOWERCASE = [
         CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME.toLowerCase(),
         CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME.toLowerCase(),
         CommandNamesAndDescriptions.OKBOOMER_COMMAND_NAME.toLowerCase(),
+        CommandNamesAndDescriptions.OKZOOMER_COMMAND_NAME.toLowerCase(),
     ];
 
     /** Help Commands */

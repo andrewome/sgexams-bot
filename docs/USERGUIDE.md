@@ -18,6 +18,7 @@ Command | Example | Description | Permissions
 `Uptime` | `@bot Uptime` | Displays how long the bot has been online for. | None
 `Rotate` | `@bot Rotate messageId` | Reuploads the image in the message as stated in `messageId`, adds `↪` and `↩` reactions to the message and rotates the image by 90 degrees cw/ccw according to the reaction the user clicks on. | None
 `OkBoomer` | `@bot OkBoomer messageId` | Adds predefined regional indicator reactions to the message in a specific order that spells "Okboomer". | None
+`OkZoomer` | `@bot OkZoomer messageId` | Adds predefined regional indicator reactions to the message in a specific order that spells "Okzoomer". | None
 
 # Starboard
 This module creates a `Starboard` in the server. Whenever a message receives enough counts of a specified emoji reaction, the message will be posted onto the `Starboard` channel to be immortalised.
