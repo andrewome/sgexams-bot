@@ -14,16 +14,16 @@ import { StarboardGetChannelCommand } from './starboardcommands/StarboardGetChan
 import { StarboardGetEmojiCommand } from './starboardcommands/StarboardGetEmojiCommand';
 import { StarboardGetThresholdCommand } from './starboardcommands/StarboardGetThresholdCommand';
 import { StarboardSetThresholdCommand } from './starboardcommands/StarboardSetThresholdCommand';
-import { RotateImageCommand } from './misccommands/rotateimagecommands/RotateImageCommand';
+import { RotateImageCommand } from './misccommands/RotateImageCommand';
 import { CommandNamesAndDescriptions } from './classes/CommandNamesAndDescriptions';
 import { MsgCheckerHelpCommand } from './helpcommands/MsgCheckerHelpCommand';
 import { StarboardHelpCommand } from './helpcommands/StarboardHelpCommand';
 import { MiscCommandHelpCommand } from './helpcommands/MiscCommandHelpCommand';
-import { UptimeCheckCommand } from './misccommands/uptimecheckcommands/UptimeCheckCommand';
+import { UptimeCheckCommand } from './misccommands/UptimeCheckCommand';
 import { StarboardAddEmojiCommand } from './starboardcommands/StarboardAddEmojiCommand';
 import { StarboardRemoveEmojiCommand } from './starboardcommands/StarboardRemoveEmojiCommand';
-import { OkBoomerCommand } from './misccommands/okboomercommand/OkBoomerCommand';
-import { OkZoomerCommand } from './misccommands/okzoomercommand/OkZoomerCommand';
+import { OkBoomerCommand } from './misccommands/OkBoomerCommand';
+import { OkZoomerCommand } from './misccommands/OkZoomerCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';

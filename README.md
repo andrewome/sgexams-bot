@@ -5,7 +5,7 @@
 This bot is written in `Typescript` using `Discord.js`  - [https://github.com/discordjs/discord.js/](https://github.com/discordjs/discord.js/)
 
 # Getting Started
-1. `git clone` this repositry.
+1. `git clone` this repository.
 2. `npm i` to install dependencies.
 3. Add `BOT_TOKEN="your discord bot token"` to a file called `.env` in the root of this project.
 4. You're ready!
