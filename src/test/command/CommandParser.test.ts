@@ -21,8 +21,8 @@ import { MsgCheckerHelpCommand } from '../../main/command/helpcommands/MsgChecke
 import { StarboardHelpCommand } from '../../main/command/helpcommands/StarboardHelpCommand';
 import { MiscCommandHelpCommand } from '../../main/command/helpcommands/MiscCommandHelpCommand';
 import { StarboardSetThresholdCommand } from '../../main/command/starboardcommands/StarboardSetThresholdCommand';
-import { RotateImageCommand } from '../../main/command/misccommands/RotateImageCommand';
-import { UptimeCheckCommand } from '../../main/command/misccommands/UptimeCheckCommand';
+import { RotateImageCommand } from '../../main/command/misccommands/rotateimagecommands/RotateImageCommand';
+import { UptimeCheckCommand } from '../../main/command/misccommands/uptimecheckcommands/UptimeCheckCommand';
 import { StarboardAddEmojiCommand } from '../../main/command/starboardcommands/StarboardAddEmojiCommand';
 import { StarboardRemoveEmojiCommand } from '../../main/command/starboardcommands/StarboardRemoveEmojiCommand';
 

@@ -1,7 +1,7 @@
 import { TextChannel, Message } from 'discord.js';
-import { Command } from '../Command';
-import { CommandResult } from '../classes/CommandResult';
-import { CommandArgs } from '../classes/CommandArgs';
+import { Command } from '../../Command';
+import { CommandResult } from '../../classes/CommandResult';
+import { CommandArgs } from '../../classes/CommandArgs';
 
 export class OkZoomerCommand extends Command {
   /** SaveServer: false, CheckMessage: true */

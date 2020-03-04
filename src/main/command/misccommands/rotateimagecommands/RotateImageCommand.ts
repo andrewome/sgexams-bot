@@ -5,9 +5,9 @@ import {
 } from 'discord.js';
 import sharp, { Sharp } from 'sharp';
 import axios from 'axios';
-import { Command } from '../Command';
-import { CommandResult } from '../classes/CommandResult';
-import { CommandArgs } from '../classes/CommandArgs';
+import { Command } from '../../Command';
+import { CommandResult } from '../../classes/CommandResult';
+import { CommandArgs } from '../../classes/CommandArgs';
 
 export class RotateImageCommand extends Command {
     /** SaveServer: false, CheckMessage: true */

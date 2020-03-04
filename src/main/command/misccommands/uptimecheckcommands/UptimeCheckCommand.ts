@@ -1,7 +1,7 @@
 import { RichEmbed } from 'discord.js';
-import { Command } from '../Command';
-import { CommandArgs } from '../classes/CommandArgs';
-import { CommandResult } from '../classes/CommandResult';
+import { Command } from '../../Command';
+import { CommandArgs } from '../../classes/CommandArgs';
+import { CommandResult } from '../../classes/CommandResult';
 
 export class UptimeCheckCommand extends Command {
     public static EMBED_TITLE = 'Uptime Status';
