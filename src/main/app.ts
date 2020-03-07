@@ -22,6 +22,7 @@ export class App {
     public static readonly REACTION_REMOVE = 'messageReactionRemove';
     public static readonly REACTION_DELETED ='messageReactionDeleted';
     public static readonly RAW = 'raw';
+    public static readonly READY = 'ready';
 
     public constructor() {
         this.bot = new Client();
@@ -57,7 +58,7 @@ export class App {
         });
         /* eslint-enable @typescript-eslint/no-unused-vars */
 
-        this.bot.on('ready', (): void => {
+        this.bot.on(App.READY, (): void => {
             log.info('Populating Starboard Cache...');
             StarboardCache.generateStarboardMessagesCache(this.bot, this.storage);
             log.info('I am ready!');
