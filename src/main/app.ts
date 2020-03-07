@@ -11,10 +11,18 @@ import { MessageEventHandler } from './eventhandler/MessageEventHandler';
 import { MessageUpdateEventHandler } from './eventhandler/MessageUpdateEventHandler';
 import { StarboardCache } from './storage/StarboardCache';
 
-class App {
+export class App {
     private bot: Client;
 
     private storage: Storage;
+
+    public static readonly MESSAGE = 'message';
+    public static readonly MESSAGE_UPDATE = 'messageUpdate';
+    public static readonly REACTION_ADD = 'messageReactionAdd';
+    public static readonly REACTION_REMOVE = 'messageReactionRemove';
+    public static readonly REACTION_DELETED ='messageReactionDeleted';
+    public static readonly RAW = 'raw';
+    public static readonly READY = 'ready';
 
     public constructor() {
         this.bot = new Client();
@@ -27,37 +35,30 @@ class App {
      * Contains event emitters that the bot is listening to
      */
     public run(): void {
-        const MESSAGE = MessageEventHandler.EVENT_NAME;
-        const MESSAGE_UPDATE = MessageUpdateEventHandler.EVENT_NAME;
-        const REACTION_ADD = MessageReactionAddEventHandler.EVENT_NAME;
-        const REACTION_REMOVE = MessageReactionRemoveEventHandler.EVENT_NAME;
-        const READY = 'ready';
-        const RAW = RawEventHandler.EVENT_NAME;
-
-        this.bot.on(MESSAGE, (message: Message): void => {
+        this.bot.on(App.MESSAGE, (message: Message): void => {
             new MessageEventHandler(message, this.storage, this.bot.user.id).handleEvent();
         });
 
-        this.bot.on(MESSAGE_UPDATE, (oldMessage: Message, newMessage: Message): void => {
+        this.bot.on(App.MESSAGE_UPDATE, (oldMessage: Message, newMessage: Message): void => {
             new MessageUpdateEventHandler(this.storage, newMessage).handleEvent();
         });
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.bot.on(RAW, (packet: any): void => {
+        this.bot.on(App.RAW, (packet: any): void => {
             new RawEventHandler(this.storage, this.bot, packet).handleEvent();
         });
 
         /* eslint-disable @typescript-eslint/no-unused-vars */
-        this.bot.on(REACTION_ADD, (reaction: MessageReaction, user: User): void => {
+        this.bot.on(App.REACTION_ADD, (reaction: MessageReaction, user: User): void => {
             new MessageReactionAddEventHandler(this.storage, reaction).handleEvent();
         });
 
-        this.bot.on(REACTION_REMOVE, (reaction: MessageReaction, user: User): void => {
+        this.bot.on(App.REACTION_REMOVE, (reaction: MessageReaction, user: User): void => {
             new MessageReactionRemoveEventHandler(this.storage, reaction).handleEvent();
         });
         /* eslint-enable @typescript-eslint/no-unused-vars */
 
-        this.bot.on(READY, (): void => {
+        this.bot.on(App.READY, (): void => {
             log.info('Populating Starboard Cache...');
             StarboardCache.generateStarboardMessagesCache(this.bot, this.storage);
             log.info('I am ready!');
