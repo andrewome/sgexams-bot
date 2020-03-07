@@ -5,8 +5,6 @@ import { Storage } from '../storage/Storage';
 import { StarboardAddReactChecker } from '../modules/starboard/StarboardChecker/StarboardAddReactChecker';
 
 export class MessageReactionAddEventHandler extends EventHandler {
-    public static EVENT_NAME = 'messageReactionAdd';
-
     public reaction: MessageReaction;
 
     public constructor(storage: Storage,

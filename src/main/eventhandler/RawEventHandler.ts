@@ -1,10 +1,9 @@
 import {
  Client, TextChannel, Message, Emoji,
 } from 'discord.js';
+import { App } from '../app';
 import { Storage } from '../storage/Storage';
 import { EventHandler } from './EventHandler';
-import { MessageReactionAddEventHandler } from './MessageReactionAddEventHandler';
-import { MessageReactionRemoveEventHandler } from './MessageReactionRemoveEventHandler';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export class RawEventHandler extends EventHandler {
@@ -12,11 +11,7 @@ export class RawEventHandler extends EventHandler {
 
     public bot: Client;
 
-    public static EVENTS = ['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'];
-
-    public static MESSAGE_REACTION_DELETED_EVENT = 'messageReactionDeleted';
-
-    public static EVENT_NAME = 'raw';
+    public static readonly EVENTS = ['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'];
 
     public constructor(storage: Storage, bot: Client, packet: any) {
         super(storage);
@@ -33,7 +28,6 @@ export class RawEventHandler extends EventHandler {
     public handleEvent(): void {
         const {
             EVENTS,
-            MESSAGE_REACTION_DELETED_EVENT,
         } = RawEventHandler;
 
         // Checks if the packet contains what I want.
@@ -58,24 +52,24 @@ export class RawEventHandler extends EventHandler {
                         this.bot.users.get(this.packet.d.user_id)!,
                     );
 
-                    if (this.packet.t === EVENTS[1]) {
+                    if (this.packet.t === EVENTS[0]) {
                         this.bot.emit(
-                            MessageReactionRemoveEventHandler.EVENT_NAME,
+                            App.REACTION_ADD,
                             reaction,
                             this.bot.users.get(this.packet.d.user_id),
                         );
                     }
 
-                    if (this.packet.t === EVENTS[0]) {
+                    if (this.packet.t === EVENTS[1]) {
                         this.bot.emit(
-                            MessageReactionAddEventHandler.EVENT_NAME,
+                            App.REACTION_REMOVE,
                             reaction,
                             this.bot.users.get(this.packet.d.user_id),
                         );
                     }
                 } else if (this.packet.t === EVENTS[1]) {
                         const removedEmoji = new Emoji(message.guild, this.packet.d.emoji);
-                        this.bot.emit(MESSAGE_REACTION_DELETED_EVENT, message, removedEmoji);
+                        this.bot.emit(App.REACTION_DELETED, message, removedEmoji);
                     }
             });
     }

@@ -5,8 +5,6 @@ import { MessageChecker } from '../modules/messagechecker/MessageChecker';
 import { MessageResponse } from '../modules/messagechecker/response/MessageResponse';
 
 export class MessageUpdateEventHandler extends EventHandler {
-    public static EVENT_NAME = 'messageUpdate';
-
     protected message: Message;
 
     public constructor(storage: Storage, message: Message) {

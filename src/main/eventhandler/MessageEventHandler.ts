@@ -10,8 +10,6 @@ import { EventHandler } from './EventHandler';
 import { CommandArgs } from '../command/classes/CommandArgs';
 
 export class MessageEventHandler extends EventHandler {
-    public static EVENT_NAME = 'message';
-
     private message: Message;
 
     private botId: string;
