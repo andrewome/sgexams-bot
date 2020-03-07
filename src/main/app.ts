@@ -16,12 +16,12 @@ export class App {
 
     private storage: Storage;
 
-    public static readonly MESSAGE: string = 'message';
-    public static readonly MESSAGE_UPDATE: string = 'messageUpdate';
-    public static readonly REACTION_ADD: string = 'messageReactionAdd';
-    public static readonly REACTION_REMOVE: string = 'messageReactionRemove';
-    public static readonly REACTION_DELETED: string ='messageReactionDeleted';
-    public static readonly RAW: string = 'raw';
+    public static readonly MESSAGE = 'message';
+    public static readonly MESSAGE_UPDATE = 'messageUpdate';
+    public static readonly REACTION_ADD = 'messageReactionAdd';
+    public static readonly REACTION_REMOVE = 'messageReactionRemove';
+    public static readonly REACTION_DELETED ='messageReactionDeleted';
+    public static readonly RAW = 'raw';
 
     public constructor() {
         this.bot = new Client();
