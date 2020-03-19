@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, no-restricted-syntax, no-unused-expressions */
 import { should } from 'chai';
-import { RichEmbed, Permissions } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import { MsgCheckerListWordsCommand } from '../../../main/command/messagecheckercommands/MsgCheckerListWordsCommand';
 import { Command } from '../../../main/command/Command';
 import { Server } from '../../../main/storage/Server';
@@ -28,7 +28,7 @@ beforeEach((): void => {
 
 describe('ListCommandsCommand test suite', (): void => {
     it('No permission check', (): void => {
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
@@ -52,7 +52,7 @@ describe('ListCommandsCommand test suite', (): void => {
             server.messageCheckerSettings.addbannedWord(word);
         }
 
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             // Get output string
             let output = '';
             for (const word of bannedWords) {
@@ -78,7 +78,7 @@ describe('ListCommandsCommand test suite', (): void => {
         commandResult.shouldSaveServers.should.be.false;
     });
     it('Embed should show if no bannedWords', (): void => {
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             // Check colour
             embed.color!.toString(16).should.equal(EMBED_DEFAULT_COLOUR);
 

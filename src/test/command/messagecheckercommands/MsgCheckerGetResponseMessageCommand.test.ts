@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, no-unused-expressions */
 import { should } from 'chai';
-import { RichEmbed, Permissions } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import { MsgCheckerGetResponseMessageCommand } from '../../../main/command/messagecheckercommands/MsgCheckerGetResponseMessageCommand';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
@@ -28,7 +28,7 @@ beforeEach((): void => {
 
 describe('MsgCheckerGetResponseMessageCommand class test suite', (): void => {
     it('No permission check', (): void => {
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
@@ -46,7 +46,7 @@ describe('MsgCheckerGetResponseMessageCommand class test suite', (): void => {
         commandResult.shouldSaveServers.should.be.false;
     });
     it('Message not set', (): void => {
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -67,7 +67,7 @@ describe('MsgCheckerGetResponseMessageCommand class test suite', (): void => {
         const responseMessage = 'testing';
         server.messageCheckerSettings.setResponseMessage(responseMessage);
 
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);

@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import {
- RichEmbed, Permissions, Channel, Collection, Client,
+ MessageEmbed, Permissions, Channel, Collection, Client,
 } from 'discord.js';
 import { MsgCheckerSetResponseMessageCommand } from '../../../main/command/messagecheckercommands/MsgCheckerSetResponseMessageCommand';
 import { Command } from '../../../main/command/Command';
@@ -35,7 +35,7 @@ beforeEach((): void => {
 describe('MsgCheckerSetResponseMessageCommand test suite', (): void => {
     it('No permission check', (): void => {
         command = new MsgCheckerSetResponseMessageCommand([]);
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
@@ -55,7 +55,7 @@ describe('MsgCheckerSetResponseMessageCommand test suite', (): void => {
         command = new MsgCheckerSetResponseMessageCommand([]);
         server.messageCheckerSettings.setResponseMessage('XD');
 
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
@@ -78,7 +78,7 @@ describe('MsgCheckerSetResponseMessageCommand test suite', (): void => {
         const msg = `Response Message set to ${responseMessage}`;
         command = new MsgCheckerSetResponseMessageCommand(responseMessage.split(' '));
 
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
