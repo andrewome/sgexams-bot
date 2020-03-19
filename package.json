@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "rimraf -rf build/ && npm run build && mocha \"./build/test/**/*.js\"",
+    "test": "rimraf -rf build/ && npm run build && mocha --exit \"./build/test/**/*.js\"",
     "start": "npm run build:live",
     "build": "tsc -p .",
     "build:live": "nodemon"
