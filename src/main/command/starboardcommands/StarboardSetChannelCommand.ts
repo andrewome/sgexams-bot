@@ -1,5 +1,5 @@
 import {
-  MessageEmbed, Permissions, Channel,
+    MessageEmbed, Permissions, Channel,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -93,7 +93,7 @@ export class StarboardSetChannelCommand extends Command {
         const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(StarboardSetChannelCommand.EMBED_TITLE,
-            StarboardSetChannelCommand.CHANNEL_RESETTED);
+                       StarboardSetChannelCommand.CHANNEL_RESETTED);
 
         return embed;
     }
@@ -108,7 +108,7 @@ export class StarboardSetChannelCommand extends Command {
         const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
         embed.addField(StarboardSetChannelCommand.EMBED_TITLE,
-            StarboardSetChannelCommand.CHANNEL_NOT_FOUND);
+                       StarboardSetChannelCommand.CHANNEL_NOT_FOUND);
 
         return embed;
     }
@@ -123,7 +123,7 @@ export class StarboardSetChannelCommand extends Command {
         const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
         embed.addField(StarboardSetChannelCommand.EMBED_TITLE,
-            StarboardSetChannelCommand.NOT_TEXT_CHANNEL);
+                       StarboardSetChannelCommand.NOT_TEXT_CHANNEL);
 
         return embed;
     }

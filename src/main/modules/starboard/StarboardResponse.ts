@@ -1,5 +1,5 @@
 import {
- MessageReaction, TextChannel, Message, MessageAttachment, MessageEmbed, Collection,
+    MessageReaction, TextChannel, Message, MessageAttachment, MessageEmbed, Collection,
 } from 'discord.js';
 import { StarboardSettings } from '../../storage/StarboardSettings';
 import { StarboardCache } from '../../storage/StarboardCache';
@@ -29,34 +29,34 @@ export class StarboardResponse {
                embeds: MessageEmbed[],
                attachments: Collection <string, MessageAttachment>): void => {
 
-            // Check embeds for image
-            if (embeds.length > 0) {
-                const msgEmbed = embeds[0];
-                const { thumbnail } = msgEmbed;
+                // Check embeds for image
+                if (embeds.length > 0) {
+                    const msgEmbed = embeds[0];
+                    const { thumbnail } = msgEmbed;
 
-                // We're using thumbnail url here because instagram and imgur.
-                // Still works though!
-                if (msgEmbed.type === 'image' && thumbnail) {
-                    embed.setImage(thumbnail.url);
+                    // We're using thumbnail url here because instagram and imgur.
+                    // Still works though!
+                    if (msgEmbed.type === 'image' && thumbnail) {
+                        embed.setImage(thumbnail.url);
+                    }
                 }
-            }
 
-            // Check attachments
-            // setImage is overriden if img because attachment takes presidence.
-            if (attachments.size > 0) {
-                const file = attachments.array()[0];
-                const { url, name } = file;
-                const splittedFileUrl = url.split('.');
-                const typeOfImage = splittedFileUrl[splittedFileUrl.length - 1];
-                const image = /(jpg|jpeg|png|gif|webp)/gi.test(typeOfImage);
-                if (image) {
-                    embed.setImage(url);
-                } else {
-                    // It is an attachment that is not an image, send as attachment.
-                    embed.addField('Attachment', `[${name}](${url})`, false);
+                // Check attachments
+                // setImage is overriden if img because attachment takes presidence.
+                if (attachments.size > 0) {
+                    const file = attachments.array()[0];
+                    const { url, name } = file;
+                    const splittedFileUrl = url.split('.');
+                    const typeOfImage = splittedFileUrl[splittedFileUrl.length - 1];
+                    const image = /(jpg|jpeg|png|gif|webp)/gi.test(typeOfImage);
+                    if (image) {
+                        embed.setImage(url);
+                    } else {
+                        // It is an attachment that is not an image, send as attachment.
+                        embed.addField('Attachment', `[${name}](${url})`, false);
+                    }
                 }
-            }
-        };
+            };
 
         return new Promise<void>((): void => {
             const starboardChannelId = this.starboardSettings.getChannel()!;
@@ -76,7 +76,7 @@ export class StarboardResponse {
 
             // Generate embed
             let username = '';
-            if (nickname === null) {
+            if (!nickname) {
                 username = `${tag}`;
             } else {
                 username = `${nickname}, aka ${tag}`;

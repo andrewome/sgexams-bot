@@ -1,5 +1,5 @@
 {
-  "name": "discord-bad-words-bot",
+  "name": "sgexams-bot",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -22,6 +22,7 @@
   "dependencies": {
     "@types/dotenv": "^8.2.0",
     "@types/sharp": "^0.22.3",
+    "@types/ws": "^7.2.3",
     "axios": "^0.19.2",
     "discord.js": "^12.0.2",
     "dotenv": "^8.2.0",

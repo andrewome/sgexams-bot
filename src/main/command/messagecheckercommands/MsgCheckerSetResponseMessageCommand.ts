@@ -69,7 +69,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
         const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(MsgCheckerSetResponseMessageCommand.EMBED_TITLE,
-            MsgCheckerSetResponseMessageCommand.MESSAGE_RESETTED);
+                       MsgCheckerSetResponseMessageCommand.MESSAGE_RESETTED);
 
         return embed;
     }

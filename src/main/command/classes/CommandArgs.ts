@@ -1,5 +1,5 @@
 import {
- Permissions, Channel, GuildChannelManager, GuildEmojiManager
+    Permissions, Channel, GuildChannelManager, GuildEmojiManager,
 } from 'discord.js';
 import { Server } from '../../storage/Server';
 

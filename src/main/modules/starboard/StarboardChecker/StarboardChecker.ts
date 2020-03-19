@@ -1,5 +1,5 @@
 import {
- MessageReaction, User, Collection, TextChannel, Message,
+    MessageReaction, User, Collection, TextChannel, Message,
 } from 'discord.js';
 import { StarboardSettings } from '../../../storage/StarboardSettings';
 import { StarboardCache } from '../../../storage/StarboardCache';

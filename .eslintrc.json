@@ -30,7 +30,22 @@
         "class-methods-use-this": "off",
         "import/prefer-default-export": "off",
         "import/no-extraneous-dependencies": "off",
-        "padded-blocks": "off"
+        "padded-blocks": "off",
+        "max-classes-per-file": "off",
+        "indent": [
+            "error", 
+            4, 
+            {
+                "SwitchCase": 1,
+                "ImportDeclaration": "first",
+                "FunctionDeclaration": { "parameters": "first" },
+                "FunctionExpression": { "parameters": "first" },
+                "CallExpression": { "arguments": "first" },
+                "ArrayExpression": "first",
+                "ObjectExpression": "first"
+            }
+        ],
+        "import/extensions": "off"
     },
     "settings": {
         "import/resolver": {

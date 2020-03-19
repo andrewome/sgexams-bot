@@ -94,7 +94,7 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
         const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
         embed.addField(MsgCheckerSetDeleteMessageCommand.EMBED_TITLE,
-            MsgCheckerSetDeleteMessageCommand.NO_ARGUMENTS);
+                       MsgCheckerSetDeleteMessageCommand.NO_ARGUMENTS);
 
         return embed;
     }
@@ -109,7 +109,7 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
         const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
         embed.addField(MsgCheckerSetDeleteMessageCommand.EMBED_TITLE,
-            MsgCheckerSetDeleteMessageCommand.INCORRECT_FORMAT);
+                       MsgCheckerSetDeleteMessageCommand.INCORRECT_FORMAT);
 
         return embed;
     }

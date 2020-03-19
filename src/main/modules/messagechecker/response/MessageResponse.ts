@@ -49,26 +49,28 @@ export class MessageResponse {
             = (embed: MessageEmbed, content: string, contexts: string): void => {
             // Some strings may be too long. Remove all grave accents and
             // split it up because field can only take in 1024 chars.
-            content = content.replace(/```/g, '');
-            const contents: string[] = [];
-            while (content.length > this.FIELD_CHAR_LIMIT) {
-                contents.push(content.substring(0, this.FIELD_CHAR_LIMIT - 12) + this.DOTDOTDOT);
-                content = content.substring(this.FIELD_CHAR_LIMIT - 12, content.length);
-            }
-            contents.push(content.substring(0, content.length));
+                content = content.replace(/```/g, '');
+                const contents: string[] = [];
+                while (content.length > this.FIELD_CHAR_LIMIT) {
+                    contents.push(
+                        content.substring(0, this.FIELD_CHAR_LIMIT - 12) + this.DOTDOTDOT,
+                    );
+                    content = content.substring(this.FIELD_CHAR_LIMIT - 12, content.length);
+                }
+                contents.push(content.substring(0, content.length));
 
-            if (contexts.length > this.FIELD_CHAR_LIMIT) {
-                contexts = contexts.substr(0, 980);
-                contexts += this.MESSAGE_TOO_LONG;
-            }
-            embed.setDescription(`${this.CODE_BLOCK}${contents[0]}${this.CODE_BLOCK}`);
+                if (contexts.length > this.FIELD_CHAR_LIMIT) {
+                    contexts = contexts.substr(0, 980);
+                    contexts += this.MESSAGE_TOO_LONG;
+                }
+                embed.setDescription(`${this.CODE_BLOCK}${contents[0]}${this.CODE_BLOCK}`);
 
-            // Add rest of contents in (if any)
-            contents.shift();
-            for (const otherContent of contents) {
-                embed.addField(this.CONTINUED, `${this.CODE_BLOCK}${otherContent}${this.CODE_BLOCK}`);
-            }
-        };
+                // Add rest of contents in (if any)
+                contents.shift();
+                for (const otherContent of contents) {
+                    embed.addField(this.CONTINUED, `${this.CODE_BLOCK}${otherContent}${this.CODE_BLOCK}`);
+                }
+            };
         /* eslint-enable no-param-reassign */
 
         const { tag } = this.message.author;
@@ -82,7 +84,7 @@ export class MessageResponse {
 
         // Generate strings
         let offenderStr = '';
-        if (username === null) {
+        if (!username) {
             offenderStr = `${tag}`;
         } else {
             offenderStr = `${username}, aka ${tag}`;

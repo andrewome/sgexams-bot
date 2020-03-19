@@ -92,10 +92,13 @@ export class MessageEventHandler extends EventHandler {
             const { uptime } = this.message.client;
             const sendFunction = this.message.channel.send.bind(this.message.channel);
             const deleteFunction = this.message.delete.bind(this.message);
-            const commandArgs = new CommandArgs(server, permissions,
-                                                sendFunction, uptime!,
-                                                channels, emojis,
-                                                channel, id, deleteFunction);
+            const commandArgs = new CommandArgs(
+                server, permissions,
+                sendFunction, uptime!,
+                channels, emojis,
+                channel, id, deleteFunction,
+            );
+
             // Execute command with commandArgs.
             const command = commandParser.getCommand();
             log.info(`${tag} issued command ${command.constructor.name} in ` +

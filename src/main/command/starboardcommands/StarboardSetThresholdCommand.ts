@@ -77,7 +77,7 @@ export class StarboardSetThresholdCommand extends Command {
         const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(StarboardSetThresholdCommand.EMBED_TITLE,
-            StarboardSetThresholdCommand.THRESHOLD_RESETTED);
+                       StarboardSetThresholdCommand.THRESHOLD_RESETTED);
         return embed;
     }
 
@@ -91,7 +91,7 @@ export class StarboardSetThresholdCommand extends Command {
         const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
         embed.addField(StarboardSetThresholdCommand.EMBED_TITLE,
-            StarboardSetThresholdCommand.NOT_AN_INTEGER);
+                       StarboardSetThresholdCommand.NOT_AN_INTEGER);
         return embed;
     }
 

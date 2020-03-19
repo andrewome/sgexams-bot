@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import {
- MessageEmbed, Permissions, Channel, Collection, Client,
+    MessageEmbed, Permissions,
 } from 'discord.js';
 import { MsgCheckerSetResponseMessageCommand } from '../../../main/command/messagecheckercommands/MsgCheckerSetResponseMessageCommand';
 import { Command } from '../../../main/command/Command';
@@ -29,7 +29,7 @@ beforeEach((): void => {
         '123',
         new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
-);
+    );
 });
 
 describe('MsgCheckerSetResponseMessageCommand test suite', (): void => {

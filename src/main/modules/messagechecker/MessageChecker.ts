@@ -133,7 +133,7 @@ export class MessageChecker {
                             } else {
                                 resolve(null);
                             }
-                    });
+                        });
                 });
             } else { // Trivial check
                 this.checkWord(convertedContext, bannedWord).then((isBadWord: boolean): void => {

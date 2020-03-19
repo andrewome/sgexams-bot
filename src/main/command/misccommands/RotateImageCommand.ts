@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring, no-shadow */
 import {
- TextChannel, Message, MessageReaction,
- User, ReactionCollectorOptions,
+    TextChannel, Message, MessageReaction,
+    User, ReactionCollectorOptions,
 } from 'discord.js';
 import sharp, { Sharp } from 'sharp';
 import axios from 'axios';

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import { should } from 'chai';
-import { RichEmbed, Permissions } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -20,12 +20,12 @@ beforeEach((): void => {
         '123',
         new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
-);
+    );
 });
 
 describe('StarboardHelp Command Test Suite', (): void => {
     it('Execute test', (): void => {
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);

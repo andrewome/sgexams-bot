@@ -1,5 +1,5 @@
 import {
- Permissions, MessageEmbed,
+    Permissions, MessageEmbed,
 } from 'discord.js';
 import { CommandResult } from './classes/CommandResult';
 import { CommandArgs } from './classes/CommandArgs';

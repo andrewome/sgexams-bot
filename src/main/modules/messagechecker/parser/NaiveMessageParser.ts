@@ -58,9 +58,10 @@ export class NaiveMessageParser extends MessageParser {
                 const isEmote = this.checkIsEmote(originalContent, originalContext);
 
                 // Make sure no duplicates
-                const contextToBeAdded = new Context(bannedWord,
-                    originalContext,
-                    convertedContext);
+                const contextToBeAdded
+                    = new Context(bannedWord,
+                                  originalContext,
+                                  convertedContext);
                 let found = false;
                 for (const context of contextOfBannedWords) {
                     if (context.equals(contextToBeAdded)) {

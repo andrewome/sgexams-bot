@@ -60,7 +60,7 @@ export class MsgCheckerAddWordCommand extends Command {
      * @returns RichEmbed
      */
     public generateEmbed(wordsAdded: string[],
-        wordsNotAdded: string[]): MessageEmbed {
+                         wordsNotAdded: string[]): MessageEmbed {
         const words = this.args;
         let embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if (wordsAdded.length !== 0) {

@@ -34,7 +34,7 @@ export class MsgCheckerGetResponseMessageCommand extends Command {
         const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if (responseMessage === null) {
             embed.addField(MsgCheckerGetResponseMessageCommand.EMBED_TITLE,
-                MsgCheckerGetResponseMessageCommand.CHANNEL_NOT_SET);
+                           MsgCheckerGetResponseMessageCommand.CHANNEL_NOT_SET);
         } else {
             const msg = `Response message is ${responseMessage}.`;
             embed.addField(MsgCheckerGetResponseMessageCommand.EMBED_TITLE, msg);

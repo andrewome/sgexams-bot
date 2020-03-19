@@ -64,14 +64,15 @@ export class StarboardRemoveEmojiCommand extends Command {
             messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
-            embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(
-                StarboardRemoveEmojiCommand.EMBED_TITLE,
-                StarboardRemoveEmojiCommand.MAYBE_EMOJI_NOT_INSIDE,
-            );
-            // Send output
-            messageReply(embed);
-            return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
+
+        embed.setColor(Command.EMBED_ERROR_COLOUR);
+        embed.addField(
+            StarboardRemoveEmojiCommand.EMBED_TITLE,
+            StarboardRemoveEmojiCommand.MAYBE_EMOJI_NOT_INSIDE,
+        );
+        // Send output
+        messageReply(embed);
+        return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
     }
 
     /**

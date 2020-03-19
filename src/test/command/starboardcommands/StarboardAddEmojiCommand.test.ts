@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import {
- MessageEmbed, Permissions, Collection, Channel, Client, Emoji, Guild,
+    MessageEmbed, Permissions, Collection, Emoji,
 } from 'discord.js';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -42,7 +42,7 @@ beforeEach((): void => {
         '123',
         new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
-);
+    );
 });
 
 describe('StarboardAddEmojiCommand test suite', (): void => {

@@ -38,6 +38,7 @@ export class OkBoomerCommand extends Command {
                     await message.react(emoji);
                 }
             })
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             .catch((err): void => {}); // Do nothing
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;

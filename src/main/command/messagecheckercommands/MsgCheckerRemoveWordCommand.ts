@@ -86,7 +86,7 @@ export class MsgCheckerRemoveWordCommand extends Command {
             embed = new MessageEmbed()
                 .setColor(Command.EMBED_ERROR_COLOUR)
                 .addField(Command.ERROR_EMBED_TITLE,
-                    MsgCheckerRemoveWordCommand.NO_ARGUMENTS);
+                          MsgCheckerRemoveWordCommand.NO_ARGUMENTS);
         }
 
         return embed;

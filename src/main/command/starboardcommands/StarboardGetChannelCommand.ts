@@ -52,7 +52,7 @@ export class StarboardGetChannelCommand extends Command {
         const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(StarboardGetChannelCommand.EMBED_TITLE,
-            StarboardGetChannelCommand.CHANNEL_NOT_SET);
+                       StarboardGetChannelCommand.CHANNEL_NOT_SET);
 
         return embed;
     }

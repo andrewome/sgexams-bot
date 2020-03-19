@@ -19,8 +19,8 @@ export class StarboardRemoveReactChecker extends StarboardChecker {
             // If exists, definitely need to update (delete or edit)
             const starboardMsgId = this.fetchStarboardId();
             if (starboardMsgId !== null) {
-               // Get the count of the number of
-               // reactions of starboard emoji.
+                // Get the count of the number of
+                // reactions of starboard emoji.
                 this.getNumberOfReactions()
                     .then((size: number): void => {
                         resolve([size, starboardMsgId]);

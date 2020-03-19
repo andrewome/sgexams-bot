@@ -34,7 +34,7 @@ export class MsgCheckerGetReportChannelCommand extends Command {
         const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if (channelId === null) {
             embed.addField(MsgCheckerGetReportChannelCommand.EMBED_TITLE,
-                MsgCheckerGetReportChannelCommand.CHANNEL_NOT_SET);
+                           MsgCheckerGetReportChannelCommand.CHANNEL_NOT_SET);
         } else {
             const msg = `Reporting Channel is currently set to <#${channelId}>.`;
             embed.addField(MsgCheckerGetReportChannelCommand.EMBED_TITLE, msg);

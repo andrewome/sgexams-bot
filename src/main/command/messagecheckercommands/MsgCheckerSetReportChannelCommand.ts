@@ -1,5 +1,5 @@
 import {
- Permissions, MessageEmbed, Channel,
+    Permissions, MessageEmbed, Channel,
 } from 'discord.js';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -88,8 +88,10 @@ export class MsgCheckerSetReportChannelCommand extends Command {
     private generateResetEmbed(): MessageEmbed {
         const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(MsgCheckerSetReportChannelCommand.EMBED_TITLE,
-        MsgCheckerSetReportChannelCommand.CHANNEL_RESETTED);
+        embed.addField(
+            MsgCheckerSetReportChannelCommand.EMBED_TITLE,
+            MsgCheckerSetReportChannelCommand.CHANNEL_RESETTED,
+        );
 
         return embed;
     }
@@ -105,7 +107,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
         embed.addField(MsgCheckerSetReportChannelCommand.EMBED_TITLE,
-            MsgCheckerSetReportChannelCommand.CHANNEL_NOT_FOUND);
+                       MsgCheckerSetReportChannelCommand.CHANNEL_NOT_FOUND);
 
         return embed;
     }
@@ -121,7 +123,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
         embed.addField(MsgCheckerSetReportChannelCommand.EMBED_TITLE,
-            MsgCheckerSetReportChannelCommand.NOT_TEXT_CHANNEL);
+                       MsgCheckerSetReportChannelCommand.NOT_TEXT_CHANNEL);
 
         return embed;
     }

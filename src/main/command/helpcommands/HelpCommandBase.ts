@@ -15,7 +15,8 @@ export abstract class HelpCommandBase extends Command {
      * @returns RichEmbed
      */
     /* eslint-disable class-methods-use-this */
-    protected generateEmbed(header: string, commands: string[], descriptions: string[]): MessageEmbed {
+    protected generateEmbed(header: string, commands: string[],
+                            descriptions: string[]): MessageEmbed {
         const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
 

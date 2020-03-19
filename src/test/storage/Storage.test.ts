@@ -31,12 +31,12 @@ beforeEach((): void => {
         '111',
         new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
-);
+    );
     server2 = new Server(
         '112',
         new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
-);
+    );
 });
 
 // Delete the json file after each

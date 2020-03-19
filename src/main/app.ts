@@ -1,10 +1,10 @@
 import './lib/env';
 import {
- Client, Message, MessageReaction, User,
+    Client, Message, MessageReaction, User,
 } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
 import { Storage } from './storage/Storage';
-import { RawEventHandler } from './eventhandler/RawEventHandler';
+// import { RawEventHandler } from './eventhandler/RawEventHandler';
 import { MessageReactionAddEventHandler } from './eventhandler/MessageReactionAddEventHandler';
 import { MessageReactionRemoveEventHandler } from './eventhandler/MessageReactionRemoveEventHandler';
 import { MessageEventHandler } from './eventhandler/MessageEventHandler';
@@ -17,16 +17,22 @@ export class App {
     private storage: Storage;
 
     public static readonly MESSAGE = 'message';
+
     public static readonly MESSAGE_UPDATE = 'messageUpdate';
+
     public static readonly REACTION_ADD = 'messageReactionAdd';
+
     public static readonly REACTION_REMOVE = 'messageReactionRemove';
-    public static readonly REACTION_DELETED ='messageReactionDeleted';
+
+    public static readonly REACTION_DELETED = 'messageReactionDeleted';
+
     public static readonly RAW = 'raw';
+
     public static readonly READY = 'ready';
 
     public constructor() {
         // set restTimeOffset to 0ms, original 500ms.
-        this.bot = new Client({restTimeOffset: 0});
+        this.bot = new Client({ restTimeOffset: 0 });
         log.info('Logging the bot in...');
         this.bot.login(process.env.BOT_TOKEN);
         this.storage = new Storage().loadServers();
@@ -45,9 +51,9 @@ export class App {
         });
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.bot.on(App.RAW, (packet: any): void => {
-            new RawEventHandler(this.storage, this.bot, packet).handleEvent();
-        });
+        // this.bot.on(App.RAW, (packet: any): void => {
+        //     new RawEventHandler(this.storage, this.bot, packet).handleEvent();
+        // });
 
         /* eslint-disable @typescript-eslint/no-unused-vars */
         this.bot.on(App.REACTION_ADD, (reaction: MessageReaction, user: User): void => {

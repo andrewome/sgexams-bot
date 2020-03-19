@@ -52,7 +52,7 @@ export class StarboardGetEmojiCommand extends Command {
     private generateNotSetEmbed(): MessageEmbed {
         const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(StarboardGetEmojiCommand.EMBED_TITLE,
-            StarboardGetEmojiCommand.EMOJI_NOT_SET);
+                       StarboardGetEmojiCommand.EMOJI_NOT_SET);
 
         return embed;
     }

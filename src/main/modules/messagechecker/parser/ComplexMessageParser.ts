@@ -145,9 +145,10 @@ export class ComplexMessageParser extends MessageParser {
                 // Check if it is an emote.
                 const isEmote = this.checkIsEmote(originalContent, originalContext);
 
-                const contextToBeAdded = new Context(foundRegex.word,
-                    originalContext,
-                    convertedContext);
+                const contextToBeAdded
+                    = new Context(foundRegex.word,
+                                  originalContext,
+                                  convertedContext);
 
                 // Check for duplicates
                 let found = false;

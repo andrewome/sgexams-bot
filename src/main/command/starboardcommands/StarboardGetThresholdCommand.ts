@@ -49,7 +49,7 @@ export class StarboardGetThresholdCommand extends Command {
     private generateNotSetEmbed(): MessageEmbed {
         const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(StarboardGetThresholdCommand.EMBED_TITLE,
-            StarboardGetThresholdCommand.THRESHOLD_NOT_SET);
+                       StarboardGetThresholdCommand.THRESHOLD_NOT_SET);
 
         return embed;
     }

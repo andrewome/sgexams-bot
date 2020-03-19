@@ -27,7 +27,7 @@ beforeEach((): void => {
         '123',
         new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
-);
+    );
 });
 
 describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {

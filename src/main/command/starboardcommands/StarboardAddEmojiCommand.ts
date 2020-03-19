@@ -1,5 +1,5 @@
 import {
- Permissions, MessageEmbed,
+    Permissions, MessageEmbed,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -85,14 +85,15 @@ export class StarboardAddEmojiCommand extends Command {
             messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
-            embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(
-                StarboardAddEmojiCommand.EMBED_TITLE,
-                StarboardAddEmojiCommand.MAYBE_EMOJI_ALREADY_ADDED,
-            );
 
-            // Send output
-            messageReply(embed);
-            return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
+        embed.setColor(Command.EMBED_ERROR_COLOUR);
+        embed.addField(
+            StarboardAddEmojiCommand.EMBED_TITLE,
+            StarboardAddEmojiCommand.MAYBE_EMOJI_ALREADY_ADDED,
+        );
+
+        // Send output
+        messageReply(embed);
+        return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
     }
 }
