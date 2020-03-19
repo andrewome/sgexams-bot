@@ -1,4 +1,4 @@
-import { RichEmbed, Permissions } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -43,7 +43,7 @@ export class StarboardSetThresholdCommand extends Command {
         }
 
         // Execute
-        let embed: RichEmbed;
+        let embed: MessageEmbed;
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
             server.starboardSettings.setThreshold(null);
@@ -73,8 +73,8 @@ export class StarboardSetThresholdCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateResetEmbed(): RichEmbed {
-        const embed = new RichEmbed();
+    private generateResetEmbed(): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(StarboardSetThresholdCommand.EMBED_TITLE,
             StarboardSetThresholdCommand.THRESHOLD_RESETTED);
@@ -87,8 +87,8 @@ export class StarboardSetThresholdCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateInvalidEmbed(): RichEmbed {
-        const embed = new RichEmbed();
+    private generateInvalidEmbed(): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
         embed.addField(StarboardSetThresholdCommand.EMBED_TITLE,
             StarboardSetThresholdCommand.NOT_AN_INTEGER);
@@ -102,8 +102,8 @@ export class StarboardSetThresholdCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateValidEmbed(threshold: number): RichEmbed {
-        const embed = new RichEmbed();
+    private generateValidEmbed(threshold: number): MessageEmbed {
+        const embed = new MessageEmbed();
         const msg = `Starboard threshold set to ${threshold}.`;
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(StarboardSetThresholdCommand.EMBED_TITLE, msg);

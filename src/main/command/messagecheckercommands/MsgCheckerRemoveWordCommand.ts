@@ -1,4 +1,4 @@
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
@@ -60,8 +60,8 @@ export class MsgCheckerRemoveWordCommand extends Command {
      * @returns RichEmbed
      */
     public generateEmbed(wordsRemoved: string[],
-        wordsNotRemoved: string[]): RichEmbed {
-        let embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
+                         wordsNotRemoved: string[]): MessageEmbed {
+        let embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         const words = this.args;
         if (wordsRemoved.length !== 0) {
             let output = '';
@@ -83,7 +83,7 @@ export class MsgCheckerRemoveWordCommand extends Command {
         }
 
         if (words.length === 0) {
-            embed = new RichEmbed()
+            embed = new MessageEmbed()
                 .setColor(Command.EMBED_ERROR_COLOUR)
                 .addField(Command.ERROR_EMBED_TITLE,
                     MsgCheckerRemoveWordCommand.NO_ARGUMENTS);

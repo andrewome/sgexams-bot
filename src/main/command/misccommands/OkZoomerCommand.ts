@@ -1,4 +1,4 @@
-import { TextChannel, Message } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -34,8 +34,7 @@ export class OkZoomerCommand extends Command {
     // Delete message that sent this command to prevent spam.
     deleteFunction!();
 
-    (channel as TextChannel)
-      .fetchMessage(messageId)
+    (channel as TextChannel).messages.fetch(messageId)
       .then(
         async (message: Message): Promise<void> => {
           for (const emoji of this.emojiSequence) {

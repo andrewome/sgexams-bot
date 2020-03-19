@@ -1,5 +1,5 @@
 import {
- Permissions, RichEmbed, Collection, Emoji,
+ Permissions, MessageEmbed,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -36,8 +36,8 @@ export class StarboardAddEmojiCommand extends Command {
      */
     public execute(commandArgs: CommandArgs): CommandResult {
         const {
- server, memberPerms, messageReply, emojis,
-} = commandArgs;
+            server, memberPerms, messageReply, emojis,
+        } = commandArgs;
         const { starboardSettings } = server;
 
         // Check for permissions first
@@ -47,7 +47,7 @@ export class StarboardAddEmojiCommand extends Command {
         }
 
         // Check if there's arguments
-        const embed = new RichEmbed();
+        const embed = new MessageEmbed();
         if (this.args.length === 0) {
             embed.setColor(Command.EMBED_ERROR_COLOUR);
             embed.addField(
@@ -62,7 +62,7 @@ export class StarboardAddEmojiCommand extends Command {
         const emojiId = this.args[0];
 
         // Check if valid emoji
-        const emoji = (emojis as Collection<string, Emoji>).get(emojiId);
+        const emoji = emojis!.resolve(emojiId);
         if (typeof emoji === 'undefined') {
             embed.setColor(Command.EMBED_ERROR_COLOUR);
             embed.addField(
@@ -75,11 +75,11 @@ export class StarboardAddEmojiCommand extends Command {
 
         // Add emoji
         const successfullyAdded
-            = starboardSettings.addEmoji(new SimplifiedEmoji(emoji.name, emoji.id));
+            = starboardSettings.addEmoji(new SimplifiedEmoji(emoji!.name, emoji!.id));
 
         if (successfullyAdded) {
             embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(StarboardAddEmojiCommand.EMBED_TITLE, `✅Added Emoji: <:${emoji.name}:${emoji.id}>`);
+            embed.addField(StarboardAddEmojiCommand.EMBED_TITLE, `✅Added Emoji: <:${emoji!.name}:${emoji!.id}>`);
 
             // Send output
             messageReply(embed);

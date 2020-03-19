@@ -1,4 +1,4 @@
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -75,8 +75,8 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateValidEmbed(bool: boolean): RichEmbed {
-        const embed = new RichEmbed();
+    private generateValidEmbed(bool: boolean): MessageEmbed {
+        const embed = new MessageEmbed();
         const msg = `Delete Message set to: **${bool ? 'TRUE' : 'FALSE'}**`;
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(MsgCheckerSetDeleteMessageCommand.EMBED_TITLE, msg);
@@ -90,8 +90,8 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateNoArgsEmbed(): RichEmbed {
-        const embed = new RichEmbed();
+    private generateNoArgsEmbed(): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
         embed.addField(MsgCheckerSetDeleteMessageCommand.EMBED_TITLE,
             MsgCheckerSetDeleteMessageCommand.NO_ARGUMENTS);
@@ -105,8 +105,8 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateWrongFormatEmbed(): RichEmbed {
-        const embed = new RichEmbed();
+    private generateWrongFormatEmbed(): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
         embed.addField(MsgCheckerSetDeleteMessageCommand.EMBED_TITLE,
             MsgCheckerSetDeleteMessageCommand.INCORRECT_FORMAT);

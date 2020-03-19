@@ -25,7 +25,8 @@ export class App {
     public static readonly READY = 'ready';
 
     public constructor() {
-        this.bot = new Client();
+        // set restTimeOffset to 0ms, original 500ms.
+        this.bot = new Client({restTimeOffset: 0});
         log.info('Logging the bot in...');
         this.bot.login(process.env.BOT_TOKEN);
         this.storage = new Storage().loadServers();
@@ -36,7 +37,7 @@ export class App {
      */
     public run(): void {
         this.bot.on(App.MESSAGE, (message: Message): void => {
-            new MessageEventHandler(message, this.storage, this.bot.user.id).handleEvent();
+            new MessageEventHandler(message, this.storage, this.bot.user!.id).handleEvent();
         });
 
         this.bot.on(App.MESSAGE_UPDATE, (oldMessage: Message, newMessage: Message): void => {
@@ -62,7 +63,7 @@ export class App {
             log.info('Populating Starboard Cache...');
             StarboardCache.generateStarboardMessagesCache(this.bot, this.storage);
             log.info('I am ready!');
-            this.bot.user.setActivity('with NUKES!!!!', { type: 'PLAYING' });
+            this.bot.user!.setActivity('with NUKES!!!!', { type: 'PLAYING' });
         });
     }
 }

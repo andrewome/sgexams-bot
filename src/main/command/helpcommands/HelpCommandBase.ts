@@ -1,4 +1,4 @@
-import { RichEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 
@@ -15,8 +15,8 @@ export abstract class HelpCommandBase extends Command {
      * @returns RichEmbed
      */
     /* eslint-disable class-methods-use-this */
-    protected generateEmbed(header: string, commands: string[], descriptions: string[]): RichEmbed {
-        const embed = new RichEmbed();
+    protected generateEmbed(header: string, commands: string[], descriptions: string[]): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
 
         let output = '';

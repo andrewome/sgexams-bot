@@ -1,4 +1,4 @@
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
@@ -41,7 +41,7 @@ export class StarboardRemoveEmojiCommand extends Command {
         }
 
         // Check if there's arguments
-        const embed = new RichEmbed();
+        const embed = new MessageEmbed();
         if (this.args.length === 0) {
             embed.setColor(Command.EMBED_ERROR_COLOUR);
             embed.addField(

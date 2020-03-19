@@ -1,4 +1,4 @@
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
@@ -60,9 +60,9 @@ export class MsgCheckerAddWordCommand extends Command {
      * @returns RichEmbed
      */
     public generateEmbed(wordsAdded: string[],
-        wordsNotAdded: string[]): RichEmbed {
+        wordsNotAdded: string[]): MessageEmbed {
         const words = this.args;
-        let embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
+        let embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if (wordsAdded.length !== 0) {
             let output = '';
             for (let i = 0; i < wordsAdded.length; i++) {
@@ -83,7 +83,7 @@ export class MsgCheckerAddWordCommand extends Command {
         }
 
         if (words.length === 0) {
-            embed = new RichEmbed()
+            embed = new MessageEmbed()
                 .setColor(Command.EMBED_ERROR_COLOUR)
                 .addField(
                     MsgCheckerAddWordCommand.ERROR_EMBED_TITLE,

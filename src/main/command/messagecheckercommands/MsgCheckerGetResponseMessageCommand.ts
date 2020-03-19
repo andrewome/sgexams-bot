@@ -1,4 +1,4 @@
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -31,7 +31,7 @@ export class MsgCheckerGetResponseMessageCommand extends Command {
 
         // Get embed
         const responseMessage = server.messageCheckerSettings.getResponseMessage();
-        const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
+        const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if (responseMessage === null) {
             embed.addField(MsgCheckerGetResponseMessageCommand.EMBED_TITLE,
                 MsgCheckerGetResponseMessageCommand.CHANNEL_NOT_SET);

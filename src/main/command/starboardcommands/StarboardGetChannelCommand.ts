@@ -1,4 +1,4 @@
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -48,8 +48,8 @@ export class StarboardGetChannelCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateNotSetEmbed(): RichEmbed {
-        const embed = new RichEmbed();
+    private generateNotSetEmbed(): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(StarboardGetChannelCommand.EMBED_TITLE,
             StarboardGetChannelCommand.CHANNEL_NOT_SET);
@@ -64,8 +64,8 @@ export class StarboardGetChannelCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateValidEmbed(channelId: string): RichEmbed {
-        const embed = new RichEmbed();
+    private generateValidEmbed(channelId: string): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         const msg = `Starboard Channel is currently set to <#${channelId}>.`;
         embed.addField(StarboardGetChannelCommand.EMBED_TITLE, msg);

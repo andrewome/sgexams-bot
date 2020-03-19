@@ -1,4 +1,4 @@
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -38,7 +38,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        let embed: RichEmbed;
+        let embed: MessageEmbed;
 
         // Check if no args
         if (this.args.length === 0) {
@@ -65,8 +65,8 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateResetEmbed(): RichEmbed {
-        const embed = new RichEmbed();
+    private generateResetEmbed(): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(MsgCheckerSetResponseMessageCommand.EMBED_TITLE,
             MsgCheckerSetResponseMessageCommand.MESSAGE_RESETTED);
@@ -81,8 +81,8 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateValidEmbed(msg: string): RichEmbed {
-        const embed = new RichEmbed();
+    private generateValidEmbed(msg: string): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         const responseMessage = `Response Message set to ${msg}`;
         embed.addField(MsgCheckerSetResponseMessageCommand.EMBED_TITLE, responseMessage);

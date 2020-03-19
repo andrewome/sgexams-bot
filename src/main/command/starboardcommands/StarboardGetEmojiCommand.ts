@@ -1,4 +1,4 @@
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { SimplifiedEmoji } from '../../storage/StarboardSettings';
@@ -49,8 +49,8 @@ export class StarboardGetEmojiCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateNotSetEmbed(): RichEmbed {
-        const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
+    private generateNotSetEmbed(): MessageEmbed {
+        const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(StarboardGetEmojiCommand.EMBED_TITLE,
             StarboardGetEmojiCommand.EMOJI_NOT_SET);
 
@@ -63,8 +63,8 @@ export class StarboardGetEmojiCommand extends Command {
      * @param  {SimplifiedEmoji} emoji
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateValidEmbed(emojis: SimplifiedEmoji[]): RichEmbed {
-        const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
+    private generateValidEmbed(emojis: SimplifiedEmoji[]): MessageEmbed {
+        const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         let msg = '';
         for (let i = 0; i < emojis.length; i++) {
             msg += `<:${emojis[i].name}:${emojis[i].id}>`;
