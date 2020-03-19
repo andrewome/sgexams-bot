@@ -19,7 +19,7 @@ export class MessageReactionAddEventHandler extends EventHandler {
      * @returns Promise
      */
     public async handleEvent(): Promise<void> {
-        const server = this.getServer(this.reaction.message.guild.id.toString());
+        const server = this.getServer(this.reaction.message.guild!.id.toString());
         const { starboardSettings } = server;
         const starboardChecker = new StarboardAddReactChecker(starboardSettings, this.reaction);
 

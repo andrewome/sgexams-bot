@@ -66,7 +66,7 @@ export abstract class StarboardChecker {
     public checkIfMessageExists(): boolean {
         const { starboardMessageCache } = StarboardCache;
         const msgId = this.reaction.message.id;
-        const guildId = this.reaction.message.guild.id;
+        const guildId = this.reaction.message.guild!.id;
 
         if (!starboardMessageCache.has(guildId)) {
             return false;
@@ -91,7 +91,7 @@ export abstract class StarboardChecker {
 
         const { starboardMessageCache } = StarboardCache;
         const msgId = this.reaction.message.id;
-        const guildId = this.reaction.message.guild.id;
+        const guildId = this.reaction.message.guild!.id;
 
         const serverCache = starboardMessageCache.get(guildId)!;
         const starboardMessageId = serverCache.getStarboardMessageId(msgId);
@@ -110,8 +110,11 @@ export abstract class StarboardChecker {
         return new Promise<boolean>((resolve): void => {
             // Get channel, then message
             const starboardChannel
-                = this.reaction.message.guild.channels.get(this.starboardSettings.getChannel()!);
-            (starboardChannel as TextChannel).fetchMessage(messageId)
+                = this.reaction.message.guild!.channels.resolve(
+                    this.starboardSettings.getChannel()!,
+                );
+
+            (starboardChannel as TextChannel).messages.fetch(messageId)
                 .then((message: Message): void => {
                     // Check if emoji that's on the starboard is the same as the reaction
                     const content = message.content.split(' ');
@@ -134,7 +137,7 @@ export abstract class StarboardChecker {
      */
     protected async getNumberOfReactions(): Promise<number> {
         return new Promise<number>((resolve): void => {
-            this.reaction.fetchUsers()
+            this.reaction.users.fetch()
                 .then((users: Collection<string, User>): void => {
                     const { size } = users;
                     resolve(size);

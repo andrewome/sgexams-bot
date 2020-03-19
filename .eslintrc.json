@@ -29,7 +29,8 @@
         "no-continue": "off",
         "class-methods-use-this": "off",
         "import/prefer-default-export": "off",
-        "import/no-extraneous-dependencies": "off"
+        "import/no-extraneous-dependencies": "off",
+        "padded-blocks": "off"
     },
     "settings": {
         "import/resolver": {
