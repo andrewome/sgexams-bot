@@ -59,7 +59,7 @@ export class StarboardRemoveEmojiCommand extends Command {
 
         if (successfullyRemoved) {
             embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(StarboardRemoveEmojiCommand.EMBED_TITLE, `✅Removed Emoji: <:${emoji!.name}:${emoji!.id}>`);
+            embed.addField(StarboardRemoveEmojiCommand.EMBED_TITLE, `Removed Emoji: <:${emoji!.name}:${emoji!.id}>`);
             // Send output
             messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;

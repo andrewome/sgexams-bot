@@ -63,7 +63,7 @@ export class StarboardSetChannelCommand extends Command {
         const channel = channels!.resolve(channelId);
 
         // Check if valid channel
-        if (typeof channel === 'undefined') {
+        if (channel === null) {
             embed = this.generateNotFoundEmbed();
             messageReply(embed);
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;

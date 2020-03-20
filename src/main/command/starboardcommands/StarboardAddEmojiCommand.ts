@@ -63,7 +63,7 @@ export class StarboardAddEmojiCommand extends Command {
 
         // Check if valid emoji
         const emoji = emojis!.resolve(emojiId);
-        if (typeof emoji === 'undefined') {
+        if (emoji === null) {
             embed.setColor(Command.EMBED_ERROR_COLOUR);
             embed.addField(
                 StarboardAddEmojiCommand.EMBED_TITLE,
@@ -79,7 +79,7 @@ export class StarboardAddEmojiCommand extends Command {
 
         if (successfullyAdded) {
             embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(StarboardAddEmojiCommand.EMBED_TITLE, `✅Added Emoji: <:${emoji!.name}:${emoji!.id}>`);
+            embed.addField(StarboardAddEmojiCommand.EMBED_TITLE, `Added Emoji: <:${emoji!.name}:${emoji!.id}>`);
 
             // Send output
             messageReply(embed);

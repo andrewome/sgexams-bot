@@ -12,7 +12,7 @@ export abstract class Command {
 
     public static EMBED_ERROR_COLOUR = 'ff0000';
 
-    public static ERROR_EMBED_TITLE = '❌ Error';
+    public static ERROR_EMBED_TITLE = 'Error';
 
     public static NO_PERMISSIONS_MSG = 'You do not have the permissions to do that!';
 
