@@ -1,15 +1,15 @@
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class MsgCheckerRemoveWordCommand extends Command {
-    public static REMOVED_WORDS = '✅Removed Word(s)';
+    public static REMOVED_WORDS = 'Removed Word(s)';
 
     public static MAYBE_WORDS_NOT_INSIDE = 'Perhaps those word(s) are not inside the list?';
 
-    public static UNABLE_TO_REMOVE_WORDS = '❌Unable To Remove';
+    public static UNABLE_TO_REMOVE_WORDS = 'Unable To Remove';
 
     /** SaveServer: true, CheckMessage: false */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, false);
@@ -60,8 +60,8 @@ export class MsgCheckerRemoveWordCommand extends Command {
      * @returns RichEmbed
      */
     public generateEmbed(wordsRemoved: string[],
-        wordsNotRemoved: string[]): RichEmbed {
-        let embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
+                         wordsNotRemoved: string[]): MessageEmbed {
+        let embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         const words = this.args;
         if (wordsRemoved.length !== 0) {
             let output = '';
@@ -83,10 +83,10 @@ export class MsgCheckerRemoveWordCommand extends Command {
         }
 
         if (words.length === 0) {
-            embed = new RichEmbed()
+            embed = new MessageEmbed()
                 .setColor(Command.EMBED_ERROR_COLOUR)
                 .addField(Command.ERROR_EMBED_TITLE,
-                    MsgCheckerRemoveWordCommand.NO_ARGUMENTS);
+                          MsgCheckerRemoveWordCommand.NO_ARGUMENTS);
         }
 
         return embed;

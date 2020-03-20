@@ -1,25 +1,22 @@
-import { MessageReaction } from 'discord.js';
-import { EventHandler } from './EventHandler';
 import { StarboardResponse } from '../modules/starboard/StarboardResponse';
-import { Storage } from '../storage/Storage';
 import { StarboardRemoveReactChecker } from '../modules/starboard/StarboardChecker/StarboardRemoveReactChecker';
+import { MessageReactionEventHandler } from './MessageReactionEventHandler';
 
-export class MessageReactionRemoveEventHandler extends EventHandler {
-    public reaction: MessageReaction;
-
-    public constructor(storage: Storage,
-                       reaction: MessageReaction) {
-        super(storage);
-        this.reaction = reaction;
-    }
-
+export class MessageReactionRemoveEventHandler extends MessageReactionEventHandler {
     /**
      * Handles when a reaction is removed from a message
      *
      * @returns Promise
      */
     public async handleEvent(): Promise<void> {
-        const server = this.getServer(this.reaction.message.guild.id.toString());
+        // Will error if trying to fetch on a partial removed reaction
+        try {
+            await this.handlePartial();
+        } catch (err) {
+            return;
+        }
+
+        const server = this.getServer(this.reaction.message.guild!.id.toString());
         const { starboardSettings } = server;
         const starboardChecker = new StarboardRemoveReactChecker(starboardSettings, this.reaction);
 

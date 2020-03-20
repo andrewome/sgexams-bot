@@ -1,4 +1,4 @@
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -33,7 +33,7 @@ export class MsgCheckerListWordsCommand extends Command {
         const bannedWords = server.messageCheckerSettings.getBannedWords();
         bannedWords.sort();
 
-        const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
+        const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         if (bannedWords.length === 0) {
             embed.addField(
                 MsgCheckerListWordsCommand.EMBED_TITLE,

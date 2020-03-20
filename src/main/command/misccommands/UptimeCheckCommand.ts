@@ -1,4 +1,4 @@
-import { RichEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { CommandArgs } from '../classes/CommandArgs';
 import { CommandResult } from '../classes/CommandResult';
@@ -45,7 +45,7 @@ export class UptimeCheckCommand extends Command {
         const upTimeSecondsStr = `${upTimeInSeconds} second${this.addSIfPlural(upTimeInSeconds)}`;
 
         messageReply(
-            new RichEmbed()
+            new MessageEmbed()
                 .setColor(Command.EMBED_DEFAULT_COLOUR)
                 .addField(UptimeCheckCommand.EMBED_TITLE, `${upTimeDaysStr}, ${upTimeHoursStr}, ${upTimeMinutesStr} and ${upTimeSecondsStr}`),
         );

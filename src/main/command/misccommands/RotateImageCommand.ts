@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring, no-shadow */
 import {
- TextChannel, Message, MessageReaction,
- User, ReactionCollectorOptions,
+    TextChannel, Message, MessageReaction,
+    User, ReactionCollectorOptions,
 } from 'discord.js';
 import sharp, { Sharp } from 'sharp';
 import axios from 'axios';
@@ -49,14 +49,14 @@ export class RotateImageCommand extends Command {
 
         // Check if messageId quoted is in in the channel
         (channel as TextChannel).startTyping();
-        (channel as TextChannel).fetchMessage(messageId)
+        (channel as TextChannel).messages.fetch(messageId)
             .then(async (message: Message): Promise<void> => {
                 const { embeds, attachments } = message;
 
                 // Attachments take precedence.
                 let url = '';
                 if (embeds.length !== 0) {
-                    url = embeds[0].url;
+                    url = embeds[0].url!;
                 }
 
                 if (attachments.size !== 0) {

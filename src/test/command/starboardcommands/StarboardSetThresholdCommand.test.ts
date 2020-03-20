@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import {
- RichEmbed, Permissions, Collection, Channel, Client,
+    MessageEmbed, Permissions, Collection, Channel, Client,
 } from 'discord.js';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -40,13 +40,13 @@ beforeEach((): void => {
         '123',
         new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
-);
+    );
 });
 
 describe('StarboardSetThresholdCommand test suite', (): void => {
     it('No permission check', (): void => {
         command = new StarboardSetThresholdCommand([]);
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
@@ -67,7 +67,7 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
         server.starboardSettings.setThreshold(threshold);
         command = new StarboardSetThresholdCommand([]);
 
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
@@ -91,7 +91,7 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
         const msg = `Starboard threshold set to ${threshold}.`;
         command = new StarboardSetThresholdCommand([threshold.toString(10)]);
 
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
@@ -112,7 +112,7 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
     it('Invalid threshold - String', (): void => {
         command = new StarboardSetThresholdCommand(['haha']);
 
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
@@ -130,7 +130,7 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
     it('Invalid threshold - Out of range value 1', (): void => {
         command = new StarboardSetThresholdCommand(['0']);
 
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
@@ -148,7 +148,7 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
     it('Invalid threshold - Out of range value 2', (): void => {
         command = new StarboardSetThresholdCommand(['-5']);
 
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];

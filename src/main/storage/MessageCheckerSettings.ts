@@ -137,12 +137,14 @@ export class MessageCheckerSettings {
         }
 
         const {
- bannedWords, reportingChannelId,
-                responseMessage, deleteMessage,
-} = obj;
+            bannedWords, reportingChannelId,
+            responseMessage, deleteMessage,
+        } = obj;
 
-        return new MessageCheckerSettings(reportingChannelId, responseMessage,
-                                          bannedWords, deleteMessage);
+        return new MessageCheckerSettings(
+            reportingChannelId, responseMessage,
+            bannedWords, deleteMessage,
+        );
     }
     /* eslint-enable @typescript-eslint/no-explicit-any */
 }

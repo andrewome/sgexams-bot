@@ -1,5 +1,5 @@
 import {
-  RichEmbed, Permissions, Collection, Channel,
+    MessageEmbed, Permissions, Channel,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -39,8 +39,8 @@ export class StarboardSetChannelCommand extends Command {
      */
     public execute(commandArgs: CommandArgs): CommandResult {
         const {
- server, memberPerms, messageReply, channels,
-} = commandArgs;
+            server, memberPerms, messageReply, channels,
+        } = commandArgs;
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
@@ -49,7 +49,7 @@ export class StarboardSetChannelCommand extends Command {
         }
 
         // Execute
-        let embed: RichEmbed;
+        let embed: MessageEmbed;
 
         // If no args
         if (this.args.length === 0) {
@@ -60,10 +60,10 @@ export class StarboardSetChannelCommand extends Command {
         }
 
         const channelId = this.args[0];
-        const channel = (channels as Collection<string, Channel>).get(channelId);
+        const channel = channels!.resolve(channelId);
 
         // Check if valid channel
-        if (typeof channel === 'undefined') {
+        if (channel === null) {
             embed = this.generateNotFoundEmbed();
             messageReply(embed);
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
@@ -89,11 +89,11 @@ export class StarboardSetChannelCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateResetEmbed(): RichEmbed {
-        const embed = new RichEmbed();
+    private generateResetEmbed(): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(StarboardSetChannelCommand.EMBED_TITLE,
-            StarboardSetChannelCommand.CHANNEL_RESETTED);
+                       StarboardSetChannelCommand.CHANNEL_RESETTED);
 
         return embed;
     }
@@ -104,11 +104,11 @@ export class StarboardSetChannelCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateNotFoundEmbed(): RichEmbed {
-        const embed = new RichEmbed();
+    private generateNotFoundEmbed(): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
         embed.addField(StarboardSetChannelCommand.EMBED_TITLE,
-            StarboardSetChannelCommand.CHANNEL_NOT_FOUND);
+                       StarboardSetChannelCommand.CHANNEL_NOT_FOUND);
 
         return embed;
     }
@@ -119,11 +119,11 @@ export class StarboardSetChannelCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateNotTextChannelEmbed(): RichEmbed {
-        const embed = new RichEmbed();
+    private generateNotTextChannelEmbed(): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
         embed.addField(StarboardSetChannelCommand.EMBED_TITLE,
-            StarboardSetChannelCommand.NOT_TEXT_CHANNEL);
+                       StarboardSetChannelCommand.NOT_TEXT_CHANNEL);
 
         return embed;
     }
@@ -135,8 +135,8 @@ export class StarboardSetChannelCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateValidEmbed(channelId: string): RichEmbed {
-        const embed = new RichEmbed();
+    private generateValidEmbed(channelId: string): MessageEmbed {
+        const embed = new MessageEmbed();
         const msg = `Starboard Channel set to <#${channelId}>.`;
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(StarboardSetChannelCommand.EMBED_TITLE, msg);

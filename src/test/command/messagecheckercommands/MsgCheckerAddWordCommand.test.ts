@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { should } from 'chai';
 import { Server } from '../../../main/storage/Server';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -27,13 +27,13 @@ beforeEach((): void => {
         '123',
         new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
-);
+    );
 });
 
 describe('MsgCheckerAddWordCommand test suite', (): void => {
     it('No permission check', (): void => {
         command = new MsgCheckerAddWordCommand([]);
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
@@ -57,7 +57,7 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         command = new MsgCheckerAddWordCommand(args);
 
         // Embed check
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(1);
             const field = embed.fields![0];
@@ -90,7 +90,7 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         const addedWordsStr = `${args[2]}\n`;
 
         // Embed Check
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(2);
 
@@ -127,7 +127,7 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         const unableToAddWordsStr = `${args[3]}\n${MAYBE_WORDS_ALREADY_ADDED}`;
 
         // Embed check
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(2);
 
@@ -160,7 +160,7 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         command = new MsgCheckerAddWordCommand(args);
 
         // Check embed
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 

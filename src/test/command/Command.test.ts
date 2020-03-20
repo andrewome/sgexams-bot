@@ -3,7 +3,6 @@
 import chai from 'chai';
 import { Permissions } from 'discord.js';
 import { Command } from '../../main/command/Command';
-import { Server } from '../../main/storage/Server';
 import { CommandResult } from '../../main/command/classes/CommandResult';
 import { CommandArgs } from '../../main/command/classes/CommandArgs';
 

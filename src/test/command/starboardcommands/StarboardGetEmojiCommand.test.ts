@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, no-unused-expressions */
 import { should } from 'chai';
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -23,12 +23,12 @@ beforeEach((): void => {
         '123',
         new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
-);
+    );
 });
 
 describe('GetStarboardChannelCommand class test suite', (): void => {
     it('No permission check', (): void => {
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
@@ -45,7 +45,7 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
         commandResult.shouldSaveServers.should.be.false;
     });
     it('Emoji not set', (): void => {
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -64,7 +64,7 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
     it('1 emoji set', (): void => {
         const emoji = new SimplifiedEmoji('test', 'test');
         server.starboardSettings.addEmoji(emoji);
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -83,7 +83,7 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
     it('2 emojis set', (): void => {
         server.starboardSettings.addEmoji(new SimplifiedEmoji('test1', 'test1'));
         server.starboardSettings.addEmoji(new SimplifiedEmoji('test2', 'test2'));
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);

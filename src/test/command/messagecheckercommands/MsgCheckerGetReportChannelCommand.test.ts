@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, no-unused-expressions */
 import { should } from 'chai';
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { MsgCheckerGetReportChannelCommand } from '../../../main/command/messagecheckercommands/MsgCheckerGetReportChannelCommand';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
@@ -23,12 +23,12 @@ beforeEach((): void => {
         '123',
         new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
-);
+    );
 });
 
 describe('MsgCheckerGetReportChannelCommand class test suite', (): void => {
     it('No permission check', (): void => {
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
@@ -46,7 +46,7 @@ describe('MsgCheckerGetReportChannelCommand class test suite', (): void => {
         commandResult.shouldSaveServers.should.be.false;
     });
     it('Channel not set', (): void => {
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -67,7 +67,7 @@ describe('MsgCheckerGetReportChannelCommand class test suite', (): void => {
         const channelId = '111';
         server.messageCheckerSettings.setReportingChannelId(channelId);
 
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);

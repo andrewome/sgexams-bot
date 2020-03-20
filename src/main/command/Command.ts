@@ -1,5 +1,5 @@
 import {
- Permissions, RichEmbed,
+    Permissions, MessageEmbed,
 } from 'discord.js';
 import { CommandResult } from './classes/CommandResult';
 import { CommandArgs } from './classes/CommandArgs';
@@ -12,7 +12,7 @@ export abstract class Command {
 
     public static EMBED_ERROR_COLOUR = 'ff0000';
 
-    public static ERROR_EMBED_TITLE = '❌ Error';
+    public static ERROR_EMBED_TITLE = 'Error';
 
     public static NO_PERMISSIONS_MSG = 'You do not have the permissions to do that!';
 
@@ -36,7 +36,8 @@ export abstract class Command {
      * @returns boolean
      */
     // eslint-disable-next-line class-methods-use-this
-    public hasPermissions(commandPermissions: Permissions, userPermissions: Permissions): boolean {
+    public hasPermissions(commandPermissions: Permissions,
+                          userPermissions: Readonly<Permissions>): boolean {
         // Check if user permissions exist inside command permissions
         if (!userPermissions.has(commandPermissions)) {
             return false;
@@ -52,7 +53,7 @@ export abstract class Command {
      */
     // eslint-disable-next-line class-methods-use-this
     protected sendNoPermissionsMessage(messageReply: Function): void {
-        const embed = new RichEmbed();
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR)
             .addField(Command.ERROR_EMBED_TITLE, Command.NO_PERMISSIONS_MSG);
 

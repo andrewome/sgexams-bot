@@ -1,4 +1,4 @@
-import { Message, TextChannel, RichEmbed } from 'discord.js';
+import { Message, TextChannel, MessageEmbed } from 'discord.js';
 import log from 'loglevel';
 import { MessageCheckerResult } from '../classes/MessageCheckerResult';
 
@@ -46,34 +46,36 @@ export class MessageResponse {
         /* eslint-disable no-param-reassign */
         // This function splits up contents and contexts and adds it to the embed.
         const handleContentAndContexts
-            = (embed: RichEmbed, content: string, contexts: string): void => {
+            = (embed: MessageEmbed, content: string, contexts: string): void => {
             // Some strings may be too long. Remove all grave accents and
             // split it up because field can only take in 1024 chars.
-            content = content.replace(/```/g, '');
-            const contents: string[] = [];
-            while (content.length > this.FIELD_CHAR_LIMIT) {
-                contents.push(content.substring(0, this.FIELD_CHAR_LIMIT - 12) + this.DOTDOTDOT);
-                content = content.substring(this.FIELD_CHAR_LIMIT - 12, content.length);
-            }
-            contents.push(content.substring(0, content.length));
+                content = content.replace(/```/g, '');
+                const contents: string[] = [];
+                while (content.length > this.FIELD_CHAR_LIMIT) {
+                    contents.push(
+                        content.substring(0, this.FIELD_CHAR_LIMIT - 12) + this.DOTDOTDOT,
+                    );
+                    content = content.substring(this.FIELD_CHAR_LIMIT - 12, content.length);
+                }
+                contents.push(content.substring(0, content.length));
 
-            if (contexts.length > this.FIELD_CHAR_LIMIT) {
-                contexts = contexts.substr(0, 980);
-                contexts += this.MESSAGE_TOO_LONG;
-            }
-            embed.setDescription(`${this.CODE_BLOCK}${contents[0]}${this.CODE_BLOCK}`);
+                if (contexts.length > this.FIELD_CHAR_LIMIT) {
+                    contexts = contexts.substr(0, 980);
+                    contexts += this.MESSAGE_TOO_LONG;
+                }
+                embed.setDescription(`${this.CODE_BLOCK}${contents[0]}${this.CODE_BLOCK}`);
 
-            // Add rest of contents in (if any)
-            contents.shift();
-            for (const otherContent of contents) {
-                embed.addField(this.CONTINUED, `${this.CODE_BLOCK}${otherContent}${this.CODE_BLOCK}`);
-            }
-        };
+                // Add rest of contents in (if any)
+                contents.shift();
+                for (const otherContent of contents) {
+                    embed.addField(this.CONTINUED, `${this.CODE_BLOCK}${otherContent}${this.CODE_BLOCK}`);
+                }
+            };
         /* eslint-enable no-param-reassign */
 
         const { tag } = this.message.author;
-        const avatarUrl = this.message.author.avatarURL;
-        const username = this.message.member.nickname;
+        const avatarUrl = this.message.author.avatarURL();
+        const username = this.message.member!.nickname;
         const wordsUsed = result.contexts;
         const { id } = this.message;
         const { url } = this.message;
@@ -82,7 +84,7 @@ export class MessageResponse {
 
         // Generate strings
         let offenderStr = '';
-        if (username === null) {
+        if (!username) {
             offenderStr = `${tag}`;
         } else {
             offenderStr = `${username}, aka ${tag}`;
@@ -100,9 +102,9 @@ export class MessageResponse {
         }
 
         // Make embed
-        const embed = new RichEmbed()
+        const embed = new MessageEmbed()
             .setColor(this.EMBED_COLOUR)
-            .setAuthor(`${offenderStr} said...`, avatarUrl)
+            .setAuthor(`${offenderStr} said...`, avatarUrl!)
             .setTimestamp();
 
         // Add contents
@@ -113,11 +115,11 @@ export class MessageResponse {
             .addField(this.WORDS_USED, `${this.CODE_BLOCK}${words}${this.CODE_BLOCK}`, true)
             .addField(this.CONTEXT, `${this.CODE_BLOCK}${contexts}${this.CODE_BLOCK}`, true);
 
-        const reportingChannel = this.message.guild.channels.get(reportingChannelId)!;
+        const reportingChannel = this.message.guild!.channels.resolve(reportingChannelId)!;
         (reportingChannel as TextChannel).send(this.BAD_WORD_DETECTED, embed);
 
         // Log it
-        log.info(`Bad Word Detected in guild "${this.message.guild.name}". ${offenderStr} said "${content}" which has banned words: ${words.replace(/\n/g, ' ')}`);
+        log.info(`Bad Word Detected in guild "${this.message.guild!.name}". ${offenderStr} said "${content}" which has banned words: ${words.replace(/\n/g, ' ')}`);
 
         return this;
     }

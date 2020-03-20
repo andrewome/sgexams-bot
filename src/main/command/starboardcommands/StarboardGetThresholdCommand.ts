@@ -1,4 +1,4 @@
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -46,10 +46,10 @@ export class StarboardGetThresholdCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateNotSetEmbed(): RichEmbed {
-        const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
+    private generateNotSetEmbed(): MessageEmbed {
+        const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(StarboardGetThresholdCommand.EMBED_TITLE,
-            StarboardGetThresholdCommand.THRESHOLD_NOT_SET);
+                       StarboardGetThresholdCommand.THRESHOLD_NOT_SET);
 
         return embed;
     }
@@ -61,8 +61,8 @@ export class StarboardGetThresholdCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateValidEmbed(threshold: number): RichEmbed {
-        const embed = new RichEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
+    private generateValidEmbed(threshold: number): MessageEmbed {
+        const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         const msg = `The emoji threshold is currently ${threshold}.`;
         embed.addField(StarboardGetThresholdCommand.EMBED_TITLE, msg);
 

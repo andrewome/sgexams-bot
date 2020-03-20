@@ -1,4 +1,4 @@
-import { Permissions, RichEmbed } from 'discord.js';
+import { Permissions, MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
@@ -41,7 +41,7 @@ export class StarboardRemoveEmojiCommand extends Command {
         }
 
         // Check if there's arguments
-        const embed = new RichEmbed();
+        const embed = new MessageEmbed();
         if (this.args.length === 0) {
             embed.setColor(Command.EMBED_ERROR_COLOUR);
             embed.addField(
@@ -59,19 +59,20 @@ export class StarboardRemoveEmojiCommand extends Command {
 
         if (successfullyRemoved) {
             embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(StarboardRemoveEmojiCommand.EMBED_TITLE, `✅Removed Emoji: <:${emoji!.name}:${emoji!.id}>`);
+            embed.addField(StarboardRemoveEmojiCommand.EMBED_TITLE, `Removed Emoji: <:${emoji!.name}:${emoji!.id}>`);
             // Send output
             messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
-            embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(
-                StarboardRemoveEmojiCommand.EMBED_TITLE,
-                StarboardRemoveEmojiCommand.MAYBE_EMOJI_NOT_INSIDE,
-            );
-            // Send output
-            messageReply(embed);
-            return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
+
+        embed.setColor(Command.EMBED_ERROR_COLOUR);
+        embed.addField(
+            StarboardRemoveEmojiCommand.EMBED_TITLE,
+            StarboardRemoveEmojiCommand.MAYBE_EMOJI_NOT_INSIDE,
+        );
+        // Send output
+        messageReply(embed);
+        return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
     }
 
     /**

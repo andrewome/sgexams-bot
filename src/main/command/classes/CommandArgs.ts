@@ -1,5 +1,5 @@
 import {
- Permissions, Collection, Emoji, Channel,
+    Permissions, Channel, GuildChannelManager, GuildEmojiManager,
 } from 'discord.js';
 import { Server } from '../../storage/Server';
 
@@ -7,15 +7,15 @@ import { Server } from '../../storage/Server';
 export class CommandArgs {
     public server: Server;
 
-    public memberPerms: Permissions;
+    public memberPerms: Readonly<Permissions>;
 
     public messageReply: Function;
 
     public uptime: number | undefined;
 
-    public channels: Collection<string, Channel> | undefined;
+    public channels: GuildChannelManager | undefined;
 
-    public emojis: Collection<string, Emoji> | undefined;
+    public emojis: GuildEmojiManager | undefined;
 
     public channel: Channel | undefined;
 
@@ -23,10 +23,10 @@ export class CommandArgs {
 
     public deleteFunction: Function | undefined;
 
-    public constructor(server: Server, memberPerms: Permissions,
+    public constructor(server: Server, memberPerms: Readonly<Permissions>,
                        messageReply: Function, uptime?: number,
-                       channels?: Collection<string, Channel>,
-                       emojis?: Collection<string, Emoji>,
+                       channels?: GuildChannelManager,
+                       emojis?: GuildEmojiManager,
                        channel?: Channel, userId?: string,
                        deleteFunction?: Function) {
         this.server = server;

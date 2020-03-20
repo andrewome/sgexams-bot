@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, no-restricted-syntax, no-unused-expressions */
 import { should } from 'chai';
-import { RichEmbed, Permissions } from 'discord.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import { Server } from '../../../main/storage/Server';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { MsgCheckerRemoveWordCommand } from '../../../main/command/messagecheckercommands/MsgCheckerRemoveWordCommand';
@@ -27,14 +27,14 @@ beforeEach((): void => {
         '123',
         new MessageCheckerSettings(null, null, null, null),
         new StarboardSettings(null, null, null),
-);
+    );
     for (const word of words) server.messageCheckerSettings.addbannedWord(word);
 });
 
 describe('MsgCheckerRemoveWordCommand test suite', (): void => {
     it('No permission check', (): void => {
         command = new MsgCheckerRemoveWordCommand([]);
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
@@ -56,7 +56,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         const removedWordsStr = `${args[0]}\n${args[1]}\n${args[2]}\n`;
         command = new MsgCheckerRemoveWordCommand(args);
 
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(1);
@@ -87,7 +87,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         const unableToRemoveWordsStr = `${args[0]}\n${args[1]}\n${MAYBE_WORDS_NOT_INSIDE}`;
         const removedWordsStr = `${args[2]}\n`;
 
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(2);
@@ -121,7 +121,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         const removedWordsStr = `${args[0]}\n${args[1]}\n${args[2]}\n`;
         const unableToRemoveWordsStr = `${args[3]}\n${MAYBE_WORDS_NOT_INSIDE}`;
 
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(2);
@@ -152,7 +152,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         const args: string[] = [];
         command = new MsgCheckerRemoveWordCommand(args);
 
-        const checkEmbed = (embed: RichEmbed): void => {
+        const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);

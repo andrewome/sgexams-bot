@@ -1,5 +1,5 @@
 import {
- Permissions, RichEmbed, Channel, Collection,
+    Permissions, MessageEmbed, Channel,
 } from 'discord.js';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -10,7 +10,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
 
     public static NOT_TEXT_CHANNEL = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
 
-    public static EMBED_TITLE = 'Reporting Channel';
+    public static EMBED_TITLE = 'Message Checker Reporting Channel';
 
     public static CHANNEL_RESETTED = 'Reporting Channel has been resetted because there were no arguments. Please set a new one.';
 
@@ -39,8 +39,8 @@ export class MsgCheckerSetReportChannelCommand extends Command {
      */
     public execute(commandArgs: CommandArgs): CommandResult {
         const {
- server, memberPerms, messageReply, channels,
-} = commandArgs;
+            server, memberPerms, messageReply, channels,
+        } = commandArgs;
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             this.sendNoPermissionsMessage(messageReply);
@@ -48,18 +48,19 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         }
 
         // Execute
-        let embed: RichEmbed;
+        let embed: MessageEmbed;
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
             server.messageCheckerSettings.setReportingChannelId(null);
+            messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
         const channelId = this.args[0];
 
         // Check if valid channel
-        const channel = (channels as Collection<string, Channel>).get(channelId);
-        if (typeof channel === 'undefined') {
+        const channel = channels!.resolve(channelId);
+        if (channel === null) {
             embed = this.generateInvalidEmbed();
             messageReply(embed);
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
@@ -85,11 +86,13 @@ export class MsgCheckerSetReportChannelCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateResetEmbed(): RichEmbed {
-        const embed = new RichEmbed();
+    private generateResetEmbed(): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(MsgCheckerSetReportChannelCommand.EMBED_TITLE,
-        MsgCheckerSetReportChannelCommand.CHANNEL_RESETTED);
+        embed.addField(
+            MsgCheckerSetReportChannelCommand.EMBED_TITLE,
+            MsgCheckerSetReportChannelCommand.CHANNEL_RESETTED,
+        );
 
         return embed;
     }
@@ -101,11 +104,11 @@ export class MsgCheckerSetReportChannelCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateInvalidEmbed(): RichEmbed {
-        const embed = new RichEmbed();
+    private generateInvalidEmbed(): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
         embed.addField(MsgCheckerSetReportChannelCommand.EMBED_TITLE,
-            MsgCheckerSetReportChannelCommand.CHANNEL_NOT_FOUND);
+                       MsgCheckerSetReportChannelCommand.CHANNEL_NOT_FOUND);
 
         return embed;
     }
@@ -117,11 +120,11 @@ export class MsgCheckerSetReportChannelCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateNotTextChannelEmbed(): RichEmbed {
-        const embed = new RichEmbed();
+    private generateNotTextChannelEmbed(): MessageEmbed {
+        const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_ERROR_COLOUR);
         embed.addField(MsgCheckerSetReportChannelCommand.EMBED_TITLE,
-            MsgCheckerSetReportChannelCommand.NOT_TEXT_CHANNEL);
+                       MsgCheckerSetReportChannelCommand.NOT_TEXT_CHANNEL);
 
         return embed;
     }
@@ -133,8 +136,8 @@ export class MsgCheckerSetReportChannelCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateValidEmbed(channelId: string): RichEmbed {
-        const embed = new RichEmbed();
+    private generateValidEmbed(channelId: string): MessageEmbed {
+        const embed = new MessageEmbed();
         const msg = `Reporting Channel set to <#${channelId}>.`;
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.addField(MsgCheckerSetReportChannelCommand.EMBED_TITLE, msg);
