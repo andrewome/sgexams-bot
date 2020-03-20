@@ -32,7 +32,10 @@ export class App {
 
     public constructor() {
         // set restTimeOffset to 0ms, original 500ms.
-        this.bot = new Client({ restTimeOffset: 0 });
+        this.bot = new Client({
+            restTimeOffset: 0,
+            partials: ['MESSAGE', 'REACTION'],
+        });
         log.info('Logging the bot in...');
         this.bot.login(process.env.BOT_TOKEN);
         this.storage = new Storage().loadServers();
@@ -50,20 +53,15 @@ export class App {
             new MessageUpdateEventHandler(this.storage, newMessage).handleEvent();
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        // this.bot.on(App.RAW, (packet: any): void => {
-        //     new RawEventHandler(this.storage, this.bot, packet).handleEvent();
-        // });
-
-        /* eslint-disable @typescript-eslint/no-unused-vars */
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.bot.on(App.REACTION_ADD, (reaction: MessageReaction, user: User): void => {
             new MessageReactionAddEventHandler(this.storage, reaction).handleEvent();
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.bot.on(App.REACTION_REMOVE, (reaction: MessageReaction, user: User): void => {
             new MessageReactionRemoveEventHandler(this.storage, reaction).handleEvent();
         });
-        /* eslint-enable @typescript-eslint/no-unused-vars */
 
         this.bot.on(App.READY, (): void => {
             log.info('Populating Starboard Cache...');

@@ -14,11 +14,23 @@ export class MessageReactionAddEventHandler extends EventHandler {
     }
 
     /**
+     * Handles fetching of reaction if it's partial.
+     *
+     * @returns Promise<void>
+     */
+    public async handlePartial(): Promise<void> {
+        if (this.reaction.partial) {
+            await this.reaction.fetch();
+        }
+    }
+
+    /**
      * Handles when a reaction is added to a message
      *
      * @returns Promise
      */
     public async handleEvent(): Promise<void> {
+        await this.handlePartial();
         const server = this.getServer(this.reaction.message.guild!.id.toString());
         const { starboardSettings } = server;
         const starboardChecker = new StarboardAddReactChecker(starboardSettings, this.reaction);

@@ -14,11 +14,29 @@ export class MessageReactionRemoveEventHandler extends EventHandler {
     }
 
     /**
+     * Handles fetching of reaction if it's partial.
+     *
+     * @returns Promise<void>
+     */
+    public async handlePartial(): Promise<void> {
+        if (this.reaction.partial) {
+            await this.reaction.fetch();
+        }
+    }
+
+    /**
      * Handles when a reaction is removed from a message
      *
      * @returns Promise
      */
     public async handleEvent(): Promise<void> {
+        // Will error if trying to fetch on a partial removed reaction
+        try {
+            await this.handlePartial();
+        } catch (err) {
+            return;
+        }
+
         const server = this.getServer(this.reaction.message.guild!.id.toString());
         const { starboardSettings } = server;
         const starboardChecker = new StarboardRemoveReactChecker(starboardSettings, this.reaction);
