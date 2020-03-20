@@ -6,7 +6,7 @@ import { CommandArgs } from '../classes/CommandArgs';
 export class MsgCheckerSetDeleteMessageCommand extends Command {
     public static INCORRECT_FORMAT = 'Incorrect format. Use only "true" or "false".'
 
-    public static EMBED_TITLE = 'Delete Message';
+    public static EMBED_TITLE = 'Message Checker Delete Message';
 
     public static BOOL_CANNOT_BE_UNDEFINED = 'Boolean should not be undefined!';
 

@@ -5,11 +5,11 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class MsgCheckerAddWordCommand extends Command {
-    public static ADDED_WORDS = '✅Added Words(s):';
+    public static ADDED_WORDS = 'Added Words(s):';
 
     public static MAYBE_WORDS_ALREADY_ADDED = 'Perhaps those word(s) are already added?';
 
-    public static UNABLE_TO_ADD_WORDS = '❌Unable To Add:';
+    public static UNABLE_TO_ADD_WORDS = 'Unable To Add:';
 
     /** SaveServer: true, CheckMessage: false */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, false);

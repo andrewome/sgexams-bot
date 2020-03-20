@@ -4,7 +4,7 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class MsgCheckerSetResponseMessageCommand extends Command {
-    public static EMBED_TITLE = 'Reponse Message';
+    public static EMBED_TITLE = 'Message Checker Response Message';
 
     public static MESSAGE_RESETTED = 'Response Message has been resetted because there was no arguments.';
 

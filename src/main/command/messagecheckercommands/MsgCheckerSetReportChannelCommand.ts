@@ -10,7 +10,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
 
     public static NOT_TEXT_CHANNEL = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
 
-    public static EMBED_TITLE = 'Reporting Channel';
+    public static EMBED_TITLE = 'Message Checker Reporting Channel';
 
     public static CHANNEL_RESETTED = 'Reporting Channel has been resetted because there were no arguments. Please set a new one.';
 
@@ -52,6 +52,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
             server.messageCheckerSettings.setReportingChannelId(null);
+            messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -59,7 +60,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
 
         // Check if valid channel
         const channel = channels!.resolve(channelId);
-        if (typeof channel === 'undefined') {
+        if (channel === null) {
             embed = this.generateInvalidEmbed();
             messageReply(embed);
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;

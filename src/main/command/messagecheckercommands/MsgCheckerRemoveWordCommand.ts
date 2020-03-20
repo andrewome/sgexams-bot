@@ -5,11 +5,11 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class MsgCheckerRemoveWordCommand extends Command {
-    public static REMOVED_WORDS = '✅Removed Word(s)';
+    public static REMOVED_WORDS = 'Removed Word(s)';
 
     public static MAYBE_WORDS_NOT_INSIDE = 'Perhaps those word(s) are not inside the list?';
 
-    public static UNABLE_TO_REMOVE_WORDS = '❌Unable To Remove';
+    public static UNABLE_TO_REMOVE_WORDS = 'Unable To Remove';
 
     /** SaveServer: true, CheckMessage: false */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, false);

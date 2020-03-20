@@ -6,7 +6,7 @@ import { CommandArgs } from '../classes/CommandArgs';
 export class MsgCheckerGetResponseMessageCommand extends Command {
     public static CHANNEL_NOT_SET = 'There is no message set for this server.';
 
-    public static EMBED_TITLE = 'Response Message'
+    public static EMBED_TITLE = 'Message Checker Response Message';
 
     /** SaveServer: false, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);

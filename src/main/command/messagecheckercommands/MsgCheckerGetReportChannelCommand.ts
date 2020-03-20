@@ -6,7 +6,7 @@ import { CommandArgs } from '../classes/CommandArgs';
 export class MsgCheckerGetReportChannelCommand extends Command {
     public static CHANNEL_NOT_SET = 'There is no reporting channel set for this server.';
 
-    public static EMBED_TITLE = 'Reporting Channel';
+    public static EMBED_TITLE = 'Message Checker Reporting Channel';
 
     /** SaveServer: false, CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
