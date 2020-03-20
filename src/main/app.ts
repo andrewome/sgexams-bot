@@ -4,10 +4,9 @@ import {
 } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
 import { Storage } from './storage/Storage';
-// import { RawEventHandler } from './eventhandler/RawEventHandler';
 import { MessageReactionAddEventHandler } from './eventhandler/MessageReactionAddEventHandler';
 import { MessageReactionRemoveEventHandler } from './eventhandler/MessageReactionRemoveEventHandler';
-import { MessageEventHandler } from './eventhandler/MessageEventHandler';
+import { OnMessageEventHandler } from './eventhandler/OnMessageEventHandler';
 import { MessageUpdateEventHandler } from './eventhandler/MessageUpdateEventHandler';
 import { StarboardCache } from './storage/StarboardCache';
 
@@ -46,7 +45,7 @@ export class App {
      */
     public run(): void {
         this.bot.on(App.MESSAGE, (message: Message): void => {
-            new MessageEventHandler(message, this.storage, this.bot.user!.id).handleEvent();
+            new OnMessageEventHandler(this.storage, message, this.bot.user!.id).handleEvent();
         });
 
         this.bot.on(App.MESSAGE_UPDATE, (oldMessage: Message, newMessage: Message): void => {

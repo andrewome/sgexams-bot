@@ -1,29 +1,8 @@
-import { MessageReaction } from 'discord.js';
-import { EventHandler } from './EventHandler';
 import { StarboardResponse } from '../modules/starboard/StarboardResponse';
-import { Storage } from '../storage/Storage';
 import { StarboardAddReactChecker } from '../modules/starboard/StarboardChecker/StarboardAddReactChecker';
+import { MessageReactionEventHandler } from './MessageReactionEventHandler';
 
-export class MessageReactionAddEventHandler extends EventHandler {
-    public reaction: MessageReaction;
-
-    public constructor(storage: Storage,
-                       reaction: MessageReaction) {
-        super(storage);
-        this.reaction = reaction;
-    }
-
-    /**
-     * Handles fetching of reaction if it's partial.
-     *
-     * @returns Promise<void>
-     */
-    public async handlePartial(): Promise<void> {
-        if (this.reaction.partial) {
-            await this.reaction.fetch();
-        }
-    }
-
+export class MessageReactionAddEventHandler extends MessageReactionEventHandler {
     /**
      * Handles when a reaction is added to a message
      *
