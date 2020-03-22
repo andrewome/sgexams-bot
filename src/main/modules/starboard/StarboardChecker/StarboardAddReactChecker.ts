@@ -1,6 +1,21 @@
 import { StarboardChecker } from './StarboardChecker';
 
 export class StarboardAddReactChecker extends StarboardChecker {
+    /** 7 days */
+    private MAX_TIME_DIFFERENCE = 1000 * 60 * 60 * 24 * 7;
+
+    /**
+     * This method checks if the time difference between current time
+     * and the created time of the message.
+     *
+     * @returns boolean true if smaller, false if larger.
+     */
+    public checkTimeDifference(): boolean {
+        const createdTime = this.reaction.message.createdAt;
+        const currentTime = new Date();
+        return (currentTime.getTime() - createdTime.getTime()) <= this.MAX_TIME_DIFFERENCE;
+    }
+
     /**
      * This function checks if the reaction qualifies for
      * making changes to the Starboard.
@@ -25,4 +40,6 @@ export class StarboardAddReactChecker extends StarboardChecker {
             });
         });
     }
+
+
 }
