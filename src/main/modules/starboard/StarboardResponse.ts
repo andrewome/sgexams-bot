@@ -116,31 +116,31 @@ export class StarboardResponse {
      */
     public async editStarboardMessageCount(numberOfReacts: number,
                                            messageId: string): Promise<void> {
-        return new Promise<void>((): void => {
-            // Get channel, then message
-            const starboardChannel
-                = this.reaction.message.guild!.channels.resolve(
-                    this.starboardSettings.getChannel()!,
-                );
-            (starboardChannel as TextChannel).messages.fetch(messageId)
-                .then((message: Message): void => {
-                    let replacementValue: number;
-                    if (Number.isNaN(numberOfReacts)) {
-                        replacementValue = 0;
-                    } else {
-                        replacementValue = numberOfReacts;
-                    }
-                    const content = message.content.split(' ');
-                    content[0] = `**${replacementValue}**`;
+        // Get channel
+        const starboardChannel = this.reaction.message.guild!.channels.resolve(
+            this.starboardSettings.getChannel()!,
+        );
 
-                    let newContent = '';
-                    for (const str of content) {
-                        newContent += str;
-                        newContent += ' ';
-                    }
-                    message.edit(newContent);
-                });
-        });
+        // Get message
+        const message = await (starboardChannel as TextChannel).messages.fetch(messageId);
+
+        // Set and edit replacement value
+        let replacementValue: number;
+        if (Number.isNaN(numberOfReacts)) {
+            replacementValue = 0;
+        } else {
+            replacementValue = numberOfReacts;
+        }
+        const content = message.content.split(' ');
+        content[0] = `**${replacementValue}**`;
+
+        // Stitch back new content.
+        let newContent = '';
+        for (const str of content) {
+            newContent += str;
+            newContent += ' ';
+        }
+        message.edit(newContent);
     }
 
     /**

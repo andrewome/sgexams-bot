@@ -31,7 +31,8 @@ export class MessageReactionAddEventHandler extends MessageReactionEventHandler 
                         starboardResponse.editStarboardMessageCount(numberOfReactions, starboardId);
                     }
                 }
-            } else { // If does not exist, add to Starboard.
+            } else if (starboardChecker.checkTimeDifference()) {
+                // If does not exist and within allowed time difference, add to Starboard.
                 starboardResponse.addToStarboard(numberOfReactions);
             }
         }

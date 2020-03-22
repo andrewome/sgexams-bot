@@ -64,6 +64,12 @@ export class CommandParser {
             return false;
         }
 
+        // Check length of splittedContent.
+        // 1 means only the bot was tagged; there's no command.
+        if (this.splittedContent.length === 1) {
+            return false;
+        }
+
         let command = this.splittedContent[1];
         command = command.toLowerCase();
 
