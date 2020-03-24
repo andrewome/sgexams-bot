@@ -32,6 +32,8 @@
         "import/no-extraneous-dependencies": "off",
         "padded-blocks": "off",
         "max-classes-per-file": "off",
+        "nonblock-statement-body-position": "off",
+        "curly": "off",
         "indent": [
             "error", 
             4, 

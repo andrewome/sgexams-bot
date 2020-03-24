@@ -58,53 +58,55 @@ export class StarboardResponse {
                 }
             };
 
-        return new Promise<void>((): void => {
-            const starboardChannelId = this.starboardSettings.getChannel()!;
-            const { emoji } = this.reaction;
-            const { message } = this.reaction;
-            const starboardChannel = message.guild!.channels.resolve(starboardChannelId)!;
-            const { tag } = message.author;
-            const { nickname } = message.member!;
-            const channel = `<#${message.channel.id.toString()}>`;
-            const {
-                url, id, attachments, embeds,
-            } = message;
-            const content = message.cleanContent;
+        const starboardChannelId = this.starboardSettings.getChannel()!;
+        const { emoji } = this.reaction;
+        const { message } = this.reaction;
+        const starboardChannel = message.guild!.channels.resolve(starboardChannelId)!;
+        const { tag } = message.author;
+        const channel = `<#${message.channel.id.toString()}>`;
+        const {
+            url, id, attachments, embeds,
+        } = message;
+        const content = message.cleanContent;
+        const { member } = message; // null if member has left the guild.
+        let nickname = null;
+        // assign nickname if member is not null
+        if (member)
+            nickname = member.nickname;
 
-            // Add message to cache first
-            const cacheArr = StarboardCache.addMessageToCacheFirst(message.guild!.id, id);
+        // Add message to cache first
+        const cacheArr = StarboardCache.addMessageToCacheFirst(message.guild!.id, id);
 
-            // Generate embed
-            let username = '';
-            if (!nickname) {
-                username = `${tag}`;
-            } else {
-                username = `${nickname}, aka ${tag}`;
-            }
+        // Generate embed
+        let username = '';
+        if (!nickname) {
+            username = `${tag}`;
+        } else {
+            username = `${nickname}, aka ${tag}`;
+        }
 
-            const embed = new MessageEmbed()
-                .setColor(StarboardResponse.EMBED_COLOUR)
-                .setAuthor(`${username}`, message.author.avatarURL()!)
-                .setTimestamp(message.createdTimestamp)
-                .setDescription(content);
+        const embed = new MessageEmbed()
+            .setColor(StarboardResponse.EMBED_COLOUR)
+            .setAuthor(`${username}`, message.author.avatarURL()!)
+            .setTimestamp(message.createdTimestamp)
+            .setDescription(content);
 
-            // Handle attachments and embeds in message
-            handleAttachmentAndEmbeds(embed, embeds, attachments);
+        // Handle attachments and embeds in message
+        handleAttachmentAndEmbeds(embed, embeds, attachments);
 
-            // Continue with rest of fields
-            const details = `**[Message Link](${url})**`;
-            embed.addField('Original', details);
+        // Continue with rest of fields
+        const details = `**[Message Link](${url})**`;
+        embed.addField('Original', details);
 
-            const outputMsg
-                = `**${numberOfReacts}** <:${emoji.name}:${emoji.id}> **In:** ${channel} **ID:** ${id}`;
-            (starboardChannel as TextChannel).send(outputMsg, embed)
-                // Don't forget to set the starboard channel in the cache.
-                .then((m: Message | Message[]): void => {
-                    if (m instanceof Message) {
-                        cacheArr[1] = m.id;
-                    }
-                });
-        });
+        const outputMsg
+            = `**${numberOfReacts}** <:${emoji.name}:${emoji.id}> **In:** ${channel} **ID:** ${id}`;
+        (starboardChannel as TextChannel).send(outputMsg, embed)
+            // Don't forget to set the starboard channel in the cache.
+            .then((m: Message | Message[]): void => {
+                if (m instanceof Message) {
+                    cacheArr[1] = m.id;
+                }
+            });
     }
 
     /**
