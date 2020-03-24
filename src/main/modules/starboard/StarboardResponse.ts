@@ -63,12 +63,16 @@ export class StarboardResponse {
         const { message } = this.reaction;
         const starboardChannel = message.guild!.channels.resolve(starboardChannelId)!;
         const { tag } = message.author;
-        const { nickname } = message.member!;
         const channel = `<#${message.channel.id.toString()}>`;
         const {
             url, id, attachments, embeds,
         } = message;
         const content = message.cleanContent;
+        const { member } = message; // null if member has left the guild.
+        let nickname = null;
+        // assign nickname if member is not null
+        if (member)
+            nickname = member.nickname;
 
         // Add message to cache first
         const cacheArr = StarboardCache.addMessageToCacheFirst(message.guild!.id, id);
