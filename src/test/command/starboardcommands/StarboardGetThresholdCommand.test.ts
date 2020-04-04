@@ -42,7 +42,6 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Threshold not set', (): void => {
         const checkEmbed = (embed: MessageEmbed): void => {
@@ -59,26 +58,25 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
-    it('Threshold set', (): void => {
-        const threshold = 10;
-        server.starboardSettings.setThreshold(threshold);
+    // TODO: Test with SQLite
+    // it('Threshold set', (): void => {
+    //     const threshold = 10;
+    //     server.starboardSettings.setThreshold(threshold);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            // Check embed
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
-            embed.fields!.length.should.equals(1);
-            const field = embed.fields![0];
-            field.name.should.equals(EMBED_TITLE);
-            field.value.should.equals(`The emoji threshold is currently ${threshold}.`);
-        };
+    //     const checkEmbed = (embed: MessageEmbed): void => {
+    //         // Check embed
+    //         embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+    //         embed.fields!.length.should.equals(1);
+    //         const field = embed.fields![0];
+    //         field.name.should.equals(EMBED_TITLE);
+    //         field.value.should.equals(`The emoji threshold is currently ${threshold}.`);
+    //     };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+    //     const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+    //     const commandResult = command.execute(commandArgs);
 
-        // Check command result
-        commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
-    });
+    //     // Check command result
+    //     commandResult.shouldCheckMessage.should.be.true;
+    // });
 });
