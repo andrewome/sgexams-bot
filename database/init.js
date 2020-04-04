@@ -1,9 +1,9 @@
-import Database from 'better-sqlite3';
+const Database = require('better-sqlite3');
 
 // eslint-disable-next-line
 const db = new Database('servers.db', { verbose: console.log });
 
-const initStatements: string[] = []
+const initStatements = [];
 
 // Servers table
 initStatements.push(

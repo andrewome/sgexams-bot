@@ -1,5 +1,5 @@
-import Database from 'better-sqlite3';
-import * as fs from 'fs';
+const Database = require('better-sqlite3');
+const fs = require('fs');
 
 // eslint-disable-next-line
 const db = new Database('servers.db', { verbose: console.log });
