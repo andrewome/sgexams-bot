@@ -9,8 +9,8 @@ export class StarboardGetEmojiCommand extends Command {
 
     public static EMBED_TITLE = 'Starboard Emoji';
 
-    /** SaveServer: false, CheckMessage: true */
-    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
+    /** CheckMessage: true */
+    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 

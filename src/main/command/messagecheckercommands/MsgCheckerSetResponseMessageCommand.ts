@@ -10,8 +10,8 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
 
     public static RESPONSE_MESSAGE_CANNOT_BE_UNDEFINED = 'Reponse Message cannot be undefined!';
 
-    /** SaveServer: true, CheckMessage: true */
-    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, true);
+    /** CheckMessage: true */
+    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
@@ -42,7 +42,10 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
 
         // Check if no args
         if (this.args.length === 0) {
-            server.messageCheckerSettings.setResponseMessage(null);
+            server.messageCheckerSettings.setResponseMessage({
+                serverId: server.serverId,
+                responseMessage: null,
+            });
             embed = this.generateResetEmbed();
             messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
@@ -53,7 +56,10 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
             msg += this.args[i];
             msg += (i !== this.args.length - 1) ? ' ' : '';
         }
-        server.messageCheckerSettings.setResponseMessage(msg);
+        server.messageCheckerSettings.setResponseMessage({
+            serverId: server.serverId,
+            responseMessage: msg,
+        });
         embed = this.generateValidEmbed(msg);
         messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;

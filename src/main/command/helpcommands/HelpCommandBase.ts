@@ -3,8 +3,8 @@ import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 
 export abstract class HelpCommandBase extends Command {
-    /** SaveServer: false, CheckMessage: true */
-    protected COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
+    /** CheckMessage: true */
+    protected COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
     /**
      * Generates embed to be sent back to user.

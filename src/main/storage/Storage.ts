@@ -57,6 +57,7 @@ export class Storage {
             });
             this.servers.set(server.serverId, server);
         }
+        db.close();
         log.info(`Loaded ${this.servers.size} server(s).`);
         return this;
     }

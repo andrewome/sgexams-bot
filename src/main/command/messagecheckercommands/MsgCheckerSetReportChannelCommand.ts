@@ -16,10 +16,10 @@ export class MsgCheckerSetReportChannelCommand extends Command {
 
     public static CHANNELID_CANNOT_BE_UNDEFINED = 'Channel ID cannot be undefined!';
 
-    /** SaveServer: true, CheckMessage: true */
-    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, true);
+    /** CheckMessage: true */
+    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
+    private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
@@ -51,7 +51,10 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         let embed: MessageEmbed;
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
-            server.messageCheckerSettings.setReportingChannelId(null);
+            server.messageCheckerSettings.setReportingChannelId({
+                serverId: server.serverId,
+                id: null,
+            });
             messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
@@ -74,7 +77,10 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         }
 
         embed = this.generateValidEmbed(channelId);
-        server.messageCheckerSettings.setReportingChannelId(channelId);
+        server.messageCheckerSettings.setReportingChannelId({
+            serverId: server.serverId,
+            id: channelId,
+        });
         messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }

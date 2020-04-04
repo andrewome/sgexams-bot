@@ -36,9 +36,6 @@ export class OnMessageEventHandler extends MessageEventHandler {
         // Handle Command
         const commandResult = this.handleCommand(server);
 
-        // Save servers if commands has changed anything
-        if (commandResult.shouldSaveServers) this.storage.saveServers();
-
         // Check message if command result says so
         if (commandResult.shouldCheckMessage) {
             this.handleMessageCheck(server);
@@ -52,8 +49,8 @@ export class OnMessageEventHandler extends MessageEventHandler {
      * @returns CommandResult
      */
     private handleCommand(server: Server): CommandResult {
-        // Default command result - do not save, check messages.
-        const defaultCommandResult = new CommandResult(false, true);
+        // Default command result - check messages.
+        const defaultCommandResult = new CommandResult(true);
 
         // If it's a command, execute the command
         const { content } = this.message;

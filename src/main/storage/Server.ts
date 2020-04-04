@@ -31,27 +31,6 @@ export class Server {
     }
 
     /**
-     * This function converts the server object to an object
-     * that can be easily converted into a JSON object
-     *
-     * @param  {Server} server Server object
-     * @returns any
-     */
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    public static convertToJsonFriendly(server: Server): any {
-        const out: any = {};
-        out.serverId = server.serverId;
-        const { messageCheckerSettings } = server;
-        out.messageCheckerSettings
-            = MessageCheckerSettings.convertToJsonFriendly(messageCheckerSettings);
-        const { starboardSettings } = server;
-        out.starboardSettings
-            = starboardSettings;
-        return out;
-    }
-    /* eslint-enable @typescript-eslint/no-explicit-any */
-
-    /**
      * This function converts an object back into a server object
      * Used for deserialising.
      *

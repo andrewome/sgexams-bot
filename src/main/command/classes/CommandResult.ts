@@ -1,10 +1,7 @@
 export class CommandResult {
-    public shouldSaveServers: boolean;
-
     public shouldCheckMessage: boolean;
 
-    public constructor(shouldSaveServers: boolean, shouldCheckMessage: boolean) {
-        this.shouldSaveServers = shouldSaveServers;
+    public constructor(shouldCheckMessage: boolean) {
         this.shouldCheckMessage = shouldCheckMessage;
     }
 }

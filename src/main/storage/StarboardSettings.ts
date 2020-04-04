@@ -1,3 +1,5 @@
+import { connect } from '../database';
+
 export class SimplifiedEmoji {
     public name: string;
 
@@ -111,10 +113,24 @@ export class StarboardSettings {
      * @param  {SimplifiedEmoji} emoji emoji to be added
      * @returns boolean indicating if the add was a success
      */
-    public addEmoji(emoji: SimplifiedEmoji): boolean {
+    public addEmoji(
+        { serverId, emoji }: { serverId: string; emoji: SimplifiedEmoji },
+    ): boolean {
         if (this.hasEmoji(emoji)) return false;
         this.emojis.push(emoji);
+        StarboardSettings.insertEmojiToDb({ serverId, emoji });
         return true;
+    }
+
+    private static insertEmojiToDb(
+        { serverId, emoji }: { serverId: string; emoji: SimplifiedEmoji },
+    ): void {
+        const db = connect();
+        const insert = db.prepare(
+            'INSERT INTO starboardEmojis (serverId, id, name) VALUES (?, ?, ?)',
+        );
+        insert.run(serverId, emoji.id, emoji.name);
+        db.close();
     }
 
     /**
@@ -138,13 +154,27 @@ export class StarboardSettings {
      * @param  {SimplifiedEmoji} emoji emoji to be removed
      * @returns boolean indicating if the removal was a success
      */
-    public removeEmojiById(emojiId: string): boolean {
+    public removeEmojiById({
+        serverId, emojiId,
+    }: { serverId: string; emojiId: string }): boolean {
         if (!this.hasEmojiById(emojiId)) return false;
 
         // Get index, then splice.
         const idx = this.getEmojiIdxById(emojiId);
         this.emojis.splice(idx, 1);
+        StarboardSettings.deleteEmojiFromDb({ serverId, emojiId });
         return true;
+    }
+
+    private static deleteEmojiFromDb({
+        serverId, emojiId,
+    }: { serverId: string; emojiId: string }): void {
+        const db = connect();
+        const del = db.prepare(
+            'DELETE FROM starboardEmojis WHERE serverId = (?) AND id = (?)',
+        );
+        del.run(serverId, emojiId);
+        db.close();
     }
 
     /* Getter & Setters */
@@ -156,16 +186,44 @@ export class StarboardSettings {
         return this.channel;
     }
 
-    public setChannel(channel: string | null): void {
+    public setChannel({
+        serverId, channel,
+    }: { serverId: string; channel: string | null }): void {
         this.channel = channel;
+        StarboardSettings.updateChannelInDb({ serverId, channel });
+    }
+
+    private static updateChannelInDb({
+        serverId, channel,
+    }: { serverId: string; channel: string | null }): void {
+        const db = connect();
+        const update = db.prepare(
+            'UPDATE starboardSettings SET channel = (?) WHERE serverId = (?)',
+        );
+        update.run(channel, serverId);
+        db.close();
     }
 
     public getThreshold(): number | null {
         return this.threshold;
     }
 
-    public setThreshold(threshold: number | null): void {
+    public setThreshold({
+        serverId, threshold,
+    }: { serverId: string; threshold: number | null }): void {
         this.threshold = threshold;
+        StarboardSettings.updateThresholdInDb({ serverId, threshold });
+    }
+
+    private static updateThresholdInDb({
+        serverId, threshold,
+    }: { serverId: string; threshold: number | null }): void {
+        const db = connect();
+        const update = db.prepare(
+            'UPDATE starboardSettings SET threshold = (?) WHERE serverId = (?)',
+        );
+        update.run(threshold, serverId);
+        db.close();
     }
 
     /* eslint-disable @typescript-eslint/no-explicit-any */

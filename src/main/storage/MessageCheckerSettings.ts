@@ -1,3 +1,5 @@
+import { connect } from '../database';
+
 export class MessageCheckerSettings {
     private reportingChannelId: string | null;
 
@@ -28,31 +30,79 @@ export class MessageCheckerSettings {
     }
 
     /**
-     * This function adds a word to the banned word list
+     * Adds a list of words to the banned words list
      *
-     * @param  {string} word Word to be added
-     * @returns boolean indicating if the add was a success
+     * @param  {string[]} words List of words to be added
+     * @returns object comprising 2 lists, one of words added and one of words not added
      */
-    public addbannedWord(word: string): boolean {
-        if (this.bannedWords.has(word)) {
-            return false;
+    public addBannedWords(words: string[]): {
+        wordsAdded: string[];
+        wordsNotAdded: string[];
+    } {
+        const wordsAdded = [];
+        const wordsNotAdded = [];
+        for (const word of words) {
+            if (this.bannedWords.has(word)) {
+                wordsNotAdded.push(word);
+            } else {
+                this.bannedWords.add(word);
+                wordsAdded.push(word);
+            }
         }
-        this.bannedWords.add(word);
-        return true;
+        MessageCheckerSettings.insertBannedWordsToDb(wordsAdded);
+        return { wordsAdded, wordsNotAdded };
     }
 
     /**
-     * This function removes a word to the banned word list
+     * Removes a list of words from the banned words list
      *
-     * @param  {string} word Word to be removed
-     * @returns boolean indicating if the removal was a success
+     * @param  {string[]} words List of words to be removed
+     * @returns object comprising 2 lists, one of words removed and one of words not removed
      */
-    public removeBannedWord(word: string): boolean {
-        if (!this.bannedWords.has(word)) {
-            return false;
+    public removeBannedWords(words: string[]): {
+        wordsRemoved: string[];
+        wordsNotRemoved: string[];
+    } {
+        const wordsRemoved = [];
+        const wordsNotRemoved = [];
+        for (const word of words) {
+            if (this.bannedWords.has(word)) {
+                this.bannedWords.delete(word);
+                wordsRemoved.push(word);
+            } else {
+                wordsNotRemoved.push(word);
+            }
         }
-        this.bannedWords.delete(word);
-        return true;
+        MessageCheckerSettings.deleteBannedWordsFromDb(wordsRemoved);
+        return { wordsRemoved, wordsNotRemoved };
+    }
+
+    private static insertBannedWordsToDb(bannedWords: string[]): void {
+        const db = connect();
+        const insert = db.prepare(
+            'INSERT INTO messageCheckerBannedWords (word) VALUES (?)',
+        );
+        const insertMany = db.transaction((words: string[]) => {
+            for (const word of words) {
+                insert.run(word);
+            }
+        });
+        insertMany(bannedWords);
+        db.close();
+    }
+
+    private static deleteBannedWordsFromDb(bannedWords: string[]): void {
+        const db = connect();
+        const del = db.prepare(
+            'DELETE FROM messageCheckerBannedWords WHERE word = (?)',
+        );
+        const deleteMany = db.transaction((words: string[]) => {
+            for (const word of words) {
+                del.run(word);
+            }
+        });
+        deleteMany(bannedWords);
+        db.close();
     }
 
     /**
@@ -76,49 +126,76 @@ export class MessageCheckerSettings {
         return Array.from(this.bannedWords);
     }
 
-    public setReportingChannelId(id: string | null): void {
+    public setReportingChannelId(
+        { serverId, id }: { serverId: string; id: string | null },
+    ): void {
         this.reportingChannelId = id;
+        MessageCheckerSettings.updateReportingChannelIdInDb({ serverId, id });
+    }
+
+    private static updateReportingChannelIdInDb(
+        { serverId, id }: { serverId: string; id: string | null },
+    ): void {
+        const db = connect();
+        const update = db.prepare(
+            'UPDATE messageCheckerSettings SET reportingChannelId = (?) WHERE serverId = (?)',
+        );
+        update.run(id, serverId);
+        db.close();
     }
 
     public getReportingChannelId(): string | null {
         return this.reportingChannelId;
     }
 
-    public setResponseMessage(responseMessage: string | null): void {
+    public setResponseMessage(
+        { serverId, responseMessage }:
+        { serverId: string; responseMessage: string | null },
+    ): void {
         this.responseMessage = responseMessage;
+        MessageCheckerSettings.updateResponseMessageInDb({
+            serverId,
+            responseMessage,
+        });
+    }
+
+    private static updateResponseMessageInDb(
+        { serverId, responseMessage }:
+        { serverId: string; responseMessage: string | null },
+    ): void {
+        const db = connect();
+        const update = db.prepare(
+            'UPDATE messageCheckerSettings SET responseMessage = (?) WHERE serverId = (?)',
+        );
+        update.run(responseMessage, serverId);
+        db.close();
     }
 
     public getResponseMessage(): string | null {
         return this.responseMessage;
     }
 
-    public setDeleteMessage(bool: boolean): void {
+    public setDeleteMessage(
+        { serverId, bool }: { serverId: string; bool: boolean },
+    ): void {
         this.deleteMessage = bool;
+        MessageCheckerSettings.updateDeleteMessageInDb({ serverId, bool });
+    }
+
+    private static updateDeleteMessageInDb(
+        { serverId, bool }: { serverId: string; bool: boolean },
+    ): void {
+        const db = connect();
+        const update = db.prepare(
+            'UPDATE messageCheckerSettings SET deleteMessage = (?) WHERE serverId = (?)',
+        );
+        update.run(bool ? 1 : 0, serverId);
+        db.close();
     }
 
     public getDeleteMessage(): boolean {
         return this.deleteMessage;
     }
-
-    /**
-     * This function converts the MessageSettings object to an
-     * object that can be easily converted into a JSON object
-     *
-     * @param  {MessageCheckerSettings} messageSettings
-     * @returns any
-     */
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    public static convertToJsonFriendly(messageSettings: MessageCheckerSettings): any {
-        const out: any = {};
-
-        out.bannedWords = messageSettings.getBannedWords();
-        out.deleteMessage = messageSettings.getDeleteMessage();
-        out.reportingChannelId = messageSettings.getReportingChannelId();
-        out.responseMessage = messageSettings.getResponseMessage();
-
-        return out;
-    }
-    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     /**
      * This function converts an object back into a server object
