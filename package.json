@@ -7,7 +7,8 @@
     "test": "rimraf -rf build/ && npm run build && mocha --exit \"./build/test/**/*.js\"",
     "start": "npm run build:live",
     "build": "tsc -p .",
-    "build:live": "nodemon"
+    "build:live": "nodemon",
+    "lint": "eslint ./src/**"
   },
   "repository": {
     "type": "git",
