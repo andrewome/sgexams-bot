@@ -42,7 +42,6 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Emoji not set', (): void => {
         const checkEmbed = (embed: MessageEmbed): void => {
@@ -59,44 +58,42 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
-    it('1 emoji set', (): void => {
-        const emoji = new SimplifiedEmoji('test', 'test');
-        server.starboardSettings.addEmoji(emoji);
-        const checkEmbed = (embed: MessageEmbed): void => {
-            // Check embed
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
-            embed.fields!.length.should.equals(1);
-            const field = embed.fields![0];
-            field.name.should.equals(EMBED_TITLE);
-            field.value.should.equals(`Starboard emoji(s): <:${emoji.name}:${emoji.id}>.`);
-        };
+    // TODO: Test with SQLite
+    // it('1 emoji set', (): void => {
+    //     const emoji = new SimplifiedEmoji('test', 'test');
+    //     server.starboardSettings.addEmoji(emoji);
+    //     const checkEmbed = (embed: MessageEmbed): void => {
+    //         // Check embed
+    //         embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+    //         embed.fields!.length.should.equals(1);
+    //         const field = embed.fields![0];
+    //         field.name.should.equals(EMBED_TITLE);
+    //         field.value.should.equals(`Starboard emoji(s): <:${emoji.name}:${emoji.id}>.`);
+    //     };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+    //     const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+    //     const commandResult = command.execute(commandArgs);
 
-        // Check command result
-        commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
-    });
-    it('2 emojis set', (): void => {
-        server.starboardSettings.addEmoji(new SimplifiedEmoji('test1', 'test1'));
-        server.starboardSettings.addEmoji(new SimplifiedEmoji('test2', 'test2'));
-        const checkEmbed = (embed: MessageEmbed): void => {
-            // Check embed
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
-            embed.fields!.length.should.equals(1);
-            const field = embed.fields![0];
-            field.name.should.equals(EMBED_TITLE);
-            field.value.should.equals('Starboard emoji(s): <:test1:test1>, <:test2:test2>.');
-        };
+    //     // Check command result
+    //     commandResult.shouldCheckMessage.should.be.true;
+    // });
+    // it('2 emojis set', (): void => {
+    //     server.starboardSettings.addEmoji(new SimplifiedEmoji('test1', 'test1'));
+    //     server.starboardSettings.addEmoji(new SimplifiedEmoji('test2', 'test2'));
+    //     const checkEmbed = (embed: MessageEmbed): void => {
+    //         // Check embed
+    //         embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+    //         embed.fields!.length.should.equals(1);
+    //         const field = embed.fields![0];
+    //         field.name.should.equals(EMBED_TITLE);
+    //         field.value.should.equals('Starboard emoji(s): <:test1:test1>, <:test2:test2>.');
+    //     };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+    //     const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+    //     const commandResult = command.execute(commandArgs);
 
-        // Check command result
-        commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
-    });
+    //     // Check command result
+    //     commandResult.shouldCheckMessage.should.be.true;
+    // });
 });

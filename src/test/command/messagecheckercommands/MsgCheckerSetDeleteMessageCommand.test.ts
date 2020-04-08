@@ -48,7 +48,6 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('No arguments', (): void => {
         command = new MsgCheckerSetDeleteMessageCommand([]);
@@ -66,7 +65,6 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Wrong format', (): void => {
         command = new MsgCheckerSetDeleteMessageCommand(['something']);
@@ -84,97 +82,93 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
-    it('Correct format, true', (): void => {
-        command = new MsgCheckerSetDeleteMessageCommand(['true']);
-        const msg = 'Delete Message set to: **TRUE**';
+    // TODO: Test with SQLite
+    // it('Correct format, true', (): void => {
+    //     command = new MsgCheckerSetDeleteMessageCommand(['true']);
+    //     const msg = 'Delete Message set to: **TRUE**';
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
-            embed.fields!.length.should.equals(1);
-            const field = embed.fields![0];
-            field.name.should.equals(EMBED_TITLE);
-            field.value.should.equals(msg);
-        };
+    //     const checkEmbed = (embed: MessageEmbed): void => {
+    //         embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+    //         embed.fields!.length.should.equals(1);
+    //         const field = embed.fields![0];
+    //         field.name.should.equals(EMBED_TITLE);
+    //         field.value.should.equals(msg);
+    //     };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+    //     const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+    //     const commandResult = command.execute(commandArgs);
 
-        // Check server settings, should be true
-        server.messageCheckerSettings.getDeleteMessage().should.be.true;
+    //     // Check server settings, should be true
+    //     server.messageCheckerSettings.getDeleteMessage().should.be.true;
 
-        // Check command result
-        commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.true;
-    });
-    it('Correct format, true all caps', (): void => {
-        command = new MsgCheckerSetDeleteMessageCommand(['TRUE']);
-        const msg = 'Delete Message set to: **TRUE**';
+    //     // Check command result
+    //     commandResult.shouldCheckMessage.should.be.true;
+    // });
+    // it('Correct format, true all caps', (): void => {
+    //     command = new MsgCheckerSetDeleteMessageCommand(['TRUE']);
+    //     const msg = 'Delete Message set to: **TRUE**';
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
-            embed.fields!.length.should.equals(1);
-            const field = embed.fields![0];
-            field.name.should.equals(EMBED_TITLE);
-            field.value.should.equals(msg);
-        };
+    //     const checkEmbed = (embed: MessageEmbed): void => {
+    //         embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+    //         embed.fields!.length.should.equals(1);
+    //         const field = embed.fields![0];
+    //         field.name.should.equals(EMBED_TITLE);
+    //         field.value.should.equals(msg);
+    //     };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+    //     const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+    //     const commandResult = command.execute(commandArgs);
 
-        // Check server settings, should be true
-        server.messageCheckerSettings.getDeleteMessage().should.be.true;
+    //     // Check server settings, should be true
+    //     server.messageCheckerSettings.getDeleteMessage().should.be.true;
 
-        // Check command result
-        commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.true;
-    });
-    it('Correct format, true mixed caps', (): void => {
-        command = new MsgCheckerSetDeleteMessageCommand(['TRuE']);
-        const msg = 'Delete Message set to: **TRUE**';
+    //     // Check command result
+    //     commandResult.shouldCheckMessage.should.be.true;
+    // });
+    // it('Correct format, true mixed caps', (): void => {
+    //     command = new MsgCheckerSetDeleteMessageCommand(['TRuE']);
+    //     const msg = 'Delete Message set to: **TRUE**';
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
-            embed.fields!.length.should.equals(1);
-            const field = embed.fields![0];
-            field.name.should.equals(EMBED_TITLE);
-            field.value.should.equals(msg);
-        };
+    //     const checkEmbed = (embed: MessageEmbed): void => {
+    //         embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+    //         embed.fields!.length.should.equals(1);
+    //         const field = embed.fields![0];
+    //         field.name.should.equals(EMBED_TITLE);
+    //         field.value.should.equals(msg);
+    //     };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+    //     const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+    //     const commandResult = command.execute(commandArgs);
 
-        // Check server settings, should be true
-        server.messageCheckerSettings.getDeleteMessage().should.be.true;
+    //     // Check server settings, should be true
+    //     server.messageCheckerSettings.getDeleteMessage().should.be.true;
 
-        // Check command result
-        commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.true;
-    });
-    it('Correct format, false', (): void => {
-        command = new MsgCheckerSetDeleteMessageCommand(['false']);
-        const msg = 'Delete Message set to: **FALSE**';
+    //     // Check command result
+    //     commandResult.shouldCheckMessage.should.be.true;
+    // });
+    // it('Correct format, false', (): void => {
+    //     command = new MsgCheckerSetDeleteMessageCommand(['false']);
+    //     const msg = 'Delete Message set to: **FALSE**';
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
-            embed.fields!.length.should.equals(1);
-            const field = embed.fields![0];
-            field.name.should.equals(EMBED_TITLE);
-            field.value.should.equals(msg);
-        };
+    //     const checkEmbed = (embed: MessageEmbed): void => {
+    //         embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+    //         embed.fields!.length.should.equals(1);
+    //         const field = embed.fields![0];
+    //         field.name.should.equals(EMBED_TITLE);
+    //         field.value.should.equals(msg);
+    //     };
 
-        // Check server settings, should be true
-        server.messageCheckerSettings.getDeleteMessage().should.be.false;
+    //     // Check server settings, should be true
+    //     server.messageCheckerSettings.getDeleteMessage().should.be.false;
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+    //     const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+    //     const commandResult = command.execute(commandArgs);
 
-        // Check server settings, should be false
-        server.messageCheckerSettings.getDeleteMessage().should.be.false;
+    //     // Check server settings, should be false
+    //     server.messageCheckerSettings.getDeleteMessage().should.be.false;
 
-        // Check command result
-        commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.true;
-    });
+    //     // Check command result
+    //     commandResult.shouldCheckMessage.should.be.true;
+    // });
 });

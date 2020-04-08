@@ -50,8 +50,8 @@ export class UptimeCheckCommand extends Command {
                 .addField(UptimeCheckCommand.EMBED_TITLE, `${upTimeDaysStr}, ${upTimeHoursStr}, ${upTimeMinutesStr} and ${upTimeSecondsStr}`),
         );
 
-        /* Save servers false, Check messages true */
-        return new CommandResult(false, true);
+        /* Check messages true */
+        return new CommandResult(true);
     }
 
     /**

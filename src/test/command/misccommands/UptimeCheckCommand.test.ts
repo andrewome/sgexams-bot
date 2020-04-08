@@ -46,7 +46,6 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Execute test - 60000ms (1 minute)', (): void => {
         const uptime = 60000;
@@ -70,7 +69,6 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Execute test - 3600000ms (1 hour)', (): void => {
         const uptime = 3600000;
@@ -94,7 +92,6 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Execute test - 86400000ms (1 day)', (): void => {
         const uptime = 86400000;
@@ -118,7 +115,6 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Execute test - 864000000ms (10 days)', (): void => {
         const uptime = 864000000;
@@ -142,7 +138,6 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Execute test - 500ms (should round down)', (): void => {
         const uptime = 500;
@@ -166,7 +161,6 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Execute test - 999ms (should round down)', (): void => {
         const uptime = 999;
@@ -190,7 +184,6 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Execute test - 1001ms (1 second)', (): void => {
         const uptime = 1001;
@@ -214,7 +207,6 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Execute test - 61000ms (1 min, 1 second)', (): void => {
         const uptime = 61050;
@@ -238,7 +230,6 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Execute test - 3661000ms (1 hour, 1 min, 1 second)', (): void => {
         const uptime = 3661000;
@@ -262,7 +253,6 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Execute test - 90061000ms (1 day, 1 hour, 1 min, 1 second)', (): void => {
         const uptime = 90061000;
@@ -286,6 +276,5 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
 });

@@ -63,7 +63,6 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
 /* BROKEN DUE TO UPDATE TO MANAGERS IN DISCORD.JS v12
     it('reset channel', (): void => {
@@ -84,7 +83,6 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.true;
 
         // Check server
         (server.starboardSettings.getChannel() === null).should.be.true;
@@ -106,7 +104,6 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('cannot find channel', (): void => {
         command = new StarboardSetChannelCommand(['does_not_exist']);
@@ -125,7 +122,6 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Valid channelid', (): void => {
         const channelId = 'text_channel';
@@ -146,7 +142,6 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.true;
 
         // Check server
         server.starboardSettings.getChannel()!.should.equals(channelId);

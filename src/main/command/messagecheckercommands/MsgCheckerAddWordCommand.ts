@@ -11,8 +11,8 @@ export class MsgCheckerAddWordCommand extends Command {
 
     public static UNABLE_TO_ADD_WORDS = 'Unable To Add:';
 
-    /** SaveServer: true, CheckMessage: false */
-    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, false);
+    /** CheckMessage: false */
+    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false);
 
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
@@ -40,9 +40,7 @@ export class MsgCheckerAddWordCommand extends Command {
         }
 
         // Execute
-        const wordsAdded: string[] = [];
-        const wordsNotAdded: string[] = [];
-        this.changeServerSettings(server, wordsAdded, wordsNotAdded);
+        const { wordsAdded, wordsNotAdded } = this.changeServerSettings(server);
 
         // Generate output embed
         const embed = this.generateEmbed(wordsAdded, wordsNotAdded);
@@ -98,22 +96,12 @@ export class MsgCheckerAddWordCommand extends Command {
      * Changed the settings of server object
      *
      * @param  {Server} server the discord server
-     * @param  {string[]} wordsAdded Words successfully added
-     * @param  {string[]} wordsNotAdded Words unsuccessfully added
-     * @returns void
+     * @returns any An object comprising 2 lists, one of the words added and
+     *              one of those not added
      */
-    public changeServerSettings(server: Server,
-                                wordsAdded: string[],
-                                wordsNotAdded: string[]): void {
-        const words = this.args;
-        for (let word of words) {
-            // Make word lowercase
-            word = word.toLowerCase();
-            if (server.messageCheckerSettings.addbannedWord(word)) {
-                wordsAdded.push(word);
-            } else {
-                wordsNotAdded.push(word);
-            }
-        }
+    public changeServerSettings(server: Server): { wordsAdded: string[]; wordsNotAdded: string[]} {
+        const words = this.args.map((word) => word.toLowerCase());
+        const res = server.messageCheckerSettings.addBannedWords(words);
+        return res;
     }
 }

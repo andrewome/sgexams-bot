@@ -46,6 +46,5 @@ describe('MsgCheckerHelp Command Test Suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
 });

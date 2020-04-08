@@ -16,7 +16,7 @@ export abstract class Command {
 
     public static NO_PERMISSIONS_MSG = 'You do not have the permissions to do that!';
 
-    public NO_PERMISSIONS_COMMANDRESULT = new CommandResult(false, true);
+    public NO_PERMISSIONS_COMMANDRESULT = new CommandResult(true);
 
 
     /**

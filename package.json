@@ -7,7 +7,8 @@
     "test": "rimraf -rf build/ && npm run build && mocha --exit \"./build/test/**/*.js\"",
     "start": "npm run build:live",
     "build": "tsc -p .",
-    "build:live": "nodemon"
+    "build:live": "nodemon",
+    "lint": "eslint ./src/**"
   },
   "repository": {
     "type": "git",
@@ -20,10 +21,12 @@
   },
   "homepage": "https://github.com/andrewome/discord-bad-words-bot#readme",
   "dependencies": {
+    "@types/better-sqlite3": "^5.4.0",
     "@types/dotenv": "^8.2.0",
     "@types/sharp": "^0.22.3",
     "@types/ws": "^7.2.3",
     "axios": "^0.19.2",
+    "better-sqlite3": "^6.0.1",
     "discord.js": "^12.0.2",
     "dotenv": "^8.2.0",
     "fs": "0.0.1-security",
