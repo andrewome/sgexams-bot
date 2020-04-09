@@ -25,11 +25,11 @@ export class Storage {
 
         for (const { serverId } of servers) {
             // Load additional settings from the DB
-            const starboardSettings = Storage.getStarboardSettingsFromDb(
+            const starboardSettings = this.getStarboardSettingsFromDb(
                 db,
                 serverId,
             );
-            const messageCheckerSettings = Storage.getMessageCheckerSettingsFromDb(
+            const messageCheckerSettings = this.getMessageCheckerSettingsFromDb(
                 db,
                 serverId,
             );
@@ -55,8 +55,8 @@ export class Storage {
      * @param serverId The ID of the server whose settings are to be retrieved.
      * @returns An object containing the StarboardSettings for the server.
      */
-    private static getStarboardSettingsFromDb(db: Database,
-                                              serverId: string): StarboardSettingsObj {
+    private getStarboardSettingsFromDb(db: Database,
+                                       serverId: string): StarboardSettingsObj {
         // Retrieve settings and emojis from the DB
         const selectSettings = db.prepare(
             `SELECT * FROM starboardSettings WHERE serverId = ${serverId}`,
@@ -87,9 +87,8 @@ export class Storage {
      * @param serverId The ID of the server whose settings are to be retrieved.
      * @returns An object containing the MessageCheckerSettings for the server.
      */
-    private static getMessageCheckerSettingsFromDb(
-        db: Database, serverId: string,
-    ): MessageCheckerSettingsObj {
+    private getMessageCheckerSettingsFromDb(db: Database,
+                                            serverId: string): MessageCheckerSettingsObj {
         // Retrieve settings and banned words from the DB
         const selectSettings = db.prepare(
             `SELECT * FROM messageCheckerSettings WHERE serverId = ${serverId}`,

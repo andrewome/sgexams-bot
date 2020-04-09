@@ -74,10 +74,10 @@ export class StarboardAddEmojiCommand extends Command {
         }
 
         // Add emoji
-        const successfullyAdded = starboardSettings.addEmoji({
+        const successfullyAdded = starboardSettings.addEmoji(
             serverId,
-            emoji: new SimplifiedEmoji(emoji!.name, emoji!.id),
-        });
+            new SimplifiedEmoji(emoji!.name, emoji!.id),
+        );
 
         if (successfullyAdded) {
             embed.setColor(Command.EMBED_DEFAULT_COLOUR);

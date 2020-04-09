@@ -55,10 +55,7 @@ export class StarboardSetChannelCommand extends Command {
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
             messageReply(embed);
-            server.starboardSettings.setChannel({
-                serverId: server.serverId,
-                channel: null,
-            });
+            server.starboardSettings.setChannel(server.serverId, null);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -81,10 +78,7 @@ export class StarboardSetChannelCommand extends Command {
 
         embed = this.generateValidEmbed(channelId);
         messageReply(embed);
-        server.starboardSettings.setChannel({
-            serverId: server.serverId,
-            channel: channelId,
-        });
+        server.starboardSettings.setChannel(server.serverId, channelId);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

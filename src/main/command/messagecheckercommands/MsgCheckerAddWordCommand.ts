@@ -100,8 +100,9 @@ export class MsgCheckerAddWordCommand extends Command {
      *              one of those not added
      */
     public changeServerSettings(server: Server): { wordsAdded: string[]; wordsNotAdded: string[]} {
+        const { serverId } = server;
         const words = this.args.map((word) => word.toLowerCase());
-        const res = server.messageCheckerSettings.addBannedWords(words);
+        const res = server.messageCheckerSettings.addBannedWords(serverId, words);
         return res;
     }
 }

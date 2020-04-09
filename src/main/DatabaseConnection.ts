@@ -4,7 +4,7 @@ import Database from 'better-sqlite3';
 export class DatabaseConnection {
     private static STORAGE_PATH = './servers.db';
 
-    private static DEBUG = true;
+    private static DEBUG = false;
 
     public static setStoragePath(path: string): void {
         this.STORAGE_PATH = path;

@@ -46,10 +46,7 @@ export class StarboardSetThresholdCommand extends Command {
         let embed: MessageEmbed;
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
-            server.starboardSettings.setThreshold({
-                serverId: server.serverId,
-                threshold: null,
-            });
+            server.starboardSettings.setThreshold(server.serverId, null);
             messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
@@ -65,10 +62,7 @@ export class StarboardSetThresholdCommand extends Command {
         }
 
         embed = this.generateValidEmbed(thresholdVal);
-        server.starboardSettings.setThreshold({
-            serverId: server.serverId,
-            threshold: thresholdVal,
-        });
+        server.starboardSettings.setThreshold(server.serverId, thresholdVal);
         messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }

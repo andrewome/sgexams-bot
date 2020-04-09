@@ -54,9 +54,10 @@ export class StarboardRemoveEmojiCommand extends Command {
         // Execute
         const emojiId = this.args[0];
         const emoji = starboardSettings.getEmojiById(emojiId);
-        const successfullyRemoved = starboardSettings.removeEmojiById({
-            serverId, emojiId,
-        });
+        const successfullyRemoved = starboardSettings.removeEmojiById(
+            serverId,
+            emojiId,
+        );
 
         if (successfullyRemoved) {
             embed.setColor(Command.EMBED_DEFAULT_COLOUR);

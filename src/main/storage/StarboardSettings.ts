@@ -125,18 +125,14 @@ export class StarboardSettings {
      * @param  {SimplifiedEmoji} emoji emoji to be added
      * @returns boolean indicating if the add was a success
      */
-    public addEmoji(
-        { serverId, emoji }: { serverId: string; emoji: SimplifiedEmoji },
-    ): boolean {
+    public addEmoji(serverId: string, emoji: SimplifiedEmoji): boolean {
         if (this.hasEmoji(emoji)) return false;
         this.emojis.push(emoji);
-        StarboardSettings.insertEmojiToDb({ serverId, emoji });
+        this.insertEmojiToDb(serverId, emoji);
         return true;
     }
 
-    private static insertEmojiToDb(
-        { serverId, emoji }: { serverId: string; emoji: SimplifiedEmoji },
-    ): void {
+    private insertEmojiToDb(serverId: string, emoji: SimplifiedEmoji): void {
         const db = DatabaseConnection.connect();
         const insert = db.prepare(
             'INSERT INTO starboardEmojis (serverId, id, name) VALUES (?, ?, ?)',
@@ -166,21 +162,17 @@ export class StarboardSettings {
      * @param  {SimplifiedEmoji} emoji emoji to be removed
      * @returns boolean indicating if the removal was a success
      */
-    public removeEmojiById({
-        serverId, emojiId,
-    }: { serverId: string; emojiId: string }): boolean {
+    public removeEmojiById(serverId: string, emojiId: string): boolean {
         if (!this.hasEmojiById(emojiId)) return false;
 
         // Get index, then splice.
         const idx = this.getEmojiIdxById(emojiId);
         this.emojis.splice(idx, 1);
-        StarboardSettings.deleteEmojiFromDb({ serverId, emojiId });
+        this.deleteEmojiFromDb(serverId, emojiId);
         return true;
     }
 
-    private static deleteEmojiFromDb({
-        serverId, emojiId,
-    }: { serverId: string; emojiId: string }): void {
+    private deleteEmojiFromDb(serverId: string, emojiId: string): void {
         const db = DatabaseConnection.connect();
         const del = db.prepare(
             'DELETE FROM starboardEmojis WHERE serverId = (?) AND id = (?)',
@@ -198,16 +190,12 @@ export class StarboardSettings {
         return this.channel;
     }
 
-    public setChannel({
-        serverId, channel,
-    }: { serverId: string; channel: string | null }): void {
+    public setChannel(serverId: string, channel: string | null): void {
         this.channel = channel;
-        StarboardSettings.updateChannelInDb({ serverId, channel });
+        this.updateChannelInDb(serverId, channel);
     }
 
-    private static updateChannelInDb({
-        serverId, channel,
-    }: { serverId: string; channel: string | null }): void {
+    private updateChannelInDb(serverId: string, channel: string | null): void {
         const db = DatabaseConnection.connect();
         const update = db.prepare(
             'UPDATE starboardSettings SET channel = (?) WHERE serverId = (?)',
@@ -220,16 +208,12 @@ export class StarboardSettings {
         return this.threshold;
     }
 
-    public setThreshold({
-        serverId, threshold,
-    }: { serverId: string; threshold: number | null }): void {
+    public setThreshold(serverId: string, threshold: number | null): void {
         this.threshold = threshold;
-        StarboardSettings.updateThresholdInDb({ serverId, threshold });
+        this.updateThresholdInDb(serverId, threshold);
     }
 
-    private static updateThresholdInDb({
-        serverId, threshold,
-    }: { serverId: string; threshold: number | null }): void {
+    private updateThresholdInDb(serverId: string, threshold: number | null): void {
         const db = DatabaseConnection.connect();
         const update = db.prepare(
             'UPDATE starboardSettings SET threshold = (?) WHERE serverId = (?)',

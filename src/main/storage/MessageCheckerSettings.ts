@@ -42,7 +42,7 @@ export class MessageCheckerSettings {
      * @param  {string[]} words List of words to be added
      * @returns object comprising 2 lists, one of words added and one of words not added
      */
-    public addBannedWords(words: string[]): {
+    public addBannedWords(serverId: string, words: string[]): {
         wordsAdded: string[];
         wordsNotAdded: string[];
     } {
@@ -56,7 +56,7 @@ export class MessageCheckerSettings {
                 wordsAdded.push(word);
             }
         }
-        MessageCheckerSettings.insertBannedWordsToDb(wordsAdded);
+        this.insertBannedWordsToDb(serverId, wordsAdded);
         return { wordsAdded, wordsNotAdded };
     }
 
@@ -66,7 +66,7 @@ export class MessageCheckerSettings {
      * @param  {string[]} words List of words to be removed
      * @returns object comprising 2 lists, one of words removed and one of words not removed
      */
-    public removeBannedWords(words: string[]): {
+    public removeBannedWords(serverId: string, words: string[]): {
         wordsRemoved: string[];
         wordsNotRemoved: string[];
     } {
@@ -80,35 +80,27 @@ export class MessageCheckerSettings {
                 wordsNotRemoved.push(word);
             }
         }
-        MessageCheckerSettings.deleteBannedWordsFromDb(wordsRemoved);
+        this.deleteBannedWordsFromDb(serverId, wordsRemoved);
         return { wordsRemoved, wordsNotRemoved };
     }
 
-    private static insertBannedWordsToDb(bannedWords: string[]): void {
+    private insertBannedWordsToDb(serverId: string, bannedWords: string[]): void {
         const db = DatabaseConnection.connect();
         const insert = db.prepare(
-            'INSERT INTO messageCheckerBannedWords (word) VALUES (?)',
+            'INSERT INTO messageCheckerBannedWords (serverId, word) VALUES (?, ?)',
         );
-        const insertMany = db.transaction((words: string[]) => {
-            for (const word of words) {
-                insert.run(word);
-            }
-        });
-        insertMany(bannedWords);
+        for (const word of bannedWords)
+            insert.run(serverId, word);
         db.close();
     }
 
-    private static deleteBannedWordsFromDb(bannedWords: string[]): void {
+    private deleteBannedWordsFromDb(serverId: string, bannedWords: string[]): void {
         const db = DatabaseConnection.connect();
         const del = db.prepare(
-            'DELETE FROM messageCheckerBannedWords WHERE word = (?)',
+            'DELETE FROM messageCheckerBannedWords WHERE serverId = (?) AND word = (?)',
         );
-        const deleteMany = db.transaction((words: string[]) => {
-            for (const word of words) {
-                del.run(word);
-            }
-        });
-        deleteMany(bannedWords);
+        for (const word of bannedWords)
+            del.run(serverId, word);
         db.close();
     }
 

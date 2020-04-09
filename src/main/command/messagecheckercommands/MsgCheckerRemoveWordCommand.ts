@@ -100,8 +100,9 @@ export class MsgCheckerRemoveWordCommand extends Command {
     public changeServerSettings(server: Server): {
         wordsRemoved: string[]; wordsNotRemoved: string[];
     } {
+        const { serverId } = server;
         const words = this.args.map((word) => word.toLowerCase());
-        const res = server.messageCheckerSettings.removeBannedWords(words);
+        const res = server.messageCheckerSettings.removeBannedWords(serverId, words);
         return res;
     }
 }
