@@ -1,5 +1,11 @@
-import { MessageCheckerSettings } from './MessageCheckerSettings';
-import { StarboardSettings } from './StarboardSettings';
+import { MessageCheckerSettings, MessageCheckerSettingsObj } from './MessageCheckerSettings';
+import { StarboardSettings, StarboardSettingsObj } from './StarboardSettings';
+
+interface ServerObj {
+    serverId: string;
+    messageCheckerSettings: MessageCheckerSettingsObj;
+    starboardSettings: StarboardSettingsObj;
+}
 
 /** This class represents a server object that the bot references from */
 export class Server {
@@ -38,7 +44,7 @@ export class Server {
      * @returns Server
      */
     /* eslint-disable @typescript-eslint/no-explicit-any */
-    public static convertFromJsonFriendly(obj: any): Server {
+    public static convertFromJsonFriendly(obj: ServerObj): Server {
         // Check attributes
         if (!(obj.hasOwnProperty('messageCheckerSettings')
              && obj.hasOwnProperty('serverId'))) {
