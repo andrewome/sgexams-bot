@@ -1,24 +1,9 @@
 import log from 'loglevel';
+import { Database } from 'better-sqlite3';
 import { Server } from './Server';
-import { connect } from '../database';
-
-interface MessageCheckerSettings {
-    bannedWords: string[];
-    deleteMessage: boolean;
-    reportingChannelId: string | null;
-    responseMessage: string | null;
-}
-
-interface StarboardEmoji {
-    id: string;
-    name: string;
-}
-
-interface StarboardSettings {
-    channel: string;
-    threshold: number;
-    emojis: StarboardEmoji[];
-}
+import { DatabaseConnection } from '../DatabaseConnection';
+import { MessageCheckerSettingsObj } from './MessageCheckerSettings';
+import { StarboardSettingsObj } from './StarboardSettings';
 
 /** This represents all the servers that the bot is keeping track of */
 export class Storage {
@@ -32,7 +17,7 @@ export class Storage {
      */
     public loadServers(): Storage {
         log.info('Loading Servers...');
-        const db = connect();
+        const db = DatabaseConnection.connect();
 
         // Retrieve servers from the DB
         const selectServers = db.prepare('SELECT * FROM servers');
@@ -70,7 +55,8 @@ export class Storage {
      * @param serverId The ID of the server whose settings are to be retrieved.
      * @returns An object containing the StarboardSettings for the server.
      */
-    private static getStarboardSettingsFromDb(db: any, serverId: string): StarboardSettings {
+    private static getStarboardSettingsFromDb(db: Database,
+                                              serverId: string): StarboardSettingsObj {
         // Retrieve settings and emojis from the DB
         const selectSettings = db.prepare(
             `SELECT * FROM starboardSettings WHERE serverId = ${serverId}`,
@@ -102,8 +88,8 @@ export class Storage {
      * @returns An object containing the MessageCheckerSettings for the server.
      */
     private static getMessageCheckerSettingsFromDb(
-        db: any, serverId: string,
-    ): MessageCheckerSettings {
+        db: Database, serverId: string,
+    ): MessageCheckerSettingsObj {
         // Retrieve settings and banned words from the DB
         const selectSettings = db.prepare(
             `SELECT * FROM messageCheckerSettings WHERE serverId = ${serverId}`,

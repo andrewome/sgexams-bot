@@ -1,4 +1,11 @@
-import { connect } from '../database';
+import { DatabaseConnection } from '../DatabaseConnection';
+
+export interface MessageCheckerSettingsObj {
+    bannedWords: string[];
+    deleteMessage: boolean;
+    reportingChannelId: string | null;
+    responseMessage: string | null;
+}
 
 export class MessageCheckerSettings {
     private reportingChannelId: string | null;
@@ -78,7 +85,7 @@ export class MessageCheckerSettings {
     }
 
     private static insertBannedWordsToDb(bannedWords: string[]): void {
-        const db = connect();
+        const db = DatabaseConnection.connect();
         const insert = db.prepare(
             'INSERT INTO messageCheckerBannedWords (word) VALUES (?)',
         );
@@ -92,7 +99,7 @@ export class MessageCheckerSettings {
     }
 
     private static deleteBannedWordsFromDb(bannedWords: string[]): void {
-        const db = connect();
+        const db = DatabaseConnection.connect();
         const del = db.prepare(
             'DELETE FROM messageCheckerBannedWords WHERE word = (?)',
         );
@@ -136,7 +143,7 @@ export class MessageCheckerSettings {
     private static updateReportingChannelIdInDb(
         { serverId, id }: { serverId: string; id: string | null },
     ): void {
-        const db = connect();
+        const db = DatabaseConnection.connect();
         const update = db.prepare(
             'UPDATE messageCheckerSettings SET reportingChannelId = (?) WHERE serverId = (?)',
         );
@@ -163,7 +170,7 @@ export class MessageCheckerSettings {
         { serverId, responseMessage }:
         { serverId: string; responseMessage: string | null },
     ): void {
-        const db = connect();
+        const db = DatabaseConnection.connect();
         const update = db.prepare(
             'UPDATE messageCheckerSettings SET responseMessage = (?) WHERE serverId = (?)',
         );
@@ -185,7 +192,7 @@ export class MessageCheckerSettings {
     private static updateDeleteMessageInDb(
         { serverId, bool }: { serverId: string; bool: boolean },
     ): void {
-        const db = connect();
+        const db = DatabaseConnection.connect();
         const update = db.prepare(
             'UPDATE messageCheckerSettings SET deleteMessage = (?) WHERE serverId = (?)',
         );

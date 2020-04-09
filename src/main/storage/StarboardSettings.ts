@@ -1,4 +1,16 @@
-import { connect } from '../database';
+import { DatabaseConnection } from '../DatabaseConnection';
+
+export interface SimplifiedEmojiObj {
+    id: string;
+    name: string;
+}
+
+export interface StarboardSettingsObj {
+    channel: string;
+    threshold: number;
+    emojis: SimplifiedEmojiObj[];
+}
+
 
 export class SimplifiedEmoji {
     public name: string;
@@ -125,7 +137,7 @@ export class StarboardSettings {
     private static insertEmojiToDb(
         { serverId, emoji }: { serverId: string; emoji: SimplifiedEmoji },
     ): void {
-        const db = connect();
+        const db = DatabaseConnection.connect();
         const insert = db.prepare(
             'INSERT INTO starboardEmojis (serverId, id, name) VALUES (?, ?, ?)',
         );
@@ -169,7 +181,7 @@ export class StarboardSettings {
     private static deleteEmojiFromDb({
         serverId, emojiId,
     }: { serverId: string; emojiId: string }): void {
-        const db = connect();
+        const db = DatabaseConnection.connect();
         const del = db.prepare(
             'DELETE FROM starboardEmojis WHERE serverId = (?) AND id = (?)',
         );
@@ -196,7 +208,7 @@ export class StarboardSettings {
     private static updateChannelInDb({
         serverId, channel,
     }: { serverId: string; channel: string | null }): void {
-        const db = connect();
+        const db = DatabaseConnection.connect();
         const update = db.prepare(
             'UPDATE starboardSettings SET channel = (?) WHERE serverId = (?)',
         );
@@ -218,7 +230,7 @@ export class StarboardSettings {
     private static updateThresholdInDb({
         serverId, threshold,
     }: { serverId: string; threshold: number | null }): void {
-        const db = connect();
+        const db = DatabaseConnection.connect();
         const update = db.prepare(
             'UPDATE starboardSettings SET threshold = (?) WHERE serverId = (?)',
         );
