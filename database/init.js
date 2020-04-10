@@ -1,8 +1,4 @@
-const Database = require('better-sqlite3');
-
-// eslint-disable-next-line
-const db = new Database('servers.db', { verbose: console.log });
-
+/* eslint-disable */
 const initStatements = [];
 
 // Servers table
@@ -48,7 +44,4 @@ initStatements.push(
     PRIMARY KEY(serverId, id)
 )`)
 
-// Create database
-for (const initStatement of initStatements) {
-    db.prepare(initStatement).run();
-}
+exports.initStatements = initStatements;

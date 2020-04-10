@@ -1,9 +1,10 @@
 import log from 'loglevel';
 import { Database } from 'better-sqlite3';
+import * as fs from 'fs';
 import { Server } from './Server';
 import { DatabaseConnection } from '../DatabaseConnection';
-import { MessageCheckerSettingsObj } from './MessageCheckerSettings';
-import { StarboardSettingsObj } from './StarboardSettings';
+import { MessageCheckerSettingsObj, MessageCheckerSettings } from './MessageCheckerSettings';
+import { StarboardSettingsObj, StarboardSettings } from './StarboardSettings';
 
 /** This represents all the servers that the bot is keeping track of */
 export class Storage {
@@ -17,6 +18,14 @@ export class Storage {
      */
     public loadServers(): Storage {
         log.info('Loading Servers...');
+
+        // If datapath file does not exist, init new db.
+        const storagePath = DatabaseConnection.getStoragePath();
+        if (!fs.existsSync(storagePath)) {
+            log.info('Database not found - Initialising a new database');
+            DatabaseConnection.initDatabase();
+        }
+
         const db = DatabaseConnection.connect();
 
         // Retrieve servers from the DB
@@ -45,6 +54,35 @@ export class Storage {
         db.close();
         log.info(`Loaded ${this.servers.size} server(s).`);
         return this;
+    }
+
+    /**
+     * Initialises a new server by adding to map and creating a db entry for it.
+     *
+     * @param  {string} severId
+     * @returns void
+     */
+    public initNewServer(serverId: string): void {
+        // Set to map
+        this.servers.set(
+            serverId,
+            new Server(
+                serverId,
+                new MessageCheckerSettings(null, null, null, null),
+                new StarboardSettings(null, null, null),
+            ),
+        );
+
+        // Add to db
+        const db = DatabaseConnection.connect();
+        db.prepare('INSERT INTO servers (serverId) VALUES (?)').run(serverId);
+        db.prepare(
+            'INSERT INTO messageCheckerSettings (serverId, reportingChannelId, responseMessage, deleteMessage) VALUES (?, ?, ?, ?)',
+        ).run(serverId, null, null, null);
+        db.prepare(
+            'INSERT INTO starboardSettings (serverId, channel, threshold) VALUES (?, ?, ?)',
+        ).run(serverId, null, null);
+        db.close();
     }
 
     /**
@@ -106,5 +144,26 @@ export class Storage {
         }
 
         return messageCheckerSettings;
+    }
+
+    /**
+     * Compares if 2 storage objects are the same
+     *
+     * @param  {Storage} other
+     * @returns boolean
+     */
+    public equals(other: Storage): boolean {
+        let isEqual = true;
+        const otherServers = other.servers;
+        this.servers.forEach((v: Server, k: string): void => {
+            if (otherServers.has(k)) {
+                const server = otherServers.get(k);
+                if (!server?.equals(v))
+                    isEqual = false;
+            } else {
+                isEqual = false;
+            }
+        });
+        return isEqual;
     }
 }

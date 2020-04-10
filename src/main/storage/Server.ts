@@ -33,6 +33,8 @@ export class Server {
 
         if (!this.messageCheckerSettings.equals(other.messageCheckerSettings)) return false;
 
+        if (!this.starboardSettings.equals(other.starboardSettings)) return false;
+
         return true;
     }
 

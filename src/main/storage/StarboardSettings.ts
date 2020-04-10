@@ -56,6 +56,29 @@ export class StarboardSettings {
     }
 
     /**
+     * This method compares 2 starboard settings and checks if they
+     * contain the same data.
+     *
+     * @param  {StarboardSettings} other
+     * @returns boolean
+     */
+    public equals(other: StarboardSettings): boolean {
+        if (this.channel !== other.getChannel()) return false;
+
+        if (this.threshold !== other.getThreshold()) return false;
+
+        let containsEmoji = true;
+        this.emojis.forEach((emoji: SimplifiedEmoji) => {
+            if (!other.hasEmoji(emoji)) {
+                containsEmoji = false;
+            }
+        });
+        if (!containsEmoji) return false;
+
+        return true;
+    }
+
+    /**
      * Returns index of an emoji in the emojis array matching index
      * Returns -1 if emoji is not found.
      *
