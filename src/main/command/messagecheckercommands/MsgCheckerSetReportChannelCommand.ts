@@ -51,10 +51,10 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         let embed: MessageEmbed;
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
-            server.messageCheckerSettings.setReportingChannelId({
-                serverId: server.serverId,
-                id: null,
-            });
+            server.messageCheckerSettings.setReportingChannelId(
+                server.serverId,
+                null,
+            );
             messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
@@ -77,10 +77,10 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         }
 
         embed = this.generateValidEmbed(channelId);
-        server.messageCheckerSettings.setReportingChannelId({
-            serverId: server.serverId,
-            id: channelId,
-        });
+        server.messageCheckerSettings.setReportingChannelId(
+            server.serverId,
+            channelId,
+        );
         messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }

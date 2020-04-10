@@ -125,16 +125,12 @@ export class MessageCheckerSettings {
         return Array.from(this.bannedWords);
     }
 
-    public setReportingChannelId(
-        { serverId, id }: { serverId: string; id: string | null },
-    ): void {
+    public setReportingChannelId(serverId: string, id: string | null): void {
         this.reportingChannelId = id;
-        MessageCheckerSettings.updateReportingChannelIdInDb({ serverId, id });
+        MessageCheckerSettings.updateReportingChannelIdInDb(serverId, id);
     }
 
-    private static updateReportingChannelIdInDb(
-        { serverId, id }: { serverId: string; id: string | null },
-    ): void {
+    private static updateReportingChannelIdInDb(serverId: string, id: string | null): void {
         const db = DatabaseConnection.connect();
         const update = db.prepare(
             'UPDATE messageCheckerSettings SET reportingChannelId = (?) WHERE serverId = (?)',
@@ -147,21 +143,16 @@ export class MessageCheckerSettings {
         return this.reportingChannelId;
     }
 
-    public setResponseMessage(
-        { serverId, responseMessage }:
-        { serverId: string; responseMessage: string | null },
-    ): void {
+    public setResponseMessage(serverId: string, responseMessage: string | null): void {
         this.responseMessage = responseMessage;
-        MessageCheckerSettings.updateResponseMessageInDb({
+        MessageCheckerSettings.updateResponseMessageInDb(
             serverId,
             responseMessage,
-        });
+        );
     }
 
-    private static updateResponseMessageInDb(
-        { serverId, responseMessage }:
-        { serverId: string; responseMessage: string | null },
-    ): void {
+    private static updateResponseMessageInDb(serverId: string,
+                                             responseMessage: string | null): void {
         const db = DatabaseConnection.connect();
         const update = db.prepare(
             'UPDATE messageCheckerSettings SET responseMessage = (?) WHERE serverId = (?)',

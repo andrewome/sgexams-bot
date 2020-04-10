@@ -42,10 +42,10 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
 
         // Check if no args
         if (this.args.length === 0) {
-            server.messageCheckerSettings.setResponseMessage({
-                serverId: server.serverId,
-                responseMessage: null,
-            });
+            server.messageCheckerSettings.setResponseMessage(
+                server.serverId,
+                null,
+            );
             embed = this.generateResetEmbed();
             messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
@@ -56,10 +56,10 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
             msg += this.args[i];
             msg += (i !== this.args.length - 1) ? ' ' : '';
         }
-        server.messageCheckerSettings.setResponseMessage({
-            serverId: server.serverId,
-            responseMessage: msg,
-        });
+        server.messageCheckerSettings.setResponseMessage(
+            server.serverId,
+            msg,
+        );
         embed = this.generateValidEmbed(msg);
         messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
