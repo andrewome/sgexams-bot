@@ -1,4 +1,5 @@
 /* eslint-disable */
+const Database = require('better-sqlite3');
 const initStatements = [];
 
 // Servers table
@@ -45,3 +46,7 @@ initStatements.push(
 )`)
 
 exports.initStatements = initStatements;
+exports.initDb = (db) => {
+    for (const initStatement of initStatements)
+        db.prepare(initStatement).run();
+};

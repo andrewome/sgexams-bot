@@ -1,11 +1,14 @@
+/* eslint-disable */
 const Database = require('better-sqlite3');
+const { initDb } = require('./init');
 const fs = require('fs');
-
-// eslint-disable-next-line
 const db = new Database('servers.db', { verbose: console.log });
 
-const servers = JSON.parse(fs.readFileSync('./servers.json', 'utf-8'));
+// Initialise db
+initDb(db);
 
+// Parse json and insert to db.
+const servers = JSON.parse(fs.readFileSync('./servers.json', 'utf-8'));
 for (const server of servers) {
     const { serverId, starboardSettings, messageCheckerSettings } = server;
 
