@@ -11,8 +11,8 @@ export class MsgCheckerRemoveWordCommand extends Command {
 
     public static UNABLE_TO_REMOVE_WORDS = 'Unable To Remove';
 
-    /** SaveServer: true, CheckMessage: false */
-    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, false);
+    /** CheckMessage: false */
+    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false);
 
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
@@ -40,9 +40,7 @@ export class MsgCheckerRemoveWordCommand extends Command {
         }
 
         // Execute
-        const wordsRemoved: string[] = [];
-        const wordsNotRemoved: string[] = [];
-        this.changeServerSettings(server, wordsRemoved, wordsNotRemoved);
+        const { wordsRemoved, wordsNotRemoved } = this.changeServerSettings(server);
 
         // Generate output embed
         const embed = this.generateEmbed(wordsRemoved, wordsNotRemoved);
@@ -96,22 +94,15 @@ export class MsgCheckerRemoveWordCommand extends Command {
      * Changed the settings of server object
      *
      * @param  {Server} server the discord server
-     * @param  {string[]} wordsRemoved Words successfully removed
-     * @param  {string[]} wordsNotRemoved Words unsuccessfully removed
-     * @returns void
+     * @returns any An object comprising 2 lists, one of the words removed and
+     *              one of those not removed
      */
-    public changeServerSettings(server: Server,
-                                wordsRemoved: string[],
-                                wordsNotRemoved: string[]): void {
-        const words = this.args;
-        for (let word of words) {
-            // Make word lowercase
-            word = word.toLowerCase();
-            if (server.messageCheckerSettings.removeBannedWord(word)) {
-                wordsRemoved.push(word);
-            } else {
-                wordsNotRemoved.push(word);
-            }
-        }
+    public changeServerSettings(server: Server): {
+        wordsRemoved: string[]; wordsNotRemoved: string[];
+    } {
+        const { serverId } = server;
+        const words = this.args.map((word) => word.toLowerCase());
+        const res = server.messageCheckerSettings.removeBannedWords(serverId, words);
+        return res;
     }
 }

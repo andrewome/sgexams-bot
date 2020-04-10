@@ -67,3 +67,4 @@ build/
 # test js code
 src/driver.ts
 servers.json
+servers.db

@@ -3,30 +3,43 @@ import { should } from 'chai';
 import { Permissions, MessageEmbed } from 'discord.js';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
-import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
-import { StarboardSettings, SimplifiedEmoji } from '../../../main/storage/StarboardSettings';
 import { StarboardGetEmojiCommand } from '../../../main/command/starboardcommands/StarboardGetEmojiCommand';
 import { CommandArgs } from '../../../main/command/classes/CommandArgs';
+import { deleteDbFile, TEST_STORAGE_PATH } from '../../TestsHelper';
+import { DatabaseConnection } from '../../../main/DatabaseConnection';
+import { Storage } from '../../../main/storage/Storage';
+import { SimplifiedEmoji } from '../../../main/storage/StarboardSettings';
 
 should();
 
-let server: Server;
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const command = new StarboardGetEmojiCommand();
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { EMOJI_NOT_SET } = StarboardGetEmojiCommand;
 const { EMBED_TITLE } = StarboardGetEmojiCommand;
 
-beforeEach((): void => {
-    server = new Server(
-        '123',
-        new MessageCheckerSettings(null, null, null, null),
-        new StarboardSettings(null, null, null),
-    );
-});
-
 describe('GetStarboardChannelCommand class test suite', (): void => {
+    // Set storage path and remove testing.db
+    before((): void => {
+        deleteDbFile();
+        DatabaseConnection.setStoragePath(TEST_STORAGE_PATH);
+    });
+
+    // Before each set up new instances
+    const command = new StarboardGetEmojiCommand();
+    let server: Server;
+    let storage: Storage;
+    const serverId = '69420';
+    beforeEach((): void => {
+        storage = new Storage().loadServers();
+        storage.initNewServer(serverId);
+        server = storage.servers.get(serverId)!;
+    });
+
+    afterEach((): void => {
+        deleteDbFile();
+    });
+
     it('No permission check', (): void => {
         const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
@@ -42,7 +55,6 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Emoji not set', (): void => {
         const checkEmbed = (embed: MessageEmbed): void => {
@@ -59,11 +71,10 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('1 emoji set', (): void => {
         const emoji = new SimplifiedEmoji('test', 'test');
-        server.starboardSettings.addEmoji(emoji);
+        server.starboardSettings.addEmoji(serverId, emoji);
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -78,11 +89,10 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('2 emojis set', (): void => {
-        server.starboardSettings.addEmoji(new SimplifiedEmoji('test1', 'test1'));
-        server.starboardSettings.addEmoji(new SimplifiedEmoji('test2', 'test2'));
+        server.starboardSettings.addEmoji(serverId, new SimplifiedEmoji('test1', 'test1'));
+        server.starboardSettings.addEmoji(serverId, new SimplifiedEmoji('test2', 'test2'));
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -97,6 +107,5 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
 });

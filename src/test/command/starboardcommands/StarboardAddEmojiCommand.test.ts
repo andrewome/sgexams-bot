@@ -62,7 +62,6 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
 /* BROKEN DUE TO UPDATE TO CHANNELMANGERS IN DISCORD.JS v12
     it('No arguments', (): void => {
@@ -82,7 +81,6 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
 
         // Check server
         (server.starboardSettings.getChannel() === null).should.be.true;
@@ -104,7 +102,6 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
     });
     it('Valid emoji', (): void => {
         const emoji = new SimplifiedEmoji('test', 'test');
@@ -125,7 +122,6 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;
-        commandResult.shouldSaveServers.should.be.true;
 
         // Check server
         const serverEmojis = server.starboardSettings.getEmoji();
@@ -151,7 +147,6 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
-        commandResult.shouldSaveServers.should.be.false;
 
         // Check server
         const serverEmojis = server.starboardSettings.getEmoji();

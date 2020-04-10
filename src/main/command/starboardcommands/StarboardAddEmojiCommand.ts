@@ -13,10 +13,10 @@ export class StarboardAddEmojiCommand extends Command {
 
     public static MAYBE_EMOJI_ALREADY_ADDED = 'Emoji was not added. Perhaps the it was already added?';
 
-    /** SaveServer: true, CheckMessage: false */
-    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, false);
+    /** CheckMessage: false */
+    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false);
 
-    private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
+    private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
@@ -38,7 +38,7 @@ export class StarboardAddEmojiCommand extends Command {
         const {
             server, memberPerms, messageReply, emojis,
         } = commandArgs;
-        const { starboardSettings } = server;
+        const { serverId, starboardSettings } = server;
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
@@ -74,8 +74,10 @@ export class StarboardAddEmojiCommand extends Command {
         }
 
         // Add emoji
-        const successfullyAdded
-            = starboardSettings.addEmoji(new SimplifiedEmoji(emoji!.name, emoji!.id));
+        const successfullyAdded = starboardSettings.addEmoji(
+            serverId,
+            new SimplifiedEmoji(emoji!.name, emoji!.id),
+        );
 
         if (successfullyAdded) {
             embed.setColor(Command.EMBED_DEFAULT_COLOUR);

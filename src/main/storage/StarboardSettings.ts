@@ -1,3 +1,17 @@
+import { DatabaseConnection } from '../DatabaseConnection';
+
+export interface SimplifiedEmojiObj {
+    id: string;
+    name: string;
+}
+
+export interface StarboardSettingsObj {
+    channel: string;
+    threshold: number;
+    emojis: SimplifiedEmojiObj[];
+}
+
+
 export class SimplifiedEmoji {
     public name: string;
 
@@ -39,6 +53,29 @@ export class StarboardSettings {
         } else {
             this.emojis = emojis;
         }
+    }
+
+    /**
+     * This method compares 2 starboard settings and checks if they
+     * contain the same data.
+     *
+     * @param  {StarboardSettings} other
+     * @returns boolean
+     */
+    public equals(other: StarboardSettings): boolean {
+        if (this.channel !== other.getChannel()) return false;
+
+        if (this.threshold !== other.getThreshold()) return false;
+
+        let containsEmoji = true;
+        this.emojis.forEach((emoji: SimplifiedEmoji) => {
+            if (!other.hasEmoji(emoji)) {
+                containsEmoji = false;
+            }
+        });
+        if (!containsEmoji) return false;
+
+        return true;
     }
 
     /**
@@ -111,10 +148,20 @@ export class StarboardSettings {
      * @param  {SimplifiedEmoji} emoji emoji to be added
      * @returns boolean indicating if the add was a success
      */
-    public addEmoji(emoji: SimplifiedEmoji): boolean {
+    public addEmoji(serverId: string, emoji: SimplifiedEmoji): boolean {
         if (this.hasEmoji(emoji)) return false;
         this.emojis.push(emoji);
+        this.insertEmojiToDb(serverId, emoji);
         return true;
+    }
+
+    private insertEmojiToDb(serverId: string, emoji: SimplifiedEmoji): void {
+        const db = DatabaseConnection.connect();
+        const insert = db.prepare(
+            'INSERT INTO starboardEmojis (serverId, id, name) VALUES (?, ?, ?)',
+        );
+        insert.run(serverId, emoji.id, emoji.name);
+        db.close();
     }
 
     /**
@@ -138,13 +185,23 @@ export class StarboardSettings {
      * @param  {SimplifiedEmoji} emoji emoji to be removed
      * @returns boolean indicating if the removal was a success
      */
-    public removeEmojiById(emojiId: string): boolean {
+    public removeEmojiById(serverId: string, emojiId: string): boolean {
         if (!this.hasEmojiById(emojiId)) return false;
 
         // Get index, then splice.
         const idx = this.getEmojiIdxById(emojiId);
         this.emojis.splice(idx, 1);
+        this.deleteEmojiFromDb(serverId, emojiId);
         return true;
+    }
+
+    private deleteEmojiFromDb(serverId: string, emojiId: string): void {
+        const db = DatabaseConnection.connect();
+        const del = db.prepare(
+            'DELETE FROM starboardEmojis WHERE serverId = (?) AND id = (?)',
+        );
+        del.run(serverId, emojiId);
+        db.close();
     }
 
     /* Getter & Setters */
@@ -156,16 +213,36 @@ export class StarboardSettings {
         return this.channel;
     }
 
-    public setChannel(channel: string | null): void {
+    public setChannel(serverId: string, channel: string | null): void {
         this.channel = channel;
+        this.updateChannelInDb(serverId, channel);
+    }
+
+    private updateChannelInDb(serverId: string, channel: string | null): void {
+        const db = DatabaseConnection.connect();
+        const update = db.prepare(
+            'UPDATE starboardSettings SET channel = (?) WHERE serverId = (?)',
+        );
+        update.run(channel, serverId);
+        db.close();
     }
 
     public getThreshold(): number | null {
         return this.threshold;
     }
 
-    public setThreshold(threshold: number | null): void {
+    public setThreshold(serverId: string, threshold: number | null): void {
         this.threshold = threshold;
+        this.updateThresholdInDb(serverId, threshold);
+    }
+
+    private updateThresholdInDb(serverId: string, threshold: number | null): void {
+        const db = DatabaseConnection.connect();
+        const update = db.prepare(
+            'UPDATE starboardSettings SET threshold = (?) WHERE serverId = (?)',
+        );
+        update.run(threshold, serverId);
+        db.close();
     }
 
     /* eslint-disable @typescript-eslint/no-explicit-any */

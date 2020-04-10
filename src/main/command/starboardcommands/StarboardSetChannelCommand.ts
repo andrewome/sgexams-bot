@@ -16,10 +16,10 @@ export class StarboardSetChannelCommand extends Command {
 
     public static CHANNELID_CANNOT_BE_UNDEFINED = 'Channel ID cannot be undefined!';
 
-    /** SaveServer: true, CheckMessage: true */
-    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, true);
+    /** CheckMessage: true */
+    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
+    private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
@@ -55,7 +55,7 @@ export class StarboardSetChannelCommand extends Command {
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
             messageReply(embed);
-            server.starboardSettings.setChannel(null);
+            server.starboardSettings.setChannel(server.serverId, null);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -77,9 +77,8 @@ export class StarboardSetChannelCommand extends Command {
         }
 
         embed = this.generateValidEmbed(channelId);
-        server.starboardSettings.setChannel(channelId);
         messageReply(embed);
-        server.starboardSettings.setChannel(channelId);
+        server.starboardSettings.setChannel(server.serverId, channelId);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

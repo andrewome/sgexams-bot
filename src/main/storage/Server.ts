@@ -1,5 +1,11 @@
-import { MessageCheckerSettings } from './MessageCheckerSettings';
-import { StarboardSettings } from './StarboardSettings';
+import { MessageCheckerSettings, MessageCheckerSettingsObj } from './MessageCheckerSettings';
+import { StarboardSettings, StarboardSettingsObj } from './StarboardSettings';
+
+interface ServerObj {
+    serverId: string;
+    messageCheckerSettings: MessageCheckerSettingsObj;
+    starboardSettings: StarboardSettingsObj;
+}
 
 /** This class represents a server object that the bot references from */
 export class Server {
@@ -27,29 +33,10 @@ export class Server {
 
         if (!this.messageCheckerSettings.equals(other.messageCheckerSettings)) return false;
 
+        if (!this.starboardSettings.equals(other.starboardSettings)) return false;
+
         return true;
     }
-
-    /**
-     * This function converts the server object to an object
-     * that can be easily converted into a JSON object
-     *
-     * @param  {Server} server Server object
-     * @returns any
-     */
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    public static convertToJsonFriendly(server: Server): any {
-        const out: any = {};
-        out.serverId = server.serverId;
-        const { messageCheckerSettings } = server;
-        out.messageCheckerSettings
-            = MessageCheckerSettings.convertToJsonFriendly(messageCheckerSettings);
-        const { starboardSettings } = server;
-        out.starboardSettings
-            = starboardSettings;
-        return out;
-    }
-    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     /**
      * This function converts an object back into a server object
@@ -59,7 +46,7 @@ export class Server {
      * @returns Server
      */
     /* eslint-disable @typescript-eslint/no-explicit-any */
-    public static convertFromJsonFriendly(obj: any): Server {
+    public static convertFromJsonFriendly(obj: ServerObj): Server {
         // Check attributes
         if (!(obj.hasOwnProperty('messageCheckerSettings')
              && obj.hasOwnProperty('serverId'))) {

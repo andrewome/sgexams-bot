@@ -3,6 +3,7 @@
 
 # Introduction
 This bot is written in `Typescript` using `Discord.js`  - [https://github.com/discordjs/discord.js/](https://github.com/discordjs/discord.js/)
+It uses `SQLite3` to store persistent code.
 
 # Getting Started
 1. `git clone` this repository.
@@ -14,10 +15,16 @@ This bot is written in `Typescript` using `Discord.js`  - [https://github.com/di
    * `npm test` to run tests.
    * `npx eslint ./src/**` to check for code style violations.
 
+# Migrating to SQlite3
+Before porting to `SQLite3`, storage was deserialised and saved into a json file. Here are the steps to convert the json into a `SQLite3` Database.
+
+1. `node database/migrate.js`
+2. If there is no errors in the console, we're done. Double check with a DB Browser Application to confirm that the data has been ported over properly.
+
 # Guides
 [User Guide](docs/USERGUIDE.md)
 
-Dev Guide (Under construction indefinitely :)
+Dev Guide (Under construction indefinitely :))
 
 # Contributing
 Feel free to fork and submit pull requests. 

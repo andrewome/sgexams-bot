@@ -12,10 +12,10 @@ export class StarboardSetThresholdCommand extends Command {
 
     public static THRESHOLD_CANNOT_BE_UNDEFINED = 'Channel ID cannot be undefined!';
 
-    /** SaveServer: true, CheckMessage: true */
-    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true, true);
+    /** CheckMessage: true */
+    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false, true);
+    private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
@@ -46,7 +46,7 @@ export class StarboardSetThresholdCommand extends Command {
         let embed: MessageEmbed;
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
-            server.starboardSettings.setThreshold(null);
+            server.starboardSettings.setThreshold(server.serverId, null);
             messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
@@ -62,7 +62,7 @@ export class StarboardSetThresholdCommand extends Command {
         }
 
         embed = this.generateValidEmbed(thresholdVal);
-        server.starboardSettings.setThreshold(thresholdVal);
+        server.starboardSettings.setThreshold(server.serverId, thresholdVal);
         messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
