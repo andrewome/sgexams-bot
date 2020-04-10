@@ -3,30 +3,42 @@ import { should } from 'chai';
 import { Permissions, MessageEmbed } from 'discord.js';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
-import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
-import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 import { StarboardGetThresholdCommand } from '../../../main/command/starboardcommands/StarboardGetThresholdCommand';
 import { CommandArgs } from '../../../main/command/classes/CommandArgs';
+import { deleteDbFile, TEST_STORAGE_PATH } from '../../TestsHelper';
+import { DatabaseConnection } from '../../../main/DatabaseConnection';
+import { Storage } from '../../../main/storage/Storage';
 
 should();
 
-let server: Server;
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const command = new StarboardGetThresholdCommand();
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
 const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
 const { THRESHOLD_NOT_SET } = StarboardGetThresholdCommand;
 const { EMBED_TITLE } = StarboardGetThresholdCommand;
 
-beforeEach((): void => {
-    server = new Server(
-        '123',
-        new MessageCheckerSettings(null, null, null, null),
-        new StarboardSettings(null, null, null),
-    );
-});
-
 describe('GetStarboardChannelCommand class test suite', (): void => {
+    // Set storage path and remove testing.db
+    before((): void => {
+        deleteDbFile();
+        DatabaseConnection.setStoragePath(TEST_STORAGE_PATH);
+    });
+
+    // Before each set up new instances
+    const command = new StarboardGetThresholdCommand();
+    let server: Server;
+    let storage: Storage;
+    const serverId = '69420';
+    beforeEach((): void => {
+        storage = new Storage().loadServers();
+        storage.initNewServer(serverId);
+        server = storage.servers.get(serverId)!;
+    });
+
+    afterEach((): void => {
+        deleteDbFile();
+    });
+
     it('No permission check', (): void => {
         const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
@@ -59,24 +71,24 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    // TODO: Test with SQLite
-    // it('Threshold set', (): void => {
-    //     const threshold = 10;
-    //     server.starboardSettings.setThreshold(threshold);
 
-    //     const checkEmbed = (embed: MessageEmbed): void => {
-    //         // Check embed
-    //         embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
-    //         embed.fields!.length.should.equals(1);
-    //         const field = embed.fields![0];
-    //         field.name.should.equals(EMBED_TITLE);
-    //         field.value.should.equals(`The emoji threshold is currently ${threshold}.`);
-    //     };
+    it('Threshold set', (): void => {
+        const threshold = 10;
+        server.starboardSettings.setThreshold(serverId, threshold);
 
-    //     const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-    //     const commandResult = command.execute(commandArgs);
+        const checkEmbed = (embed: MessageEmbed): void => {
+            // Check embed
+            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.fields!.length.should.equals(1);
+            const field = embed.fields![0];
+            field.name.should.equals(EMBED_TITLE);
+            field.value.should.equals(`The emoji threshold is currently ${threshold}.`);
+        };
 
-    //     // Check command result
-    //     commandResult.shouldCheckMessage.should.be.true;
-    // });
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
+
+        // Check command result
+        commandResult.shouldCheckMessage.should.be.true;
+    });
 });

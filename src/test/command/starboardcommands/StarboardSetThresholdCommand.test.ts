@@ -5,25 +5,14 @@ import {
     MessageEmbed, Permissions, Collection, Channel, Client,
 } from 'discord.js';
 import { Command } from '../../../main/command/Command';
-import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { Server } from '../../../main/storage/Server';
-import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 import { StarboardSetThresholdCommand } from '../../../main/command/starboardcommands/StarboardSetThresholdCommand';
 import { CommandArgs } from '../../../main/command/classes/CommandArgs';
+import { deleteDbFile, TEST_STORAGE_PATH, compareWithReserialisedStorage } from '../../TestsHelper';
+import { DatabaseConnection } from '../../../main/DatabaseConnection';
+import { Storage } from '../../../main/storage/Storage';
 
 should();
-
-let server: Server;
-let command: StarboardSetThresholdCommand;
-const channels = new Collection<string, Channel>();
-
-// Setting up mock channels.
-let channel = new Channel(new Client(), {});
-channel.type = 'text';
-channels.set('text_channel', channel);
-channel = new Channel(new Client(), {});
-channel.type = 'voice';
-channels.set('not_text_channel', channel);
 
 const adminPerms = new Permissions(['ADMINISTRATOR']);
 const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
@@ -35,15 +24,29 @@ const { THRESHOLD_RESETTED } = StarboardSetThresholdCommand;
 const { THRESHOLD_CANNOT_BE_UNDEFINED } = StarboardSetThresholdCommand;
 const { NOT_AN_INTEGER } = StarboardSetThresholdCommand;
 
-beforeEach((): void => {
-    server = new Server(
-        '123',
-        new MessageCheckerSettings(null, null, null, null),
-        new StarboardSettings(null, null, null),
-    );
-});
 
 describe('StarboardSetThresholdCommand test suite', (): void => {
+    // Set storage path and remove testing.db
+    before((): void => {
+        deleteDbFile();
+        DatabaseConnection.setStoragePath(TEST_STORAGE_PATH);
+    });
+
+    // Before each set up new instances
+    let command: StarboardSetThresholdCommand;
+    let server: Server;
+    let storage: Storage;
+    const serverId = '69420';
+    beforeEach((): void => {
+        storage = new Storage().loadServers();
+        storage.initNewServer(serverId);
+        server = storage.servers.get(serverId)!;
+    });
+
+    afterEach((): void => {
+        deleteDbFile();
+    });
+
     it('No permission check', (): void => {
         command = new StarboardSetThresholdCommand([]);
         const checkEmbed = (embed: MessageEmbed): void => {
@@ -61,52 +64,53 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    // TODO: Test with SQLite
-    // it('reset threshold', (): void => {
-    //     const threshold = 10;
-    //     server.starboardSettings.setThreshold(threshold);
-    //     command = new StarboardSetThresholdCommand([]);
 
-    //     const checkEmbed = (embed: MessageEmbed): void => {
-    //         embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
-    //         embed.fields!.length.should.equals(1);
-    //         const field = embed.fields![0];
-    //         field.name.should.equals(EMBED_TITLE);
-    //         field.value.should.equals(THRESHOLD_RESETTED);
-    //     };
+    it('Reset threshold', (): void => {
+        const threshold = 10;
+        server.starboardSettings.setThreshold(serverId, threshold);
+        command = new StarboardSetThresholdCommand([]);
 
-    //     const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-    //     const commandResult = command.execute(commandArgs);
+        const checkEmbed = (embed: MessageEmbed): void => {
+            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.fields!.length.should.equals(1);
+            const field = embed.fields![0];
+            field.name.should.equals(EMBED_TITLE);
+            field.value.should.equals(THRESHOLD_RESETTED);
+        };
 
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
-    //     // Check command result
-    //     commandResult.shouldCheckMessage.should.be.true;
+        // Check command result
+        commandResult.shouldCheckMessage.should.be.true;
 
-    //     // Check server
-    //     (server.starboardSettings.getThreshold() === null).should.be.true;
-    // });
-    // it('Valid threshold', (): void => {
-    //     const threshold = 10;
-    //     const msg = `Starboard threshold set to ${threshold}.`;
-    //     command = new StarboardSetThresholdCommand([threshold.toString(10)]);
+        // Check server
+        (server.starboardSettings.getThreshold() === null).should.be.true;
+        compareWithReserialisedStorage(storage).should.be.true;
+    });
+    it('Valid threshold', (): void => {
+        const threshold = 10;
+        const msg = `Starboard threshold set to ${threshold}.`;
+        command = new StarboardSetThresholdCommand([threshold.toString(10)]);
 
-    //     const checkEmbed = (embed: MessageEmbed): void => {
-    //         embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
-    //         embed.fields!.length.should.equals(1);
-    //         const field = embed.fields![0];
-    //         field.name.should.equals(EMBED_TITLE);
-    //         field.value.should.equals(msg);
-    //     };
+        const checkEmbed = (embed: MessageEmbed): void => {
+            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.fields!.length.should.equals(1);
+            const field = embed.fields![0];
+            field.name.should.equals(EMBED_TITLE);
+            field.value.should.equals(msg);
+        };
 
-    //     const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-    //     const commandResult = command.execute(commandArgs);
+        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandResult = command.execute(commandArgs);
 
-    //     // Check command result
-    //     commandResult.shouldCheckMessage.should.be.true;
+        // Check command result
+        commandResult.shouldCheckMessage.should.be.true;
 
-    //     // Check server
-    //     server.starboardSettings.getThreshold()!.should.equals(threshold);
-    // });
+        // Check server
+        server.starboardSettings.getThreshold()!.should.equals(threshold);
+        compareWithReserialisedStorage(storage).should.be.true;
+    });
     it('Invalid threshold - String', (): void => {
         command = new StarboardSetThresholdCommand(['haha']);
 
