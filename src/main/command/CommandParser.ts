@@ -24,6 +24,10 @@ import { StarboardAddEmojiCommand } from './starboardcommands/StarboardAddEmojiC
 import { StarboardRemoveEmojiCommand } from './starboardcommands/StarboardRemoveEmojiCommand';
 import { OkBoomerCommand } from './misccommands/OkBoomerCommand';
 import { OkZoomerCommand } from './misccommands/OkZoomerCommand';
+import { WarnCommand } from './moderationcommands/WarnCommand';
+import { KickCommand } from './moderationcommands/KickCommand';
+import { BanCommand } from './moderationcommands/BanCommand';
+
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -35,6 +39,7 @@ export class CommandParser {
             CommandNamesAndDescriptions.MISC_COMMANDS_LOWERCASE,
             CommandNamesAndDescriptions.STARBOARD_COMMANDS_LOWERCASE,
             CommandNamesAndDescriptions.HELP_COMMANDS_LOWERCASE,
+            CommandNamesAndDescriptions.MODERATION_COMMANDS_LOWERCASE,
         ));
 
     private content: string;
@@ -153,6 +158,12 @@ export class CommandParser {
                 return new OkBoomerCommand(args);
             case CommandNamesAndDescriptions.OKZOOMER_COMMAND_NAME.toLowerCase():
                 return new OkZoomerCommand(args);
+            case CommandNamesAndDescriptions.WARN_COMMAND_NAME.toLowerCase():
+                return new WarnCommand(args);
+            case CommandNamesAndDescriptions.KICK_COMMAND_NAME.toLowerCase():
+                return new KickCommand(args);
+            case CommandNamesAndDescriptions.BAN_COMMAND_NAME.toLowerCase():
+                return new BanCommand(args);
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }

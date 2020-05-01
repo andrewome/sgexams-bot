@@ -45,6 +45,21 @@ initStatements.push(
     PRIMARY KEY(serverId, id)
 )`)
 
+initStatements.push(`
+create TABLE moderationActions (
+    caseID INTEGER PRIMARY KEY AUTOINCREMENT,
+    userID CHARACTER(18) NOT NULL,
+    moderatorID CHARACTER(18) NOT NULL,
+    action CHARACTER NOT NULL,
+    reason NVARCHAR
+)`);
+
+initStatements.push(`
+create TABLE warnCounts (
+    userID CHARACTER(18) NOT NULL UNIQUE,
+    warnCount INTEGER NOT NULL
+)`);
+
 exports.initStatements = initStatements;
 exports.initDb = (db) => {
     for (const initStatement of initStatements)

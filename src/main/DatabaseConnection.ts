@@ -38,4 +38,35 @@ export class DatabaseConnection {
         }
         db.close();
     }
+
+    /**
+     * Method to store moderation logs.
+     *
+     * @returns void
+     */
+    public static addModeration(userID: string,
+                                moderatorID: string,
+                                action: string,
+                                reason: string): void {
+        const db = this.connect();
+        // Add Moderation Action
+        db.prepare(`
+            INSERT INTO moderationActions (userID, moderatorID, action, reason) 
+            VALUES (${userID}, ${moderatorID},'${action}', '${reason}');
+        `).run();
+
+        // Update Moderation Count
+        const userLog = db.prepare(`SELECT * FROM warnCounts WHERE userID = ${userID}`).get();
+        if (userLog !== undefined && userLog.userID === userID && action === 'Warn') {
+            // Updates Entry If Already Exists
+            db.prepare(`
+                UPDATE warnCounts
+                SET warnCount = ${userLog.warnCount + 1}
+                WHERE userID = ${userLog.userID}
+            `).run();
+        } else {
+            // Create a New Entry
+            db.prepare(`INSERT INTO warnCounts VALUES (${userID}, 1)`).run();
+        }
+    }
 }

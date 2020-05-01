@@ -1,5 +1,5 @@
 import {
-    Permissions, Channel, GuildChannelManager, GuildEmojiManager,
+    Permissions, Channel, GuildChannelManager, GuildEmojiManager, GuildMemberManager,
 } from 'discord.js';
 import { Server } from '../../storage/Server';
 
@@ -15,6 +15,8 @@ export class CommandArgs {
 
     public channels: GuildChannelManager | undefined;
 
+    public members: GuildMemberManager | undefined;
+
     public emojis: GuildEmojiManager | undefined;
 
     public channel: Channel | undefined;
@@ -26,6 +28,7 @@ export class CommandArgs {
     public constructor(server: Server, memberPerms: Readonly<Permissions>,
                        messageReply: Function, uptime?: number,
                        channels?: GuildChannelManager,
+                       members?: GuildMemberManager,
                        emojis?: GuildEmojiManager,
                        channel?: Channel, userId?: string,
                        deleteFunction?: Function) {
@@ -34,6 +37,7 @@ export class CommandArgs {
         this.uptime = uptime;
         this.messageReply = messageReply;
         this.channels = channels;
+        this.members = members;
         this.emojis = emojis;
         this.channel = channel;
         this.userId = userId;
