@@ -152,16 +152,12 @@ export class StarboardResponse {
      * @returns Promise
      */
     public async deleteStarboardMessage(messageId: string): Promise<void> {
-        return new Promise<void>((): void => {
-            // Get channel, then message
-            const starboardChannel
-                = this.reaction.message.guild!.channels.resolve(
-                    this.starboardSettings.getChannel()!,
-                );
-            (starboardChannel as TextChannel).messages.fetch(messageId)
-                .then((message: Message): void => {
-                    message.delete();
-                });
-        });
+        // Get channel, then message
+        const starboardChannel = this.reaction.message.guild!.channels.resolve(
+                this.starboardSettings.getChannel()!,
+        );
+
+        const message = await (starboardChannel as TextChannel).messages.fetch(messageId);
+        message.delete();
     }
 }
