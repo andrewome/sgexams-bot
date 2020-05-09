@@ -50,7 +50,11 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: new Permissions([]),
+            messageReply: checkEmbed,
+        };
         const commandResult = command.execute(commandArgs);
 
         // Check command result
@@ -66,7 +70,11 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             field.value.should.equals(EMOJI_NOT_SET);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
         const commandResult = command.execute(commandArgs);
 
         // Check command result
@@ -84,7 +92,11 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             field.value.should.equals(`Starboard emoji(s): <:${emoji.name}:${emoji.id}>.`);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
         const commandResult = command.execute(commandArgs);
 
         // Check command result
@@ -102,7 +114,11 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             field.value.should.equals('Starboard emoji(s): <:test1:test1>, <:test2:test2>.');
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
         const commandResult = command.execute(commandArgs);
 
         // Check command result

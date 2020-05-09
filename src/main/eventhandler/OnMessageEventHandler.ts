@@ -64,12 +64,17 @@ export class OnMessageEventHandler extends MessageEventHandler {
             const { uptime } = this.message.client;
             const sendFunction = this.message.channel.send.bind(this.message.channel);
             const deleteFunction = this.message.delete.bind(this.message);
-            const commandArgs = new CommandArgs(
-                server, permissions,
-                sendFunction, uptime!,
-                channels, emojis,
-                channel, id, deleteFunction,
-            );
+            const commandArgs: CommandArgs = {
+                server,
+                memberPerms: permissions,
+                messageReply: sendFunction,
+                deleteFunction,
+                uptime,
+                channels,
+                emojis,
+                channel,
+                userId: id,
+            };
 
             // Execute command with commandArgs.
             const command = commandParser.getCommand();

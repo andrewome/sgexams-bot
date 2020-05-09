@@ -55,7 +55,11 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: new Permissions([]),
+            messageReply: checkEmbed,
+        };
 
         const commandResult = command.execute(commandArgs);
 
@@ -73,7 +77,11 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
             field.value.should.equals(NO_ARGUMENTS);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
         const commandResult = command.execute(commandArgs);
 
         // Check command result
@@ -90,7 +98,11 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
             field.value.should.equals(INCORRECT_FORMAT);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
         const commandResult = command.execute(commandArgs);
 
         // Check command result
@@ -109,7 +121,11 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
             field.value.should.equals(msg);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
         const commandResult = command.execute(commandArgs);
 
         // Check server settings, should be true
@@ -131,7 +147,11 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
             field.value.should.equals(msg);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
         const commandResult = command.execute(commandArgs);
 
         // Check server settings, should be true
@@ -153,7 +173,11 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
             field.value.should.equals(msg);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
         const commandResult = command.execute(commandArgs);
 
         // Check server settings, should be true
@@ -178,7 +202,11 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         // Check server settings, should be true
         server.messageCheckerSettings.getDeleteMessage().should.be.false;
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
         const commandResult = command.execute(commandArgs);
 
         // Check server settings, should be false
