@@ -20,7 +20,7 @@ export class DatamuseApi {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const output: DatamuseSpellingQueryResult[] = [];
             for (const d of data) {
-                output.push(new DatamuseSpellingQueryResult(d.word, d.score));
+                output.push({ word: d.word, score: d.score });
             }
             return output;
         } catch (err) {

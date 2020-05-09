@@ -66,7 +66,7 @@ export class MessageChecker {
         } else {
             isGuilty = true;
         }
-        const result = new MessageCheckerResult(isGuilty, realBannedWords);
+        const result = { guilty: isGuilty, contexts: realBannedWords };
         return result;
     }
 
