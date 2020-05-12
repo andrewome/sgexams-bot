@@ -49,13 +49,13 @@ export class MessageResponse {
         const { content } = this.message;
 
         // Generate strings
+        const offender = this.message.author.toString();
         let offenderStr = '';
-        if (!username) {
+        if (!username)
             offenderStr = `${tag}`;
-        } else {
+        else
             offenderStr = `${username}, aka ${tag}`;
-        }
-        const report = `**Offender:** ${offenderStr}\n**Message ID:** ${id}\n**Channel:** ${channel}\n**[Message Link](${url})**`;
+        const report = `**Offender:** ${offender}\n**Message ID:** ${id}\n**Channel:** ${channel}\n**[Message Link](${url})**`;
 
         // Get list of words used
         let words = '';
