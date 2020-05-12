@@ -22,10 +22,6 @@ export class MessageResponse {
 
     private FIELD_CHAR_LIMIT = 1024;
 
-    private CONTINUED = 'continued';
-
-    private DOTDOTDOT = '...';
-
     public constructor(message: Message) {
         this.message = message;
     }
@@ -42,36 +38,6 @@ export class MessageResponse {
         if (reportingChannelId === null) {
             return this;
         }
-
-        /* eslint-disable no-param-reassign */
-        // This function splits up contents and contexts and adds it to the embed.
-        const handleContentAndContexts
-            = (embed: MessageEmbed, content: string, contexts: string): void => {
-            // Some strings may be too long. Remove all grave accents and
-            // split it up because field can only take in 1024 chars.
-                content = content.replace(/```/g, '');
-                const contents: string[] = [];
-                while (content.length > this.FIELD_CHAR_LIMIT) {
-                    contents.push(
-                        content.substring(0, this.FIELD_CHAR_LIMIT - 12) + this.DOTDOTDOT,
-                    );
-                    content = content.substring(this.FIELD_CHAR_LIMIT - 12, content.length);
-                }
-                contents.push(content.substring(0, content.length));
-
-                if (contexts.length > this.FIELD_CHAR_LIMIT) {
-                    contexts = contexts.substr(0, 980);
-                    contexts += this.MESSAGE_TOO_LONG;
-                }
-                embed.setDescription(`${this.CODE_BLOCK}${contents[0]}${this.CODE_BLOCK}`);
-
-                // Add rest of contents in (if any)
-                contents.shift();
-                for (const otherContent of contents) {
-                    embed.addField(this.CONTINUED, `${this.CODE_BLOCK}${otherContent}${this.CODE_BLOCK}`);
-                }
-            };
-        /* eslint-enable no-param-reassign */
 
         const { tag } = this.message.author;
         const avatarUrl = this.message.author.avatarURL();
@@ -101,6 +67,12 @@ export class MessageResponse {
             contexts += `${context}\n`;
         }
 
+        // Reducing length so that it can fit into a embed field
+        if (contexts.length > this.FIELD_CHAR_LIMIT) {
+            contexts = contexts.substr(0, 980);
+            contexts += this.MESSAGE_TOO_LONG;
+        }
+
         // Make embed
         const embed = new MessageEmbed()
             .setColor(this.EMBED_COLOUR)
@@ -108,7 +80,7 @@ export class MessageResponse {
             .setTimestamp();
 
         // Add contents
-        handleContentAndContexts(embed, content, contexts);
+        embed.setDescription(content);
 
         // Continue with rest of fields
         embed.addField(this.REPORT, report, false)
