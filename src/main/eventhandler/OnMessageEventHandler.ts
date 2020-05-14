@@ -58,7 +58,9 @@ export class OnMessageEventHandler extends MessageEventHandler {
         if (commandParser.isCommand(this.botId)) {
             // Get args required for the command
             const { permissions } = this.message.member!;
-            const { channels, emojis, name } = this.message.guild!;
+            const {
+                channels, emojis, members, name,
+            } = this.message.guild!;
             const { channel, author } = this.message;
             const { id, tag } = author;
             const { uptime } = this.message.client;
@@ -72,6 +74,7 @@ export class OnMessageEventHandler extends MessageEventHandler {
                 uptime,
                 channels,
                 emojis,
+                members,
                 channel,
                 userId: id,
             };
