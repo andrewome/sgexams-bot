@@ -45,6 +45,30 @@ initStatements.push(
     PRIMARY KEY(serverId, id)
 )`)
 
+// ModerationActions table
+initStatements.push(
+`CREATE TABLE moderationActions (
+    serverId VARCHAR(30),
+    caseId INTEGER,
+    id VARCHAR(30),
+    modId VARCHAR(30),
+    action VARCHAR(5),
+    reason VARCHAR(50),
+    PRIMARY KEY(serverId, caseId, id)
+)`)
+
+// ModerationCounts table
+initStatements.push(
+`CREATE TABLE moderationCounts (
+    serverId VARCHAR(30),
+    id VARCHAR(30),
+    warnCounts INTEGER,
+    kickCounts INTEGER,
+    banCounts INTEGER,
+    muteCounts INTEGER,
+    PRIMARY KEY(serverId, id)
+)`)
+
 exports.initStatements = initStatements;
 exports.initDb = (db) => {
     for (const initStatement of initStatements)

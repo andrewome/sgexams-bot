@@ -219,4 +219,35 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_NAME.toLowerCase(),
         CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME.toLowerCase(),
     ];
+
+    /** Moderation Commands */
+    public static readonly WARN_COMMAND_NAME = 'Warn';
+
+    public static readonly WARN_COMMAND_DESCRIPTION = 'Warns a User.'
+
+    public static readonly KICK_COMMAND_NAME = 'Kick';
+
+    public static readonly KICK_COMMAND_DESCRIPTION = 'Kicks a User.'
+
+    public static readonly BAN_COMMAND_NAME = 'Ban';
+
+    public static readonly BAN_COMMAND_DESCRIPTION = 'Bans a User.'
+
+    public static readonly MODERATION_COMMANDS = [
+        CommandNamesAndDescriptions.WARN_COMMAND_NAME,
+        CommandNamesAndDescriptions.KICK_COMMAND_NAME,
+        CommandNamesAndDescriptions.BAN_COMMAND_NAME,
+    ]
+
+    public static readonly MODERATION_DESCRIPTIONS = [
+        CommandNamesAndDescriptions.WARN_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.KICK_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.BAN_COMMAND_DESCRIPTION,
+    ]
+
+    public static readonly MODERATION_COMMANDS_LOWERCASE = [
+        CommandNamesAndDescriptions.WARN_COMMAND_NAME.toLowerCase(),
+        CommandNamesAndDescriptions.KICK_COMMAND_NAME.toLowerCase(),
+        CommandNamesAndDescriptions.BAN_COMMAND_NAME.toLowerCase(),
+    ]
 }
