@@ -180,11 +180,17 @@ export abstract class CommandNamesAndDescriptions {
     public static readonly MISC_COMMAND_HELP_COMMAND_DESCRIPTION
         = 'Displays other Miscellaneous commands';
 
+    public static readonly MODERATION_HELP_COMMAND_NAME = 'ModHelp'
+
+    public static readonly MODERATION_HELP_COMMAND_DESCRIPTION
+        = 'Displays other Moderation commands';
+
     public static readonly HELP_COMMANDS = [
         CommandNamesAndDescriptions.HELP_COMMAND_NAME,
         CommandNamesAndDescriptions.MSGCHECKER_HELP_COMMAND_NAME,
         CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_NAME,
         CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME,
+        CommandNamesAndDescriptions.MODERATION_HELP_COMMAND_NAME,
     ];
 
     public static readonly HELP_DESCRIPTIONS = [
@@ -192,6 +198,7 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.MSGCHECKER_HELP_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.MODERATION_HELP_COMMAND_DESCRIPTION,
     ];
 
     public static readonly HELP_COMMANDS_LOWERCASE

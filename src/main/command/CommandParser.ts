@@ -28,6 +28,7 @@ import { WarnCommand } from './moderationcommands/WarnCommand';
 import { KickCommand } from './moderationcommands/KickCommand';
 import { BanCommand } from './moderationcommands/BanCommand';
 import { PurgeCommand } from './moderationcommands/PurgeCommand';
+import { ModerationHelpCommand } from './helpcommands/ModerationHelpCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -152,6 +153,8 @@ export class CommandParser {
                 return new StarboardHelpCommand();
             case CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME.toLowerCase():
                 return new MiscCommandHelpCommand();
+            case CommandNamesAndDescriptions.MODERATION_HELP_COMMAND_NAME.toLowerCase():
+                return new ModerationHelpCommand();
             case CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME.toLowerCase():
                 return new UptimeCheckCommand();
             case CommandNamesAndDescriptions.OKBOOMER_COMMAND_NAME.toLowerCase():
