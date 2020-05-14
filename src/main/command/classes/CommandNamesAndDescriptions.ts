@@ -59,16 +59,8 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.MSGCHECKER_SET_DELETE_MESSAGE_COMMAND_DESCRIPTION,
     ];
 
-    public static readonly MSGCHECKER_COMMANDS_LOWERCASE = [
-        CommandNamesAndDescriptions.MSGCHECKER_LIST_WORDS_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_ADD_WORD_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_REMOVE_WORD_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_SET_REPORT_CHANNEL_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_GET_REPORT_CHANNEL_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_SET_RESPONSE_MESSAGE_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_GET_RESPONSE_MESSAGE_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_SET_DELETE_MESSAGE_COMMAND_NAME.toLowerCase(),
-    ];
+    public static readonly MSGCHECKER_COMMANDS_LOWERCASE
+        = CommandNamesAndDescriptions.MSGCHECKER_COMMANDS.map((x) => x.toLowerCase());
 
     /** Starboard Commands */
     public static readonly STARBOARD_SET_CHANNEL_COMMAND_NAME = 'StarboardSetChannel';
@@ -126,15 +118,8 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.STARBOARD_GET_THRESHOLD_COMMAND_DESCRIPTION,
     ];
 
-    public static readonly STARBOARD_COMMANDS_LOWERCASE = [
-        CommandNamesAndDescriptions.STARBOARD_SET_CHANNEL_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_GET_CHANNEL_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_ADD_EMOJI_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_REMOVE_EMOJI_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_GET_EMOJI_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_SET_THRESHOLD_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_GET_THRESHOLD_COMMAND_NAME.toLowerCase(),
-    ];
+    public static readonly STARBOARD_COMMANDS_LOWERCASE
+        = CommandNamesAndDescriptions.STARBOARD_COMMANDS.map((x) => x.toLowerCase());
 
     /** Misc Commands */
     public static readonly ROTATE_IMAGE_COMMAND_NAME = 'Rotate';
@@ -171,12 +156,8 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.OKZOOMER_COMMAND_DESCRIPTION,
     ];
 
-    public static readonly MISC_COMMANDS_LOWERCASE = [
-        CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.OKBOOMER_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.OKZOOMER_COMMAND_NAME.toLowerCase(),
-    ];
+    public static readonly MISC_COMMANDS_LOWERCASE
+        = CommandNamesAndDescriptions.MISC_COMMANDS.map((x) => x.toLowerCase());
 
     /** Help Commands */
     public static readonly HELP_COMMAND_NAME = 'Help';
@@ -213,41 +194,40 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_DESCRIPTION,
     ];
 
-    public static readonly HELP_COMMANDS_LOWERCASE = [
-        CommandNamesAndDescriptions.HELP_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_HELP_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME.toLowerCase(),
-    ];
+    public static readonly HELP_COMMANDS_LOWERCASE
+        = CommandNamesAndDescriptions.HELP_COMMANDS.map((x) => x.toLowerCase());
 
     /** Moderation Commands */
     public static readonly WARN_COMMAND_NAME = 'Warn';
 
-    public static readonly WARN_COMMAND_DESCRIPTION = 'Warns a User.'
+    public static readonly WARN_COMMAND_DESCRIPTION = 'Warns a User.';
 
     public static readonly KICK_COMMAND_NAME = 'Kick';
 
-    public static readonly KICK_COMMAND_DESCRIPTION = 'Kicks a User.'
+    public static readonly KICK_COMMAND_DESCRIPTION = 'Kicks a User.';
 
     public static readonly BAN_COMMAND_NAME = 'Ban';
 
-    public static readonly BAN_COMMAND_DESCRIPTION = 'Bans a User.'
+    public static readonly BAN_COMMAND_DESCRIPTION = 'Bans a User.';
+
+    public static readonly PURGE_COMMAND_NAME = 'Purge';
+
+    public static readonly PURGE_COMMAND_DESCRIPTION = 'Purges messages';
 
     public static readonly MODERATION_COMMANDS = [
         CommandNamesAndDescriptions.WARN_COMMAND_NAME,
         CommandNamesAndDescriptions.KICK_COMMAND_NAME,
         CommandNamesAndDescriptions.BAN_COMMAND_NAME,
+        CommandNamesAndDescriptions.PURGE_COMMAND_NAME,
     ]
 
     public static readonly MODERATION_DESCRIPTIONS = [
         CommandNamesAndDescriptions.WARN_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.KICK_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.BAN_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.PURGE_COMMAND_DESCRIPTION,
     ]
 
-    public static readonly MODERATION_COMMANDS_LOWERCASE = [
-        CommandNamesAndDescriptions.WARN_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.KICK_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.BAN_COMMAND_NAME.toLowerCase(),
-    ]
+    public static readonly MODERATION_COMMANDS_LOWERCASE
+        = CommandNamesAndDescriptions.MODERATION_COMMANDS.map((x) => x.toLowerCase());
 }

@@ -24,4 +24,6 @@ export interface CommandArgs {
     channel?: Channel;
 
     userId?: string;
+
+    messageId?: string;
 }

@@ -27,6 +27,7 @@ import { OkZoomerCommand } from './misccommands/OkZoomerCommand';
 import { WarnCommand } from './moderationcommands/WarnCommand';
 import { KickCommand } from './moderationcommands/KickCommand';
 import { BanCommand } from './moderationcommands/BanCommand';
+import { PurgeCommand } from './moderationcommands/PurgeCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -163,6 +164,8 @@ export class CommandParser {
                 return new KickCommand(args);
             case CommandNamesAndDescriptions.BAN_COMMAND_NAME.toLowerCase():
                 return new BanCommand(args);
+            case CommandNamesAndDescriptions.PURGE_COMMAND_NAME.toLowerCase():
+                return new PurgeCommand(args);
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }

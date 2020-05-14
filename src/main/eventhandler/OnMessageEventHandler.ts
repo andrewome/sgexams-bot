@@ -57,26 +57,22 @@ export class OnMessageEventHandler extends MessageEventHandler {
         const commandParser = new CommandParser(content);
         if (commandParser.isCommand(this.botId)) {
             // Get args required for the command
-            const { permissions } = this.message.member!;
+            const memberPerms = this.message.member!.permissions;
             const {
                 channels, emojis, members, name,
             } = this.message.guild!;
             const { channel, author } = this.message;
-            const { id, tag } = author;
+            const { tag } = author;
             const { uptime } = this.message.client;
-            const sendFunction = this.message.channel.send.bind(this.message.channel);
+            const messageReply = this.message.channel.send.bind(this.message.channel);
             const deleteFunction = this.message.delete.bind(this.message);
+            const messageId = this.message.id;
+            const userId = author.id;
             const commandArgs: CommandArgs = {
-                server,
-                memberPerms: permissions,
-                messageReply: sendFunction,
-                deleteFunction,
-                uptime,
-                channels,
-                emojis,
-                members,
-                channel,
-                userId: id,
+                server, memberPerms, messageReply,
+                deleteFunction, uptime, channels,
+                emojis, members, channel, userId,
+                messageId,
             };
 
             // Execute command with commandArgs.
