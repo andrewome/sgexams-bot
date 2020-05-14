@@ -3,40 +3,23 @@ import {
 } from 'discord.js';
 import { Server } from '../../storage/Server';
 
-/** This class contains the arguments for the Command class */
-export class CommandArgs {
-    public server: Server;
+/** This interface contains the arguments for the Command class */
+export interface CommandArgs {
+    server: Server;
 
-    public memberPerms: Readonly<Permissions>;
+    memberPerms: Readonly<Permissions>;
 
-    public messageReply: Function;
+    messageReply: Function;
 
-    public uptime: number | undefined;
+    deleteFunction?: Function;
 
-    public channels: GuildChannelManager | undefined;
+    uptime?: number | null;
 
-    public emojis: GuildEmojiManager | undefined;
+    channels?: GuildChannelManager;
 
-    public channel: Channel | undefined;
+    emojis?: GuildEmojiManager;
 
-    public userId: string | undefined;
+    channel?: Channel;
 
-    public deleteFunction: Function | undefined;
-
-    public constructor(server: Server, memberPerms: Readonly<Permissions>,
-                       messageReply: Function, uptime?: number,
-                       channels?: GuildChannelManager,
-                       emojis?: GuildEmojiManager,
-                       channel?: Channel, userId?: string,
-                       deleteFunction?: Function) {
-        this.server = server;
-        this.memberPerms = memberPerms;
-        this.uptime = uptime;
-        this.messageReply = messageReply;
-        this.channels = channels;
-        this.emojis = emojis;
-        this.channel = channel;
-        this.userId = userId;
-        this.deleteFunction = deleteFunction;
-    }
+    userId?: string;
 }

@@ -54,7 +54,11 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: new Permissions([]),
+            messageReply: checkEmbed,
+        };
 
         const commandResult = command.execute(commandArgs);
 
@@ -78,7 +82,11 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         };
 
         // Execute
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
         const commandResult = command.execute(commandArgs);
 
         // Check command result
@@ -118,7 +126,11 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
 
         // Execute
         command = new MsgCheckerAddWordCommand(args);
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
         const commandResult = command.execute(commandArgs);
 
         // Check command result
@@ -155,7 +167,11 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         };
 
         // Execute
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
         const commandResult = command.execute(commandArgs);
 
         // Check command result
@@ -185,7 +201,11 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         };
 
         // Execute
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
         const commandResult = command.execute(commandArgs);
 
         // Check command result
