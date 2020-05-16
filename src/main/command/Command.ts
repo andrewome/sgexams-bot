@@ -8,6 +8,10 @@ import { CommandArgs } from './classes/CommandArgs';
 export abstract class Command {
     public static NO_ARGUMENTS = 'Oops! I received no arguments. Please try again.';
 
+    public static INSUFFICIENT_ARGUMENTS = 'Insufficient arguments. Please try again.';
+
+    public static INTERNAL_ERROR_OCCURED = 'An internal error occured.'
+
     public static EMBED_DEFAULT_COLOUR = '125bd1';
 
     public static EMBED_ERROR_COLOUR = 'ff0000';
