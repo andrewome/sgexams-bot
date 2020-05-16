@@ -1,5 +1,5 @@
 import {
-    MessageManager, ChannelLogsQueryOptions, Message, Permissions, TextChannel,
+    MessageManager, ChannelLogsQueryOptions, Message, Permissions, TextChannel, Channel,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -50,38 +50,73 @@ export class PurgeCommand extends Command {
         }
 
         const limit = parseInt(this.args[0], 10);
-        const userId = this.args.length > 1 ? this.args[1] : null;
+        const userId = this.args.length > 1 ? this.args[1].replace(/[<@!>]/g, '') : null;
         // Check for error on the limit
         if (Number.isNaN(limit) || limit > this.MSG_LIMIT || limit <= 0) {
             messageReply(this.ERROR_MESSAGE_INVALID_LIMIT);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        // Bulk delete messages
-        this.fetchMessages(messageManager, limit, messageId!).then(async (messages: Message[]) => {
-            if (userId) {
-                // eslint-disable-next-line no-param-reassign
-                messages = messages.filter((msg) => msg.author.id === userId);
-            }
-
-            const deletedMessages = await (channel as TextChannel).bulkDelete(messages, true);
-            messageReply(`Deleted ${deletedMessages.size} messages.`);
-        });
+        let sentMessage: Message;
+        messageReply(`Fetching messages... 0/${limit} messages fetched.`)
+            .then((message: Message) => {
+                sentMessage = message;
+            })
+            // Bulk delete messages
+            .then(() => this.fetchMessages(messageManager, limit, messageId!, sentMessage))
+            // eslint-disable-next-line max-len
+            .then((messages: Message[]) => this.bulkDeleteMessages(userId, messages, channel!, sentMessage))
+            .then((numDeleted: number) => sentMessage.edit(`Deleted ${numDeleted} messages.`));
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
     /**
-     * This function fetches the last x messages from a channel
+     * Bulks deletes an array of messages by splitting it into chunks of 100 as per discord api
      *
+     * @param  {string|null} userId Targetted userId
+     * @param  {Message[]} collectedMessages collected messages
+     * @param  {Channel} channel channel object
+     * @returns Promise<number> Number of messages successfully deleted
+     */
+    private async bulkDeleteMessages(userId: string|null, collectedMessages: Message[],
+                                     channel: Channel, sentMessage: Message): Promise<number> {
+
+        sentMessage.edit('Deleting messages...');
+
+        // Filter messages by userId if specified
+        if (userId) {
+            // eslint-disable-next-line no-param-reassign
+            collectedMessages = collectedMessages.filter((msg) => msg.author.id === userId);
+        }
+
+        // Split array into chunks of 100 messages
+        const toDelete: Message[][] = [];
+        for (let i = 0; i < collectedMessages.length; i += 100) {
+            toDelete.push(collectedMessages.slice(i, i + 100));
+        }
+
+        // Delete said messages by mapping the functions
+        const promises
+            = toDelete.map((msgs: Message[]) => (channel as TextChannel).bulkDelete(msgs, true));
+
+        // Get total number of messages deleted
+        const deletedMsgs = await Promise.all(promises);
+        let num = 0;
+        deletedMsgs.forEach((collection) => { num += collection.size; });
+        return num;
+    }
+
+    /**
      * @param  {MessageManager} messageManager
      * @param  {number} limit Number of messages to fetch
-     * @param  {string} messageId Message Id of command, to prevent deletion
-     * @returns Promise
+     * @param  {string} messageId MessageId of message to fetch from (not inclusive)
+     * @param  {Message} sentMessage Message sent by bot earlier to update on progress
+     * @returns Promise<Message[]> Collected messages.
      */
     private async fetchMessages(messageManager: MessageManager, limit: number,
-                                messageId: string): Promise<Message[]> {
-        const collectedMessages: Message[] = [];
+                                messageId: string, sentMessage: Message): Promise<Message[]> {
+        let collectedMessages: Message[] = [];
         let lastId = messageId;
 
         // eslint-disable-next-line no-constant-condition
@@ -95,6 +130,11 @@ export class PurgeCommand extends Command {
             if (lastMsg)
                 lastId = lastMsg.id;
 
+            // Update message every 200 messages.
+            const { length } = collectedMessages;
+            if (length && length % 200 === 0)
+                sentMessage.edit(`Fetching messages... ${length}/${limit} messages fetched.`);
+
             if (messages.size !== 100 || collectedMessages.length >= limit) {
                 break;
             }
@@ -102,7 +142,7 @@ export class PurgeCommand extends Command {
 
         // If length of messages to be deleted is lesser than LIMIT, slice it to LIMIT size.
         if (collectedMessages.length > limit)
-            return collectedMessages.slice(0, limit);
+            collectedMessages = collectedMessages.slice(0, limit);
 
         return collectedMessages;
     }

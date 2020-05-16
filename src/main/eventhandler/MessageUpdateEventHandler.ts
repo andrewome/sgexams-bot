@@ -12,7 +12,8 @@ export class MessageUpdateEventHandler extends MessageEventHandler {
         // If it is a DM, ignore.
         if (this.message.guild === null) return;
         // If it's a bot, ignore :)
-        if (this.message.author.bot) return;
+        // author can be null for some reason
+        if (this.message.author && this.message.author.bot) return;
 
         // Check updated message
         const server = this.getServer(this.message.guild.id.toString());
