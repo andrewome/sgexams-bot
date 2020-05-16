@@ -1,19 +1,31 @@
-import { GuildMember, MessageEmbed } from 'discord.js';
+import {
+    GuildMember, MessageEmbed, Permissions, DiscordAPIError,
+} from 'discord.js';
+import log from 'loglevel';
+import { SqliteError } from 'better-sqlite3';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
-import { DatabaseConnection } from '../../DatabaseConnection';
-import { Server } from '../../storage/Server';
+import { ModUtils } from '../../modules/moderation/ModUtil';
+import { ModActions } from '../../modules/moderation/ModActions';
 
 export class KickCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private commandArgs: string[];
+    private permissions = new Permissions(['KICK_MEMBERS']);
+
+    private args: string[];
+
+    private type = ModActions.KICK;
+
+    private COMMAND_USAGE = '**Usage:** @bot kick userId reason'
+
+    private USERID_ERROR = 'Invalid User. Please try again.';
 
     public constructor(args: string[]) {
         super();
-        this.commandArgs = args;
+        this.args = args;
     }
 
     /**
@@ -25,79 +37,40 @@ export class KickCommand extends Command {
      */
     public execute(commandArgs: CommandArgs): CommandResult {
         const {
-            members, deleteFunction, server, userId,
+            members, server, userId, memberPerms, messageReply,
         } = commandArgs;
-        const targetId = this.commandArgs[0].replace(/[<@!>]/g, '');
-        const reason = this.commandArgs.slice(1).join(' ');
 
-        // Delete message that sent this command to prevent spam.
-        deleteFunction!();
-
-        // eslint-disable-next-line no-unused-expressions
-        members?.fetch(targetId)
-            .then((target: GuildMember): void => {
-                target.kick();
-                this.addModerationActions(server, target, reason, userId);
-                this.addModerationCounts(server, target);
-                this.sendEmbed(target, reason, commandArgs.messageReply);
-            })
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            .catch((): void => {}); // Do nothing
-
-        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
-    }
-
-    /**
-     * This method logs the action to moderationActions table.
-     *
-     * @param server Server
-     * @param target GuildMember
-     * @param reason string
-     * @param userId string
-     */
-    private addModerationActions(server: Server,
-                                 target: GuildMember,
-                                 reason: string,
-                                 userId?: string): void {
-        const db = DatabaseConnection.connect();
-
-        const caseId = db.prepare('SELECT caseId FROM moderationActions').all().reverse()[0] ?
-            db.prepare('SELECT caseId FROM moderationActions').all().reverse()[0] : 0;
-
-        db.prepare(`
-            INSERT INTO moderationActions (serverId, caseId, id, modId, action, reason)
-            VALUES (${server.serverId}, ${caseId + 1}, ${target.id}, ${userId}, 'Kick', '${reason}')
-        `).run();
-
-        db.close();
-    }
-
-    /**
-     * This method logs the action to moderationCounts table.
-     *
-     * @param server Server
-     * @param target GuildMember
-     */
-    private addModerationCounts(server: Server,
-                                target: GuildMember): void {
-        const db = DatabaseConnection.connect();
-
-        const userLog = db.prepare(`SELECT * FROM moderationCounts WHERE id = ${target.id}`).get();
-
-        if (userLog) {
-            db.prepare(`
-                UPDATE moderationCounts
-                SET kickCounts = ${userLog.kickCounts + 1}
-                WHERE id = ${target.id}
-            `).run();
-        } else {
-            db.prepare(`
-                INSERT INTO moderationCounts 
-                VALUES (${server.serverId}, ${target.id}, 0, 1, 0, 0)
-            `).run();
+        // Check for permissions first
+        if (!this.hasPermissions(this.permissions, memberPerms)) {
+            this.sendNoPermissionsMessage(messageReply);
+            return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        db.close();
+        // Check number of args
+        if (this.args.length < 2) {
+            messageReply(`${KickCommand.INSUFFICIENT_ARGUMENTS}\n${this.COMMAND_USAGE}`);
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        }
+
+        const targetId = this.args[0].replace(/[<@!>]/g, '');
+        const reason = this.args.slice(1).join(' ');
+
+        members!.fetch(targetId)
+            .then((target: GuildMember): void => {
+                ModUtils.addModerationActions(server.serverId, userId!, targetId,
+                                              this.type, ModUtils.getUnixTime(), reason);
+                target.kick();
+                this.sendEmbed(target, reason, commandArgs.messageReply);
+            })
+            .catch((err) => {
+                log.warn(err);
+                if (err instanceof SqliteError)
+                    messageReply(KickCommand.INTERNAL_ERROR_OCCURED);
+                else if (err instanceof DiscordAPIError)
+                    messageReply(`${this.USERID_ERROR}\n${this.COMMAND_USAGE}`);
+            });
+
+        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
     /**
