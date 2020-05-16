@@ -1,5 +1,6 @@
 import { DatabaseConnection } from '../../DatabaseConnection';
 import { ModActions } from './ModActions';
+import { GuildMemberManager } from 'discord.js';
 
 export class ModUtils {
     public static readonly MINUTES_IN_SECONDS = 60;
@@ -21,7 +22,7 @@ export class ModUtils {
             = new Map([['m', MINUTES_IN_SECONDS], ['h', HOURS_IN_SECONDS], ['d', DAYS_IN_SECONDS]]);
         str = str.toLowerCase();
 
-        const match = str.match(/(\d+)(m|h|d)/g);
+        const match = /(\d+)(m|h|d)/g.exec(str);
         if (match) {
             // Get index 1 and 2 of the match arr
             const { 1: duration, 2: type } = match;
@@ -53,6 +54,56 @@ export class ModUtils {
     }
 
     /**
+     * This function adds the ban timeout to the database and calls setBanTimeout
+     *
+     * @param  {number} duration
+     * @param  {number} endTime
+     * @param  {string} userId
+     * @param  {string} serverId
+     * @param  {GuildMemberManager} guildMemberManager
+     * @returns void
+     */
+    public static addBanTimeout(duration: number, endTime: number, userId: string,
+                                serverId: string, guildMemberManager: GuildMemberManager): void {
+        const db = DatabaseConnection.connect();
+        db.prepare(
+            'INSERT INTO moderationTimeouts (serverId, userId, type, endTime) VALUES (?, ?, ?, ?)',
+        ).run(serverId, userId, ModActions.BAN, endTime);
+        db.close();
+
+        ModUtils.setBanTimeout(duration, userId, serverId, guildMemberManager);
+    }
+
+    /**
+     * This function handles the timeout of the ban to unban the user when timeout is up.
+     *
+     * @param  {number} duration
+     * @param  {string} userId
+     * @param  {string} serverId
+     * @param  {GuildMemberManager} guildMemberManager
+     * @returns void
+     */
+    public static setBanTimeout(duration: number, userId: string, serverId: string,
+                                guildMemberManager: GuildMemberManager): void {
+        const cb = (): void => {
+            // Unban member
+            guildMemberManager.unban(userId);
+
+            // Remove entry from db
+            const db = DatabaseConnection.connect();
+            db.prepare(
+                'DELETE FROM moderationTimeouts WHERE serverId = ? AND userId = ? AND type = ?',
+            ).run(serverId, userId, ModActions.BAN);
+
+            // Add unban entry to db
+            ModUtils.addModerationAction(serverId, 'AUTO', userId, ModActions.UNBAN, ModUtils.getUnixTime());
+            db.close();
+        };
+
+        setTimeout(cb, duration * 1000);
+    }
+
+    /**
      * Adds the mod action into the database
      *
      * @param  {string} serverId
@@ -64,9 +115,9 @@ export class ModUtils {
      * @param  {number} timeout?
      * @returns void
      */
-    public static addModerationActions(serverId: string, modId: string, userId: string,
-                                       type: ModActions, timestamp: number, reason?: string,
-                                       timeout?: number): void {
+    public static addModerationAction(serverId: string, modId: string, userId: string,
+                                      type: ModActions, timestamp: number, reason?: string,
+                                      timeout?: number): void {
         const db = DatabaseConnection.connect();
         const caseId = ModUtils.getLastestCaseId();
         db.prepare(

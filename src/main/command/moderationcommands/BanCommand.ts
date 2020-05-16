@@ -1,19 +1,29 @@
-import { GuildMember, MessageEmbed } from 'discord.js';
+import {
+    GuildMember, MessageEmbed, Permissions, DiscordAPIError,
+} from 'discord.js';
+import { SqliteError } from 'better-sqlite3';
+import log from 'loglevel';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
-import { DatabaseConnection } from '../../DatabaseConnection';
-import { Server } from '../../storage/Server';
+import { ModUtils } from '../../modules/moderation/ModUtil';
+import { ModActions } from '../../modules/moderation/ModActions';
 
 export class BanCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private commandArgs: string[];
+    private permissions = new Permissions(['BAN_MEMBERS']);
+
+    private COMMAND_USAGE = '**Usage:** @bot ban userId reason [X{m|h|d}]'
+
+    private type = ModActions.BAN;
+
+    private args: string[];
 
     public constructor(args: string[]) {
         super();
-        this.commandArgs = args;
+        this.args = args;
     }
 
     /**
@@ -25,79 +35,58 @@ export class BanCommand extends Command {
      */
     public execute(commandArgs: CommandArgs): CommandResult {
         const {
-            members, deleteFunction, server, userId,
+            members, server, userId, memberPerms, messageReply,
         } = commandArgs;
-        const targetId = this.commandArgs[0].replace(/[<@!>]/g, '');
-        const reason = this.commandArgs.slice(1).join(' ');
 
-        // Delete message that sent this command to prevent spam.
-        deleteFunction!();
-
-        // eslint-disable-next-line no-unused-expressions
-        members?.fetch(targetId)
-            .then((target: GuildMember): void => {
-                target.ban();
-                this.addModerationActions(server, target, reason, userId);
-                this.addModerationCounts(server, target);
-                this.sendEmbed(target, reason, commandArgs.messageReply);
-            })
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            .catch((): void => {});
-
-        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
-    }
-
-    /**
-     * This method logs the action to moderationActions table.
-     *
-     * @param server Server
-     * @param target GuildMember
-     * @param reason string
-     * @param userId string
-     */
-    private addModerationActions(server: Server,
-                                 target: GuildMember,
-                                 reason: string,
-                                 userId?: string): void {
-        const db = DatabaseConnection.connect();
-
-        const caseId = db.prepare('SELECT caseId FROM moderationActions').all().reverse()[0] ?
-            db.prepare('SELECT caseId FROM moderationActions').all().reverse()[0] : 0;
-
-        db.prepare(`
-            INSERT INTO moderationActions (serverId, caseId, id, modId, action, reason)
-            VALUES (${server.serverId}, ${caseId + 1}, ${target.id}, ${userId}, 'Ban', '${reason}')
-        `).run();
-
-        db.close();
-    }
-
-    /**
-     * This method logs the action to moderationCounts table.
-     *
-     * @param server Server
-     * @param target GuildMember
-     */
-    private addModerationCounts(server: Server,
-                                target: GuildMember): void {
-        const db = DatabaseConnection.connect();
-
-        const userLog = db.prepare(`SELECT * FROM moderationCounts WHERE id = ${target.id}`).get();
-
-        if (userLog) {
-            db.prepare(`
-                UPDATE moderationCounts
-                SET banCounts = ${userLog.banCounts + 1}
-                WHERE id = ${target.id}
-            `).run();
-        } else {
-            db.prepare(`
-                INSERT INTO moderationCounts 
-                VALUES (${server.serverId}, ${target.id}, 0, 0, 1, 0)
-            `).run();
+        // Check for permissions first
+        if (!this.hasPermissions(this.permissions, memberPerms)) {
+            this.sendNoPermissionsMessage(messageReply);
+            return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        db.close();
+        // Check number of args (absolute minimum should be 2)
+        if (this.args.length < 2) {
+            messageReply(`${BanCommand.INSUFFICIENT_ARGUMENTS}\n${this.COMMAND_USAGE}`);
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        }
+
+        const targetId = this.args[0].replace(/[<@!>]/g, '');
+        const { length } = this.args;
+        const duration = ModUtils.parseDuration(this.args[length - 1]);
+        let durationStr: string | undefined;
+        if (duration)
+            durationStr = this.args.pop();
+        const reason = this.args.slice(1).join(' ');
+
+        // No reason was given
+        if (!reason) {
+            messageReply(`${BanCommand.MISSING_REASON}\n${this.COMMAND_USAGE}`);
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        }
+
+        members!.fetch(targetId)
+            .then((target: GuildMember): void => {
+                target.ban({ reason });
+                const curTime = ModUtils.getUnixTime();
+                ModUtils.addModerationAction(server.serverId, userId!, targetId,
+                                             this.type, curTime, reason);
+
+                // Set timeout if any
+                if (duration) {
+                    const endTime = curTime + duration;
+                    ModUtils.addBanTimeout(duration, endTime, targetId, server.serverId, members!);
+                }
+                this.sendEmbed(target, reason, messageReply, durationStr);
+            })
+            .catch((err) => {
+                log.warn(err);
+                if (err instanceof SqliteError)
+                    messageReply(BanCommand.INTERNAL_ERROR_OCCURED);
+                else if (err instanceof DiscordAPIError)
+                    messageReply(`${BanCommand.USERID_ERROR}\n${this.COMMAND_USAGE}`);
+            });
+
+        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
     /**
@@ -107,16 +96,16 @@ export class BanCommand extends Command {
      * @param reason string
      * @param messageReply Function
      */
-    private sendEmbed(target: GuildMember,
-                      reason: string,
-                      messageReply: Function): void {
+    private sendEmbed(target: GuildMember, reason: string,
+                      messageReply: Function, durationStr?: string): void {
         const messageEmbed = new MessageEmbed();
 
         messageEmbed
             .setTitle(`${target.user.tag} was banned.`)
-            .setThumbnail(target.user.displayAvatarURL())
-            .setColor(target.displayHexColor)
-            .addField('Reason', reason || 'No reason given.');
+            .setColor(BanCommand.EMBED_DEFAULT_COLOUR)
+            .addField('Reason', reason, true);
+        if (durationStr)
+            messageEmbed.addField('Length', durationStr, true);
 
         messageReply(messageEmbed);
     }

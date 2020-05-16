@@ -12,6 +12,10 @@ export abstract class Command {
 
     public static INTERNAL_ERROR_OCCURED = 'An internal error occured.'
 
+    public static USERID_ERROR = 'Invalid User. Please try again.';
+
+    public static MISSING_REASON = 'Missing a reason. Please try again';
+
     public static EMBED_DEFAULT_COLOUR = '125bd1';
 
     public static EMBED_ERROR_COLOUR = 'ff0000';

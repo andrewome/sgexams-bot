@@ -19,9 +19,7 @@ export class KickCommand extends Command {
 
     private type = ModActions.KICK;
 
-    private COMMAND_USAGE = '**Usage:** @bot kick userId reason'
-
-    private USERID_ERROR = 'Invalid User. Please try again.';
+    private COMMAND_USAGE = '**Usage:** @bot kick userId reason';
 
     public constructor(args: string[]) {
         super();
@@ -57,8 +55,8 @@ export class KickCommand extends Command {
 
         members!.fetch(targetId)
             .then((target: GuildMember): void => {
-                ModUtils.addModerationActions(server.serverId, userId!, targetId,
-                                              this.type, ModUtils.getUnixTime(), reason);
+                ModUtils.addModerationAction(server.serverId, userId!, targetId,
+                                             this.type, ModUtils.getUnixTime(), reason);
                 target.kick();
                 this.sendEmbed(target, reason, commandArgs.messageReply);
             })
@@ -67,7 +65,7 @@ export class KickCommand extends Command {
                 if (err instanceof SqliteError)
                     messageReply(KickCommand.INTERNAL_ERROR_OCCURED);
                 else if (err instanceof DiscordAPIError)
-                    messageReply(`${this.USERID_ERROR}\n${this.COMMAND_USAGE}`);
+                    messageReply(`${KickCommand.USERID_ERROR}\n${this.COMMAND_USAGE}`);
             });
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
@@ -87,8 +85,7 @@ export class KickCommand extends Command {
 
         messageEmbed
             .setTitle(`${target.user.tag} was kicked.`)
-            .setThumbnail(target.user.displayAvatarURL())
-            .setColor(target.displayHexColor)
+            .setColor(KickCommand.EMBED_DEFAULT_COLOUR)
             .addField('Reason', reason || 'No reason given.');
 
         messageReply(messageEmbed);
