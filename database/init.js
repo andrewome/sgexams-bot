@@ -66,6 +66,7 @@ initStatements.push(
     userId VARCHAR NOT NULL,
     type VARCHAR NOT NULL,
     endTime INTEGER NOT NULL,
+    timerId INTEGER NOT NULL,
     PRIMARY KEY(serverId, userId, type)
 )`)
 

@@ -1,6 +1,7 @@
+import { GuildMemberManager } from 'discord.js';
+import log from 'loglevel';
 import { DatabaseConnection } from '../../DatabaseConnection';
 import { ModActions } from './ModActions';
-import { GuildMemberManager } from 'discord.js';
 
 export class ModUtils {
     public static readonly MINUTES_IN_SECONDS = 60;
@@ -8,6 +9,8 @@ export class ModUtils {
     public static readonly HOURS_IN_SECONDS = ModUtils.MINUTES_IN_SECONDS * 60;
 
     public static readonly DAYS_IN_SECONDS = ModUtils.HOURS_IN_SECONDS * 24;
+
+    public static readonly timers: Map<number, NodeJS.Timer> = new Map();
 
     /**
      * Parses a string in the form X{m|h|d} where X is an integer.
@@ -54,6 +57,77 @@ export class ModUtils {
     }
 
     /**
+     * Assigns a random ID to a timeout stored in timers map
+     *
+     * @param  {NodeJS.Timer} timer
+     * @returns number ID mapped to that timer
+     */
+    private static assignTimeout(timer: NodeJS.Timer): number {
+        const genRandom = (): number => Math.floor(Math.random() * (2 ** 31 - 1));
+        let rand = genRandom();
+        while (ModUtils.timers.has(rand))
+            rand = genRandom();
+
+        ModUtils.timers.set(rand, timer);
+        return rand;
+    }
+
+    /**
+     * Deletes an entry from the timers map if exists
+     *
+     * @param  {number} timerId
+     * @returns void
+     */
+    private static removeTimeout(timerId: number): void {
+        if (ModUtils.timers.has(timerId))
+            ModUtils.timers.delete(timerId);
+    }
+
+    /**
+     * Adds an action with a timeout into the timeout database
+     *
+     * @param  {number} endTime
+     * @param  {string} userId
+     * @param  {ModActions} type
+     * @param  {string} serverId
+     */
+    private static addActionTimeout(endTime: number, userId: string, type: ModActions,
+                                    serverId: string, timerId: number): void {
+        const db = DatabaseConnection.connect();
+        db.prepare(
+            'INSERT INTO moderationTimeouts (serverId, userId, type, endTime, timerId) VALUES (?, ?, ?, ?, ?)',
+        ).run(serverId, userId, type, endTime, timerId);
+        db.close();
+    }
+
+    /**
+     * Remove an entry from the timeout database
+     *
+     * @param  {string} userId
+     * @param  {ModActions} type
+     * @param  {string} serverId
+     * @returns number timerId
+     */
+    private static removeActionTimeout(userId: string, type: ModActions,
+                                       serverId: string): number {
+        const db = DatabaseConnection.connect();
+
+        // Get the timerId
+        const { timerId } = db.prepare(
+            'SELECT timerId FROM moderationTimeouts WHERE serverId = ? AND userId = ? AND type = ?',
+        ).get(serverId, userId, type);
+
+        // Delete row
+        db.prepare(
+            'DELETE FROM moderationTimeouts WHERE serverId = ? AND userId = ? AND type = ?',
+        ).run(serverId, userId, type);
+
+        db.close();
+
+        return timerId;
+    }
+
+    /**
      * This function adds the ban timeout to the database and calls setBanTimeout
      *
      * @param  {number} duration
@@ -65,13 +139,14 @@ export class ModUtils {
      */
     public static addBanTimeout(duration: number, endTime: number, userId: string,
                                 serverId: string, guildMemberManager: GuildMemberManager): void {
-        const db = DatabaseConnection.connect();
-        db.prepare(
-            'INSERT INTO moderationTimeouts (serverId, userId, type, endTime) VALUES (?, ?, ?, ?)',
-        ).run(serverId, userId, ModActions.BAN, endTime);
-        db.close();
+        const timer =
+            ModUtils.setBanTimeout(duration, userId, serverId, guildMemberManager);
 
-        ModUtils.setBanTimeout(duration, userId, serverId, guildMemberManager);
+        const timerId = ModUtils.assignTimeout(timer);
+
+        ModUtils.addActionTimeout(
+            endTime, userId, ModActions.BAN, serverId, timerId,
+        );
     }
 
     /**
@@ -81,26 +156,27 @@ export class ModUtils {
      * @param  {string} userId
      * @param  {string} serverId
      * @param  {GuildMemberManager} guildMemberManager
-     * @returns void
+     * @returns NodeJS.Timer
      */
     public static setBanTimeout(duration: number, userId: string, serverId: string,
-                                guildMemberManager: GuildMemberManager): void {
-        const cb = (): void => {
+                                guildMemberManager: GuildMemberManager): NodeJS.Timer {
+        const callback = (): void => {
+            log.info(`Unbanning ${userId} after ${duration}s timeout.`);
             // Unban member
             guildMemberManager.unban(userId);
 
             // Remove entry from db
-            const db = DatabaseConnection.connect();
-            db.prepare(
-                'DELETE FROM moderationTimeouts WHERE serverId = ? AND userId = ? AND type = ?',
-            ).run(serverId, userId, ModActions.BAN);
+            const timerId = ModUtils.removeActionTimeout(userId, ModActions.BAN, serverId);
+
+            // Remove timer from timers map
+            ModUtils.removeTimeout(timerId);
 
             // Add unban entry to db
             ModUtils.addModerationAction(serverId, 'AUTO', userId, ModActions.UNBAN, ModUtils.getUnixTime());
-            db.close();
+            log.info(`Sucessfully unbanned ${userId}.`);
         };
 
-        setTimeout(cb, duration * 1000);
+        return setTimeout(callback, duration * 1000);
     }
 
     /**
@@ -117,7 +193,7 @@ export class ModUtils {
      */
     public static addModerationAction(serverId: string, modId: string, userId: string,
                                       type: ModActions, timestamp: number, reason?: string,
-                                      timeout?: number): void {
+                                      timeout?: number|null): void {
         const db = DatabaseConnection.connect();
         const caseId = ModUtils.getLastestCaseId();
         db.prepare(

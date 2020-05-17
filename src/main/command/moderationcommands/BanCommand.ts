@@ -69,7 +69,7 @@ export class BanCommand extends Command {
                 target.ban({ reason });
                 const curTime = ModUtils.getUnixTime();
                 ModUtils.addModerationAction(server.serverId, userId!, targetId,
-                                             this.type, curTime, reason);
+                                             this.type, curTime, reason, duration);
 
                 // Set timeout if any
                 if (duration) {
