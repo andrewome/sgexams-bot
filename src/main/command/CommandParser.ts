@@ -29,6 +29,7 @@ import { KickCommand } from './moderationcommands/KickCommand';
 import { BanCommand } from './moderationcommands/BanCommand';
 import { PurgeCommand } from './moderationcommands/PurgeCommand';
 import { ModerationHelpCommand } from './helpcommands/ModerationHelpCommand';
+import { UnbanCommand } from './moderationcommands/UnbanCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -169,6 +170,8 @@ export class CommandParser {
                 return new BanCommand(args);
             case CommandNamesAndDescriptions.PURGE_COMMAND_NAME.toLowerCase():
                 return new PurgeCommand(args);
+            case CommandNamesAndDescriptions.UNBAN_COMMAND_NAME.toLowerCase():
+                return new UnbanCommand(args);
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }

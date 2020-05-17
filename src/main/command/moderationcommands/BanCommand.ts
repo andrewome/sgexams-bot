@@ -15,7 +15,7 @@ export class BanCommand extends Command {
 
     private permissions = new Permissions(['BAN_MEMBERS']);
 
-    private COMMAND_USAGE = '**Usage:** @bot ban userId reason [X{m|h|d}]'
+    private COMMAND_USAGE = '**Usage:** @bot ban userId reason [X{m|h|d}]';
 
     private type = ModActions.BAN;
 
