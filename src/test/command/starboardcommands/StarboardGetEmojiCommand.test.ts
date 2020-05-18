@@ -40,7 +40,7 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
         deleteDbFile();
     });
 
-    it('No permission check', (): void => {
+    it('No permission check', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
@@ -55,12 +55,12 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             memberPerms: new Permissions([]),
             messageReply: checkEmbed,
         };
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('Emoji not set', (): void => {
+    it('Emoji not set', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -75,12 +75,12 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             memberPerms: adminPerms,
             messageReply: checkEmbed,
         };
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('1 emoji set', (): void => {
+    it('1 emoji set', async (): Promise<void> => {
         const emoji = new SimplifiedEmoji('test', 'test');
         server.starboardSettings.addEmoji(serverId, emoji);
         const checkEmbed = (embed: MessageEmbed): void => {
@@ -97,12 +97,12 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             memberPerms: adminPerms,
             messageReply: checkEmbed,
         };
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('2 emojis set', (): void => {
+    it('2 emojis set', async (): Promise<void> => {
         server.starboardSettings.addEmoji(serverId, new SimplifiedEmoji('test1', 'test1'));
         server.starboardSettings.addEmoji(serverId, new SimplifiedEmoji('test2', 'test2'));
         const checkEmbed = (embed: MessageEmbed): void => {
@@ -119,7 +119,7 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
             memberPerms: adminPerms,
             messageReply: checkEmbed,
         };
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
