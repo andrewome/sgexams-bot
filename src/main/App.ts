@@ -1,6 +1,6 @@
 import './lib/env';
 import {
-    Client, Message, MessageReaction, User,
+    Client, Message, MessageReaction, User, GuildMemberManager,
 } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
 import { Storage } from './storage/Storage';
@@ -9,6 +9,9 @@ import { MessageReactionRemoveEventHandler } from './eventhandler/MessageReactio
 import { OnMessageEventHandler } from './eventhandler/OnMessageEventHandler';
 import { MessageUpdateEventHandler } from './eventhandler/MessageUpdateEventHandler';
 import { StarboardCache } from './storage/StarboardCache';
+import { ModDbUtils } from './modules/moderation/ModDbUtils';
+import { ModUtils } from './modules/moderation/ModUtil';
+import { ModActions } from './modules/moderation/ModActions';
 
 export class App {
     private bot: Client;
@@ -65,9 +68,93 @@ export class App {
         this.bot.on(App.READY, (): void => {
             log.info('Populating Starboard Cache...');
             StarboardCache.generateStarboardMessagesCache(this.bot, this.storage);
+            log.info('Handling outstanding timeouts...');
+            this.handleTimeouts();
             log.info('I am ready!');
             this.bot.user!.setActivity('with NUKES!!!!', { type: 'PLAYING' });
         });
+    }
+
+    /**
+     * Handles timeouts in moderationTimeouts table upon booting
+     *
+     * @returns void
+     */
+    private handleTimeouts(): void {
+        const timeouts = ModDbUtils.fetchActionTimeouts();
+        const curTime = ModUtils.getUnixTime();
+        timeouts.forEach((timeout) => {
+            const {
+                serverId, userId, type, endTime,
+            } = timeout;
+            const guild = this.bot.guilds.resolve(serverId);
+            if (!guild) { // Guild can't be found
+                // Remove entry if timeout expired
+                if (endTime <= curTime)
+                    ModDbUtils.removeActionTimeout(userId, type, serverId);
+                return;
+            }
+
+            const { members } = guild;
+            if (endTime > curTime) { // Timer has not expired yet, reset the timeout
+                this.handleUnexpiredTimeouts(serverId, userId, type, endTime, curTime, members);
+            } else { // Timers have expired
+                this.handleExpiredTimeouts(serverId, userId, curTime, type, members);
+            }
+        });
+    }
+
+    /**
+     * Handles timeouts that have expired (current time >= end time)
+     * Undoes the action and removes the entry.
+     *
+     * @param  {string} serverId
+     * @param  {string} userId
+     * @param  {number} curTime
+     * @param  {ModActions} type
+     * @param  {GuildMemberManager} members
+     * @returns void
+     */
+    private handleExpiredTimeouts(serverId: string, userId: string, curTime: number,
+                                  type: ModActions, members: GuildMemberManager): void {
+        switch (type) {
+            case ModActions.BAN:
+                try {
+                    ModDbUtils.addModerationAction(
+                        serverId, 'AUTO', userId, ModActions.UNBAN, curTime,
+                    );
+                    ModUtils.handleUnbanTimeout(userId, serverId);
+                    members!.unban(userId);
+                } catch (err) {
+                    log.warn(err);
+                }
+                break;
+            default:
+        }
+    }
+
+    /**
+     * Handles timeouts that have not been expired (current time < end time)
+     * Sets a timeout of duration that expires at end time that undoes the action.
+     *
+     * @param  {string} serverId
+     * @param  {string} userId
+     * @param  {ModActions} type
+     * @param  {number} endTime
+     * @param  {number} curTime
+     * @param  {GuildMemberManager} members
+     * @returns void
+     */
+    private handleUnexpiredTimeouts(serverId: string, userId: string,
+                                    type: ModActions, endTime: number,
+                                    curTime: number, members: GuildMemberManager): void {
+        const duration = endTime - curTime;
+        switch (type) {
+            case ModActions.BAN:
+                ModUtils.addBanTimeout(duration, endTime, userId, serverId, members);
+                break;
+            default:
+        }
     }
 }
 

@@ -1,5 +1,6 @@
 import { DatabaseConnection } from '../../DatabaseConnection';
 import { ModActions } from './ModActions';
+import { ModerationTimeout } from './ModerationTimeout';
 
 export class ModDbUtils {
     /**
@@ -17,18 +18,21 @@ export class ModDbUtils {
     }
 
     /**
-     * Adds an action with a timeout into the timeout database
+     * Adds an action with a timeout into the timeout database, updates on conflict of pkeys
      *
      * @param  {number} endTime
      * @param  {string} userId
      * @param  {ModActions} type
      * @param  {string} serverId
+     * @param  {number} timerId
+     * @returns void
      */
     public static addActionTimeout(endTime: number, userId: string, type: ModActions,
                                    serverId: string, timerId: number): void {
         const db = DatabaseConnection.connect();
         db.prepare(
-            'INSERT INTO moderationTimeouts (serverId, userId, type, endTime, timerId) VALUES (?, ?, ?, ?, ?)',
+            'INSERT INTO moderationTimeouts (serverId, userId, type, endTime, timerId) VALUES (?, ?, ?, ?, ?) ' +
+            'ON CONFLICT(serverId, userId, type) DO UPDATE SET timerId = excluded.timerId',
         ).run(serverId, userId, type, endTime, timerId);
         db.close();
     }
@@ -89,4 +93,15 @@ export class ModDbUtils {
         db.close();
     }
 
+    /**
+     * Fetches all timeout entries in the moderationTimeouts table.
+     *
+     * @returns ModerationTimeout[]
+     */
+    public static fetchActionTimeouts(): ModerationTimeout[] {
+        const db = DatabaseConnection.connect();
+        const res = db.prepare('SELECT * FROM moderationTimeouts').all();
+        db.close();
+        return res;
+    }
 }
