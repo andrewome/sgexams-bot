@@ -34,7 +34,7 @@ export class OnMessageEventHandler extends MessageEventHandler {
         const server = this.getServer(this.message.guild.id.toString());
 
         // Handle Command
-        const commandResult = this.handleCommand(server);
+        const commandResult = await this.handleCommand(server);
 
         // Check message if command result says so
         if (commandResult.shouldCheckMessage) {
@@ -48,7 +48,7 @@ export class OnMessageEventHandler extends MessageEventHandler {
      * @param  {Server} server
      * @returns CommandResult
      */
-    private handleCommand(server: Server): CommandResult {
+    private async handleCommand(server: Server): Promise<CommandResult> {
         // Default command result - check messages.
         const defaultCommandResult = new CommandResult(true);
 
