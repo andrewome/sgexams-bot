@@ -34,7 +34,7 @@ export class KickCommand extends Command {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
             members, server, userId, memberPerms, messageReply,
         } = commandArgs;
@@ -54,20 +54,19 @@ export class KickCommand extends Command {
         const targetId = this.args[0].replace(/[<@!>]/g, '');
         const reason = this.args.slice(1).join(' ');
 
-        members!.fetch(targetId)
-            .then((target: GuildMember): void => {
-                ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
-                                               this.type, ModUtils.getUnixTime(), reason);
-                target.kick();
-                this.sendEmbed(target, reason, commandArgs.messageReply);
-            })
-            .catch((err) => {
-                log.warn(err);
-                if (err instanceof SqliteError)
-                    messageReply(KickCommand.INTERNAL_ERROR_OCCURED);
-                else if (err instanceof DiscordAPIError)
-                    messageReply(`${KickCommand.USERID_ERROR}\n${this.COMMAND_USAGE}`);
-            });
+        try {
+            const target = await members!.fetch(targetId);
+            ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
+                                           this.type, ModUtils.getUnixTime(), reason);
+            target.kick();
+            this.sendEmbed(target, reason, commandArgs.messageReply);
+        } catch (err) {
+            log.warn(err);
+            if (err instanceof SqliteError)
+                messageReply(KickCommand.INTERNAL_ERROR_OCCURED);
+            else if (err instanceof DiscordAPIError)
+                messageReply(`${KickCommand.USERID_ERROR}\n${this.COMMAND_USAGE}`);
+        }
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -79,15 +78,14 @@ export class KickCommand extends Command {
      * @param reason string
      * @param messageReply Function
      */
-    private sendEmbed(target: GuildMember,
-                      reason: string,
+    private sendEmbed(target: GuildMember, reason: string,
                       messageReply: Function): void {
         const messageEmbed = new MessageEmbed();
 
         messageEmbed
             .setTitle(`${target.user.tag} was kicked.`)
             .setColor(KickCommand.EMBED_DEFAULT_COLOUR)
-            .addField('Reason', reason || 'No reason given.');
+            .addField('Reason', reason);
 
         messageReply(messageEmbed);
     }

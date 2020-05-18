@@ -1,5 +1,5 @@
 import {
-    MessageEmbed, Permissions, DiscordAPIError, User,
+    MessageEmbed, Permissions, DiscordAPIError,
 } from 'discord.js';
 import { SqliteError } from 'better-sqlite3';
 import log from 'loglevel';
@@ -34,7 +34,7 @@ export class UnbanCommand extends Command {
      * @param  {CommandArgs} commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
             members, server, userId, memberPerms, messageReply,
         } = commandArgs;
@@ -57,21 +57,20 @@ export class UnbanCommand extends Command {
             reason = null;
 
         // Unban, add the action and remove the timeout (if any)
-        members!.unban(targetId)
-            .then((user: User) => {
-                ModDbUtils.addModerationAction(
-                    server.serverId, userId!, targetId, this.type, ModUtils.getUnixTime(), reason,
-                );
-                ModUtils.handleUnbanTimeout(targetId, server.serverId);
-                this.sendEmbed(user.username, reason, messageReply);
-            })
-            .catch((err) => {
-                log.warn(err);
-                if (err instanceof SqliteError)
-                    messageReply(UnbanCommand.INTERNAL_ERROR_OCCURED);
-                else if (err instanceof DiscordAPIError)
-                    messageReply(`${UnbanCommand.USERID_ERROR}\n${this.COMMAND_USAGE}`);
-            });
+        try {
+            const user = await members!.unban(targetId);
+            ModDbUtils.addModerationAction(
+                server.serverId, userId!, targetId, this.type, ModUtils.getUnixTime(), reason,
+            );
+            ModUtils.handleUnbanTimeout(targetId, server.serverId);
+            this.sendEmbed(user.username, reason, messageReply);
+        } catch (err) {
+            log.warn(err);
+            if (err instanceof SqliteError)
+                messageReply(UnbanCommand.INTERNAL_ERROR_OCCURED);
+            else if (err instanceof DiscordAPIError)
+                messageReply(`${UnbanCommand.USERID_ERROR}\n${this.COMMAND_USAGE}`);
+        }
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }

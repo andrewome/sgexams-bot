@@ -34,7 +34,7 @@ export class BanCommand extends Command {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
             members, server, userId, memberPerms, messageReply,
         } = commandArgs;
@@ -65,27 +65,27 @@ export class BanCommand extends Command {
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        members!.fetch(targetId)
-            .then((target: GuildMember): void => {
-                target.ban({ reason });
-                const curTime = ModUtils.getUnixTime();
-                ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
-                                               this.type, curTime, reason, duration);
+        // Handle ban
+        try {
+            const target = await members!.fetch(targetId);
+            target.ban({ reason });
+            const curTime = ModUtils.getUnixTime();
+            ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
+                                           this.type, curTime, reason, duration);
 
-                // Set timeout if any
-                if (duration) {
-                    const endTime = curTime + duration;
-                    ModUtils.addBanTimeout(duration, endTime, targetId, server.serverId, members!);
-                }
-                this.sendEmbed(target, reason, messageReply, durationStr);
-            })
-            .catch((err) => {
-                log.warn(err);
-                if (err instanceof SqliteError)
-                    messageReply(BanCommand.INTERNAL_ERROR_OCCURED);
-                else if (err instanceof DiscordAPIError)
-                    messageReply(`${BanCommand.USERID_ERROR}\n${this.COMMAND_USAGE}`);
-            });
+            // Set timeout if any
+            if (duration) {
+                const endTime = curTime + duration;
+                ModUtils.addBanTimeout(duration, endTime, targetId, server.serverId, members!);
+            }
+            this.sendEmbed(target, reason, messageReply, durationStr);
+        } catch (err) {
+            log.warn(err);
+            if (err instanceof SqliteError)
+                messageReply(BanCommand.INTERNAL_ERROR_OCCURED);
+            else if (err instanceof DiscordAPIError)
+                messageReply(`${BanCommand.USERID_ERROR}\n${this.COMMAND_USAGE}`);
+        }
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }

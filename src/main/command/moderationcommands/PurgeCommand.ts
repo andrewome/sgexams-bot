@@ -31,7 +31,7 @@ export class PurgeCommand extends Command {
      * @param  {CommandArgs} commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
             messageReply, memberPerms, channel, messageId,
         } = commandArgs;
@@ -57,16 +57,11 @@ export class PurgeCommand extends Command {
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        let sentMessage: Message;
-        messageReply(`Fetching messages... 0/${limit} messages fetched.`)
-            .then((message: Message) => {
-                sentMessage = message;
-            })
-            // Bulk delete messages
-            .then(() => this.fetchMessages(messageManager, limit, messageId!, sentMessage))
-            // eslint-disable-next-line max-len
-            .then((messages: Message[]) => this.bulkDeleteMessages(userId, messages, channel!, sentMessage))
-            .then((numDeleted: number) => sentMessage.edit(`Deleted ${numDeleted} messages.`));
+        // Fetch and bulk delete messages
+        const sentMessage = await messageReply(`Fetching messages... 0/${limit} messages fetched.`);
+        const messages = await this.fetchMessages(messageManager, limit, messageId!, sentMessage);
+        const numDeleted = await this.bulkDeleteMessages(userId, messages, channel!, sentMessage);
+        sentMessage.edit(`Deleted ${numDeleted} messages.`);
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
