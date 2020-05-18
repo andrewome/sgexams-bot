@@ -38,7 +38,7 @@ export class RotateImageCommand extends Command {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const { messageReply, channel, userId } = commandArgs;
         const messageId = this.commandArgs[0];
 
