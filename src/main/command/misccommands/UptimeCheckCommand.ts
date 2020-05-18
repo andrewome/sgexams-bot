@@ -15,7 +15,7 @@ export class UptimeCheckCommand extends Command {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const { messageReply } = commandArgs;
         let uptime = commandArgs.uptime!;
         const oneSecondInMs = 1000;

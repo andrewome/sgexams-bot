@@ -12,7 +12,7 @@ export class HelpCommand extends HelpCommandBase {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
