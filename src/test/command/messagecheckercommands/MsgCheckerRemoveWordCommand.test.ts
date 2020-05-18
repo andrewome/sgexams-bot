@@ -45,7 +45,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         deleteDbFile();
     });
 
-    it('No permission check', (): void => {
+    it('No permission check', async (): Promise<void> => {
         command = new MsgCheckerRemoveWordCommand([]);
         const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
@@ -62,13 +62,13 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
             messageReply: checkEmbed,
         };
 
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
 
-    it('Removing words, no duplicates', (): void => {
+    it('Removing words, no duplicates', async (): Promise<void> => {
         const args = ['word1', 'word2', 'word3'];
         const removedWordsStr = `${args[0]}\n${args[1]}\n${args[2]}\n`;
         command = new MsgCheckerRemoveWordCommand(args);
@@ -89,7 +89,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
             messageReply: checkEmbed,
         };
 
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;
@@ -99,7 +99,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         bannedWords.length.should.equal(0);
         compareWithReserialisedStorage(storage).should.be.true;
     });
-    it('Removing words, with some removed already', (): void => {
+    it('Removing words, with some removed already', async (): Promise<void> => {
         // Remove some words first
         const args = ['word1', 'word2', 'word3'];
         command = new MsgCheckerRemoveWordCommand(args.slice(0, 2));
@@ -130,7 +130,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
             memberPerms: adminPerms,
             messageReply: checkEmbed,
         };
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;
@@ -140,7 +140,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         bannedWords.length.should.equal(0);
         compareWithReserialisedStorage(storage).should.be.true;
     });
-    it('Removing words, with duplicates in args', (): void => {
+    it('Removing words, with duplicates in args', async (): Promise<void> => {
         const args = ['word1', 'word2', 'word3', 'word3'];
         command = new MsgCheckerRemoveWordCommand(args);
         const removedWordsStr = `${args[0]}\n${args[1]}\n${args[2]}\n`;
@@ -167,7 +167,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
             messageReply: checkEmbed,
         };
 
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;
@@ -176,7 +176,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         const bannedWords = server.messageCheckerSettings.getBannedWords();
         bannedWords.length.should.equal(0);
     });
-    it('No arguments', (): void => {
+    it('No arguments', async (): Promise<void> => {
         const args: string[] = [];
         command = new MsgCheckerRemoveWordCommand(args);
 
@@ -196,7 +196,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
             memberPerms: adminPerms,
             messageReply: checkEmbed,
         };
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;

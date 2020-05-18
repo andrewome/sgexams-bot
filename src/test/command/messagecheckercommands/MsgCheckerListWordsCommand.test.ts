@@ -39,7 +39,7 @@ describe('ListCommandsCommand test suite', (): void => {
         deleteDbFile();
     });
 
-    it('No permission check', (): void => {
+    it('No permission check', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
@@ -55,13 +55,13 @@ describe('ListCommandsCommand test suite', (): void => {
             messageReply: checkEmbed,
         };
 
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
 
-    it('Embed should show all bannedWords', (): void => {
+    it('Embed should show all bannedWords', async (): Promise<void> => {
         // Set banned words
         const bannedWords = ['word1', 'word2', 'word3'];
         server.messageCheckerSettings.addBannedWords(serverId, bannedWords);
@@ -89,12 +89,12 @@ describe('ListCommandsCommand test suite', (): void => {
             messageReply: checkEmbed,
         };
 
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('Embed should show if no bannedWords', (): void => {
+    it('Embed should show if no bannedWords', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check colour
             embed.color!.toString(16).should.equal(EMBED_DEFAULT_COLOUR);
@@ -111,7 +111,7 @@ describe('ListCommandsCommand test suite', (): void => {
             memberPerms: adminPerms,
             messageReply: checkEmbed,
         };
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });

@@ -24,7 +24,7 @@ beforeEach((): void => {
 });
 
 describe('Help Command Test Suite', (): void => {
-    it('Execute test', (): void => {
+    it('Execute test', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -46,7 +46,7 @@ describe('Help Command Test Suite', (): void => {
             memberPerms: new Permissions([]),
             messageReply: checkEmbed,
         };
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;

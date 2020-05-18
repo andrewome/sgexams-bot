@@ -39,7 +39,7 @@ describe('MsgCheckerGetReportChannelCommand class test suite', (): void => {
         deleteDbFile();
     });
 
-    it('No permission check', (): void => {
+    it('No permission check', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
@@ -55,12 +55,12 @@ describe('MsgCheckerGetReportChannelCommand class test suite', (): void => {
             messageReply: checkEmbed,
         };
 
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('Channel not set', (): void => {
+    it('Channel not set', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -76,12 +76,12 @@ describe('MsgCheckerGetReportChannelCommand class test suite', (): void => {
             messageReply: checkEmbed,
         };
 
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('Channel set', (): void => {
+    it('Channel set', async (): Promise<void> => {
         const channelId = '111';
         server.messageCheckerSettings.setReportingChannelId(
             server.serverId,
@@ -102,7 +102,7 @@ describe('MsgCheckerGetReportChannelCommand class test suite', (): void => {
             memberPerms: adminPerms,
             messageReply: checkEmbed,
         };
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;

@@ -9,7 +9,7 @@ import { CommandArgs } from '../../main/command/classes/CommandArgs';
 chai.should();
 
 class CommandStub extends Command {
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         throw new Error('Method not implemented.');
     }
 }

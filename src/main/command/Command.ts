@@ -26,7 +26,7 @@ export abstract class Command {
      *                                   a command may use.
      * @returns CommandResult
      */
-    public abstract execute(commandArgs: CommandArgs): CommandResult;
+    public async abstract execute(commandArgs: CommandArgs): Promise<CommandResult>;
 
     /**
      * This function checks if a given guildmember has the permissions required

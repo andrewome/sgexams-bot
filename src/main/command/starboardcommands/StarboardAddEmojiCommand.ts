@@ -34,7 +34,7 @@ export class StarboardAddEmojiCommand extends Command {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
             server, memberPerms, messageReply, emojis,
         } = commandArgs;
