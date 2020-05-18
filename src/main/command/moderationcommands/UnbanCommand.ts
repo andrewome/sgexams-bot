@@ -8,6 +8,7 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 import { ModUtils } from '../../modules/moderation/ModUtil';
 import { ModActions } from '../../modules/moderation/ModActions';
+import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 
 export class UnbanCommand extends Command {
     /** CheckMessage: true */
@@ -58,7 +59,7 @@ export class UnbanCommand extends Command {
         // Unban, add the action and remove the timeout (if any)
         members!.unban(targetId)
             .then((user: User) => {
-                ModUtils.addModerationAction(
+                ModDbUtils.addModerationAction(
                     server.serverId, userId!, targetId, this.type, ModUtils.getUnixTime(), reason,
                 );
                 ModUtils.handleUnbanTimeout(targetId, server.serverId);

@@ -8,6 +8,7 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 import { ModUtils } from '../../modules/moderation/ModUtil';
 import { ModActions } from '../../modules/moderation/ModActions';
+import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 
 export class KickCommand extends Command {
     /** CheckMessage: true */
@@ -55,8 +56,8 @@ export class KickCommand extends Command {
 
         members!.fetch(targetId)
             .then((target: GuildMember): void => {
-                ModUtils.addModerationAction(server.serverId, userId!, targetId,
-                                             this.type, ModUtils.getUnixTime(), reason);
+                ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
+                                               this.type, ModUtils.getUnixTime(), reason);
                 target.kick();
                 this.sendEmbed(target, reason, commandArgs.messageReply);
             })

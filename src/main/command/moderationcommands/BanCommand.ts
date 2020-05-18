@@ -8,6 +8,7 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 import { ModUtils } from '../../modules/moderation/ModUtil';
 import { ModActions } from '../../modules/moderation/ModActions';
+import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 
 export class BanCommand extends Command {
     /** CheckMessage: true */
@@ -68,8 +69,8 @@ export class BanCommand extends Command {
             .then((target: GuildMember): void => {
                 target.ban({ reason });
                 const curTime = ModUtils.getUnixTime();
-                ModUtils.addModerationAction(server.serverId, userId!, targetId,
-                                             this.type, curTime, reason, duration);
+                ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
+                                               this.type, curTime, reason, duration);
 
                 // Set timeout if any
                 if (duration) {

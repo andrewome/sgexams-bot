@@ -135,7 +135,7 @@ export class PurgeCommand extends Command {
             if (length && length % 200 === 0)
                 sentMessage.edit(`Fetching messages... ${length}/${limit} messages fetched.`);
 
-            if (messages.size !== 100 || collectedMessages.length >= limit) {
+            if (messages.size !== 100 || length >= limit) {
                 break;
             }
         }
