@@ -52,9 +52,7 @@ export class UnbanCommand extends Command {
         }
 
         const targetId = this.args[0].replace(/[<@!>]/g, '');
-        let reason: string | null = this.args.slice(1).join(' ');
-        if (!reason)
-            reason = null;
+        const reason = this.args.slice(1).join(' ');
 
         // Unban, add the action and remove the timeout (if any)
         try {
@@ -82,7 +80,7 @@ export class UnbanCommand extends Command {
      * @param reason string
      * @param messageReply Function
      */
-    private sendEmbed(username: string, reason: string | null,
+    private sendEmbed(username: string, reason: string,
                       messageReply: Function): void {
         const messageEmbed = new MessageEmbed();
 

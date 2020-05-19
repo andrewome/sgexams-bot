@@ -16,7 +16,7 @@ export class BanCommand extends Command {
 
     private permissions = new Permissions(['BAN_MEMBERS']);
 
-    private COMMAND_USAGE = '**Usage:** @bot ban userId reason [X{m|h|d}]';
+    private COMMAND_USAGE = '**Usage:** @bot ban userId [reason] [X{m|h|d}]';
 
     private type = ModActions.BAN;
 
@@ -45,25 +45,23 @@ export class BanCommand extends Command {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        // Check number of args (absolute minimum should be 2)
-        if (this.args.length < 2) {
+        // Check number of args (absolute minimum should be 1)
+        if (this.args.length < 1) {
             messageReply(`${BanCommand.INSUFFICIENT_ARGUMENTS}\n${this.COMMAND_USAGE}`);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
         const targetId = this.args[0].replace(/[<@!>]/g, '');
+
+        // Check last val for ban time if any
         const { length } = this.args;
         const duration = ModUtils.parseDuration(this.args[length - 1]);
         let durationStr: string | undefined;
         if (duration)
             durationStr = this.args.pop();
-        const reason = this.args.slice(1).join(' ');
 
-        // No reason was given
-        if (!reason) {
-            messageReply(`${BanCommand.MISSING_REASON}\n${this.COMMAND_USAGE}`);
-            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
-        }
+        // Get reason
+        const reason = this.args.slice(1).join(' ');
 
         // Handle ban
         try {
@@ -104,7 +102,7 @@ export class BanCommand extends Command {
         messageEmbed
             .setTitle(`${target.user.tag} was banned.`)
             .setColor(BanCommand.EMBED_DEFAULT_COLOUR)
-            .addField('Reason', reason, true);
+            .addField('Reason', reason || '-', true);
         if (durationStr)
             messageEmbed.addField('Length', durationStr, true);
 

@@ -70,6 +70,8 @@ export class ModDbUtils {
 
     /**
      * Adds a mod action into the database
+     * reason || null because reason could be an empty string, in that case we do want to
+     * record down null in the database.
      *
      * @param  {string} serverId
      * @param  {string} modId
@@ -88,8 +90,7 @@ export class ModDbUtils {
         db.prepare(
             'INSERT INTO moderationLogs (serverId, caseId, modId, userId, type,' +
             ' reason, timeout, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        ).run(serverId, caseId + 1, modId, userId, type, reason, timeout, timestamp);
-
+        ).run(serverId, caseId + 1, modId, userId, type, reason || null, timeout, timestamp);
         db.close();
     }
 

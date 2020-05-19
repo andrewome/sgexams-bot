@@ -20,7 +20,7 @@ export class KickCommand extends Command {
 
     private type = ModActions.KICK;
 
-    private COMMAND_USAGE = '**Usage:** @bot kick userId reason';
+    private COMMAND_USAGE = '**Usage:** @bot kick userId [reason]';
 
     public constructor(args: string[]) {
         super();
@@ -46,7 +46,7 @@ export class KickCommand extends Command {
         }
 
         // Check number of args
-        if (this.args.length < 2) {
+        if (this.args.length < 1) {
             messageReply(`${KickCommand.INSUFFICIENT_ARGUMENTS}\n${this.COMMAND_USAGE}`);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
@@ -85,7 +85,7 @@ export class KickCommand extends Command {
         messageEmbed
             .setTitle(`${target.user.tag} was kicked.`)
             .setColor(KickCommand.EMBED_DEFAULT_COLOUR)
-            .addField('Reason', reason);
+            .addField('Reason', reason || '-');
 
         messageReply(messageEmbed);
     }
