@@ -1,15 +1,26 @@
-import { GuildMember, MessageEmbed } from 'discord.js';
+import {
+    GuildMember, MessageEmbed, Permissions, DiscordAPIError, GuildMemberManager,
+} from 'discord.js';
+import { SqliteError } from 'better-sqlite3';
+import log from 'loglevel';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
-import { DatabaseConnection } from '../../DatabaseConnection';
-import { Server } from '../../storage/Server';
+import { ModActions } from '../../modules/moderation/classes/ModActions';
+import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
+import { ModUtils } from '../../modules/moderation/ModUtil';
 
 export class WarnCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
     private commandArgs: string[];
+
+    private permissions = new Permissions(['BAN_MEMBERS']);
+
+    private COMMAND_USAGE = '**Usage:** @bot warn userId [reason]';
+
+    private type = ModActions.WARN;
 
     public constructor(args: string[]) {
         super();
@@ -25,78 +36,79 @@ export class WarnCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            members, deleteFunction, server, userId,
+            members, server, userId, memberPerms, messageReply,
         } = commandArgs;
+
+        // Check for permissions first
+        if (!this.hasPermissions(this.permissions, memberPerms)) {
+            this.sendNoPermissionsMessage(messageReply);
+            return this.NO_PERMISSIONS_COMMANDRESULT;
+        }
+
         const targetId = this.commandArgs[0].replace(/[<@!>]/g, '');
         const reason = this.commandArgs.slice(1).join(' ');
 
-        // Delete message that sent this command to prevent spam.
-        deleteFunction!();
+        // Warn
+        try {
+            const curTime = ModUtils.getUnixTime();
+            const target = await members!.fetch(targetId);
+            ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
+                                           this.type, curTime, reason);
+            this.sendEmbed(target, reason, commandArgs.messageReply);
+        } catch (err) {
+            log.warn(err);
+            if (err instanceof SqliteError)
+                messageReply(WarnCommand.INTERNAL_ERROR_OCCURED);
+            else if (err instanceof DiscordAPIError)
+                messageReply(`${WarnCommand.USERID_ERROR}\n${this.COMMAND_USAGE}`);
+        }
 
-        // eslint-disable-next-line no-unused-expressions
-        members?.fetch(targetId)
-            .then((target: GuildMember): void => {
-                this.addModerationActions(server, target, reason, userId);
-                this.addModerationCounts(server, target);
-                this.sendEmbed(target, reason, commandArgs.messageReply);
-            })
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            .catch((): void => {}); // Do nothing
+        // Handle if this warning hit server warn action threshold
+        this.handleWarnThreshold(server.serverId, targetId, members!);
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
     /**
-     * This method logs the action to moderationActions table.
+     * Checks and handles if this warning has hit the server's warn action threshold.
      *
-     * @param server Server
-     * @param target GuildMember
-     * @param reason string
-     * @param userId string
+     * @param  {string} serverId
+     * @param  {string} targetId
+     * @param  {GuildMemberManager} members
+     * @returns Promise
      */
-    private addModerationActions(server: Server,
-                                 target: GuildMember,
-                                 reason: string,
-                                 userId?: string): void {
-        const db = DatabaseConnection.connect();
+    private async handleWarnThreshold(serverId: string, targetId: string,
+                                      members: GuildMemberManager): Promise<void> {
+        // Check if warn threshold has been met
+        const numWarns = ModDbUtils.fetchNumberOfWarns(serverId, targetId);
 
-        const caseId = db.prepare('SELECT caseId FROM moderationActions').all().reverse()[0] ?
-            db.prepare('SELECT caseId FROM moderationActions').all().reverse()[0] : 0;
+        // Check if the number corresponds to an action
+        const res = ModDbUtils.fetchWarnAction(serverId, numWarns);
 
-        db.prepare(`
-            INSERT INTO moderationActions (serverId, caseId, id, modId, action, reason)
-            VALUES (${server.serverId}, ${caseId + 1}, ${target.id}, ${userId}, 'Warn', '${reason}')
-        `).run();
-
-        db.close();
-    }
-
-    /**
-     * This method logs the action to moderationCounts table.
-     *
-     * @param server Server
-     * @param target GuildMember
-     */
-    private addModerationCounts(server: Server,
-                                target: GuildMember): void {
-        const db = DatabaseConnection.connect();
-
-        const userLog = db.prepare(`SELECT * FROM moderationCounts WHERE id = ${target.id}`).get();
-
-        if (userLog) {
-            db.prepare(`
-                UPDATE moderationCounts
-                SET warnCounts = ${userLog.warnCounts + 1}
-                WHERE id = ${target.id}
-            `).run();
-        } else {
-            db.prepare(`
-                INSERT INTO moderationCounts 
-                VALUES (${server.serverId}, ${target.id}, 1, 0, 0, 0)
-            `).run();
+        // If there's a warn action, handle it
+        if (res) {
+            const curTime = ModUtils.getUnixTime();
+            const { action, duration } = res;
+            const reason = `AUTO - ${numWarns} Warns Accumulated`;
+            const target = await members!.fetch(targetId);
+            switch (action) {
+                case ModActions.BAN:
+                    target.ban({ reason });
+                    ModDbUtils.addModerationAction(
+                        serverId, 'AUTO', targetId, ModActions.BAN, curTime, reason, duration,
+                    );
+                    if (duration) {
+                        const endTime = curTime + duration;
+                        ModUtils.addBanTimeout(
+                            duration, endTime, targetId, serverId, members!,
+                        );
+                    }
+                    break;
+                case ModActions.MUTE:
+                    break;
+                default:
+            }
         }
-
-        db.close();
     }
 
     /**
@@ -106,16 +118,14 @@ export class WarnCommand extends Command {
      * @param reason string
      * @param messageReply Function
      */
-    private sendEmbed(target: GuildMember,
-                      reason: string,
+    private sendEmbed(target: GuildMember, reason: string,
                       messageReply: Function): void {
         const messageEmbed = new MessageEmbed();
 
         messageEmbed
             .setTitle(`${target.user.tag} was warned.`)
-            .setThumbnail(target.user.displayAvatarURL())
-            .setColor(target.displayHexColor)
-            .addField('Reason', reason || 'No reason given.');
+            .setColor(WarnCommand.EMBED_DEFAULT_COLOUR)
+            .addField('Reason', reason || '-');
 
         messageReply(messageEmbed);
     }

@@ -80,9 +80,10 @@ initStatements.push(
 initStatements.push(
 `CREATE TABLE moderationWarnSettings (
     serverId TEXT REFERENCES servers(serverId) ON DELETE CASCADE,
-    numberOfWarns INTEGER NOT NULL,
-    lengthOfBan INTEGER NOT NULL,
-    PRIMARY KEY(serverId, numberOfWarns)
+    numWarns INTEGER NOT NULL,
+    duration INTEGER NOT NULL,
+    action TEXT NOT NULL,
+    PRIMARY KEY(serverId, numWarns)
 )`)
 
 exports.initStatements = initStatements;

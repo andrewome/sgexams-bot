@@ -1,6 +1,6 @@
 import { DatabaseConnection } from '../../DatabaseConnection';
-import { ModActions } from './ModActions';
-import { ModerationTimeout } from './ModerationTimeout';
+import { ModActions } from './classes/ModActions';
+import { ModerationTimeout } from './classes/ModerationTimeout';
 
 export class ModDbUtils {
     /**
@@ -104,5 +104,48 @@ export class ModDbUtils {
         const res = db.prepare('SELECT * FROM moderationTimeouts').all();
         db.close();
         return res;
+    }
+
+    /**
+     * Fetches the number of warns a user has gotten in a server.
+     *
+     * @param  {string} serverId
+     * @param  {string} userId
+     * @returns number
+     */
+    public static fetchNumberOfWarns(serverId: string, userId: string): number {
+        const db = DatabaseConnection.connect();
+        const res = db.prepare(
+            'SELECT COUNT(*) FROM moderationLogs WHERE serverId = ? AND userId = ?',
+        ).get(serverId, userId);
+        db.close();
+        if (res)
+            return res['COUNT(*)'];
+        return 0;
+    }
+
+    /**
+     * Checks if there is a warn action associated with the number of warnings.
+     * Returns null if none else return an object containing the type and the duration in seconds.
+     *
+     * @param  {string} serverId
+     * @param  {number} numWarns
+     * @returns { action: ModActions; duration: number; } | null
+     */
+    public static fetchWarnAction(serverId: string, numWarns: number): { action: ModActions;
+                                                                         duration: number;
+                                                                       } | null {
+        const db = DatabaseConnection.connect();
+        const res = db.prepare(
+            'SELECT action, duration FROM moderationWarnSettings WHERE serverId = ? AND numWarns = ?',
+        ).get(serverId, numWarns);
+        db.close();
+
+        if (res) {
+            const { action, duration } = res;
+            return { action, duration };
+        }
+
+        return null;
     }
 }

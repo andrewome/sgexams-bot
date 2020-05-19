@@ -11,7 +11,7 @@ import { MessageUpdateEventHandler } from './eventhandler/MessageUpdateEventHand
 import { StarboardCache } from './storage/StarboardCache';
 import { ModDbUtils } from './modules/moderation/ModDbUtils';
 import { ModUtils } from './modules/moderation/ModUtil';
-import { ModActions } from './modules/moderation/ModActions';
+import { ModActions } from './modules/moderation/classes/ModActions';
 
 export class App {
     private bot: Client;

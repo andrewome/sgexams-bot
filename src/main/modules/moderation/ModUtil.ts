@@ -1,6 +1,6 @@
 import { GuildMemberManager } from 'discord.js';
 import log from 'loglevel';
-import { ModActions } from './ModActions';
+import { ModActions } from './classes/ModActions';
 import { ModDbUtils } from './ModDbUtils';
 
 export class ModUtils {
