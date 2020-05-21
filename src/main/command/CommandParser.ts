@@ -31,6 +31,8 @@ import { PurgeCommand } from './moderationcommands/PurgeCommand';
 import { ModerationHelpCommand } from './helpcommands/ModerationHelpCommand';
 import { UnbanCommand } from './moderationcommands/UnbanCommand';
 import { UnwarnCommand } from './moderationcommands/UnwarnCommand';
+import { SetWarnPunishmentsCommand } from './moderationcommands/SetWarnPunishmentsCommand';
+import { GetWarnPunishmentsCommand } from './moderationcommands/GetWarnPunishmentsCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -175,6 +177,10 @@ export class CommandParser {
                 return new UnbanCommand(args);
             case CommandNamesAndDescriptions.UNWARN_COMMAND_NAME.toLowerCase():
                 return new UnwarnCommand(args);
+            case CommandNamesAndDescriptions.SET_WARN_PUNISHMENTS_COMMAND_NAME.toLowerCase():
+                return new SetWarnPunishmentsCommand(args);
+            case CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_NAME.toLowerCase():
+                return new GetWarnPunishmentsCommand();
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }

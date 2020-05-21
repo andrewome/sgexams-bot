@@ -133,7 +133,7 @@ export class ModDbUtils {
      * @returns { action: ModActions; duration: number; } | null
      */
     public static fetchWarnAction(serverId: string, numWarns: number): { action: ModActions;
-                                                                         duration: number;
+                                                                         duration: number|null;
                                                                        } | null {
         const db = DatabaseConnection.connect();
         const res = db.prepare(
@@ -164,5 +164,47 @@ export class ModDbUtils {
         ).run(serverId, caseId, 'WARN');
         db.close();
         return !!res.changes;
+    }
+
+    /**
+     * Adds an entry to the moderationWarnSettings table.
+     *
+     * @param  {string} serverId
+     * @param  {number} numWarns
+     * @param  {ModActions} type
+     * @param  {number} duration
+     * @returns void
+     */
+    public static addWarnSettings(serverId: string, numWarns: number,
+                                  type: ModActions, duration: number|null): void {
+        const db = DatabaseConnection.connect();
+        db.prepare(
+            'INSERT INTO moderationWarnSettings (serverId, numWarns, type, duration) VALUES (?, ?, ?, ?)',
+        ).run(serverId, numWarns, type, duration);
+        db.close();
+    }
+
+    /**
+     * Deletes all entries of a given server from the moderationWarnSettings table
+     *
+     * @param  {string} serverId
+     * @returns void
+     */
+    public static resetWarnSettings(serverId: string): void {
+        const db = DatabaseConnection.connect();
+        db.prepare(
+            'DELETE FROM moderationWarnSettings WHERE serverId = ?',
+        ).run(serverId);
+        db.close();
+    }
+
+    public static getWarnSettings(serverId: string): { numWarns: number; type: ModActions;
+                                                       duration: number|null; }[] {
+        const db = DatabaseConnection.connect();
+        const res = db.prepare(
+            'SELECT numWarns, type, duration FROM moderationWarnSettings WHERE serverId = ?',
+        ).all(serverId);
+        db.close();
+        return res;
     }
 }

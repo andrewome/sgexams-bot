@@ -13,7 +13,7 @@ export class ModUtils {
     public static readonly timers: Map<number, NodeJS.Timer> = new Map();
 
     /**
-     * Parses a string in the form X{m|h|d} where X is an integer.
+     * Parses a string in the form X{m|h|d} where X is an integer greater than 0.
      * Returns null if string is malformed, else number of seconds
      *
      * @param  {string}
@@ -23,12 +23,17 @@ export class ModUtils {
         const { MINUTES_IN_SECONDS, HOURS_IN_SECONDS, DAYS_IN_SECONDS } = ModUtils;
         const m: Map<string, number>
             = new Map([['m', MINUTES_IN_SECONDS], ['h', HOURS_IN_SECONDS], ['d', DAYS_IN_SECONDS]]);
-        str = str.toLowerCase();
 
+        if (!str)
+            return null;
+
+        str = str.toLowerCase();
         const match = /(\d+)(m|h|d)/g.exec(str);
         if (match) {
             // Get index 1 and 2 of the match arr
             const { 1: duration, 2: type } = match;
+            if (Number.parseInt(duration, 10) < 1)
+                return null;
             return Number.parseInt(duration, 10) * m.get(type)!;
         }
 

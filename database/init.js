@@ -81,8 +81,8 @@ initStatements.push(
 `CREATE TABLE moderationWarnSettings (
     serverId TEXT REFERENCES servers(serverId) ON DELETE CASCADE,
     numWarns INTEGER NOT NULL,
-    duration INTEGER NOT NULL,
-    action TEXT NOT NULL,
+    type TEXT NOT NULL,
+    duration INTEGER,
     PRIMARY KEY(serverId, numWarns)
 )`)
 

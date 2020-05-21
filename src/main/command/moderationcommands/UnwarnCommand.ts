@@ -1,8 +1,6 @@
 import {
     Permissions, MessageEmbed,
 } from 'discord.js';
-import { SqliteError } from 'better-sqlite3';
-import log from 'loglevel';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -30,8 +28,8 @@ export class UnwarnCommand extends Command {
     }
 
     /**
-     * This method executes the warn command.
-     * It warns the user and update action to database.
+     * This method executes the unwarn command.
+     * It unwarns the user by supplying a caseId. It deletes the entry from the modlogs entirely.
      *
      * @param { CommandArgs } commandArgs
      * @returns CommandResult

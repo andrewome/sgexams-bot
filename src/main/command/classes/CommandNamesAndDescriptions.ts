@@ -229,6 +229,14 @@ export abstract class CommandNamesAndDescriptions {
 
     public static readonly UNWARN_COMMAND_DESCRIPTION = 'Unwarns a User.';
 
+    public static readonly SET_WARN_PUNISHMENTS_COMMAND_NAME = 'SetWarnPunishments';
+
+    public static readonly SET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION = 'Sets warn threshold punishments';
+
+    public static readonly GET_WARN_PUNISHMENTS_COMMAND_NAME = 'GetWarnPunishments';
+
+    public static readonly GET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION = 'Gets warn threshold punishments';
+
     public static readonly MODERATION_COMMANDS = [
         CommandNamesAndDescriptions.WARN_COMMAND_NAME,
         CommandNamesAndDescriptions.KICK_COMMAND_NAME,
@@ -236,6 +244,8 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.PURGE_COMMAND_NAME,
         CommandNamesAndDescriptions.UNBAN_COMMAND_NAME,
         CommandNamesAndDescriptions.UNWARN_COMMAND_NAME,
+        CommandNamesAndDescriptions.SET_WARN_PUNISHMENTS_COMMAND_NAME,
+        CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_NAME,
     ]
 
     public static readonly MODERATION_DESCRIPTIONS = [
@@ -245,6 +255,8 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.PURGE_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.UNBAN_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.UNWARN_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.SET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION,
     ]
 
     public static readonly MODERATION_COMMANDS_LOWERCASE
