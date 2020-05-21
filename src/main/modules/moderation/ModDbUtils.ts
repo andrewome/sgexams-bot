@@ -148,4 +148,21 @@ export class ModDbUtils {
 
         return null;
     }
+
+    /**
+     * Deletes a warning from the moderationLogs table.
+     * Returns false if nothing was deleted (the warn did not exist)
+     *
+     * @param  {string} serverId
+     * @param  {number} caseId
+     * @returns boolean
+     */
+    public static deleteWarn(serverId: string, caseId: number): boolean {
+        const db = DatabaseConnection.connect();
+        const res = db.prepare(
+            'DELETE FROM moderationLogs WHERE serverId = ? AND caseId = ? AND type = ?',
+        ).run(serverId, caseId, 'WARN');
+        db.close();
+        return !!res.changes;
+    }
 }

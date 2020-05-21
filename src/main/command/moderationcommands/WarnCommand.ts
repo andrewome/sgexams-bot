@@ -14,7 +14,7 @@ export class WarnCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private commandArgs: string[];
+    private args: string[];
 
     private permissions = new Permissions(['BAN_MEMBERS']);
 
@@ -24,7 +24,7 @@ export class WarnCommand extends Command {
 
     public constructor(args: string[]) {
         super();
-        this.commandArgs = args;
+        this.args = args;
     }
 
     /**
@@ -45,8 +45,8 @@ export class WarnCommand extends Command {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        const targetId = this.commandArgs[0].replace(/[<@!>]/g, '');
-        const reason = this.commandArgs.slice(1).join(' ');
+        const targetId = this.args[0].replace(/[<@!>]/g, '');
+        const reason = this.args.slice(1).join(' ');
 
         // Warn
         try {
@@ -54,7 +54,7 @@ export class WarnCommand extends Command {
             const target = await members!.fetch(targetId);
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                            this.type, curTime, reason);
-            this.sendEmbed(target, reason, commandArgs.messageReply);
+            this.sendEmbed(target, reason, messageReply);
         } catch (err) {
             log.warn(err);
             if (err instanceof SqliteError)

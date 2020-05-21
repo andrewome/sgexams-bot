@@ -225,12 +225,17 @@ export abstract class CommandNamesAndDescriptions {
 
     public static readonly UNBAN_COMMAND_DESCRIPTION = 'Unbans a User.';
 
+    public static readonly UNWARN_COMMAND_NAME = 'Unwarn'
+
+    public static readonly UNWARN_COMMAND_DESCRIPTION = 'Unwarns a User.';
+
     public static readonly MODERATION_COMMANDS = [
         CommandNamesAndDescriptions.WARN_COMMAND_NAME,
         CommandNamesAndDescriptions.KICK_COMMAND_NAME,
         CommandNamesAndDescriptions.BAN_COMMAND_NAME,
         CommandNamesAndDescriptions.PURGE_COMMAND_NAME,
         CommandNamesAndDescriptions.UNBAN_COMMAND_NAME,
+        CommandNamesAndDescriptions.UNWARN_COMMAND_NAME,
     ]
 
     public static readonly MODERATION_DESCRIPTIONS = [
@@ -239,6 +244,7 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.BAN_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.PURGE_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.UNBAN_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.UNWARN_COMMAND_DESCRIPTION,
     ]
 
     public static readonly MODERATION_COMMANDS_LOWERCASE
