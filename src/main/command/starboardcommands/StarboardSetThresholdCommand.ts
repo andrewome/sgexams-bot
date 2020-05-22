@@ -72,13 +72,12 @@ export class StarboardSetThresholdCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateResetEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(StarboardSetThresholdCommand.EMBED_TITLE,
-                       StarboardSetThresholdCommand.THRESHOLD_RESETTED);
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardSetThresholdCommand.EMBED_TITLE,
+            StarboardSetThresholdCommand.THRESHOLD_RESETTED,
+            StarboardSetThresholdCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 
     /**
@@ -86,13 +85,12 @@ export class StarboardSetThresholdCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateInvalidEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(StarboardSetThresholdCommand.EMBED_TITLE,
-                       StarboardSetThresholdCommand.NOT_AN_INTEGER);
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardSetThresholdCommand.EMBED_TITLE,
+            StarboardSetThresholdCommand.NOT_AN_INTEGER,
+            StarboardSetThresholdCommand.EMBED_ERROR_COLOUR,
+        );
     }
 
     /**
@@ -101,12 +99,11 @@ export class StarboardSetThresholdCommand extends Command {
      * @param  {number} threshold
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateValidEmbed(threshold: number): MessageEmbed {
-        const embed = new MessageEmbed();
-        const msg = `Starboard threshold set to ${threshold}.`;
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(StarboardSetThresholdCommand.EMBED_TITLE, msg);
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardSetThresholdCommand.EMBED_TITLE,
+            `Starboard threshold set to ${threshold}.`,
+            StarboardSetThresholdCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 }

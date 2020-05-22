@@ -40,12 +40,12 @@ export class StarboardRemoveEmojiCommand extends Command {
         }
 
         // Check if there's arguments
-        const embed = new MessageEmbed();
+        let embed: MessageEmbed;
         if (this.args.length === 0) {
-            embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(
+            embed = this.generateGenericEmbed(
                 StarboardRemoveEmojiCommand.ERROR_EMBED_TITLE,
                 StarboardRemoveEmojiCommand.NO_ARGUMENTS,
+                StarboardRemoveEmojiCommand.EMBED_ERROR_COLOUR,
             );
             messageReply(embed);
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
@@ -60,17 +60,20 @@ export class StarboardRemoveEmojiCommand extends Command {
         );
 
         if (successfullyRemoved) {
-            embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(StarboardRemoveEmojiCommand.EMBED_TITLE, `Removed Emoji: <:${emoji!.name}:${emoji!.id}>`);
+            embed = this.generateGenericEmbed(
+                StarboardRemoveEmojiCommand.EMBED_TITLE,
+                `Removed Emoji: <:${emoji!.name}:${emoji!.id}>`,
+                StarboardRemoveEmojiCommand.EMBED_DEFAULT_COLOUR,
+            );
             // Send output
             messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(
+        embed = this.generateGenericEmbed(
             StarboardRemoveEmojiCommand.EMBED_TITLE,
             StarboardRemoveEmojiCommand.MAYBE_EMOJI_NOT_INSIDE,
+            StarboardRemoveEmojiCommand.EMBED_DEFAULT_COLOUR,
         );
         // Send output
         messageReply(embed);

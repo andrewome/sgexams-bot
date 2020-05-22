@@ -89,12 +89,11 @@ export class StarboardSetChannelCommand extends Command {
      */
     // eslint-disable-next-line class-methods-use-this
     private generateResetEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(StarboardSetChannelCommand.EMBED_TITLE,
-                       StarboardSetChannelCommand.CHANNEL_RESETTED);
-
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardSetChannelCommand.EMBED_TITLE,
+            StarboardSetChannelCommand.CHANNEL_RESETTED,
+            StarboardSetChannelCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 
     /**
@@ -104,12 +103,11 @@ export class StarboardSetChannelCommand extends Command {
      */
     // eslint-disable-next-line class-methods-use-this
     private generateNotFoundEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(StarboardSetChannelCommand.EMBED_TITLE,
-                       StarboardSetChannelCommand.CHANNEL_NOT_FOUND);
-
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardSetChannelCommand.EMBED_TITLE,
+            StarboardSetChannelCommand.CHANNEL_NOT_FOUND,
+            StarboardSetChannelCommand.EMBED_ERROR_COLOUR,
+        );
     }
 
     /**
@@ -119,12 +117,11 @@ export class StarboardSetChannelCommand extends Command {
      */
     // eslint-disable-next-line class-methods-use-this
     private generateNotTextChannelEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(StarboardSetChannelCommand.EMBED_TITLE,
-                       StarboardSetChannelCommand.NOT_TEXT_CHANNEL);
-
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardSetChannelCommand.EMBED_TITLE,
+            StarboardSetChannelCommand.NOT_TEXT_CHANNEL,
+            StarboardSetChannelCommand.EMBED_ERROR_COLOUR,
+        );
     }
 
     /**
@@ -135,11 +132,10 @@ export class StarboardSetChannelCommand extends Command {
      */
     // eslint-disable-next-line class-methods-use-this
     private generateValidEmbed(channelId: string): MessageEmbed {
-        const embed = new MessageEmbed();
-        const msg = `Starboard Channel set to <#${channelId}>.`;
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(StarboardSetChannelCommand.EMBED_TITLE, msg);
-
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardSetChannelCommand.EMBED_TITLE,
+            `Starboard Channel set to <#${channelId}>.`,
+            StarboardSetChannelCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 }

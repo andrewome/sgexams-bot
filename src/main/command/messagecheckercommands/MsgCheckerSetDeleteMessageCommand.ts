@@ -63,10 +63,7 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
             bool = false;
         }
 
-        server.messageCheckerSettings.setDeleteMessage({
-            serverId: server.serverId,
-            bool: bool!,
-        });
+        server.messageCheckerSettings.setDeleteMessage(server.serverId, bool!);
         messageReply(this.generateValidEmbed(bool!));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -77,14 +74,12 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
      * @param  {boolean} bool
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateValidEmbed(bool: boolean): MessageEmbed {
-        const embed = new MessageEmbed();
-        const msg = `Delete Message set to: **${bool ? 'TRUE' : 'FALSE'}**`;
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(MsgCheckerSetDeleteMessageCommand.EMBED_TITLE, msg);
-
-        return embed;
+        return this.generateGenericEmbed(
+            MsgCheckerSetDeleteMessageCommand.EMBED_TITLE,
+            `Delete Message set to: **${bool ? 'TRUE' : 'FALSE'}**`,
+            MsgCheckerSetDeleteMessageCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 
     /**
@@ -92,14 +87,12 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateNoArgsEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(MsgCheckerSetDeleteMessageCommand.EMBED_TITLE,
-                       MsgCheckerSetDeleteMessageCommand.NO_ARGUMENTS);
-
-        return embed;
+        return this.generateGenericEmbed(
+            MsgCheckerSetDeleteMessageCommand.EMBED_TITLE,
+            MsgCheckerSetDeleteMessageCommand.NO_ARGUMENTS,
+            MsgCheckerSetDeleteMessageCommand.EMBED_ERROR_COLOUR,
+        );
     }
 
     /**
@@ -107,13 +100,11 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateWrongFormatEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(MsgCheckerSetDeleteMessageCommand.EMBED_TITLE,
-                       MsgCheckerSetDeleteMessageCommand.INCORRECT_FORMAT);
-
-        return embed;
+        return this.generateGenericEmbed(
+            MsgCheckerSetDeleteMessageCommand.EMBED_TITLE,
+            MsgCheckerSetDeleteMessageCommand.INCORRECT_FORMAT,
+            MsgCheckerSetDeleteMessageCommand.EMBED_ERROR_COLOUR,
+        );
     }
 }

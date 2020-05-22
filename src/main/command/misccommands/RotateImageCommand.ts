@@ -19,10 +19,16 @@ export class RotateImageCommand extends Command {
 
     private CLOCKWISE = '↩';
 
-    private ERROR_MESSAGE = 'Not a valid message ID.\n' +
-                            'Please check if the message\n' +
-                            '1) contains an image\n2) is in this channel.\n\n' +
-                            '**Usage:** @bot rotate <message ID>\n'
+    private EMBED_TITLE = 'Rotate Command'
+
+    private ERROR_MESSAGE = this.generateGenericEmbed(
+        this.EMBED_TITLE,
+        'Not a valid message ID.\n' +
+        'Please check if the message\n' +
+        '1) contains an image\n2) is in this channel.\n\n' +
+        '**Usage:** @bot rotate <message ID>\n',
+        RotateImageCommand.EMBED_ERROR_COLOUR,
+    )
 
     public constructor(args: string[]) {
         super();

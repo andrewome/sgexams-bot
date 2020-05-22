@@ -45,13 +45,12 @@ export class StarboardGetThresholdCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateNotSetEmbed(): MessageEmbed {
-        const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(StarboardGetThresholdCommand.EMBED_TITLE,
-                       StarboardGetThresholdCommand.THRESHOLD_NOT_SET);
-
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardGetThresholdCommand.EMBED_TITLE,
+            StarboardGetThresholdCommand.THRESHOLD_NOT_SET,
+            StarboardGetThresholdCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 
     /**
@@ -60,12 +59,11 @@ export class StarboardGetThresholdCommand extends Command {
      * @param  {number} threshold
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateValidEmbed(threshold: number): MessageEmbed {
-        const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
-        const msg = `The emoji threshold is currently ${threshold}.`;
-        embed.addField(StarboardGetThresholdCommand.EMBED_TITLE, msg);
-
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardGetThresholdCommand.EMBED_TITLE,
+            `The emoji threshold is currently ${threshold}.`,
+            StarboardGetThresholdCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 }

@@ -72,12 +72,11 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
      */
     // eslint-disable-next-line class-methods-use-this
     private generateResetEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(MsgCheckerSetResponseMessageCommand.EMBED_TITLE,
-                       MsgCheckerSetResponseMessageCommand.MESSAGE_RESETTED);
-
-        return embed;
+        return this.generateGenericEmbed(
+            MsgCheckerSetResponseMessageCommand.EMBED_TITLE,
+            MsgCheckerSetResponseMessageCommand.MESSAGE_RESETTED,
+            MsgCheckerSetResponseMessageCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 
     /**
@@ -88,11 +87,10 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
      */
     // eslint-disable-next-line class-methods-use-this
     private generateValidEmbed(msg: string): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        const responseMessage = `Response Message set to ${msg}`;
-        embed.addField(MsgCheckerSetResponseMessageCommand.EMBED_TITLE, responseMessage);
-
-        return embed;
+        return this.generateGenericEmbed(
+            MsgCheckerSetResponseMessageCommand.EMBED_TITLE,
+            `Response Message set to ${msg}`,
+            MsgCheckerSetResponseMessageCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 }

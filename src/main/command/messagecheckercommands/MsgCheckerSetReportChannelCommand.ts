@@ -41,6 +41,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         const {
             server, memberPerms, messageReply, channels,
         } = commandArgs;
+
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
             this.sendNoPermissionsMessage(messageReply);
@@ -91,16 +92,12 @@ export class MsgCheckerSetReportChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateResetEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(
+        return this.generateGenericEmbed(
             MsgCheckerSetReportChannelCommand.EMBED_TITLE,
             MsgCheckerSetReportChannelCommand.CHANNEL_RESETTED,
+            MsgCheckerSetReportChannelCommand.EMBED_DEFAULT_COLOUR,
         );
-
-        return embed;
     }
 
 
@@ -109,14 +106,12 @@ export class MsgCheckerSetReportChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateInvalidEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(MsgCheckerSetReportChannelCommand.EMBED_TITLE,
-                       MsgCheckerSetReportChannelCommand.CHANNEL_NOT_FOUND);
-
-        return embed;
+        return this.generateGenericEmbed(
+            MsgCheckerSetReportChannelCommand.EMBED_TITLE,
+            MsgCheckerSetReportChannelCommand.CHANNEL_NOT_FOUND,
+            MsgCheckerSetReportChannelCommand.EMBED_ERROR_COLOUR,
+        );
     }
 
 
@@ -125,14 +120,12 @@ export class MsgCheckerSetReportChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateNotTextChannelEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(MsgCheckerSetReportChannelCommand.EMBED_TITLE,
-                       MsgCheckerSetReportChannelCommand.NOT_TEXT_CHANNEL);
-
-        return embed;
+        return this.generateGenericEmbed(
+            MsgCheckerSetReportChannelCommand.EMBED_TITLE,
+            MsgCheckerSetReportChannelCommand.NOT_TEXT_CHANNEL,
+            MsgCheckerSetReportChannelCommand.EMBED_ERROR_COLOUR,
+        );
     }
 
     /**
@@ -141,13 +134,11 @@ export class MsgCheckerSetReportChannelCommand extends Command {
      * @param  {string} channelId
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateValidEmbed(channelId: string): MessageEmbed {
-        const embed = new MessageEmbed();
-        const msg = `Reporting Channel set to <#${channelId}>.`;
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(MsgCheckerSetReportChannelCommand.EMBED_TITLE, msg);
-
-        return embed;
+        return this.generateGenericEmbed(
+            MsgCheckerSetReportChannelCommand.EMBED_TITLE,
+            `Reporting Channel set to <#${channelId}>.`,
+            MsgCheckerSetReportChannelCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 }

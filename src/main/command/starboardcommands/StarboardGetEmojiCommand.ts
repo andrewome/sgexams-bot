@@ -48,13 +48,12 @@ export class StarboardGetEmojiCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateNotSetEmbed(): MessageEmbed {
-        const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(StarboardGetEmojiCommand.EMBED_TITLE,
-                       StarboardGetEmojiCommand.EMOJI_NOT_SET);
-
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardGetEmojiCommand.EMBED_TITLE,
+            StarboardGetEmojiCommand.EMOJI_NOT_SET,
+            StarboardGetEmojiCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 
     /**
@@ -62,17 +61,17 @@ export class StarboardGetEmojiCommand extends Command {
      *
      * @param  {SimplifiedEmoji} emoji
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateValidEmbed(emojis: SimplifiedEmoji[]): MessageEmbed {
-        const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
         let msg = '';
         for (let i = 0; i < emojis.length; i++) {
             msg += `<:${emojis[i].name}:${emojis[i].id}>`;
             msg += (i === emojis.length - 1) ? '.' : ', ';
         }
         msg = `Starboard emoji(s): ${msg}`;
-        embed.addField(StarboardGetEmojiCommand.EMBED_TITLE, msg);
-
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardGetEmojiCommand.EMBED_TITLE,
+            msg,
+            StarboardGetEmojiCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 }

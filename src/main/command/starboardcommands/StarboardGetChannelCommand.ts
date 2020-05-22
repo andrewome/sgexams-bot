@@ -47,14 +47,12 @@ export class StarboardGetChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateNotSetEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(StarboardGetChannelCommand.EMBED_TITLE,
-                       StarboardGetChannelCommand.CHANNEL_NOT_SET);
-
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardGetChannelCommand.EMBED_TITLE,
+            StarboardGetChannelCommand.CHANNEL_NOT_SET,
+            StarboardGetChannelCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 
     /**
@@ -63,13 +61,11 @@ export class StarboardGetChannelCommand extends Command {
      * @param  {string} channelId
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateValidEmbed(channelId: string): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        const msg = `Starboard Channel is currently set to <#${channelId}>.`;
-        embed.addField(StarboardGetChannelCommand.EMBED_TITLE, msg);
-
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardGetChannelCommand.EMBED_TITLE,
+            `Starboard Channel is currently set to <#${channelId}>.`,
+            StarboardGetChannelCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 }

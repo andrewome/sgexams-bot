@@ -31,13 +31,20 @@ export class MsgCheckerGetReportChannelCommand extends Command {
 
         // Generate embed
         const channelId = server.messageCheckerSettings.getReportingChannelId();
-        const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
+        let embed: MessageEmbed;
         if (channelId === null) {
-            embed.addField(MsgCheckerGetReportChannelCommand.EMBED_TITLE,
-                           MsgCheckerGetReportChannelCommand.CHANNEL_NOT_SET);
+            embed = this.generateGenericEmbed(
+                MsgCheckerGetReportChannelCommand.EMBED_TITLE,
+                MsgCheckerGetReportChannelCommand.CHANNEL_NOT_SET,
+                MsgCheckerGetReportChannelCommand.EMBED_DEFAULT_COLOUR,
+            );
         } else {
             const msg = `Reporting Channel is currently set to <#${channelId}>.`;
-            embed.addField(MsgCheckerGetReportChannelCommand.EMBED_TITLE, msg);
+            embed = this.generateGenericEmbed(
+                MsgCheckerGetReportChannelCommand.EMBED_TITLE,
+                msg,
+                MsgCheckerGetReportChannelCommand.EMBED_DEFAULT_COLOUR,
+            );
         }
 
         // Execute

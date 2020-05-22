@@ -1,10 +1,9 @@
-import { MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { CommandArgs } from '../classes/CommandArgs';
 import { CommandResult } from '../classes/CommandResult';
 
 export class UptimeCheckCommand extends Command {
-    public static EMBED_TITLE = 'Uptime Status';
+    public static EMBED_TITLE = 'Uptime';
 
     /**
      * This method returns the uptime of the bot in days, hours,
@@ -44,11 +43,11 @@ export class UptimeCheckCommand extends Command {
         const upTimeMinutesStr = `${upTimeInMinutes} minute${this.addSIfPlural(upTimeInMinutes)}`;
         const upTimeSecondsStr = `${upTimeInSeconds} second${this.addSIfPlural(upTimeInSeconds)}`;
 
-        messageReply(
-            new MessageEmbed()
-                .setColor(Command.EMBED_DEFAULT_COLOUR)
-                .addField(UptimeCheckCommand.EMBED_TITLE, `${upTimeDaysStr}, ${upTimeHoursStr}, ${upTimeMinutesStr} and ${upTimeSecondsStr}`),
-        );
+        messageReply(this.generateGenericEmbed(
+            UptimeCheckCommand.EMBED_TITLE,
+            `${upTimeDaysStr}, ${upTimeHoursStr}, ${upTimeMinutesStr} and ${upTimeSecondsStr}`,
+            UptimeCheckCommand.EMBED_DEFAULT_COLOUR,
+        ));
 
         /* Check messages true */
         return new CommandResult(true);
