@@ -237,6 +237,16 @@ export abstract class CommandNamesAndDescriptions {
 
     public static readonly GET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION = 'Gets warn threshold punishments';
 
+    public static readonly SET_MODLOG_CHANNEL_COMMAND_NAME = 'SetModLogChannel';
+
+    public static readonly SET_MODLOG_CHANNEL_COMMAND_DESCRIPTION
+        = 'Sets the ModLog channel where the bot will send ModLog messages.';
+
+    public static readonly GET_MODLOG_CHANNEL_COMMAND_NAME = 'GetModLogChannel';
+
+    public static readonly GET_MODLOG_CHANNEL_COMMAND_DESCRIPTION
+        = 'Displays the currently set ModLog channel';
+
     public static readonly MODERATION_COMMANDS = [
         CommandNamesAndDescriptions.WARN_COMMAND_NAME,
         CommandNamesAndDescriptions.KICK_COMMAND_NAME,
@@ -246,6 +256,8 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.UNWARN_COMMAND_NAME,
         CommandNamesAndDescriptions.SET_WARN_PUNISHMENTS_COMMAND_NAME,
         CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_NAME,
+        CommandNamesAndDescriptions.SET_MODLOG_CHANNEL_COMMAND_NAME,
+        CommandNamesAndDescriptions.GET_MODLOG_CHANNEL_COMMAND_NAME,
     ]
 
     public static readonly MODERATION_DESCRIPTIONS = [
@@ -257,6 +269,8 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.UNWARN_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.SET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.SET_MODLOG_CHANNEL_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.GET_MODLOG_CHANNEL_COMMAND_DESCRIPTION,
     ]
 
     public static readonly MODERATION_COMMANDS_LOWERCASE

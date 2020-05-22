@@ -73,7 +73,8 @@ initStatements.push(
 initStatements.push(
 `CREATE TABLE moderationSettings (
     serverId TEXT REFERENCES servers(serverId) ON DELETE CASCADE,
-    reportingChannelId TEXT,
+    channelId TEXT,
+    muteRoleId TEXT,
     PRIMARY KEY(serverId)
 )`)
 

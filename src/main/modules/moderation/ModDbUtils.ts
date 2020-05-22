@@ -198,6 +198,12 @@ export class ModDbUtils {
         db.close();
     }
 
+    /**
+     * Returns the rows of the moderationWarnSettings table of a serverId.
+     *
+     * @param  {string} serverId
+     * @returns { numWarns: number; type: ModActions; duration: number|null; }[]
+     */
     public static getWarnSettings(serverId: string): { numWarns: number; type: ModActions;
                                                        duration: number|null; }[] {
         const db = DatabaseConnection.connect();
@@ -206,5 +212,34 @@ export class ModDbUtils {
         ).all(serverId);
         db.close();
         return res;
+    }
+
+    /**
+     * Sets the reporting channel of a server on the moderationSettings table.
+     *
+     * @param  {string} serverId
+     * @param  {string|null} channelId
+     * @returns void
+     */
+    public static setModLogChannel(serverId: string, channelId: string|null): void {
+        const db = DatabaseConnection.connect();
+        db.prepare(
+            'UPDATE moderationSettings SET channelId = ? WHERE serverId = ?',
+        ).run(channelId, serverId);
+        db.close();
+    }
+
+    /**
+     * Gets the reporting channel of the server from the moderationSettings table.
+     * @param  {string} serverId
+     * @returns string
+     */
+    public static getModLogChannel(serverId: string): string|null {
+        const db = DatabaseConnection.connect();
+        const res = db.prepare(
+            'SELECT channelId FROM moderationSettings WHERE serverId = ?',
+        ).get(serverId);
+        db.close();
+        return res.channelId;
     }
 }
