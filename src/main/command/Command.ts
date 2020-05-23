@@ -59,10 +59,11 @@ export abstract class Command {
      * @returns void
      */
     protected sendNoPermissionsMessage(messageReply: Function): void {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_ERROR_COLOUR)
-            .addField(Command.ERROR_EMBED_TITLE, Command.NO_PERMISSIONS_MSG);
-
+        const embed = this.generateGenericEmbed(
+            Command.ERROR_EMBED_TITLE,
+            Command.NO_PERMISSIONS_MSG,
+            Command.EMBED_ERROR_COLOUR,
+        );
         messageReply(embed);
     }
 

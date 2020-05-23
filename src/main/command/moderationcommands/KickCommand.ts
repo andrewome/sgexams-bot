@@ -1,8 +1,6 @@
 import {
     GuildMember, MessageEmbed, Permissions, DiscordAPIError,
 } from 'discord.js';
-import log from 'loglevel';
-import { SqliteError } from 'better-sqlite3';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -20,7 +18,9 @@ export class KickCommand extends Command {
 
     private type = ModActions.KICK;
 
-    private COMMAND_USAGE = '**Usage:** @bot kick userId [reason]';
+    public static COMMAND_USAGE = '**Usage:** @bot kick userId [reason]';
+
+    public static EMBED_TITLE = 'Kick Member';
 
     public constructor(args: string[]) {
         super();
@@ -47,7 +47,7 @@ export class KickCommand extends Command {
 
         // Check number of args
         if (this.args.length < 1) {
-            messageReply(`${KickCommand.INSUFFICIENT_ARGUMENTS}\n${this.COMMAND_USAGE}`);
+            messageReply(this.generateInsufficientArgumentsEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -59,34 +59,39 @@ export class KickCommand extends Command {
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                            this.type, ModUtils.getUnixTime(), reason);
             target.kick();
-            this.sendEmbed(target, reason, commandArgs.messageReply);
+            messageReply(this.generateValidEmbed(target, reason));
         } catch (err) {
-            log.warn(err);
-            if (err instanceof SqliteError)
-                messageReply(KickCommand.INTERNAL_ERROR_OCCURED);
-            else if (err instanceof DiscordAPIError)
-                messageReply(`${KickCommand.USERID_ERROR}\n${this.COMMAND_USAGE}`);
+            if (err instanceof DiscordAPIError)
+                messageReply(this.generateUserIdErrorEmbed());
+            else
+                throw err;
         }
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
-    /**
-     * This method sends a messageEmbed of the kick.
-     *
-     * @param target GuildMember
-     * @param reason string
-     * @param messageReply Function
-     */
-    private sendEmbed(target: GuildMember, reason: string,
-                      messageReply: Function): void {
-        const messageEmbed = new MessageEmbed();
+    private generateInsufficientArgumentsEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            KickCommand.EMBED_TITLE,
+            `${KickCommand.INSUFFICIENT_ARGUMENTS}\n${KickCommand.COMMAND_USAGE}`,
+            KickCommand.EMBED_DEFAULT_COLOUR,
+        );
+    }
 
-        messageEmbed
-            .setTitle(`${target.user.tag} was kicked.`)
-            .setColor(KickCommand.EMBED_DEFAULT_COLOUR)
-            .addField('Reason', reason || '-');
+    private generateUserIdErrorEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            KickCommand.EMBED_TITLE,
+            `${KickCommand.USERID_ERROR}\n${KickCommand.COMMAND_USAGE}`,
+            KickCommand.EMBED_ERROR_COLOUR,
+        );
+    }
 
-        messageReply(messageEmbed);
+    private generateValidEmbed(target: GuildMember, reason: string): MessageEmbed {
+        const embed = this.generateGenericEmbed(
+            KickCommand.EMBED_TITLE,
+            `${target.user.tag} was kicked.`,
+            KickCommand.EMBED_DEFAULT_COLOUR,
+        );
+        return embed.addField('Reason', reason || '-');
     }
 }

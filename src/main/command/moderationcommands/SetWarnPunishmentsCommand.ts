@@ -1,5 +1,5 @@
 import {
-    Permissions,
+    Permissions, MessageEmbed,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -16,9 +16,13 @@ export class SetWarnPunishmentsCommand extends Command {
 
     private permissions = new Permissions(['BAN_MEMBERS']);
 
-    private COMMAND_USAGE = '**Usage:** @bot SetWarnPunishments [numWarns-{MUTE|BAN}[-X{m|h|d}] ...]';
+    public static COMMAND_USAGE = '**Usage:** @bot SetWarnPunishments [numWarns-{MUTE|BAN}[-X{m|h|d}] ...]';
 
-    private INVALID_USAGE = 'Error parsing the input. Try again.';
+    public static INVALID_USAGE = 'Error parsing the input. Try again.';
+
+    public static SETTINGS_RESETTED = 'Warn punishments resetted because there were no arguments.';
+
+    public static EMBED_TITLE = 'Warn Punishments';
 
     public constructor(args: string[]) {
         super();
@@ -45,7 +49,7 @@ export class SetWarnPunishmentsCommand extends Command {
 
         // Check number of args, 0 args means reset.
         if (this.args.length === 0) {
-            messageReply('Warn settings resetted.');
+            messageReply(this.generateResetEmbed());
             ModDbUtils.resetWarnSettings(server.serverId);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
@@ -53,34 +57,15 @@ export class SetWarnPunishmentsCommand extends Command {
         // Parse args
         const settings = this.parseArgs(this.args);
         if (!settings) {
-            messageReply(`${this.INVALID_USAGE}\n${this.COMMAND_USAGE}`);
+            messageReply(this.generateInvalidUsageEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
         ModDbUtils.resetWarnSettings(server.serverId);
         this.addToDatabase(server.serverId, settings);
-        this.generateReply(settings, messageReply);
+        messageReply(this.generateValidEmbed(settings));
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
-    }
-
-    /**
-     * This function sends the confirmation message
-     *
-     * @param  {[number, ModActions, number|null][]} settings
-     * @param  {Function} messageReply
-     * @returns void
-     */
-    private generateReply(settings: [number, ModActions, number|null][],
-                          messageReply: Function): void {
-        let out = '';
-        for (const setting of settings) {
-            const [numWarns, action, duration] = setting;
-            out += `${numWarns} warns - ${action} `;
-            out += (duration ? `${duration} seconds\n` : 'forever\n');
-        }
-
-        messageReply(out);
     }
 
     /**
@@ -146,5 +131,36 @@ export class SetWarnPunishmentsCommand extends Command {
             out.push([numWarns, action, duration]);
         }
         return out;
+    }
+
+    private generateValidEmbed(settings: [number, ModActions, number|null][]): MessageEmbed {
+        let out = '';
+        for (const setting of settings) {
+            const [numWarns, action, duration] = setting;
+            out += `${numWarns} warns - ${action} `;
+            out += (duration ? `${duration} seconds\n` : 'forever\n');
+        }
+
+        return this.generateGenericEmbed(
+            SetWarnPunishmentsCommand.EMBED_TITLE,
+            out,
+            SetWarnPunishmentsCommand.EMBED_DEFAULT_COLOUR,
+        );
+    }
+
+    private generateResetEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            SetWarnPunishmentsCommand.EMBED_TITLE,
+            `${SetWarnPunishmentsCommand.SETTINGS_RESETTED}\n${SetWarnPunishmentsCommand.COMMAND_USAGE}`,
+            SetWarnPunishmentsCommand.EMBED_DEFAULT_COLOUR,
+        );
+    }
+
+    private generateInvalidUsageEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            SetWarnPunishmentsCommand.EMBED_TITLE,
+            `${SetWarnPunishmentsCommand.INVALID_USAGE}\n${SetWarnPunishmentsCommand.COMMAND_USAGE}`,
+            SetWarnPunishmentsCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 }

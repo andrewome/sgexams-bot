@@ -1,5 +1,5 @@
 import {
-    Permissions,
+    Permissions, MessageEmbed,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -8,12 +8,14 @@ import { ModActions } from '../../modules/moderation/classes/ModActions';
 import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 
 export class GetWarnPunishmentsCommand extends Command {
+    public static EMBED_TITLE = 'Warn Punishments';
+
+    public static NO_SETTINGS_FOUND = 'Warn punishments not set on this server';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
     private permissions = new Permissions(['BAN_MEMBERS']);
-
-    private NO_SETTINGS_FOUND = 'Warn punishments not set on this server';
 
     /**
      * This function gets the warn-actions from the database
@@ -34,12 +36,12 @@ export class GetWarnPunishmentsCommand extends Command {
 
         const rows = ModDbUtils.getWarnSettings(server.serverId);
 
-        if (!rows) {
-            messageReply(this.NO_SETTINGS_FOUND);
+        if (!rows.length) {
+            messageReply(this.generateNoSettingsFoundEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        this.generateReply(rows, messageReply);
+        messageReply(this.generateEmbed(rows));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
@@ -47,18 +49,28 @@ export class GetWarnPunishmentsCommand extends Command {
      * This function outputs the warn punishments.
      *
      * @param  {{numWarns:number;type:ModActions;duration:number|null;}[]} rows
-     * @param  {Function} messageReply
      * @returns void
      */
-    private generateReply(rows: { numWarns: number; type: ModActions;
-                                  duration: number|null; }[],
-                          messageReply: Function): void {
+    private generateEmbed(rows: { numWarns: number; type: ModActions;
+                                  duration: number|null; }[]): MessageEmbed {
         let out = '';
         for (const row of rows) {
             const { numWarns, type, duration } = row;
             out += `${numWarns} warns - ${type} `;
             out += (duration ? `${duration} seconds\n` : 'forever\n');
         }
-        messageReply(out);
+        return this.generateGenericEmbed(
+            GetWarnPunishmentsCommand.EMBED_TITLE,
+            out,
+            GetWarnPunishmentsCommand.EMBED_DEFAULT_COLOUR,
+        );
+    }
+
+    private generateNoSettingsFoundEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            GetWarnPunishmentsCommand.EMBED_TITLE,
+            GetWarnPunishmentsCommand.NO_SETTINGS_FOUND,
+            GetWarnPunishmentsCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 }

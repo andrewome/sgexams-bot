@@ -83,14 +83,12 @@ export class SetModLogChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateResetEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(SetModLogChannelCommand.EMBED_TITLE,
-                       SetModLogChannelCommand.CHANNEL_RESETTED);
-
-        return embed;
+        return this.generateGenericEmbed(
+            SetModLogChannelCommand.EMBED_TITLE,
+            SetModLogChannelCommand.CHANNEL_RESETTED,
+            SetModLogChannelCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 
     /**
@@ -98,14 +96,12 @@ export class SetModLogChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateNotFoundEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(SetModLogChannelCommand.EMBED_TITLE,
-                       SetModLogChannelCommand.CHANNEL_NOT_FOUND);
-
-        return embed;
+        return this.generateGenericEmbed(
+            SetModLogChannelCommand.EMBED_TITLE,
+            SetModLogChannelCommand.CHANNEL_NOT_FOUND,
+            SetModLogChannelCommand.EMBED_ERROR_COLOUR,
+        );
     }
 
     /**
@@ -113,14 +109,12 @@ export class SetModLogChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateNotTextChannelEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(SetModLogChannelCommand.EMBED_TITLE,
-                       SetModLogChannelCommand.NOT_TEXT_CHANNEL);
-
-        return embed;
+        return this.generateGenericEmbed(
+            SetModLogChannelCommand.EMBED_TITLE,
+            SetModLogChannelCommand.NOT_TEXT_CHANNEL,
+            SetModLogChannelCommand.EMBED_ERROR_COLOUR,
+        );
     }
 
     /**
@@ -129,14 +123,11 @@ export class SetModLogChannelCommand extends Command {
      * @param  {string} channelId
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateValidEmbed(channelId: string): MessageEmbed {
-        const embed = new MessageEmbed();
-        const msg = `Starboard Channel set to <#${channelId}>.`;
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(SetModLogChannelCommand.EMBED_TITLE, msg);
-
-        return embed;
+        return this.generateGenericEmbed(
+            SetModLogChannelCommand.EMBED_TITLE,
+            `ModLog Channel set to <#${channelId}>.`,
+            SetModLogChannelCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
-
 }

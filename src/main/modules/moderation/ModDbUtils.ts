@@ -130,20 +130,20 @@ export class ModDbUtils {
      *
      * @param  {string} serverId
      * @param  {number} numWarns
-     * @returns { action: ModActions; duration: number; } | null
+     * @returns { type: ModActions; duration: number; } | null
      */
-    public static fetchWarnAction(serverId: string, numWarns: number): { action: ModActions;
+    public static fetchWarnAction(serverId: string, numWarns: number): { type: ModActions;
                                                                          duration: number|null;
                                                                        } | null {
         const db = DatabaseConnection.connect();
         const res = db.prepare(
-            'SELECT action, duration FROM moderationWarnSettings WHERE serverId = ? AND numWarns = ?',
+            'SELECT type, duration FROM moderationWarnSettings WHERE serverId = ? AND numWarns = ?',
         ).get(serverId, numWarns);
         db.close();
 
         if (res) {
-            const { action, duration } = res;
-            return { action, duration };
+            const { type, duration } = res;
+            return { type, duration };
         }
 
         return null;

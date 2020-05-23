@@ -48,14 +48,12 @@ export class GetModLogChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateNotSetEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(GetModLogChannelCommand.EMBED_TITLE,
-                       GetModLogChannelCommand.CHANNEL_NOT_SET);
-
-        return embed;
+        return this.generateGenericEmbed(
+            GetModLogChannelCommand.EMBED_TITLE,
+            GetModLogChannelCommand.CHANNEL_NOT_SET,
+            GetModLogChannelCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 
     /**
@@ -64,13 +62,11 @@ export class GetModLogChannelCommand extends Command {
      * @param  {string} channelId
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateValidEmbed(channelId: string): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        const msg = `ModLog Channel is currently set to <#${channelId}>.`;
-        embed.addField(GetModLogChannelCommand.EMBED_TITLE, msg);
-
-        return embed;
+        return this.generateGenericEmbed(
+            GetModLogChannelCommand.EMBED_TITLE,
+            `ModLog Channel is currently set to <#${channelId}>.`,
+            GetModLogChannelCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 }

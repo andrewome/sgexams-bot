@@ -18,7 +18,9 @@ export class WarnCommand extends Command {
 
     private permissions = new Permissions(['BAN_MEMBERS']);
 
-    private COMMAND_USAGE = '**Usage:** @bot warn userId [reason]';
+    public static COMMAND_USAGE = '**Usage:** @bot warn userId [reason]';
+
+    public static EMBED_TITLE = 'Warn User';
 
     private type = ModActions.WARN;
 
@@ -45,6 +47,12 @@ export class WarnCommand extends Command {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
+        // Check number of args
+        if (this.args.length < 1) {
+            messageReply(this.generateInsufficientArgumentsEmbed());
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        }
+
         const targetId = this.args[0].replace(/[<@!>]/g, '');
         const reason = this.args.slice(1).join(' ');
 
@@ -54,13 +62,12 @@ export class WarnCommand extends Command {
             const target = await members!.fetch(targetId);
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                            this.type, curTime, reason);
-            this.sendEmbed(target, reason, messageReply);
+            messageReply(this.generateValidEmbed(target, reason));
         } catch (err) {
-            log.warn(err);
-            if (err instanceof SqliteError)
-                messageReply(WarnCommand.INTERNAL_ERROR_OCCURED);
-            else if (err instanceof DiscordAPIError)
-                messageReply(`${WarnCommand.USERID_ERROR}\n${this.COMMAND_USAGE}`);
+            if (err instanceof DiscordAPIError)
+                messageReply(this.generateUserIdError());
+            else
+                throw err;
         }
 
         // Handle if this warning hit server warn action threshold
@@ -88,10 +95,10 @@ export class WarnCommand extends Command {
         // If there's a warn action, handle it
         if (res) {
             const curTime = ModUtils.getUnixTime();
-            const { action, duration } = res;
+            const { type, duration } = res;
             const reason = `AUTO - ${numWarns} Warns Accumulated`;
             const target = await members!.fetch(targetId);
-            switch (action) {
+            switch (type) {
                 case ModActions.BAN:
                     target.ban({ reason });
                     ModDbUtils.addModerationAction(
@@ -111,22 +118,28 @@ export class WarnCommand extends Command {
         }
     }
 
-    /**
-     * This method sends a messageEmbed of the warn.
-     *
-     * @param target GuildMember
-     * @param reason string
-     * @param messageReply Function
-     */
-    private sendEmbed(target: GuildMember, reason: string,
-                      messageReply: Function): void {
-        const messageEmbed = new MessageEmbed();
+    private generateUserIdError(): MessageEmbed {
+        return this.generateGenericEmbed(
+            WarnCommand.EMBED_TITLE,
+            `${WarnCommand.USERID_ERROR}\n${WarnCommand.COMMAND_USAGE}`,
+            WarnCommand.EMBED_ERROR_COLOUR,
+        );
+    }
 
-        messageEmbed
-            .setTitle(`${target.user.tag} was warned.`)
-            .setColor(WarnCommand.EMBED_DEFAULT_COLOUR)
-            .addField('Reason', reason || '-');
+    private generateInsufficientArgumentsEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            WarnCommand.EMBED_TITLE,
+            `${WarnCommand.INSUFFICIENT_ARGUMENTS}\n${WarnCommand.COMMAND_USAGE}`,
+            WarnCommand.EMBED_DEFAULT_COLOUR,
+        );
+    }
 
-        messageReply(messageEmbed);
+    private generateValidEmbed(target: GuildMember, reason: string): MessageEmbed {
+        const embed = this.generateGenericEmbed(
+            WarnCommand.EMBED_TITLE,
+            `${target.user.tag} was warned.`,
+            WarnCommand.EMBED_DEFAULT_COLOUR,
+        );
+        return embed.addField('Reason', reason || '-');
     }
 }

@@ -16,9 +16,11 @@ export class UnwarnCommand extends Command {
 
     private permissions = new Permissions(['BAN_MEMBERS']);
 
-    private COMMAND_USAGE = '**Usage:** @bot unwarn caseId [reason]';
+    public static EMBED_TITLE = 'Unwarn Member';
 
-    private INVALID_CASEID = 'Invalid caseId supplied. Please try again';
+    public static COMMAND_USAGE = '**Usage:** @bot unwarn caseId [reason]';
+
+    public static INVALID_CASEID = 'Invalid caseId supplied. Please try again';
 
     private type = ModActions.UNWARN;
 
@@ -47,7 +49,7 @@ export class UnwarnCommand extends Command {
 
         // Check number of args (absolute minimum should be 1)
         if (this.args.length < 1) {
-            messageReply(`${UnwarnCommand.INSUFFICIENT_ARGUMENTS}\n${this.COMMAND_USAGE}`);
+            messageReply(this.generateInsufficientArgumentsEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -58,7 +60,7 @@ export class UnwarnCommand extends Command {
 
         // Unsuccessful because of invalid caseid
         if (!successful) {
-            messageReply(`${this.INVALID_CASEID}\n${this.COMMAND_USAGE}`);
+            messageReply(this.generateInvalidCaseIdEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -66,27 +68,33 @@ export class UnwarnCommand extends Command {
         ModDbUtils.addModerationAction(
             server.serverId, userId!, caseId.toString(), this.type, ModUtils.getUnixTime(), reason,
         );
-        this.sendEmbed(caseId.toString(), reason, messageReply);
+        messageReply(this.generateValidEmbed(caseId.toString(), reason));
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
-    /**
-     * This method sends a messageEmbed of the unban.
-     *
-     * @param user User
-     * @param reason string
-     * @param messageReply Function
-     */
-    private sendEmbed(caseId: string, reason: string,
-                      messageReply: Function): void {
-        const messageEmbed = new MessageEmbed();
+    private generateInsufficientArgumentsEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            UnwarnCommand.EMBED_TITLE,
+            `${UnwarnCommand.INSUFFICIENT_ARGUMENTS}\n${UnwarnCommand.COMMAND_USAGE}`,
+            UnwarnCommand.EMBED_ERROR_COLOUR,
+        );
+    }
 
-        messageEmbed
-            .setTitle(`Case ID ${caseId} warn was removed.`)
-            .setColor(UnwarnCommand.EMBED_DEFAULT_COLOUR)
-            .addField('Reason', reason || '-');
+    private generateInvalidCaseIdEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            UnwarnCommand.EMBED_TITLE,
+            `${UnwarnCommand.INVALID_CASEID}\n${UnwarnCommand.COMMAND_USAGE}`,
+            UnwarnCommand.EMBED_ERROR_COLOUR,
+        );
+    }
 
-        messageReply(messageEmbed);
+    private generateValidEmbed(caseId: string, reason: string): MessageEmbed {
+        const embed = this.generateGenericEmbed(
+            UnwarnCommand.EMBED_TITLE,
+            `Case ${caseId} warn was removed.`,
+            UnwarnCommand.EMBED_DEFAULT_COLOUR,
+        );
+        return embed.addField('Reason', reason || '-');
     }
 }

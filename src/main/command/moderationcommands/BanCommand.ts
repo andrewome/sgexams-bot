@@ -1,8 +1,6 @@
 import {
     GuildMember, MessageEmbed, Permissions, DiscordAPIError,
 } from 'discord.js';
-import { SqliteError } from 'better-sqlite3';
-import log from 'loglevel';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -16,7 +14,9 @@ export class BanCommand extends Command {
 
     private permissions = new Permissions(['BAN_MEMBERS']);
 
-    private COMMAND_USAGE = '**Usage:** @bot ban userId [reason] [X{m|h|d}]';
+    public static EMBED_TITLE = 'Ban Member';
+
+    public static COMMAND_USAGE = '**Usage:** @bot ban userId [reason] [X{m|h|d}]';
 
     private type = ModActions.BAN;
 
@@ -47,7 +47,7 @@ export class BanCommand extends Command {
 
         // Check number of args (absolute minimum should be 1)
         if (this.args.length < 1) {
-            messageReply(`${BanCommand.INSUFFICIENT_ARGUMENTS}\n${this.COMMAND_USAGE}`);
+            messageReply(this.generateInsufficientArgumentsEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -70,42 +70,49 @@ export class BanCommand extends Command {
             const curTime = ModUtils.getUnixTime();
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                            this.type, curTime, reason, duration);
-
             // Set timeout if any
             if (duration) {
                 const endTime = curTime + duration;
                 ModUtils.addBanTimeout(duration, endTime, targetId, server.serverId, members!);
             }
-            this.sendEmbed(target, reason, messageReply, durationStr);
+            messageReply(this.generateValidEmbed(target, reason, durationStr));
         } catch (err) {
-            log.warn(err);
-            if (err instanceof SqliteError)
-                messageReply(BanCommand.INTERNAL_ERROR_OCCURED);
-            else if (err instanceof DiscordAPIError)
-                messageReply(`${BanCommand.USERID_ERROR}\n${this.COMMAND_USAGE}`);
+            if (err instanceof DiscordAPIError)
+                messageReply(this.generateUserIdErrorEmbed());
+            else
+                throw err;
         }
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
-    /**
-     * This method sends a messageEmbed of the ban.
-     *
-     * @param target GuildMember
-     * @param reason string
-     * @param messageReply Function
-     */
-    private sendEmbed(target: GuildMember, reason: string,
-                      messageReply: Function, durationStr?: string): void {
-        const messageEmbed = new MessageEmbed();
+    private generateUserIdErrorEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            BanCommand.EMBED_TITLE,
+            `${BanCommand.USERID_ERROR}\n${BanCommand.COMMAND_USAGE}`,
+            BanCommand.EMBED_ERROR_COLOUR,
+        );
+    }
 
-        messageEmbed
-            .setTitle(`${target.user.tag} was banned.`)
-            .setColor(BanCommand.EMBED_DEFAULT_COLOUR)
-            .addField('Reason', reason || '-', true);
-        if (durationStr)
-            messageEmbed.addField('Length', durationStr, true);
+    private generateValidEmbed(target: GuildMember, reason: string,
+                               durationStr?: string): MessageEmbed {
+        const embed = this.generateGenericEmbed(
+            BanCommand.EMBED_TITLE,
+            `${target.user.tag} was banned.`,
+            BanCommand.EMBED_DEFAULT_COLOUR,
+        );
 
-        messageReply(messageEmbed);
+        embed.addField('Reason', reason || '-', true);
+        embed.addField('Length', durationStr || 'Permanant', true);
+
+        return embed;
+    }
+
+    private generateInsufficientArgumentsEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            BanCommand.EMBED_TITLE,
+            `${BanCommand.INSUFFICIENT_ARGUMENTS}\n${BanCommand.COMMAND_USAGE}`,
+            BanCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 }

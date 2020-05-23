@@ -1,8 +1,6 @@
 import {
     MessageEmbed, Permissions, DiscordAPIError,
 } from 'discord.js';
-import { SqliteError } from 'better-sqlite3';
-import log from 'loglevel';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -16,7 +14,9 @@ export class UnbanCommand extends Command {
 
     private permissions = new Permissions(['BAN_MEMBERS']);
 
-    private COMMAND_USAGE = '**Usage:** @bot unban userId [reason]';
+    public static COMMAND_USAGE = '**Usage:** @bot unban userId [reason]';
+
+    public static EMBED_TITLE = 'Unban User';
 
     private type = ModActions.UNBAN;
 
@@ -47,7 +47,7 @@ export class UnbanCommand extends Command {
 
         // Check number of args (absolute minimum should be 1)
         if (this.args.length < 1) {
-            messageReply(`${UnbanCommand.INSUFFICIENT_ARGUMENTS}\n${this.COMMAND_USAGE}`);
+            messageReply(this.generateInsufficientArgumentsEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -61,34 +61,39 @@ export class UnbanCommand extends Command {
                 server.serverId, userId!, targetId, this.type, ModUtils.getUnixTime(), reason,
             );
             ModUtils.handleUnbanTimeout(targetId, server.serverId);
-            this.sendEmbed(user.username, reason, messageReply);
+            messageReply(this.generateValidEmbed(user.username, reason));
         } catch (err) {
-            log.warn(err);
-            if (err instanceof SqliteError)
-                messageReply(UnbanCommand.INTERNAL_ERROR_OCCURED);
-            else if (err instanceof DiscordAPIError)
-                messageReply(`${UnbanCommand.USERID_ERROR}\n${this.COMMAND_USAGE}`);
+            if (err instanceof DiscordAPIError)
+                messageReply(this.generateInvalidUserIdEmbed());
+            else
+                throw err;
         }
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
-    /**
-     * This method sends a messageEmbed of the unban.
-     *
-     * @param user User
-     * @param reason string
-     * @param messageReply Function
-     */
-    private sendEmbed(username: string, reason: string,
-                      messageReply: Function): void {
-        const messageEmbed = new MessageEmbed();
+    private generateValidEmbed(username: string, reason: string): MessageEmbed {
+        const embed = this.generateGenericEmbed(
+            UnbanCommand.EMBED_TITLE,
+            `${username} was unbanned.`,
+            UnbanCommand.EMBED_DEFAULT_COLOUR,
+        );
+        return embed.addField('Reason', reason || '-');
+    }
 
-        messageEmbed
-            .setTitle(`${username} was unbanned.`)
-            .setColor(UnbanCommand.EMBED_DEFAULT_COLOUR)
-            .addField('Reason', reason || '-');
+    private generateInsufficientArgumentsEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            UnbanCommand.EMBED_TITLE,
+            `${UnbanCommand.INSUFFICIENT_ARGUMENTS}\n${UnbanCommand.COMMAND_USAGE}`,
+            UnbanCommand.EMBED_ERROR_COLOUR,
+        );
+    }
 
-        messageReply(messageEmbed);
+    private generateInvalidUserIdEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            UnbanCommand.EMBED_TITLE,
+            `${UnbanCommand.USERID_ERROR}\n${UnbanCommand.COMMAND_USAGE}`,
+            UnbanCommand.EMBED_ERROR_COLOUR,
+        );
     }
 }

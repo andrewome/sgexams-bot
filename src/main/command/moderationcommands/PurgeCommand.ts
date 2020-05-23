@@ -1,5 +1,6 @@
 import {
     MessageManager, ChannelLogsQueryOptions, Message, Permissions, TextChannel, Channel,
+    MessageEmbed,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -13,11 +14,13 @@ export class PurgeCommand extends Command {
 
     private permissions = new Permissions(['MANAGE_MESSAGES']);
 
-    private MSG_LIMIT = 5000;
+    public static MSG_LIMIT = 5000;
 
-    private COMMAND_USAGE = '**Usage:** @bot purge limit [userId]';
+    public static EMBED_TITLE = 'Purge Command';
 
-    private ERROR_MESSAGE_INVALID_LIMIT = `Invalid limit. Make sure that that it is below 0 < x <= ${this.MSG_LIMIT}.\n${this.COMMAND_USAGE}`;
+    public static COMMAND_USAGE = '**Usage:** @bot purge limit [userId]';
+
+    public static ERROR_MESSAGE_INVALID_LIMIT = `Invalid limit. Make sure that that it is below 0 < x <= ${PurgeCommand.MSG_LIMIT}`;
 
     public constructor(args: string[]) {
         super();
@@ -45,23 +48,23 @@ export class PurgeCommand extends Command {
 
         // Check number of args
         if (this.args.length === 0) {
-            messageReply(`${PurgeCommand.NO_ARGUMENTS}\n${this.COMMAND_USAGE}`);
+            messageReply(this.generateInsufficientArgumentsEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
         const limit = parseInt(this.args[0], 10);
         const userId = this.args.length > 1 ? this.args[1].replace(/[<@!>]/g, '') : null;
         // Check for error on the limit
-        if (Number.isNaN(limit) || limit > this.MSG_LIMIT || limit <= 0) {
-            messageReply(this.ERROR_MESSAGE_INVALID_LIMIT);
+        if (Number.isNaN(limit) || limit > PurgeCommand.MSG_LIMIT || limit <= 0) {
+            messageReply(this.generateInvalidLimitEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
         // Fetch and bulk delete messages
-        const sentMessage = await messageReply(`Fetching messages... 0/${limit} messages fetched.`);
+        const sentMessage = await messageReply(this.generateEmbed(`Fetching messages... 0/${limit} messages fetched.`));
         const messages = await this.fetchMessages(messageManager, limit, messageId!, sentMessage);
         const numDeleted = await this.bulkDeleteMessages(userId, messages, channel!, sentMessage);
-        sentMessage.edit(`Deleted ${numDeleted} messages.`);
+        sentMessage.edit(this.generateEmbed(`Deleted ${numDeleted} messages.`));
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -77,7 +80,7 @@ export class PurgeCommand extends Command {
     private async bulkDeleteMessages(userId: string|null, collectedMessages: Message[],
                                      channel: Channel, sentMessage: Message): Promise<number> {
 
-        sentMessage.edit('Deleting messages...');
+        sentMessage.edit(this.generateEmbed('Deleting messages...'));
 
         // Filter messages by userId if specified
         if (userId) {
@@ -128,7 +131,9 @@ export class PurgeCommand extends Command {
             // Update message every 200 messages.
             const { length } = collectedMessages;
             if (length && length % 200 === 0)
-                sentMessage.edit(`Fetching messages... ${length}/${limit} messages fetched.`);
+                sentMessage.edit(this.generateEmbed(
+                    `Fetching messages... ${length}/${limit} messages fetched.`,
+                ));
 
             if (messages.size !== 100 || length >= limit) {
                 break;
@@ -140,5 +145,29 @@ export class PurgeCommand extends Command {
             collectedMessages = collectedMessages.slice(0, limit);
 
         return collectedMessages;
+    }
+
+    private generateInsufficientArgumentsEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            PurgeCommand.EMBED_TITLE,
+            `${PurgeCommand.INSUFFICIENT_ARGUMENTS}\n${PurgeCommand.COMMAND_USAGE}`,
+            PurgeCommand.EMBED_DEFAULT_COLOUR,
+        );
+    }
+
+    private generateInvalidLimitEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            PurgeCommand.EMBED_TITLE,
+            `${PurgeCommand.ERROR_MESSAGE_INVALID_LIMIT}\n${PurgeCommand.COMMAND_USAGE}`,
+            PurgeCommand.EMBED_DEFAULT_COLOUR,
+        );
+    }
+
+    private generateEmbed(message: string): MessageEmbed {
+        return this.generateGenericEmbed(
+            PurgeCommand.EMBED_TITLE,
+            message,
+            PurgeCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 }
