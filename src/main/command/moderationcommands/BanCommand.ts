@@ -36,7 +36,7 @@ export class BanCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            members, server, userId, memberPerms, messageReply,
+            members, server, userId, memberPerms, messageReply, emit,
         } = commandArgs;
 
         // Check for permissions first
@@ -56,26 +56,28 @@ export class BanCommand extends Command {
         // Check last val for ban time if any
         const { length } = this.args;
         const duration = ModUtils.parseDuration(this.args[length - 1]);
-        let durationStr: string | undefined;
         if (duration)
-            durationStr = this.args.pop();
+            this.args.pop();
 
         // Get reason
-        const reason = this.args.slice(1).join(' ');
-
+        let reason = this.args.slice(1).join(' ');
+        if (reason.length > 512)
+            reason = reason.substr(0, 512);
         // Handle ban
         try {
             const target = await members!.fetch(targetId);
             target.ban({ reason });
             const curTime = ModUtils.getUnixTime();
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
-                                           this.type, curTime, reason, duration);
+                                           this.type, curTime, emit!, reason, duration);
             // Set timeout if any
             if (duration) {
                 const endTime = curTime + duration;
-                ModUtils.addBanTimeout(duration, endTime, targetId, server.serverId, members!);
+                ModUtils.addBanTimeout(
+                    duration, endTime, targetId, server.serverId, members!, emit!,
+                );
             }
-            messageReply(this.generateValidEmbed(target, reason, durationStr));
+            messageReply(this.generateValidEmbed(target, reason, duration));
         } catch (err) {
             if (err instanceof DiscordAPIError)
                 messageReply(this.generateUserIdErrorEmbed());
@@ -95,7 +97,7 @@ export class BanCommand extends Command {
     }
 
     private generateValidEmbed(target: GuildMember, reason: string,
-                               durationStr?: string): MessageEmbed {
+                               duration: number|null): MessageEmbed {
         const embed = this.generateGenericEmbed(
             BanCommand.EMBED_TITLE,
             `${target.user.tag} was banned.`,
@@ -103,7 +105,7 @@ export class BanCommand extends Command {
         );
 
         embed.addField('Reason', reason || '-', true);
-        embed.addField('Length', durationStr || 'Permanant', true);
+        embed.addField('Length', duration ? `${Math.floor(duration / 60)} minutes` : 'Permanant', true);
 
         return embed;
     }

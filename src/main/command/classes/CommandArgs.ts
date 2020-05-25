@@ -13,6 +13,8 @@ export interface CommandArgs {
 
     deleteFunction?: Function;
 
+    emit?: Function;
+
     uptime?: number | null;
 
     channels?: GuildChannelManager;

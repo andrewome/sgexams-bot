@@ -1,6 +1,7 @@
 import { DatabaseConnection } from '../../DatabaseConnection';
 import { ModActions } from './classes/ModActions';
 import { ModerationTimeout } from './classes/ModerationTimeout';
+import { App } from '../../App';
 
 export class ModDbUtils {
     /**
@@ -83,15 +84,19 @@ export class ModDbUtils {
      * @returns void
      */
     public static addModerationAction(serverId: string, modId: string, userId: string,
-                                      type: ModActions, timestamp: number, reason?: string|null,
-                                      timeout?: number|null): void {
+                                      type: ModActions, timestamp: number, emit: Function,
+                                      reason?: string|null, timeout?: number|null): void {
         const db = DatabaseConnection.connect();
-        const caseId = ModDbUtils.getLastestCaseId(serverId);
+        const caseId = ModDbUtils.getLastestCaseId(serverId) + 1;
         db.prepare(
             'INSERT INTO moderationLogs (serverId, caseId, modId, userId, type,' +
             ' reason, timeout, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        ).run(serverId, caseId + 1, modId, userId, type, reason || null, timeout, timestamp);
+        ).run(serverId, caseId, modId, userId, type, reason || null, timeout, timestamp);
         db.close();
+        emit(
+            App.MODLOG_UPDATE, serverId, caseId, modId, userId, type,
+            reason || null, timeout || null, timestamp,
+        );
     }
 
     /**
@@ -116,8 +121,8 @@ export class ModDbUtils {
     public static fetchNumberOfWarns(serverId: string, userId: string): number {
         const db = DatabaseConnection.connect();
         const res = db.prepare(
-            'SELECT COUNT(*) FROM moderationLogs WHERE serverId = ? AND userId = ?',
-        ).get(serverId, userId);
+            'SELECT COUNT(*) FROM moderationLogs WHERE serverId = ? AND userId = ? AND type = ?',
+        ).get(serverId, userId, ModActions.WARN);
         db.close();
         if (res)
             return res['COUNT(*)'];

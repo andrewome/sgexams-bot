@@ -1,8 +1,6 @@
 import {
     GuildMember, MessageEmbed, Permissions, DiscordAPIError, GuildMemberManager,
 } from 'discord.js';
-import { SqliteError } from 'better-sqlite3';
-import log from 'loglevel';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -38,7 +36,7 @@ export class WarnCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            members, server, userId, memberPerms, messageReply,
+            members, server, userId, memberPerms, messageReply, emit,
         } = commandArgs;
 
         // Check for permissions first
@@ -61,7 +59,7 @@ export class WarnCommand extends Command {
             const curTime = ModUtils.getUnixTime();
             const target = await members!.fetch(targetId);
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
-                                           this.type, curTime, reason);
+                                           this.type, curTime, emit!, reason);
             messageReply(this.generateValidEmbed(target, reason));
         } catch (err) {
             if (err instanceof DiscordAPIError)
@@ -71,7 +69,7 @@ export class WarnCommand extends Command {
         }
 
         // Handle if this warning hit server warn action threshold
-        this.handleWarnThreshold(server.serverId, targetId, members!);
+        this.handleWarnThreshold(server.serverId, targetId, members!, emit!);
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -85,7 +83,7 @@ export class WarnCommand extends Command {
      * @returns Promise
      */
     private async handleWarnThreshold(serverId: string, targetId: string,
-                                      members: GuildMemberManager): Promise<void> {
+                                      members: GuildMemberManager, emit: Function): Promise<void> {
         // Check if warn threshold has been met
         const numWarns = ModDbUtils.fetchNumberOfWarns(serverId, targetId);
 
@@ -96,18 +94,18 @@ export class WarnCommand extends Command {
         if (res) {
             const curTime = ModUtils.getUnixTime();
             const { type, duration } = res;
-            const reason = `AUTO - ${numWarns} Warns Accumulated`;
+            const reason = `(AUTO)${numWarns} warns accumulated`;
             const target = await members!.fetch(targetId);
             switch (type) {
                 case ModActions.BAN:
                     target.ban({ reason });
                     ModDbUtils.addModerationAction(
-                        serverId, 'AUTO', targetId, ModActions.BAN, curTime, reason, duration,
+                        serverId, 'AUTO', targetId, ModActions.BAN, curTime, emit, reason, duration,
                     );
                     if (duration) {
                         const endTime = curTime + duration;
                         ModUtils.addBanTimeout(
-                            duration, endTime, targetId, serverId, members!,
+                            duration, endTime, targetId, serverId, members!, emit,
                         );
                     }
                     break;

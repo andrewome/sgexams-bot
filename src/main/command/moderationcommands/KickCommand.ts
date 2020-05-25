@@ -36,7 +36,7 @@ export class KickCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            members, server, userId, memberPerms, messageReply,
+            members, server, userId, memberPerms, messageReply, emit,
         } = commandArgs;
 
         // Check for permissions first
@@ -52,12 +52,14 @@ export class KickCommand extends Command {
         }
 
         const targetId = this.args[0].replace(/[<@!>]/g, '');
-        const reason = this.args.slice(1).join(' ');
+        let reason = this.args.slice(1).join(' ');
+        if (reason.length > 512)
+            reason = reason.substr(0, 512);
 
         try {
             const target = await members!.fetch(targetId);
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
-                                           this.type, ModUtils.getUnixTime(), reason);
+                                           this.type, ModUtils.getUnixTime(), emit!, reason);
             target.kick();
             messageReply(this.generateValidEmbed(target, reason));
         } catch (err) {

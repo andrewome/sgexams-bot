@@ -38,7 +38,7 @@ export class UnwarnCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            userId, server, memberPerms, messageReply,
+            userId, server, memberPerms, messageReply, emit,
         } = commandArgs;
 
         // Check for permissions first
@@ -54,7 +54,9 @@ export class UnwarnCommand extends Command {
         }
 
         const caseId = parseInt(this.args[0], 10);
-        const reason = this.args.slice(1).join(' ');
+        let reason = this.args.slice(1).join(' ');
+        if (reason.length > 512)
+            reason = reason.substr(0, 512);
 
         const successful = ModDbUtils.deleteWarn(server.serverId, caseId);
 
@@ -66,7 +68,8 @@ export class UnwarnCommand extends Command {
 
         // Update modlogs
         ModDbUtils.addModerationAction(
-            server.serverId, userId!, caseId.toString(), this.type, ModUtils.getUnixTime(), reason,
+            server.serverId, userId!, caseId.toString(),
+            this.type, ModUtils.getUnixTime(), emit!, reason,
         );
         messageReply(this.generateValidEmbed(caseId.toString(), reason));
 

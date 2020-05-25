@@ -93,10 +93,10 @@ export class ModUtils {
      * @param  {GuildMemberManager} guildMemberManager
      * @returns void
      */
-    public static addBanTimeout(duration: number, endTime: number, userId: string,
-                                serverId: string, guildMemberManager: GuildMemberManager): void {
+    public static addBanTimeout(duration: number, endTime: number, userId: string, serverId: string,
+                                guildMemberManager: GuildMemberManager, emit: Function): void {
         const timer =
-            ModUtils.setBanTimeout(duration, userId, serverId, guildMemberManager);
+            ModUtils.setBanTimeout(duration, userId, serverId, guildMemberManager, emit);
 
         const timerId = ModUtils.assignTimeout(timer);
 
@@ -115,9 +115,11 @@ export class ModUtils {
      * @returns NodeJS.Timer
      */
     public static setBanTimeout(duration: number, userId: string, serverId: string,
-                                guildMemberManager: GuildMemberManager): NodeJS.Timer {
+                                guildMemberManager: GuildMemberManager,
+                                emit: Function): NodeJS.Timer {
         const callback = (): void => {
-            log.info(`Unbanning ${userId} after ${duration}s timeout.`);
+            const durationInMinutes = Math.floor(duration / 60);
+            log.info(`Unbanning ${userId} after ${durationInMinutes} minutes timeout.`);
             // Unban member
             guildMemberManager.unban(userId);
 
@@ -128,7 +130,8 @@ export class ModUtils {
             ModUtils.removeTimeout(timerId);
 
             // Add unban entry to db
-            ModDbUtils.addModerationAction(serverId, 'AUTO', userId, ModActions.UNBAN, ModUtils.getUnixTime());
+            const reason = `Unban after ${Math.floor(duration / 60)} minutes.`;
+            ModDbUtils.addModerationAction(serverId, 'AUTO', userId, ModActions.UNBAN, ModUtils.getUnixTime(), emit, reason);
             log.info(`Sucessfully unbanned ${userId}.`);
         };
 

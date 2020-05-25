@@ -1,4 +1,4 @@
-import { Message, TextChannel } from 'discord.js';
+import { Message, TextChannel, Client } from 'discord.js';
 import log from 'loglevel';
 import { CommandParser } from '../command/CommandParser';
 import { CommandResult } from '../command/classes/CommandResult';
@@ -11,11 +11,12 @@ import { MessageEventHandler } from './MessageEventHandler';
 export class OnMessageEventHandler extends MessageEventHandler {
     private botId: string;
 
-    public constructor(storage: Storage,
-                       message: Message,
-                       botId: string) {
+    private emit: Function;
+
+    public constructor(storage: Storage, message: Message, bot: Client) {
         super(storage, message);
-        this.botId = botId;
+        this.botId = bot.user!.id;
+        this.emit = bot.emit.bind(bot);
     }
 
     /**
@@ -72,7 +73,7 @@ export class OnMessageEventHandler extends MessageEventHandler {
                 server, memberPerms, messageReply,
                 deleteFunction, uptime, channels,
                 emojis, members, channel, userId,
-                messageId,
+                messageId, emit: this.emit,
             };
 
             // Execute command with commandArgs.

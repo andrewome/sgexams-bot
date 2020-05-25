@@ -1,6 +1,6 @@
 import './lib/env';
 import {
-    Client, Message, MessageReaction, User, GuildMemberManager,
+    Client, Message, MessageReaction, User, GuildMemberManager, MessageEmbed, TextChannel,
 } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
 import { Storage } from './storage/Storage';
@@ -12,6 +12,7 @@ import { StarboardCache } from './storage/StarboardCache';
 import { ModDbUtils } from './modules/moderation/ModDbUtils';
 import { ModUtils } from './modules/moderation/ModUtil';
 import { ModActions } from './modules/moderation/classes/ModActions';
+import { Command } from './command/Command';
 
 export class App {
     private bot: Client;
@@ -27,6 +28,8 @@ export class App {
     public static readonly REACTION_REMOVE = 'messageReactionRemove';
 
     public static readonly REACTION_DELETED = 'messageReactionDeleted';
+
+    public static readonly MODLOG_UPDATE = 'modLogUpdate';
 
     public static readonly RAW = 'raw';
 
@@ -48,7 +51,7 @@ export class App {
      */
     public run(): void {
         this.bot.on(App.MESSAGE, (message: Message): void => {
-            new OnMessageEventHandler(this.storage, message, this.bot.user!.id).handleEvent();
+            new OnMessageEventHandler(this.storage, message, this.bot).handleEvent();
         });
 
         this.bot.on(App.MESSAGE_UPDATE, (oldMessage: Message, newMessage: Message): void => {
@@ -73,6 +76,56 @@ export class App {
             log.info('I am ready!');
             this.bot.user!.setActivity('with NUKES!!!!', { type: 'PLAYING' });
         });
+
+        this.bot.on(App.MODLOG_UPDATE, this.handleModLogUpdate);
+    }
+
+    /**
+     * Handles ModLog update event by creating appropriate embed and sending in designated channel.
+     *
+     * @param  {string} serverId
+     * @param  {number} caseId
+     * @param  {string} modId
+     * @param  {string} userId
+     * @param  {ModActions} type
+     * @param  {string|null} reason
+     * @param  {number|null} timeout
+     * @param  {number} timestamp
+     * @returns Promise
+     */
+
+    private async handleModLogUpdate(serverId: string, caseId: number,
+                                     modId: string, userId: string,
+                                     type: ModActions, reason: string|null,
+                                     timeout: number|null, timestamp: number): Promise<void> {
+        // Get channel
+        const channelId = ModDbUtils.getModLogChannel(serverId);
+        if (!channelId)
+            return;
+        const channel = this.bot.channels.resolve(channelId);
+        if (!channel || channel.type !== 'text')
+            return;
+        const embed = new MessageEmbed();
+        embed.addField('Moderator', modId === 'AUTO' ? `<@${this.bot.user!.id}>` : `<@${modId}>`, true);
+        // Delete warn is a bit different
+        if (type !== ModActions.UNWARN) {
+            const user = await this.bot.users.fetch(userId);
+            embed.setTitle(`Case ${caseId}: ${user.tag} (${userId})`);
+            embed.addField('User', `<@${userId}>`, true);
+        } else {
+            embed.setTitle(`Case ${caseId}`);
+            embed.addField('Case ID', `${caseId}`, true);
+        }
+        embed.addField('\u200b', '\u200b', true);
+        embed.addField('Type', type, true);
+        embed.addField('Reason', reason || '-', true);
+        if (type === ModActions.MUTE || type === ModActions.BAN) {
+            const timeoutStr = timeout ? `${Math.floor((timeout / 60))} minutes` : 'Permanent';
+            embed.addField('Length', timeoutStr, true);
+        }
+        embed.setTimestamp(timestamp * 1000);
+        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
+        (channel as TextChannel).send(embed);
     }
 
     /**
@@ -117,11 +170,12 @@ export class App {
      */
     private handleExpiredTimeouts(serverId: string, userId: string, curTime: number,
                                   type: ModActions, members: GuildMemberManager): void {
+        const emit = this.bot.emit.bind(this.bot);
         switch (type) {
             case ModActions.BAN:
                 try {
                     ModDbUtils.addModerationAction(
-                        serverId, 'AUTO', userId, ModActions.UNBAN, curTime,
+                        serverId, 'AUTO', userId, ModActions.UNBAN, curTime, emit, 'Expired timeout on boot',
                     );
                     ModUtils.handleUnbanTimeout(userId, serverId);
                     members!.unban(userId);
@@ -148,35 +202,38 @@ export class App {
     private handleUnexpiredTimeouts(serverId: string, userId: string,
                                     type: ModActions, endTime: number,
                                     curTime: number, members: GuildMemberManager): void {
+        const emit = this.bot.emit.bind(this.bot);
         const duration = endTime - curTime;
         switch (type) {
             case ModActions.BAN:
-                ModUtils.addBanTimeout(duration, endTime, userId, serverId, members);
+                ModUtils.addBanTimeout(duration, endTime, userId, serverId, members, emit);
                 break;
             default:
         }
     }
 }
 
-// Set up logging method
-log.enableAll();
-const originalFactory = log.methodFactory;
+if (require.main === module) {
+    // Set up logging method
+    log.enableAll();
+    const originalFactory = log.methodFactory;
 
-// Make logs show current date
-const newMethodFactory = (methodName: string,
-                          logLevel: 0 | 1 | 2 | 3 | 4 | 5,
-                          loggerName: string): LoggingMethod => {
-    const rawMethod = originalFactory(methodName, logLevel, loggerName);
-    const editedMethodFactory = (message: string): void => {
-        const curDate = new Date().toLocaleString();
-        const logMsg = `[${curDate}]: ${message}`;
-        rawMethod(logMsg);
+    // Make logs show current date
+    const newMethodFactory = (methodName: string,
+                              logLevel: 0 | 1 | 2 | 3 | 4 | 5,
+                              loggerName: string): LoggingMethod => {
+        const rawMethod = originalFactory(methodName, logLevel, loggerName);
+        const editedMethodFactory = (message: string): void => {
+            const curDate = new Date().toLocaleString();
+            const logMsg = `[${curDate}]: ${message}`;
+            rawMethod(logMsg);
+        };
+
+        return editedMethodFactory;
     };
+    log.methodFactory = newMethodFactory;
 
-    return editedMethodFactory;
-};
-log.methodFactory = newMethodFactory;
+    log.setLevel(log.getLevel());
 
-log.setLevel(log.getLevel());
-
-new App().run();
+    new App().run();
+}
