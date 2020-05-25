@@ -14,7 +14,7 @@ export class WarnCommand extends Command {
 
     private args: string[];
 
-    private permissions = new Permissions(['BAN_MEMBERS']);
+    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
     public static COMMAND_USAGE = '**Usage:** @bot warn userId [reason]';
 

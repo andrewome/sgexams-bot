@@ -29,7 +29,7 @@ export class MsgCheckerGetResponseMessageCommand extends Command {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        // Get embed
+        // Generate embed and send
         const responseMessage = server.messageCheckerSettings.getResponseMessage();
         let embed: MessageEmbed;
         if (responseMessage === null) {
@@ -46,8 +46,6 @@ export class MsgCheckerGetResponseMessageCommand extends Command {
                 MsgCheckerGetResponseMessageCommand.EMBED_DEFAULT_COLOUR,
             );
         }
-
-        // Execute
         messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }

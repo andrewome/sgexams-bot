@@ -17,9 +17,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
     public static CHANNELID_CANNOT_BE_UNDEFINED = 'Channel ID cannot be undefined!';
 
     /** CheckMessage: true */
-    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
-
-    private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
+    private COMMAND_DEFAULT_COMMANDRESULT: CommandResult = new CommandResult(true);
 
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
@@ -57,7 +55,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
                 null,
             );
             messageReply(embed);
-            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+            return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
         const channelId = this.args[0];
@@ -67,14 +65,14 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         if (channel === null) {
             embed = this.generateInvalidEmbed();
             messageReply(embed);
-            return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
+            return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
         // If not text
         if ((channel as Channel).type !== 'text') {
             embed = this.generateNotTextChannelEmbed();
             messageReply(embed);
-            return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
+            return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
         embed = this.generateValidEmbed(channelId);
@@ -83,7 +81,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
             channelId,
         );
         messageReply(embed);
-        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        return this.COMMAND_DEFAULT_COMMANDRESULT;
     }
 
 

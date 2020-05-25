@@ -153,6 +153,7 @@ export class RotateImageCommand extends Command {
                 // Set up initial event handler.
                 collector.on(COLLECT, onReaction);
             })
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             .catch((err): void => {
                 messageReply(this.ERROR_MESSAGE);
                 (channel as TextChannel).stopTyping(true);

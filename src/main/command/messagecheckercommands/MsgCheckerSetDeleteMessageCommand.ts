@@ -11,10 +11,7 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
     public static BOOL_CANNOT_BE_UNDEFINED = 'Boolean should not be undefined!';
 
     /** CheckMessage: true */
-    private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
-
-    /** CheckMessage: true */
-    private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
+    private COMMAND_DEFAULT_COMMANDRESULT: CommandResult = new CommandResult(true);
 
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
@@ -44,14 +41,14 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
         // Execute
         if (this.args.length === 0) {
             messageReply(this.generateNoArgsEmbed());
-            return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
+            return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
         const boolStr = this.args[0].toLowerCase();
         const trueFalseRegex = new RegExp(/\btrue\b|\bfalse\b/, 'g');
         if (!trueFalseRegex.test(boolStr)) {
             messageReply(this.generateWrongFormatEmbed());
-            return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
+            return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
         let bool: boolean;
@@ -65,7 +62,7 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
 
         server.messageCheckerSettings.setDeleteMessage(server.serverId, bool!);
         messageReply(this.generateValidEmbed(bool!));
-        return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        return this.COMMAND_DEFAULT_COMMANDRESULT;
     }
 
     /**

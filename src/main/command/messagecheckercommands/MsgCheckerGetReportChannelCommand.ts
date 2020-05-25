@@ -29,7 +29,7 @@ export class MsgCheckerGetReportChannelCommand extends Command {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        // Generate embed
+        // Generate and send embed
         const channelId = server.messageCheckerSettings.getReportingChannelId();
         let embed: MessageEmbed;
         if (channelId === null) {
@@ -39,17 +39,13 @@ export class MsgCheckerGetReportChannelCommand extends Command {
                 MsgCheckerGetReportChannelCommand.EMBED_DEFAULT_COLOUR,
             );
         } else {
-            const msg = `Reporting Channel is currently set to <#${channelId}>.`;
             embed = this.generateGenericEmbed(
                 MsgCheckerGetReportChannelCommand.EMBED_TITLE,
-                msg,
+                `Reporting Channel is currently set to <#${channelId}>.`,
                 MsgCheckerGetReportChannelCommand.EMBED_DEFAULT_COLOUR,
             );
         }
-
-        // Execute
         messageReply(embed);
-
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

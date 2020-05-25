@@ -137,7 +137,6 @@ export class MessageChecker {
      * @param  {string} context Context
      * @param  {string} bannedWord banned word
      */
-    // eslint-disable-next-line class-methods-use-this
     private async checkWord(context: string, bannedWord: string): Promise<boolean> {
         // If it's a perfect match with a banned word, no need to query.
         if (context === bannedWord) {

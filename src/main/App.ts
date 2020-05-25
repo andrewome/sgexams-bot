@@ -3,6 +3,7 @@ import {
     Client, Message, MessageReaction, User, GuildMemberManager, MessageEmbed, TextChannel,
 } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
+import { SqliteError } from 'better-sqlite3';
 import { Storage } from './storage/Storage';
 import { MessageReactionAddEventHandler } from './eventhandler/MessageReactionAddEventHandler';
 import { MessageReactionRemoveEventHandler } from './eventhandler/MessageReactionRemoveEventHandler';
@@ -51,9 +52,14 @@ export class App {
      */
     public run(): void {
         this.bot.on(App.MESSAGE, (message: Message): void => {
-            new OnMessageEventHandler(this.storage, message, this.bot).handleEvent();
+            new OnMessageEventHandler(this.storage, message, this.bot)
+                .handleEvent()
+                .catch((err) => {
+                    this.handleError(err);
+                });
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.bot.on(App.MESSAGE_UPDATE, (oldMessage: Message, newMessage: Message): void => {
             new MessageUpdateEventHandler(this.storage, newMessage).handleEvent();
         });
@@ -68,16 +74,43 @@ export class App {
             new MessageReactionRemoveEventHandler(this.storage, reaction).handleEvent();
         });
 
-        this.bot.on(App.READY, (): void => {
-            log.info('Populating Starboard Cache...');
-            StarboardCache.generateStarboardMessagesCache(this.bot, this.storage);
-            log.info('Handling outstanding timeouts...');
-            this.handleTimeouts();
-            log.info('I am ready!');
-            this.bot.user!.setActivity('with NUKES!!!!', { type: 'PLAYING' });
+        this.bot.on(App.MODLOG_UPDATE, (serverId: string, caseId: number,
+                                        modId: string, userId: string,
+                                        type: ModActions, reason: string|null,
+                                        timeout: number|null, timestamp: number): void => {
+            this.handleModLogUpdate(
+                serverId, caseId, modId, userId, type, reason, timeout, timestamp,
+            ).catch((err) => {
+                this.handleError(err);
+            });
         });
 
-        this.bot.on(App.MODLOG_UPDATE, this.handleModLogUpdate);
+        this.bot.on(App.READY, (): void => {
+            try {
+                log.info('Populating Starboard Cache...');
+                StarboardCache.generateStarboardMessagesCache(this.bot, this.storage);
+                log.info('Handling outstanding timeouts...');
+                this.handleTimeouts();
+                log.info('I am ready!');
+                this.bot.user!.setActivity('with NUKES!!!!', { type: 'PLAYING' });
+            } catch (err) {
+                this.handleError(err);
+            }
+        });
+    }
+
+    /**
+     * Warn error. If sqlite error shut bot down.
+     *
+     * @param  {Error} err
+     * @returns void
+     */
+    private handleError(err: Error): void {
+        log.warn(err.stack);
+        if (err instanceof SqliteError) {
+            log.error('Sqlite Error detected. Shutting down.');
+            process.exit();
+        }
     }
 
     /**
@@ -93,7 +126,6 @@ export class App {
      * @param  {number} timestamp
      * @returns Promise
      */
-
     private async handleModLogUpdate(serverId: string, caseId: number,
                                      modId: string, userId: string,
                                      type: ModActions, reason: string|null,
@@ -173,15 +205,18 @@ export class App {
         const emit = this.bot.emit.bind(this.bot);
         switch (type) {
             case ModActions.BAN:
-                try {
-                    ModDbUtils.addModerationAction(
-                        serverId, 'AUTO', userId, ModActions.UNBAN, curTime, emit, 'Expired timeout on boot',
-                    );
-                    ModUtils.handleUnbanTimeout(userId, serverId);
-                    members!.unban(userId);
-                } catch (err) {
-                    log.warn(err);
-                }
+                ModDbUtils.addModerationAction(
+                    serverId, 'AUTO', userId, ModActions.UNBAN, curTime, emit, 'Expired timeout on boot',
+                );
+                ModUtils.handleUnbanTimeout(userId, serverId);
+                members!.unban(userId)
+                    .catch((err) => {
+                        log.info(err);
+                        log.info(
+                            `Unable to unban user ${userId} from server ${serverId}.` +
+                            'Check the server ban list for confirmation.',
+                        );
+                    });
                 break;
             default:
         }
@@ -235,5 +270,13 @@ if (require.main === module) {
 
     log.setLevel(log.getLevel());
 
-    new App().run();
+    try {
+        new App().run();
+    } catch (err) {
+        log.warn(err.stack);
+        if (err instanceof SqliteError) {
+            log.error('Sqlite Error detected. Shutting down.');
+            process.exit();
+        }
+    }
 }

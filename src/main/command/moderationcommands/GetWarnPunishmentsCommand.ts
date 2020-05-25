@@ -15,7 +15,7 @@ export class GetWarnPunishmentsCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['BAN_MEMBERS']);
+    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
     /**
      * This function gets the warn-actions from the database

@@ -121,7 +121,14 @@ export class ModUtils {
             const durationInMinutes = Math.floor(duration / 60);
             log.info(`Unbanning ${userId} after ${durationInMinutes} minutes timeout.`);
             // Unban member
-            guildMemberManager.unban(userId);
+            guildMemberManager.unban(userId)
+                .catch((err) => {
+                    log.info(err);
+                    log.info(
+                        `Unable to unban user ${userId} from server ${serverId}.` +
+                        'Check the server ban list for confirmation.',
+                    );
+                });
 
             // Remove entry from db
             const timerId = ModDbUtils.removeActionTimeout(userId, ModActions.BAN, serverId);
@@ -132,7 +139,7 @@ export class ModUtils {
             // Add unban entry to db
             const reason = `Unban after ${Math.floor(duration / 60)} minutes.`;
             ModDbUtils.addModerationAction(serverId, 'AUTO', userId, ModActions.UNBAN, ModUtils.getUnixTime(), emit, reason);
-            log.info(`Sucessfully unbanned ${userId}.`);
+            log.info(`Done removing ${userId} from Database.`);
         };
 
         return setTimeout(callback, duration * 1000);

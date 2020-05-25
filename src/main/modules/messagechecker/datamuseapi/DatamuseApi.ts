@@ -1,6 +1,6 @@
 import axios from 'axios';
+import log from 'loglevel';
 import { DatamuseSpellingQueryResult } from './DatamuseSpellingQueryResult';
-import { DatamuseQueryError } from './errors/DatamuseQueryError';
 
 // http://www.datamuse.com/api/
 export class DatamuseApi {
@@ -24,7 +24,8 @@ export class DatamuseApi {
             }
             return output;
         } catch (err) {
-            throw new DatamuseQueryError('Error fetching result');
+            log.info(err);
+            return [];
         }
     }
 }
