@@ -90,7 +90,9 @@ export class ModUtils {
      * @param  {number} endTime
      * @param  {string} userId
      * @param  {string} serverId
+     * @param  {string} botId
      * @param  {GuildMemberManager} guildMemberManager
+     * @param  {Function} emit
      * @returns void
      */
     public static addBanTimeout(duration: number, endTime: number, userId: string, serverId: string,
@@ -112,8 +114,10 @@ export class ModUtils {
      * @param  {number} duration
      * @param  {string} userId
      * @param  {string} serverId
+     * @param  {string} botId
      * @param  {GuildMemberManager} guildMemberManager
-     * @returns NodeJS.Timer
+     * @param  {Function} emit
+     * @returns NodeJS
      */
     public static setBanTimeout(duration: number, userId: string, serverId: string,
                                 botId: string, guildMemberManager: GuildMemberManager,
