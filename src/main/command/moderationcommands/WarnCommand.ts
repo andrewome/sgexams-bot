@@ -36,7 +36,7 @@ export class WarnCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            members, server, userId, memberPerms, messageReply, emit,
+            members, server, userId, memberPerms, messageReply, emit, botId,
         } = commandArgs;
 
         // Check for permissions first
@@ -69,7 +69,7 @@ export class WarnCommand extends Command {
         }
 
         // Handle if this warning hit server warn action threshold
-        this.handleWarnThreshold(server.serverId, targetId, members!, emit!);
+        this.handleWarnThreshold(server.serverId, targetId, botId!, members!, emit!);
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -82,7 +82,7 @@ export class WarnCommand extends Command {
      * @param  {GuildMemberManager} members
      * @returns Promise
      */
-    private async handleWarnThreshold(serverId: string, targetId: string,
+    private async handleWarnThreshold(serverId: string, targetId: string, botId: string,
                                       members: GuildMemberManager, emit: Function): Promise<void> {
         // Check if warn threshold has been met
         const numWarns = ModDbUtils.fetchNumberOfWarns(serverId, targetId);
@@ -105,7 +105,7 @@ export class WarnCommand extends Command {
                     if (duration) {
                         const endTime = curTime + duration;
                         ModUtils.addBanTimeout(
-                            duration, endTime, targetId, serverId, members!, emit,
+                            duration, endTime, targetId, serverId, botId, members!, emit,
                         );
                     }
                     break;

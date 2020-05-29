@@ -60,7 +60,7 @@ export class OnMessageEventHandler extends MessageEventHandler {
             // Get args required for the command
             const memberPerms = this.message.member!.permissions;
             const {
-                channels, emojis, members, name,
+                channels, emojis, members, name, roles,
             } = this.message.guild!;
             const { channel, author } = this.message;
             const { tag } = author;
@@ -69,11 +69,12 @@ export class OnMessageEventHandler extends MessageEventHandler {
             const deleteFunction = this.message.delete.bind(this.message);
             const messageId = this.message.id;
             const userId = author.id;
+            const { emit, botId } = this;
             const commandArgs: CommandArgs = {
                 server, memberPerms, messageReply,
                 deleteFunction, uptime, channels,
                 emojis, members, channel, userId,
-                messageId, emit: this.emit,
+                messageId, emit, botId, roles,
             };
 
             // Execute command with commandArgs.

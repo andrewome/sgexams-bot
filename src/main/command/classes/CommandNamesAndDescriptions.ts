@@ -251,6 +251,15 @@ export abstract class CommandNamesAndDescriptions {
 
     public static readonly MOD_LOGS_COMMAND_DESCRIPTION
         = 'Displays the history of all moderation commands run in the server';
+    public static readonly SET_MUTE_ROLE_COMMAND_NAME = 'SetMuteRole';
+
+    public static readonly SET_MUTE_ROLE_COMMAND_DESCRIPTION
+        = 'Sets the mute role that the bot will assign when the mute command is used.';
+
+    public static readonly GET_MUTE_ROLE_COMMAND_NAME = 'GetMuteRole';
+
+    public static readonly GET_MUTE_ROLE_COMMAND_DESCRIPTION
+        = 'Displays the currently set Mute Role';
 
     public static readonly MODERATION_COMMANDS = [
         CommandNamesAndDescriptions.WARN_COMMAND_NAME,
@@ -264,6 +273,8 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.SET_MODLOG_CHANNEL_COMMAND_NAME,
         CommandNamesAndDescriptions.GET_MODLOG_CHANNEL_COMMAND_NAME,
         CommandNamesAndDescriptions.MOD_LOGS_COMMAND_NAME,
+        CommandNamesAndDescriptions.SET_MUTE_ROLE_COMMAND_NAME,
+        CommandNamesAndDescriptions.GET_MUTE_ROLE_COMMAND_NAME,
     ]
 
     public static readonly MODERATION_DESCRIPTIONS = [
@@ -278,6 +289,8 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.SET_MODLOG_CHANNEL_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.GET_MODLOG_CHANNEL_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.MOD_LOGS_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.SET_MUTE_ROLE_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.GET_MUTE_ROLE_COMMAND_DESCRIPTION,
     ]
 
     public static readonly MODERATION_COMMANDS_LOWERCASE

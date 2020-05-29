@@ -4,10 +4,10 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 
-export class GetModLogChannelCommand extends Command {
-    public static CHANNEL_NOT_SET = 'There is no ModLog channel set for this server.';
+export class GetMuteRoleCommand extends Command {
+    public static ROLE_NOT_SET = 'There is no Mute Role set for this server.';
 
-    public static EMBED_TITLE = 'ModLog Channel';
+    public static EMBED_TITLE = 'Mute Role';
 
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
@@ -15,7 +15,7 @@ export class GetModLogChannelCommand extends Command {
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
 
     /**
-     * This function gets the modlog channel
+     * This function outputs the mute role for the server.
      *
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
@@ -30,42 +30,42 @@ export class GetModLogChannelCommand extends Command {
         }
 
         // Execute
-        const channelId = ModDbUtils.getModLogChannel(server.serverId);
+        const roleId = ModDbUtils.getMuteRoleId(server.serverId);
 
         // Check if channel is set
-        if (channelId === null) {
+        if (roleId === null) {
             messageReply(this.generateNotSetEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        messageReply(this.generateValidEmbed(channelId));
+        messageReply(this.generateValidEmbed(roleId));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
     /**
-     * Generates embed for if channel is not set
+     * Generates embed for if role is not set
      *
      * @returns RichEmbed
      */
     private generateNotSetEmbed(): MessageEmbed {
         return this.generateGenericEmbed(
-            GetModLogChannelCommand.EMBED_TITLE,
-            GetModLogChannelCommand.CHANNEL_NOT_SET,
-            GetModLogChannelCommand.EMBED_DEFAULT_COLOUR,
+            GetMuteRoleCommand.EMBED_TITLE,
+            GetMuteRoleCommand.ROLE_NOT_SET,
+            GetMuteRoleCommand.EMBED_DEFAULT_COLOUR,
         );
     }
 
     /**
-     * Generates embed if channel exists
+     * Generates embed if role exists in DB
      *
-     * @param  {string} channelId
+     * @param  {string} roleId
      * @returns RichEmbed
      */
-    private generateValidEmbed(channelId: string): MessageEmbed {
+    private generateValidEmbed(roleId: string): MessageEmbed {
         return this.generateGenericEmbed(
-            GetModLogChannelCommand.EMBED_TITLE,
-            `ModLog Channel is currently set to <#${channelId}>.`,
-            GetModLogChannelCommand.EMBED_DEFAULT_COLOUR,
+            GetMuteRoleCommand.EMBED_TITLE,
+            `ModLog Channel is currently set to <@&${roleId}>.`,
+            GetMuteRoleCommand.EMBED_DEFAULT_COLOUR,
         );
     }
 }

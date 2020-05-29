@@ -138,7 +138,7 @@ export class App {
         if (!channel || channel.type !== 'text')
             return;
         const embed = new MessageEmbed();
-        embed.addField('Moderator', modId === 'AUTO' ? `<@${this.bot.user!.id}>` : `<@${modId}>`, true);
+        embed.addField('Moderator', `<@${modId}>`, true);
         // Delete warn is a bit different
         if (type !== ModActions.UNWARN) {
             const user = await this.bot.users.fetch(userId);
@@ -238,10 +238,11 @@ export class App {
                                     type: ModActions, endTime: number,
                                     curTime: number, members: GuildMemberManager): void {
         const emit = this.bot.emit.bind(this.bot);
+        const botId = this.bot.user!.id;
         const duration = endTime - curTime;
         switch (type) {
             case ModActions.BAN:
-                ModUtils.addBanTimeout(duration, endTime, userId, serverId, members, emit);
+                ModUtils.addBanTimeout(duration, endTime, userId, serverId, botId, members, emit);
                 break;
             default:
         }
