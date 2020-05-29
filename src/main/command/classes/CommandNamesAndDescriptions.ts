@@ -247,6 +247,11 @@ export abstract class CommandNamesAndDescriptions {
     public static readonly GET_MODLOG_CHANNEL_COMMAND_DESCRIPTION
         = 'Displays the currently set ModLog channel';
 
+    public static readonly MOD_LOGS_COMMAND_NAME = 'ModLogs';
+
+    public static readonly MOD_LOGS_COMMAND_DESCRIPTION
+        = 'Displays the history of all moderation commands run in the server';
+
     public static readonly SET_MUTE_ROLE_COMMAND_NAME = 'SetMuteRole';
 
     public static readonly SET_MUTE_ROLE_COMMAND_DESCRIPTION
@@ -268,6 +273,7 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_NAME,
         CommandNamesAndDescriptions.SET_MODLOG_CHANNEL_COMMAND_NAME,
         CommandNamesAndDescriptions.GET_MODLOG_CHANNEL_COMMAND_NAME,
+        CommandNamesAndDescriptions.MOD_LOGS_COMMAND_NAME,
         CommandNamesAndDescriptions.SET_MUTE_ROLE_COMMAND_NAME,
         CommandNamesAndDescriptions.GET_MUTE_ROLE_COMMAND_NAME,
     ]
@@ -283,6 +289,7 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.SET_MODLOG_CHANNEL_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.GET_MODLOG_CHANNEL_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.MOD_LOGS_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.SET_MUTE_ROLE_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.GET_MUTE_ROLE_COMMAND_DESCRIPTION,
     ]

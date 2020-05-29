@@ -2,6 +2,7 @@ import { DatabaseConnection } from '../../DatabaseConnection';
 import { ModActions } from './classes/ModActions';
 import { ModerationTimeout } from './classes/ModerationTimeout';
 import { App } from '../../App';
+import { ModLog } from './classes/ModLog';
 
 export class ModDbUtils {
     /**
@@ -246,6 +247,39 @@ export class ModDbUtils {
         ).get(serverId);
         db.close();
         return res.channelId;
+    }
+
+    /**
+     * Gets the moderation logs of the current server from the moderationLogs table.
+     * @param  {string} serverId
+     * @returns {ModLog[]}
+     */
+    public static getModLogs(serverId: string, userId: string|null, type: string|null): ModLog[] {
+        const db = DatabaseConnection.connect();
+        let prepString = 'SELECT * FROM moderationLogs WHERE serverId=?';
+
+        // Parse the arguments
+        if (userId !== null) {
+            prepString += ' AND userId=?';
+        }
+        if (type !== null) {
+            prepString += ' AND type=?';
+        }
+        prepString += ' ORDER BY caseId DESC';
+        const prepped = db.prepare(prepString);
+
+        let res;
+        if (userId !== null && type !== null) {
+            res = prepped.all(serverId, userId, type);
+        } else if (type !== null) {
+            res = prepped.all(serverId, type);
+        } else if (userId !== null) {
+            res = prepped.all(serverId, userId);
+        } else {
+            res = prepped.all(serverId);
+        }
+        db.close();
+        return res;
     }
 
     /**

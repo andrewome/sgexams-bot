@@ -35,6 +35,7 @@ import { SetWarnPunishmentsCommand } from './moderationcommands/SetWarnPunishmen
 import { GetWarnPunishmentsCommand } from './moderationcommands/GetWarnPunishmentsCommand';
 import { SetModLogChannelCommand } from './moderationcommands/SetModLogChannelCommand';
 import { GetModLogChannelCommand } from './moderationcommands/GetModLogChannelCommand';
+import { ModLogsCommand } from './moderationcommands/ModLogsCommand';
 import { SetMuteRoleCommand } from './moderationcommands/SetMuteRoleCommand';
 import { GetMuteRoleCommand } from './moderationcommands/GetMuteRoleCommand';
 
@@ -189,6 +190,8 @@ export class CommandParser {
                 return new SetModLogChannelCommand(args);
             case CommandNamesAndDescriptions.GET_MODLOG_CHANNEL_COMMAND_NAME.toLowerCase():
                 return new GetModLogChannelCommand();
+            case CommandNamesAndDescriptions.MOD_LOGS_COMMAND_NAME.toLowerCase():
+                return new ModLogsCommand(args);
             case CommandNamesAndDescriptions.SET_MUTE_ROLE_COMMAND_NAME.toLowerCase():
                 return new SetMuteRoleCommand(args);
             case CommandNamesAndDescriptions.GET_MUTE_ROLE_COMMAND_NAME.toLowerCase():
