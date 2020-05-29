@@ -28,4 +28,6 @@ export interface CommandArgs {
     userId?: string;
 
     messageId?: string;
+
+    botId?: string;
 }

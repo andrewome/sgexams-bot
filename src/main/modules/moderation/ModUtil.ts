@@ -94,9 +94,10 @@ export class ModUtils {
      * @returns void
      */
     public static addBanTimeout(duration: number, endTime: number, userId: string, serverId: string,
-                                guildMemberManager: GuildMemberManager, emit: Function): void {
+                                botId: string, guildMemberManager: GuildMemberManager,
+                                emit: Function): void {
         const timer =
-            ModUtils.setBanTimeout(duration, userId, serverId, guildMemberManager, emit);
+            ModUtils.setBanTimeout(duration, userId, serverId, botId, guildMemberManager, emit);
 
         const timerId = ModUtils.assignTimeout(timer);
 
@@ -115,7 +116,7 @@ export class ModUtils {
      * @returns NodeJS.Timer
      */
     public static setBanTimeout(duration: number, userId: string, serverId: string,
-                                guildMemberManager: GuildMemberManager,
+                                botId: string, guildMemberManager: GuildMemberManager,
                                 emit: Function): NodeJS.Timer {
         const callback = (): void => {
             const durationInMinutes = Math.floor(duration / 60);
@@ -138,7 +139,9 @@ export class ModUtils {
 
             // Add unban entry to db
             const reason = `Unban after ${Math.floor(duration / 60)} minutes.`;
-            ModDbUtils.addModerationAction(serverId, 'AUTO', userId, ModActions.UNBAN, ModUtils.getUnixTime(), emit, reason);
+            ModDbUtils.addModerationAction(
+                serverId, botId, userId, ModActions.UNBAN, ModUtils.getUnixTime(), emit, reason,
+            );
             log.info(`Done removing ${userId} from Database.`);
         };
 

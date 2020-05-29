@@ -36,7 +36,7 @@ export class BanCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            members, server, userId, memberPerms, messageReply, emit,
+            members, server, userId, memberPerms, messageReply, emit, botId,
         } = commandArgs;
 
         // Check for permissions first
@@ -74,7 +74,7 @@ export class BanCommand extends Command {
             if (duration) {
                 const endTime = curTime + duration;
                 ModUtils.addBanTimeout(
-                    duration, endTime, targetId, server.serverId, members!, emit!,
+                    duration, endTime, targetId, server.serverId, botId!, members!, emit!,
                 );
             }
             messageReply(this.generateValidEmbed(target, reason, duration));

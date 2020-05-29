@@ -69,11 +69,12 @@ export class OnMessageEventHandler extends MessageEventHandler {
             const deleteFunction = this.message.delete.bind(this.message);
             const messageId = this.message.id;
             const userId = author.id;
+            const { emit, botId } = this;
             const commandArgs: CommandArgs = {
                 server, memberPerms, messageReply,
                 deleteFunction, uptime, channels,
                 emojis, members, channel, userId,
-                messageId, emit: this.emit,
+                messageId, emit, botId,
             };
 
             // Execute command with commandArgs.
