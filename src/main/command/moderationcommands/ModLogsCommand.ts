@@ -158,18 +158,12 @@ export class ModLogsCommand extends Command {
             }
 
             // Send the new page of logs
-            try {
-                embed = this.generateValidEmbed(
-                    modLogs,
-                    curStartIdx * ModLogsCommand.PAGE_SIZE,
-                    endStartIdx,
-                );
-            } catch (_) {
-                sentMessage.edit(this.ERROR_MESSAGE);
-                (channel as TextChannel).stopTyping();
-                return;
-            }
-            sentMessage.edit(embed);
+            const newEmbed = this.generateValidEmbed(
+                modLogs,
+                curStartIdx * ModLogsCommand.PAGE_SIZE,
+                endStartIdx,
+            );
+            sentMessage.edit(newEmbed);
             await sentMessage.reactions.removeAll();
             await sentMessage.react(ModLogsCommand.PREV);
             await sentMessage.react(ModLogsCommand.NEXT);
