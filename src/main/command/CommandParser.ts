@@ -35,6 +35,8 @@ import { SetWarnPunishmentsCommand } from './moderationcommands/SetWarnPunishmen
 import { GetWarnPunishmentsCommand } from './moderationcommands/GetWarnPunishmentsCommand';
 import { SetModLogChannelCommand } from './moderationcommands/SetModLogChannelCommand';
 import { GetModLogChannelCommand } from './moderationcommands/GetModLogChannelCommand';
+import { SetMuteRoleCommand } from './moderationcommands/SetMuteRoleCommand';
+import { GetMuteRoleCommand } from './moderationcommands/GetMuteRoleCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -187,6 +189,10 @@ export class CommandParser {
                 return new SetModLogChannelCommand(args);
             case CommandNamesAndDescriptions.GET_MODLOG_CHANNEL_COMMAND_NAME.toLowerCase():
                 return new GetModLogChannelCommand();
+            case CommandNamesAndDescriptions.SET_MUTE_ROLE_COMMAND_NAME.toLowerCase():
+                return new SetMuteRoleCommand(args);
+            case CommandNamesAndDescriptions.GET_MUTE_ROLE_COMMAND_NAME.toLowerCase():
+                return new GetMuteRoleCommand();
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }

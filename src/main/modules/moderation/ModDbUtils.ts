@@ -247,4 +247,33 @@ export class ModDbUtils {
         db.close();
         return res.channelId;
     }
+
+    /**
+     * Sets the mute role id of a server on the moderationSettings table.
+     *
+     * @param  {string} serverId
+     * @param  {string|null} muteRoleId
+     * @returns void
+     */
+    public static setMuteRoleId(serverId: string, muteRoleId: string|null): void {
+        const db = DatabaseConnection.connect();
+        db.prepare(
+            'UPDATE moderationSettings SET muteRoleId = ? WHERE serverId = ?',
+        ).run(muteRoleId, serverId);
+        db.close();
+    }
+
+    /**
+     * Gets the reporting channel of the server from the moderationSettings table.
+     * @param  {string} serverId
+     * @returns string
+     */
+    public static getMuteRoleId(serverId: string): string|null {
+        const db = DatabaseConnection.connect();
+        const res = db.prepare(
+            'SELECT muteRoleId FROM moderationSettings WHERE serverId = ?',
+        ).get(serverId);
+        db.close();
+        return res.muteRoleId;
+    }
 }

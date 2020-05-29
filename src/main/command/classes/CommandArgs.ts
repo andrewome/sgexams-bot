@@ -1,5 +1,5 @@
 import {
-    Permissions, Channel, GuildChannelManager, GuildEmojiManager, GuildMemberManager,
+    Permissions, Channel, GuildChannelManager, GuildEmojiManager, GuildMemberManager, RoleManager,
 } from 'discord.js';
 import { Server } from '../../storage/Server';
 
@@ -30,4 +30,6 @@ export interface CommandArgs {
     messageId?: string;
 
     botId?: string;
+
+    roles?: RoleManager;
 }
