@@ -35,6 +35,7 @@ import { SetWarnPunishmentsCommand } from './moderationcommands/SetWarnPunishmen
 import { GetWarnPunishmentsCommand } from './moderationcommands/GetWarnPunishmentsCommand';
 import { SetModLogChannelCommand } from './moderationcommands/SetModLogChannelCommand';
 import { GetModLogChannelCommand } from './moderationcommands/GetModLogChannelCommand';
+import { ModLogsCommand } from './moderationcommands/ModLogsCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -187,6 +188,8 @@ export class CommandParser {
                 return new SetModLogChannelCommand(args);
             case CommandNamesAndDescriptions.GET_MODLOG_CHANNEL_COMMAND_NAME.toLowerCase():
                 return new GetModLogChannelCommand();
+            case CommandNamesAndDescriptions.MOD_LOGS_COMMAND_NAME.toLowerCase():
+                return new ModLogsCommand(args);
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }
