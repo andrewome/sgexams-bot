@@ -251,6 +251,7 @@ export abstract class CommandNamesAndDescriptions {
 
     public static readonly MOD_LOGS_COMMAND_DESCRIPTION
         = 'Displays the history of all moderation commands run in the server';
+
     public static readonly SET_MUTE_ROLE_COMMAND_NAME = 'SetMuteRole';
 
     public static readonly SET_MUTE_ROLE_COMMAND_DESCRIPTION

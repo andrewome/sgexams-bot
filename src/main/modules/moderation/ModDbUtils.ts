@@ -280,6 +280,7 @@ export class ModDbUtils {
         }
         db.close();
         return res;
+    }
 
     /**
      * Sets the mute role id of a server on the moderationSettings table.
