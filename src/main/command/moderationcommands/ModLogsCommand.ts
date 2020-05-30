@@ -1,5 +1,7 @@
+/* eslint-disable prefer-template */
+/* eslint-disable no-nested-ternary */
 import {
-    Permissions, MessageEmbed, TextChannel, MessageReaction, User, ReactionCollectorOptions,
+    Permissions, MessageEmbed, MessageReaction, User, ReactionCollectorOptions,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -30,11 +32,11 @@ export class ModLogsCommand extends Command {
         Command.EMBED_ERROR_COLOUR,
     );
 
-    private userId: string | null;
+    private userId: string | null = null;
 
-    private type: string | null;
+    private type: string | null = null;
 
-    private complementType: string | null;
+    private complementType: string | null = null;
 
     constructor(args: string[]) {
         super();
@@ -45,26 +47,21 @@ export class ModLogsCommand extends Command {
                 [this.type] = args;
                 this.type = this.type.toUpperCase();
                 this.complementType = `UN${this.type}`;
-                this.userId = null;
             } else {
                 [this.userId] = args;
-                this.type = null;
-                this.complementType = null;
             }
         } else if (args.length === 2) {
             [this.userId, this.type] = args;
             this.type = this.type.toUpperCase();
             this.complementType = `UN${this.type}`;
-        } else {
-            this.userId = null;
-            this.type = null;
-            this.complementType = null;
         }
+        if (this.userId)
+            this.userId = this.userId.replace(/[<@!>]/g, '');
     }
 
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            server, memberPerms, messageReply, channel, userId,
+            server, memberPerms, messageReply, userId, botId,
         } = commandArgs;
 
         // Check for permissions first
@@ -100,10 +97,9 @@ export class ModLogsCommand extends Command {
         let curStartIdx = 0;
 
         // Send the initial message
-        (channel as TextChannel).startTyping();
         let embed: MessageEmbed;
         try {
-            embed = this.generateValidEmbed(modLogs, curStartIdx, endStartIdx);
+            embed = this.generateEmbed(modLogs, curStartIdx, endStartIdx);
         } catch (_) {
             messageReply(this.ERROR_MESSAGE);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
@@ -115,7 +111,6 @@ export class ModLogsCommand extends Command {
             await sentMessage.react(ModLogsCommand.PREV);
             await sentMessage.react(ModLogsCommand.NEXT);
         }
-        (channel as TextChannel).stopTyping();
 
         // Filter for reaction collector
         const filter = (reaction: MessageReaction, user: User): boolean => {
@@ -137,12 +132,22 @@ export class ModLogsCommand extends Command {
         };
 
         // Options
-        const options: ReactionCollectorOptions = { time: 30000 };
+        const options: ReactionCollectorOptions = { time: 60000 };
         const collector = sentMessage.createReactionCollector(filter, options);
 
         // onReaction function to handle the event
         const onReaction = async (reaction: MessageReaction): Promise<void> => {
-            (channel as TextChannel).startTyping();
+            // Remove all reactions but the bot's
+            const reactions: MessageReaction[] = sentMessage.reactions.cache.array();
+            const usersToRemove = reactions
+                .map((x: MessageReaction) => x.users.cache.array())
+                .flat()
+                .map((x: User) => x.id)
+                .filter((x: string) => x !== botId!);
+            reactions.forEach((x: MessageReaction) => {
+                const userManager = x.users;
+                usersToRemove.forEach((user) => userManager.remove(user));
+            });
 
             // Update the current page
             const { name } = reaction.emoji;
@@ -158,40 +163,41 @@ export class ModLogsCommand extends Command {
             }
 
             // Send the new page of logs
-            const newEmbed = this.generateValidEmbed(
+            const newEmbed = this.generateEmbed(
                 modLogs,
                 curStartIdx * ModLogsCommand.PAGE_SIZE,
                 endStartIdx,
             );
             sentMessage.edit(newEmbed);
-            await sentMessage.reactions.removeAll();
-            await sentMessage.react(ModLogsCommand.PREV);
-            await sentMessage.react(ModLogsCommand.NEXT);
-
-            (channel as TextChannel).stopTyping();
         };
         collector.on('collect', onReaction);
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
-    private generateValidEmbed(
-        modLogs: ModLog[], startIdx: number, maxPages: number,
-    ): MessageEmbed {
+    private generateEmbed(modLogs: ModLog[], startIdx: number, maxPages: number): MessageEmbed {
         const endIdx = Math.min(startIdx + ModLogsCommand.PAGE_SIZE, modLogs.length);
         const embed = new MessageEmbed();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.setTitle(`Mod logs page ${startIdx / ModLogsCommand.PAGE_SIZE + 1} of ${maxPages}`);
+        embed.setTitle(`ModLogs Page ${startIdx / ModLogsCommand.PAGE_SIZE + 1} of ${maxPages}`);
         for (let i = startIdx; i < endIdx; ++i) {
-            const dateString = new Date(modLogs[i].timestamp * 1000).toString();
-            const desc = `
-                Mod: <@!${modLogs[i].modId}>
-                User: <@!${modLogs[i].userId}>
-                Type: ${modLogs[i].type}
-                Date: ${dateString.substr(0, 21)}
-                Reason: ${modLogs[i].reason || '-'}
-            `;
-            embed.addField(`Case #${modLogs[i].caseId}`, desc);
+            const {
+                modId, userId, type, timeout, caseId, timestamp, reason,
+            } = modLogs[i];
+            const dateString = new Date(timestamp * 1000).toString();
+            let desc = `Mod: <@!${modId}>
+                        User: <@!${userId}>
+                        Type: ${type}\n`;
+            if (type === ModActions.BAN || type === ModActions.MUTE) {
+                desc += 'Length: ';
+                desc += timeout ? `${Math.floor((timeout / 60))} minutes` : 'Permanent';
+                desc += '\n';
+            }
+            desc += `Date: ${dateString.substr(0, 21)}
+                     Reason: ${reason || '-'}`;
+            if (desc.length > 1024)
+                desc = desc.substr(0, 1024);
+            embed.addField(`Case #${caseId}`, desc);
         }
         return embed;
     }

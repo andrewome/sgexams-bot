@@ -145,8 +145,8 @@ export class App {
             embed.setTitle(`Case ${caseId}: ${user.tag} (${userId})`);
             embed.addField('User', `<@${userId}>`, true);
         } else {
-            embed.setTitle(`Case ${caseId}`);
-            embed.addField('Case ID', `${caseId}`, true);
+            embed.setTitle(`Case ${caseId}: Remove Warn`);
+            embed.addField('Case ID', `${userId}`, true);
         }
         embed.addField('\u200b', '\u200b', true);
         embed.addField('Type', type, true);
@@ -203,10 +203,11 @@ export class App {
     private handleExpiredTimeouts(serverId: string, userId: string, curTime: number,
                                   type: ModActions, members: GuildMemberManager): void {
         const emit = this.bot.emit.bind(this.bot);
+        const botId = this.bot.user!.id;
         switch (type) {
             case ModActions.BAN:
                 ModDbUtils.addModerationAction(
-                    serverId, 'AUTO', userId, ModActions.UNBAN, curTime, emit, 'Expired timeout on boot',
+                    serverId, botId, userId, ModActions.UNBAN, curTime, emit, 'Expired timeout on boot',
                 );
                 ModUtils.handleUnbanTimeout(userId, serverId);
                 members!.unban(userId)

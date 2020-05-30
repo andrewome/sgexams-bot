@@ -94,13 +94,13 @@ export class WarnCommand extends Command {
         if (res) {
             const curTime = ModUtils.getUnixTime();
             const { type, duration } = res;
-            const reason = `(AUTO)${numWarns} warns accumulated`;
+            const reason = `**(AUTO)** ${numWarns} warns accumulated`;
             const target = await members!.fetch(targetId);
             switch (type) {
                 case ModActions.BAN:
                     target.ban({ reason });
                     ModDbUtils.addModerationAction(
-                        serverId, 'AUTO', targetId, ModActions.BAN, curTime, emit, reason, duration,
+                        serverId, botId, targetId, ModActions.BAN, curTime, emit, reason, duration,
                     );
                     if (duration) {
                         const endTime = curTime + duration;
