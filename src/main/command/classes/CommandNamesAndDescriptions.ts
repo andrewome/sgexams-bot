@@ -227,7 +227,15 @@ export abstract class CommandNamesAndDescriptions {
 
     public static readonly UNWARN_COMMAND_NAME = 'Unwarn'
 
-    public static readonly UNWARN_COMMAND_DESCRIPTION = 'Unwarns a User.';
+    public static readonly UNWARN_COMMAND_DESCRIPTION = 'Undo a warn case.';
+
+    public static readonly MUTE_COMMAND_NAME = 'Mute'
+
+    public static readonly MUTE_COMMAND_DESCRIPTION = 'Mutes a User.';
+
+    public static readonly UNMUTE_COMMAND_NAME = 'Unmute'
+
+    public static readonly UNMUTE_COMMAND_DESCRIPTION = 'Unmutes a User.';
 
     public static readonly SET_WARN_PUNISHMENTS_COMMAND_NAME = 'SetWarnPunishments';
 
@@ -266,9 +274,11 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.WARN_COMMAND_NAME,
         CommandNamesAndDescriptions.KICK_COMMAND_NAME,
         CommandNamesAndDescriptions.BAN_COMMAND_NAME,
+        CommandNamesAndDescriptions.MUTE_COMMAND_NAME,
         CommandNamesAndDescriptions.PURGE_COMMAND_NAME,
         CommandNamesAndDescriptions.UNBAN_COMMAND_NAME,
         CommandNamesAndDescriptions.UNWARN_COMMAND_NAME,
+        CommandNamesAndDescriptions.UNMUTE_COMMAND_NAME,
         CommandNamesAndDescriptions.SET_WARN_PUNISHMENTS_COMMAND_NAME,
         CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_NAME,
         CommandNamesAndDescriptions.SET_MODLOG_CHANNEL_COMMAND_NAME,
@@ -282,9 +292,11 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.WARN_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.KICK_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.BAN_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.MUTE_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.PURGE_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.UNBAN_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.UNWARN_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.UNMUTE_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.SET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.SET_MODLOG_CHANNEL_COMMAND_DESCRIPTION,

@@ -204,21 +204,39 @@ export class App {
                                   type: ModActions, members: GuildMemberManager): void {
         const emit = this.bot.emit.bind(this.bot);
         const botId = this.bot.user!.id;
+        const reason = 'Expired timeout on boot';
         switch (type) {
             case ModActions.BAN:
                 ModDbUtils.addModerationAction(
-                    serverId, botId, userId, ModActions.UNBAN, curTime, emit, 'Expired timeout on boot',
+                    serverId, botId, userId, ModActions.UNBAN, curTime, emit, reason,
                 );
                 ModUtils.handleUnbanTimeout(userId, serverId);
                 members!.unban(userId)
                     .catch((err) => {
                         log.info(err);
                         log.info(
-                            `Unable to unban user ${userId} from server ${serverId}.` +
-                            'Check the server ban list for confirmation.',
+                            `Unable to unban user ${userId} from server ${serverId}.`,
                         );
                     });
                 break;
+            case ModActions.MUTE: {
+                let muteRoleId = ModDbUtils.getMuteRoleId(serverId);
+                if (muteRoleId === null)
+                    muteRoleId = '0';
+                ModDbUtils.addModerationAction(
+                    serverId, botId, userId, ModActions.UNMUTE, curTime, emit, reason,
+                );
+                ModUtils.handleUnmuteTimeout(userId, serverId);
+                members!.fetch(userId)
+                    .then((user) => user.roles.remove(muteRoleId!))
+                    .catch((err) => {
+                        log.info(err);
+                        log.info(
+                            `Unable to unmute user ${userId} from server ${serverId}. Mute Role is ${muteRoleId}`,
+                        );
+                    });
+                break;
+            }
             default:
         }
     }
@@ -245,6 +263,15 @@ export class App {
             case ModActions.BAN:
                 ModUtils.addBanTimeout(duration, endTime, userId, serverId, botId, members, emit);
                 break;
+            case ModActions.MUTE: {
+                let muteRoleId = ModDbUtils.getMuteRoleId(serverId);
+                if (muteRoleId === null)
+                    muteRoleId = '0';
+                ModUtils.addMuteTimeout(
+                    duration, endTime, userId, serverId, botId, members, emit, muteRoleId,
+                );
+                break;
+            }
             default:
         }
     }

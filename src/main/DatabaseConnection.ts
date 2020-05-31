@@ -3,7 +3,7 @@ import Database from 'better-sqlite3';
 
 export class DatabaseConnection {
 
-    private static DEBUG = true;
+    private static DEBUG = false;
 
     private static storagePath = './servers.db';
 
