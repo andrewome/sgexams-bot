@@ -1,6 +1,7 @@
 import './lib/env';
 import {
-    Client, Message, MessageReaction, User, GuildMemberManager, MessageEmbed, TextChannel,
+    Client, Message, MessageReaction, User, GuildMemberManager,
+    MessageEmbed, TextChannel, GuildMember,
 } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
 import { SqliteError } from 'better-sqlite3';
@@ -32,7 +33,7 @@ export class App {
 
     public static readonly MODLOG_UPDATE = 'modLogUpdate';
 
-    public static readonly RAW = 'raw';
+    public static readonly USER_JOIN = 'guildMemberAdd';
 
     public static readonly READY = 'ready';
 
@@ -72,6 +73,17 @@ export class App {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.bot.on(App.REACTION_REMOVE, (reaction: MessageReaction, user: User): void => {
             new MessageReactionRemoveEventHandler(this.storage, reaction).handleEvent();
+        });
+
+        this.bot.on(App.USER_JOIN, (member: GuildMember): void => {
+            const serverId = member.guild.id;
+            const isMuted = ModDbUtils.isMemberMuted(serverId, member.id);
+            if (isMuted) {
+                const muteRoleId = ModDbUtils.getMuteRoleId(serverId);
+                if (muteRoleId === null)
+                    return;
+                member.roles.add(muteRoleId);
+            }
         });
 
         this.bot.on(App.MODLOG_UPDATE, (serverId: string, caseId: number,

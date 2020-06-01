@@ -251,6 +251,7 @@ export class ModDbUtils {
 
     /**
      * Gets the moderation logs of the current server from the moderationLogs table.
+     *
      * @param  {string} serverId
      * @returns {ModLog[]}
      */
@@ -309,5 +310,29 @@ export class ModDbUtils {
         ).get(serverId);
         db.close();
         return res.muteRoleId;
+    }
+
+    /**
+     * Determines if a user is muted based on the moderationLogs.
+     * Gets latest record of user where type is MUTE or UNMUTE.
+     * If latest is MUTE, then user is still muted, else not muted (or no record)
+     *
+     * @param  {string} serverId
+     * @param  {string} userId
+     * @returns boolean
+     */
+    public static isMemberMuted(serverId: string, userId: string): boolean {
+        const db = DatabaseConnection.connect();
+        const res = db.prepare(
+            'SELECT type FROM moderationLogs WHERE serverId = ? AND userId = ? AND ' +
+            '(type = ? OR type = ?) ORDER BY caseId DESC',
+        ).get(serverId, userId, ModActions.MUTE, ModActions.UNMUTE);
+        db.close();
+        if (!res) // If no record
+            return false;
+        const { type } = res;
+        if (type === ModActions.MUTE)
+            return true;
+        return false;
     }
 }
