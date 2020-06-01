@@ -74,6 +74,7 @@ export class ModDbUtils {
      * Adds a mod action into the database
      * reason || null because reason could be an empty string, in that case we do want to
      * record down null in the database.
+     * Emits the modlog update event with the modlog object containing modlog info.
      *
      * @param  {string} serverId
      * @param  {string} modId
@@ -94,10 +95,11 @@ export class ModDbUtils {
             ' reason, timeout, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
         ).run(serverId, caseId, modId, userId, type, reason || null, timeout, timestamp);
         db.close();
-        emit(
-            App.MODLOG_UPDATE, serverId, caseId, modId, userId, type,
-            reason || null, timeout || null, timestamp,
-        );
+        const modLog: ModLog = {
+            serverId, caseId, modId, userId, type, reason: reason || null,
+            timeout: timeout || null, timestamp,
+        };
+        emit(App.MODLOG_UPDATE, modLog);
     }
 
     /**

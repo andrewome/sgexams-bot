@@ -1,7 +1,6 @@
 import './lib/env';
 import {
-    Client, Message, MessageReaction, User, GuildMemberManager,
-    MessageEmbed, TextChannel, GuildMember,
+    Client, Message, MessageReaction, User, GuildMember,
 } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
 import { SqliteError } from 'better-sqlite3';
@@ -10,16 +9,15 @@ import { MessageReactionAddEventHandler } from './eventhandler/MessageReactionAd
 import { MessageReactionRemoveEventHandler } from './eventhandler/MessageReactionRemoveEventHandler';
 import { OnMessageEventHandler } from './eventhandler/OnMessageEventHandler';
 import { MessageUpdateEventHandler } from './eventhandler/MessageUpdateEventHandler';
-import { StarboardCache } from './storage/StarboardCache';
-import { ModDbUtils } from './modules/moderation/ModDbUtils';
-import { ModUtils } from './modules/moderation/ModUtil';
-import { ModActions } from './modules/moderation/classes/ModActions';
-import { Command } from './command/Command';
+import { ReadyEventHandler } from './eventhandler/ReadyEventHandler';
+import { ModLogUpdateEventHandler } from './eventhandler/ModLogUpdateEventHandler';
+import { ModLog } from './modules/moderation/classes/ModLog';
+import { UserJoinEventHandler } from './eventhandler/UserJoinEventHandler';
 
 export class App {
     private bot: Client;
 
-    private storage: Storage;
+    private storage: Storage = new Storage();
 
     public static readonly MESSAGE = 'message';
 
@@ -45,19 +43,27 @@ export class App {
         });
         log.info('Logging the bot in...');
         this.bot.login(process.env.BOT_TOKEN);
-        this.storage = new Storage().loadServers();
+        try {
+            this.storage = new Storage().loadServers();
+        } catch (err) {
+            log.warn(err.stack);
+            if (err instanceof SqliteError) {
+                log.error('Sqlite Error detected. Shutting down.');
+                process.exit();
+            }
+        }
     }
 
     /**
      * Contains event emitters that the bot is listening to
      */
     public run(): void {
+        this.bot.on(App.READY, (): void => {
+            new ReadyEventHandler(this.bot, this.storage).handleEvent();
+        });
+
         this.bot.on(App.MESSAGE, (message: Message): void => {
-            new OnMessageEventHandler(this.storage, message, this.bot)
-                .handleEvent()
-                .catch((err) => {
-                    this.handleError(err);
-                });
+            new OnMessageEventHandler(this.storage, message, this.bot).handleEvent();
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -76,216 +82,12 @@ export class App {
         });
 
         this.bot.on(App.USER_JOIN, (member: GuildMember): void => {
-            const serverId = member.guild.id;
-            const isMuted = ModDbUtils.isMemberMuted(serverId, member.id);
-            if (isMuted) {
-                const muteRoleId = ModDbUtils.getMuteRoleId(serverId);
-                if (muteRoleId === null)
-                    return;
-                member.roles.add(muteRoleId);
-            }
+            new UserJoinEventHandler(this.storage, member).handleEvent();
         });
 
-        this.bot.on(App.MODLOG_UPDATE, (serverId: string, caseId: number,
-                                        modId: string, userId: string,
-                                        type: ModActions, reason: string|null,
-                                        timeout: number|null, timestamp: number): void => {
-            this.handleModLogUpdate(
-                serverId, caseId, modId, userId, type, reason, timeout, timestamp,
-            ).catch((err) => {
-                this.handleError(err);
-            });
+        this.bot.on(App.MODLOG_UPDATE, (modLog: ModLog): void => {
+            new ModLogUpdateEventHandler(this.storage, this.bot, modLog).handleEvent();
         });
-
-        this.bot.on(App.READY, (): void => {
-            try {
-                log.info('Populating Starboard Cache...');
-                StarboardCache.generateStarboardMessagesCache(this.bot, this.storage);
-                log.info('Handling outstanding timeouts...');
-                this.handleTimeouts();
-                log.info('I am ready!');
-                this.bot.user!.setActivity('with NUKES!!!!', { type: 'PLAYING' });
-            } catch (err) {
-                this.handleError(err);
-            }
-        });
-    }
-
-    /**
-     * Warn error. If sqlite error shut bot down.
-     *
-     * @param  {Error} err
-     * @returns void
-     */
-    private handleError(err: Error): void {
-        log.warn(err.stack);
-        if (err instanceof SqliteError) {
-            log.error('Sqlite Error detected. Shutting down.');
-            process.exit();
-        }
-    }
-
-    /**
-     * Handles ModLog update event by creating appropriate embed and sending in designated channel.
-     *
-     * @param  {string} serverId
-     * @param  {number} caseId
-     * @param  {string} modId
-     * @param  {string} userId
-     * @param  {ModActions} type
-     * @param  {string|null} reason
-     * @param  {number|null} timeout
-     * @param  {number} timestamp
-     * @returns Promise
-     */
-    private async handleModLogUpdate(serverId: string, caseId: number,
-                                     modId: string, userId: string,
-                                     type: ModActions, reason: string|null,
-                                     timeout: number|null, timestamp: number): Promise<void> {
-        // Get channel
-        const channelId = ModDbUtils.getModLogChannel(serverId);
-        if (!channelId)
-            return;
-        const channel = this.bot.channels.resolve(channelId);
-        if (!channel || channel.type !== 'text')
-            return;
-        const embed = new MessageEmbed();
-        embed.addField('Moderator', `<@${modId}>`, true);
-        // Delete warn is a bit different
-        if (type !== ModActions.UNWARN) {
-            const user = await this.bot.users.fetch(userId);
-            embed.setTitle(`Case ${caseId}: ${user.tag} (${userId})`);
-            embed.addField('User', `<@${userId}>`, true);
-        } else {
-            embed.setTitle(`Case ${caseId}: Remove Warn`);
-            embed.addField('Case ID', `${userId}`, true);
-        }
-        embed.addField('\u200b', '\u200b', true);
-        embed.addField('Type', type, true);
-        embed.addField('Reason', reason || '-', true);
-        if (type === ModActions.MUTE || type === ModActions.BAN) {
-            const timeoutStr = timeout ? `${Math.floor((timeout / 60))} minutes` : 'Permanent';
-            embed.addField('Length', timeoutStr, true);
-        }
-        embed.setTimestamp(timestamp * 1000);
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        (channel as TextChannel).send(embed);
-    }
-
-    /**
-     * Handles timeouts in moderationTimeouts table upon booting
-     *
-     * @returns void
-     */
-    private handleTimeouts(): void {
-        const timeouts = ModDbUtils.fetchActionTimeouts();
-        const curTime = ModUtils.getUnixTime();
-        timeouts.forEach((timeout) => {
-            const {
-                serverId, userId, type, endTime,
-            } = timeout;
-            const guild = this.bot.guilds.resolve(serverId);
-            if (!guild) { // Guild can't be found
-                // Remove entry if timeout expired
-                if (endTime <= curTime)
-                    ModDbUtils.removeActionTimeout(userId, type, serverId);
-                return;
-            }
-
-            const { members } = guild;
-            if (endTime > curTime) { // Timer has not expired yet, reset the timeout
-                this.handleUnexpiredTimeouts(serverId, userId, type, endTime, curTime, members);
-            } else { // Timers have expired
-                this.handleExpiredTimeouts(serverId, userId, curTime, type, members);
-            }
-        });
-    }
-
-    /**
-     * Handles timeouts that have expired (current time >= end time)
-     * Undoes the action and removes the entry.
-     *
-     * @param  {string} serverId
-     * @param  {string} userId
-     * @param  {number} curTime
-     * @param  {ModActions} type
-     * @param  {GuildMemberManager} members
-     * @returns void
-     */
-    private handleExpiredTimeouts(serverId: string, userId: string, curTime: number,
-                                  type: ModActions, members: GuildMemberManager): void {
-        const emit = this.bot.emit.bind(this.bot);
-        const botId = this.bot.user!.id;
-        const reason = 'Expired timeout on boot';
-        switch (type) {
-            case ModActions.BAN:
-                ModDbUtils.addModerationAction(
-                    serverId, botId, userId, ModActions.UNBAN, curTime, emit, reason,
-                );
-                ModUtils.handleUnbanTimeout(userId, serverId);
-                members!.unban(userId)
-                    .catch((err) => {
-                        log.info(err);
-                        log.info(
-                            `Unable to unban user ${userId} from server ${serverId}.`,
-                        );
-                    });
-                break;
-            case ModActions.MUTE: {
-                let muteRoleId = ModDbUtils.getMuteRoleId(serverId);
-                if (muteRoleId === null)
-                    muteRoleId = '0';
-                ModDbUtils.addModerationAction(
-                    serverId, botId, userId, ModActions.UNMUTE, curTime, emit, reason,
-                );
-                ModUtils.handleUnmuteTimeout(userId, serverId);
-                members!.fetch(userId)
-                    .then((user) => user.roles.remove(muteRoleId!))
-                    .catch((err) => {
-                        log.info(err);
-                        log.info(
-                            `Unable to unmute user ${userId} from server ${serverId}. Mute Role is ${muteRoleId}`,
-                        );
-                    });
-                break;
-            }
-            default:
-        }
-    }
-
-    /**
-     * Handles timeouts that have not been expired (current time < end time)
-     * Sets a timeout of duration that expires at end time that undoes the action.
-     *
-     * @param  {string} serverId
-     * @param  {string} userId
-     * @param  {ModActions} type
-     * @param  {number} endTime
-     * @param  {number} curTime
-     * @param  {GuildMemberManager} members
-     * @returns void
-     */
-    private handleUnexpiredTimeouts(serverId: string, userId: string,
-                                    type: ModActions, endTime: number,
-                                    curTime: number, members: GuildMemberManager): void {
-        const emit = this.bot.emit.bind(this.bot);
-        const botId = this.bot.user!.id;
-        const duration = endTime - curTime;
-        switch (type) {
-            case ModActions.BAN:
-                ModUtils.addBanTimeout(duration, endTime, userId, serverId, botId, members, emit);
-                break;
-            case ModActions.MUTE: {
-                let muteRoleId = ModDbUtils.getMuteRoleId(serverId);
-                if (muteRoleId === null)
-                    muteRoleId = '0';
-                ModUtils.addMuteTimeout(
-                    duration, endTime, userId, serverId, botId, members, emit, muteRoleId,
-                );
-                break;
-            }
-            default:
-        }
     }
 }
 
@@ -300,7 +102,7 @@ if (require.main === module) {
                               loggerName: string): LoggingMethod => {
         const rawMethod = originalFactory(methodName, logLevel, loggerName);
         const editedMethodFactory = (message: string): void => {
-            const curDate = new Date().toLocaleString();
+            const curDate = new Date().toLocaleString('en-SG');
             const logMsg = `[${curDate}]: ${message}`;
             rawMethod(logMsg);
         };
@@ -308,16 +110,8 @@ if (require.main === module) {
         return editedMethodFactory;
     };
     log.methodFactory = newMethodFactory;
-
     log.setLevel(log.getLevel());
 
-    try {
-        new App().run();
-    } catch (err) {
-        log.warn(err.stack);
-        if (err instanceof SqliteError) {
-            log.error('Sqlite Error detected. Shutting down.');
-            process.exit();
-        }
-    }
+    // Start bot
+    new App().run();
 }
