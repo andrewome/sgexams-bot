@@ -74,6 +74,13 @@ export class MuteCommand extends Command {
         // Handle mute
         try {
             const target = await members!.fetch(targetId);
+            const { roles } = target;
+
+            // Check if role exists on user
+            if (roles.cache.array().some((x) => x.id === muteRoleId)) {
+                messageReply(this.generateUserAlreadyMutedEmbed());
+                return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+            }
             target.roles.add(muteRoleId);
             const curTime = ModUtils.getUnixTime();
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
@@ -95,6 +102,14 @@ export class MuteCommand extends Command {
         }
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+    }
+
+    private generateUserAlreadyMutedEmbed(): MessageEmbed {
+        return this.generateGenericEmbed(
+            MuteCommand.EMBED_TITLE,
+            'Target user already muted.',
+            MuteCommand.EMBED_ERROR_COLOUR,
+        );
     }
 
     private generateMuteRoleNotSet(): MessageEmbed {

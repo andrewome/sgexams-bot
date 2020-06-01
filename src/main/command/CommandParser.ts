@@ -39,6 +39,7 @@ import { ModLogsCommand } from './moderationcommands/ModLogsCommand';
 import { SetMuteRoleCommand } from './moderationcommands/SetMuteRoleCommand';
 import { GetMuteRoleCommand } from './moderationcommands/GetMuteRoleCommand';
 import { MuteCommand } from './moderationcommands/MuteCommand';
+import { UnmuteCommand } from './moderationcommands/UnmuteCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -185,6 +186,8 @@ export class CommandParser {
                 return new UnbanCommand(args);
             case CommandNamesAndDescriptions.UNWARN_COMMAND_NAME.toLowerCase():
                 return new UnwarnCommand(args);
+            case CommandNamesAndDescriptions.UNMUTE_COMMAND_NAME.toLowerCase():
+                return new UnmuteCommand(args);
             case CommandNamesAndDescriptions.SET_WARN_PUNISHMENTS_COMMAND_NAME.toLowerCase():
                 return new SetWarnPunishmentsCommand(args);
             case CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_NAME.toLowerCase():
