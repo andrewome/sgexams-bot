@@ -29,16 +29,14 @@ export class OkZoomerCommand extends Command {
         const messageId = this.commandArgs[0];
 
         // Delete message that sent this command to prevent spam.
-        deleteFunction!();
+        await deleteFunction!();
 
-        try {
-            const message = await (channel as TextChannel).messages.fetch(messageId);
-            for (const emoji of this.emojiSequence) {
-                // eslint-disable-next-line no-await-in-loop
-                await message.react(emoji);
-            }
-            // eslint-disable-next-line
-        } catch (err) {}
+        const message = await (channel as TextChannel).messages.fetch(messageId);
+        for (const emoji of this.emojiSequence) {
+            // eslint-disable-next-line no-await-in-loop
+            await message.react(emoji);
+        }
+
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }

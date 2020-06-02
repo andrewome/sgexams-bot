@@ -38,7 +38,7 @@ export class SetMuteRoleCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
@@ -46,7 +46,7 @@ export class SetMuteRoleCommand extends Command {
         // Check number of args, 0 args means reset.
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
-            messageReply(embed);
+            await messageReply(embed);
             ModDbUtils.setMuteRoleId(server.serverId, null);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
@@ -57,14 +57,14 @@ export class SetMuteRoleCommand extends Command {
         // Check if valid role
         if (channel === null) {
             embed = this.generateNotFoundEmbed();
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
         // Valid roleId
         ModDbUtils.setMuteRoleId(server.serverId, roleId);
         embed = this.generateValidEmbed(roleId);
-        messageReply(embed);
+        await messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

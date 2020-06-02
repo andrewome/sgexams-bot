@@ -34,7 +34,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
@@ -47,7 +47,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
                 null,
             );
             embed = this.generateResetEmbed();
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -61,7 +61,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
             msg,
         );
         embed = this.generateValidEmbed(msg);
-        messageReply(embed);
+        await messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

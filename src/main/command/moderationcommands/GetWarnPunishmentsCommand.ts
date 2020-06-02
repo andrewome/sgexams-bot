@@ -30,18 +30,18 @@ export class GetWarnPunishmentsCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         const rows = ModDbUtils.getWarnSettings(server.serverId);
 
         if (!rows.length) {
-            messageReply(this.generateNoSettingsFoundEmbed());
+            await messageReply(this.generateNoSettingsFoundEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        messageReply(this.generateEmbed(rows));
+        await messageReply(this.generateEmbed(rows));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
@@ -57,7 +57,7 @@ export class GetWarnPunishmentsCommand extends Command {
         for (const row of rows) {
             const { numWarns, type, duration } = row;
             out += `${numWarns} warns - ${type} `;
-            out += (duration ? `${duration} seconds\n` : 'forever\n');
+            out += (duration ? `${Math.floor(duration / 60)} minutes\n` : 'forever\n');
         }
         return this.generateGenericEmbed(
             GetWarnPunishmentsCommand.EMBED_TITLE,

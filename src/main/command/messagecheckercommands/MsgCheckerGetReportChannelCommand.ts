@@ -25,7 +25,7 @@ export class MsgCheckerGetReportChannelCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
@@ -45,7 +45,7 @@ export class MsgCheckerGetReportChannelCommand extends Command {
                 MsgCheckerGetReportChannelCommand.EMBED_DEFAULT_COLOUR,
             );
         }
-        messageReply(embed);
+        await messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

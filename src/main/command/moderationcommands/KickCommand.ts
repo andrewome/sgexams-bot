@@ -41,13 +41,13 @@ export class KickCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Check number of args
         if (this.args.length < 1) {
-            messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply(this.generateInsufficientArgumentsEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -60,11 +60,11 @@ export class KickCommand extends Command {
             const target = await members!.fetch(targetId);
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                            this.type, ModUtils.getUnixTime(), emit!, reason);
-            target.kick();
-            messageReply(this.generateValidEmbed(target, reason));
+            await target.kick();
+            await messageReply(this.generateValidEmbed(target, reason));
         } catch (err) {
             if (err instanceof DiscordAPIError)
-                messageReply(this.generateUserIdErrorEmbed());
+                await messageReply(this.generateUserIdErrorEmbed());
             else
                 throw err;
         }

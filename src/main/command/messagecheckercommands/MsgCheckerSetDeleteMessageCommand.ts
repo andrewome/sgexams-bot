@@ -34,20 +34,20 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Execute
         if (this.args.length === 0) {
-            messageReply(this.generateNoArgsEmbed());
+            await messageReply(this.generateNoArgsEmbed());
             return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
         const boolStr = this.args[0].toLowerCase();
         const trueFalseRegex = new RegExp(/\btrue\b|\bfalse\b/, 'g');
         if (!trueFalseRegex.test(boolStr)) {
-            messageReply(this.generateWrongFormatEmbed());
+            await messageReply(this.generateWrongFormatEmbed());
             return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
@@ -61,7 +61,7 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
         }
 
         server.messageCheckerSettings.setDeleteMessage(server.serverId, bool!);
-        messageReply(this.generateValidEmbed(bool!));
+        await messageReply(this.generateValidEmbed(bool!));
         return this.COMMAND_DEFAULT_COMMANDRESULT;
     }
 

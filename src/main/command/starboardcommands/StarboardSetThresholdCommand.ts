@@ -38,7 +38,7 @@ export class StarboardSetThresholdCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
@@ -47,7 +47,7 @@ export class StarboardSetThresholdCommand extends Command {
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
             server.starboardSettings.setThreshold(server.serverId, null);
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -57,13 +57,13 @@ export class StarboardSetThresholdCommand extends Command {
         const thresholdVal = parseInt(threshold, 10);
         if (Number.isNaN(thresholdVal) || thresholdVal < 1) {
             embed = this.generateInvalidEmbed();
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
         embed = this.generateValidEmbed(thresholdVal);
         server.starboardSettings.setThreshold(server.serverId, thresholdVal);
-        messageReply(embed);
+        await messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

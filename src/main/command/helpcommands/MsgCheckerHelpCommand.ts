@@ -16,7 +16,7 @@ export class MsgCheckerHelpCommand extends HelpCommandBase {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        messageReply(this.generateEmbed(
+        await messageReply(this.generateEmbed(
             MsgCheckerHelpCommand.HEADER,
             CommandNamesAndDescriptions.MSGCHECKER_COMMANDS,
             CommandNamesAndDescriptions.MSGCHECKER_DESCRIPTIONS,

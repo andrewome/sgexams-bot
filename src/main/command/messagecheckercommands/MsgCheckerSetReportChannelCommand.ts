@@ -42,7 +42,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
@@ -54,7 +54,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
                 server.serverId,
                 null,
             );
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
@@ -64,14 +64,14 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         const channel = channels!.resolve(channelId);
         if (channel === null) {
             embed = this.generateInvalidEmbed();
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
         // If not text
         if ((channel as Channel).type !== 'text') {
             embed = this.generateNotTextChannelEmbed();
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
@@ -80,7 +80,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
             server.serverId,
             channelId,
         );
-        messageReply(embed);
+        await messageReply(embed);
         return this.COMMAND_DEFAULT_COMMANDRESULT;
     }
 

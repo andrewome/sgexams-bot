@@ -43,13 +43,13 @@ export class SetWarnPunishmentsCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Check number of args, 0 args means reset.
         if (this.args.length === 0) {
-            messageReply(this.generateResetEmbed());
+            await messageReply(this.generateResetEmbed());
             ModDbUtils.resetWarnSettings(server.serverId);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
@@ -57,13 +57,13 @@ export class SetWarnPunishmentsCommand extends Command {
         // Parse args
         const settings = this.parseArgs(this.args);
         if (!settings) {
-            messageReply(this.generateInvalidUsageEmbed());
+            await messageReply(this.generateInvalidUsageEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
         ModDbUtils.resetWarnSettings(server.serverId);
         this.addToDatabase(server.serverId, settings);
-        messageReply(this.generateValidEmbed(settings));
+        await messageReply(this.generateValidEmbed(settings));
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -138,7 +138,7 @@ export class SetWarnPunishmentsCommand extends Command {
         for (const setting of settings) {
             const [numWarns, action, duration] = setting;
             out += `${numWarns} warns - ${action} `;
-            out += (duration ? `${duration} seconds\n` : 'forever\n');
+            out += (duration ? `${Math.floor(duration / 60)} minutes\n` : 'forever\n');
         }
 
         return this.generateGenericEmbed(

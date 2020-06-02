@@ -1,7 +1,7 @@
 /* eslint-disable prefer-template */
 /* eslint-disable no-nested-ternary */
 import {
-    Permissions, MessageEmbed, MessageReaction, User, ReactionCollectorOptions,
+    Permissions, MessageEmbed, MessageReaction, User, ReactionCollectorOptions, Message,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -66,7 +66,7 @@ export class ModLogsCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
@@ -89,7 +89,7 @@ export class ModLogsCommand extends Command {
         if (modLogs.length === 0) {
             const embed = new MessageEmbed();
             embed.setTitle('Mod logs is empty');
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -101,10 +101,10 @@ export class ModLogsCommand extends Command {
         try {
             embed = this.generateEmbed(modLogs, curStartIdx, endStartIdx);
         } catch (_) {
-            messageReply(this.ERROR_MESSAGE);
+            await messageReply(this.ERROR_MESSAGE);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
-        const sentMessage = await messageReply(embed);
+        const sentMessage: Message = await messageReply(embed);
 
         // Only display reactions if there is more than 1 page
         if (curStartIdx + 1 < endStartIdx) {
@@ -132,23 +132,12 @@ export class ModLogsCommand extends Command {
         };
 
         // Options
-        const options: ReactionCollectorOptions = { time: 60000 };
+        const time = 60000;
+        const options: ReactionCollectorOptions = { time, dispose: true };
         const collector = sentMessage.createReactionCollector(filter, options);
 
         // onReaction function to handle the event
         const onReaction = async (reaction: MessageReaction): Promise<void> => {
-            // Remove all reactions but the bot's
-            const reactions: MessageReaction[] = sentMessage.reactions.cache.array();
-            const usersToRemove = reactions
-                .map((x: MessageReaction) => x.users.cache.array())
-                .flat()
-                .map((x: User) => x.id)
-                .filter((x: string) => x !== botId!);
-            reactions.forEach((x: MessageReaction) => {
-                const userManager = x.users;
-                usersToRemove.forEach((user) => userManager.remove(user));
-            });
-
             // Update the current page
             const { name } = reaction.emoji;
             switch (name) {
@@ -171,6 +160,10 @@ export class ModLogsCommand extends Command {
             sentMessage.edit(newEmbed);
         };
         collector.on('collect', onReaction);
+        collector.on('remove', onReaction);
+        collector.on('end', async () => {
+            await sentMessage.reactions.removeAll();
+        });
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }

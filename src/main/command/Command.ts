@@ -58,13 +58,13 @@ export abstract class Command {
      * @param  {Function} messageReply
      * @returns void
      */
-    protected sendNoPermissionsMessage(messageReply: Function): void {
+    protected async sendNoPermissionsMessage(messageReply: Function): Promise<void> {
         const embed = this.generateGenericEmbed(
             Command.ERROR_EMBED_TITLE,
             Command.NO_PERMISSIONS_MSG,
             Command.EMBED_ERROR_COLOUR,
         );
-        messageReply(embed);
+        await messageReply(embed);
     }
 
     /**

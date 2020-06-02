@@ -41,8 +41,20 @@ export class App {
             restTimeOffset: 0,
             partials: ['MESSAGE', 'REACTION'],
         });
+    }
+
+    /**
+     * This function initialises the app by logging the bot in and filling up the storage.
+     *
+     * @returns App
+     */
+    public async initialise(): Promise<App> {
         log.info('Logging the bot in...');
-        this.bot.login(process.env.BOT_TOKEN);
+        await this.bot.login(process.env.BOT_TOKEN)
+            .catch((err) => {
+                log.error('Unable to login. Shutting down.');
+                process.exit();
+            });
         try {
             this.storage = new Storage().loadServers();
         } catch (err) {
@@ -52,6 +64,7 @@ export class App {
                 process.exit();
             }
         }
+        return this;
     }
 
     /**
@@ -113,5 +126,5 @@ if (require.main === module) {
     log.setLevel(log.getLevel());
 
     // Start bot
-    new App().run();
+    new App().initialise().then((app) => app.run());
 }

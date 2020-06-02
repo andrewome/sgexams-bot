@@ -16,7 +16,7 @@ export class ModerationHelpCommand extends HelpCommandBase {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        messageReply(this.generateEmbed(
+        await messageReply(this.generateEmbed(
             ModerationHelpCommand.HEADER,
             CommandNamesAndDescriptions.MODERATION_COMMANDS,
             CommandNamesAndDescriptions.MODERATION_DESCRIPTIONS,

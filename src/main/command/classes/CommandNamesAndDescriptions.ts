@@ -239,16 +239,16 @@ export abstract class CommandNamesAndDescriptions {
 
     public static readonly SET_WARN_PUNISHMENTS_COMMAND_NAME = 'SetWarnPunishments';
 
-    public static readonly SET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION = 'Sets warn threshold punishments';
+    public static readonly SET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION = 'Sets Warn threshold punishments';
 
     public static readonly GET_WARN_PUNISHMENTS_COMMAND_NAME = 'GetWarnPunishments';
 
-    public static readonly GET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION = 'Gets warn threshold punishments';
+    public static readonly GET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION = 'Gets Warn threshold punishments';
 
     public static readonly SET_MODLOG_CHANNEL_COMMAND_NAME = 'SetModLogChannel';
 
     public static readonly SET_MODLOG_CHANNEL_COMMAND_DESCRIPTION
-        = 'Sets the ModLog channel where the bot will send ModLog messages.';
+        = 'Sets the ModLog reporting channel.';
 
     public static readonly GET_MODLOG_CHANNEL_COMMAND_NAME = 'GetModLogChannel';
 
@@ -258,12 +258,12 @@ export abstract class CommandNamesAndDescriptions {
     public static readonly MOD_LOGS_COMMAND_NAME = 'ModLogs';
 
     public static readonly MOD_LOGS_COMMAND_DESCRIPTION
-        = 'Displays the history of all moderation commands run in the server';
+        = 'Displays Moderation Logs';
 
     public static readonly SET_MUTE_ROLE_COMMAND_NAME = 'SetMuteRole';
 
     public static readonly SET_MUTE_ROLE_COMMAND_DESCRIPTION
-        = 'Sets the mute role that the bot will assign when the mute command is used.';
+        = 'Sets the Mute Role.';
 
     public static readonly GET_MUTE_ROLE_COMMAND_NAME = 'GetMuteRole';
 
@@ -271,39 +271,39 @@ export abstract class CommandNamesAndDescriptions {
         = 'Displays the currently set Mute Role';
 
     public static readonly MODERATION_COMMANDS = [
-        CommandNamesAndDescriptions.WARN_COMMAND_NAME,
         CommandNamesAndDescriptions.KICK_COMMAND_NAME,
         CommandNamesAndDescriptions.BAN_COMMAND_NAME,
-        CommandNamesAndDescriptions.MUTE_COMMAND_NAME,
-        CommandNamesAndDescriptions.PURGE_COMMAND_NAME,
         CommandNamesAndDescriptions.UNBAN_COMMAND_NAME,
-        CommandNamesAndDescriptions.UNWARN_COMMAND_NAME,
+        CommandNamesAndDescriptions.MUTE_COMMAND_NAME,
         CommandNamesAndDescriptions.UNMUTE_COMMAND_NAME,
+        CommandNamesAndDescriptions.WARN_COMMAND_NAME,
+        CommandNamesAndDescriptions.UNWARN_COMMAND_NAME,
+        CommandNamesAndDescriptions.PURGE_COMMAND_NAME,
+        CommandNamesAndDescriptions.SET_MUTE_ROLE_COMMAND_NAME,
+        CommandNamesAndDescriptions.GET_MUTE_ROLE_COMMAND_NAME,
         CommandNamesAndDescriptions.SET_WARN_PUNISHMENTS_COMMAND_NAME,
         CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_NAME,
         CommandNamesAndDescriptions.SET_MODLOG_CHANNEL_COMMAND_NAME,
         CommandNamesAndDescriptions.GET_MODLOG_CHANNEL_COMMAND_NAME,
         CommandNamesAndDescriptions.MOD_LOGS_COMMAND_NAME,
-        CommandNamesAndDescriptions.SET_MUTE_ROLE_COMMAND_NAME,
-        CommandNamesAndDescriptions.GET_MUTE_ROLE_COMMAND_NAME,
     ]
 
     public static readonly MODERATION_DESCRIPTIONS = [
-        CommandNamesAndDescriptions.WARN_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.KICK_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.BAN_COMMAND_DESCRIPTION,
-        CommandNamesAndDescriptions.MUTE_COMMAND_DESCRIPTION,
-        CommandNamesAndDescriptions.PURGE_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.UNBAN_COMMAND_DESCRIPTION,
-        CommandNamesAndDescriptions.UNWARN_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.MUTE_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.UNMUTE_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.WARN_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.UNWARN_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.PURGE_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.SET_MUTE_ROLE_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.GET_MUTE_ROLE_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.SET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.SET_MODLOG_CHANNEL_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.GET_MODLOG_CHANNEL_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.MOD_LOGS_COMMAND_DESCRIPTION,
-        CommandNamesAndDescriptions.SET_MUTE_ROLE_COMMAND_DESCRIPTION,
-        CommandNamesAndDescriptions.GET_MUTE_ROLE_COMMAND_DESCRIPTION,
     ]
 
     public static readonly MODERATION_COMMANDS_LOWERCASE

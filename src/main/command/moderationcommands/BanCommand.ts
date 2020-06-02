@@ -41,13 +41,13 @@ export class BanCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Check number of args (absolute minimum should be 1)
         if (this.args.length < 1) {
-            messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply(this.generateInsufficientArgumentsEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -66,7 +66,7 @@ export class BanCommand extends Command {
         // Handle ban
         try {
             const target = await members!.fetch(targetId);
-            target.ban({ reason });
+            await target.ban({ reason });
             const curTime = ModUtils.getUnixTime();
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                            this.type, curTime, emit!, reason, duration);
@@ -77,10 +77,10 @@ export class BanCommand extends Command {
                     duration, endTime, targetId, server.serverId, botId!, members!, emit!,
                 );
             }
-            messageReply(this.generateValidEmbed(target, reason, duration));
+            await messageReply(this.generateValidEmbed(target, reason, duration));
         } catch (err) {
             if (err instanceof DiscordAPIError)
-                messageReply(this.generateUserIdErrorEmbed());
+                await messageReply(this.generateUserIdErrorEmbed());
             else
                 throw err;
         }

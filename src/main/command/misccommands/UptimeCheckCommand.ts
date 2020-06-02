@@ -43,7 +43,7 @@ export class UptimeCheckCommand extends Command {
         const upTimeMinutesStr = `${upTimeInMinutes} minute${this.addSIfPlural(upTimeInMinutes)}`;
         const upTimeSecondsStr = `${upTimeInSeconds} second${this.addSIfPlural(upTimeInSeconds)}`;
 
-        messageReply(this.generateGenericEmbed(
+        await messageReply(this.generateGenericEmbed(
             UptimeCheckCommand.EMBED_TITLE,
             `${upTimeDaysStr}, ${upTimeHoursStr}, ${upTimeMinutesStr} and ${upTimeSecondsStr}`,
             UptimeCheckCommand.EMBED_DEFAULT_COLOUR,

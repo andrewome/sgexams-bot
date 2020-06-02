@@ -35,7 +35,7 @@ export class StarboardRemoveEmojiCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
@@ -47,7 +47,7 @@ export class StarboardRemoveEmojiCommand extends Command {
                 StarboardRemoveEmojiCommand.NO_ARGUMENTS,
                 StarboardRemoveEmojiCommand.EMBED_ERROR_COLOUR,
             );
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
@@ -66,7 +66,7 @@ export class StarboardRemoveEmojiCommand extends Command {
                 StarboardRemoveEmojiCommand.EMBED_DEFAULT_COLOUR,
             );
             // Send output
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -76,7 +76,7 @@ export class StarboardRemoveEmojiCommand extends Command {
             StarboardRemoveEmojiCommand.EMBED_DEFAULT_COLOUR,
         );
         // Send output
-        messageReply(embed);
+        await messageReply(embed);
         return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
     }
 }

@@ -42,13 +42,13 @@ export class PurgeCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Check number of args
         if (this.args.length === 0) {
-            messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply(this.generateInsufficientArgumentsEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -56,7 +56,7 @@ export class PurgeCommand extends Command {
         const userId = this.args.length > 1 ? this.args[1].replace(/[<@!>]/g, '') : null;
         // Check for error on the limit
         if (Number.isNaN(limit) || limit > PurgeCommand.MSG_LIMIT || limit <= 0) {
-            messageReply(this.generateInvalidLimitEmbed());
+            await messageReply(this.generateInvalidLimitEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -64,7 +64,7 @@ export class PurgeCommand extends Command {
         const sentMessage = await messageReply(this.generateEmbed(`Fetching messages... 0/${limit} messages fetched.`));
         const messages = await this.fetchMessages(messageManager, limit, messageId!, sentMessage);
         const numDeleted = await this.bulkDeleteMessages(userId, messages, channel!, sentMessage);
-        sentMessage.edit(this.generateEmbed(`Deleted ${numDeleted} messages.`));
+        await sentMessage.edit(this.generateEmbed(`Deleted ${numDeleted} messages.`));
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -80,7 +80,7 @@ export class PurgeCommand extends Command {
     private async bulkDeleteMessages(userId: string|null, collectedMessages: Message[],
                                      channel: Channel, sentMessage: Message): Promise<number> {
 
-        sentMessage.edit(this.generateEmbed('Deleting messages...'));
+        await sentMessage.edit(this.generateEmbed('Deleting messages...'));
 
         // Filter messages by userId if specified
         if (userId) {
@@ -131,7 +131,8 @@ export class PurgeCommand extends Command {
             // Update message every 200 messages.
             const { length } = collectedMessages;
             if (length && length % 200 === 0)
-                sentMessage.edit(this.generateEmbed(
+                // eslint-disable-next-line no-await-in-loop
+                await sentMessage.edit(this.generateEmbed(
                     `Fetching messages... ${length}/${limit} messages fetched.`,
                 ));
 

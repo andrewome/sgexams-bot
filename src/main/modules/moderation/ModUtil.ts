@@ -223,7 +223,7 @@ export class ModUtils {
             // Remove timer from timers map
             ModUtils.removeTimeout(timerId);
 
-            // Add unban entry to db
+            // Add unmute entry to db
             const reason = `Unmute after ${Math.floor(duration / 60)} minutes.`;
             ModDbUtils.addModerationAction(
                 serverId, botId, userId, ModActions.UNMUTE, ModUtils.getUnixTime(), emit, reason,

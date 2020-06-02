@@ -41,13 +41,13 @@ export class UnbanCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Check number of args (absolute minimum should be 1)
         if (this.args.length < 1) {
-            messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply(this.generateInsufficientArgumentsEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -64,10 +64,10 @@ export class UnbanCommand extends Command {
                 ModUtils.getUnixTime(), emit!, reason,
             );
             ModUtils.handleUnbanTimeout(targetId, server.serverId);
-            messageReply(this.generateValidEmbed(user.username, reason));
+            await messageReply(this.generateValidEmbed(user.username, reason));
         } catch (err) {
             if (err instanceof DiscordAPIError)
-                messageReply(this.generateInvalidUserIdEmbed());
+                await messageReply(this.generateInvalidUserIdEmbed());
             else
                 throw err;
         }

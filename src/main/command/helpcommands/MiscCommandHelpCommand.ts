@@ -16,7 +16,7 @@ export class MiscCommandHelpCommand extends HelpCommandBase {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        messageReply(this.generateEmbed(
+        await messageReply(this.generateEmbed(
             MiscCommandHelpCommand.HEADER,
             CommandNamesAndDescriptions.MISC_COMMANDS,
             CommandNamesAndDescriptions.MISC_DESCRIPTIONS,

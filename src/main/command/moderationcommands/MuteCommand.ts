@@ -41,20 +41,20 @@ export class MuteCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Check number of args (absolute minimum should be 1)
         if (this.args.length < 1) {
-            messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply(this.generateInsufficientArgumentsEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
         // Check if mute role is set
         const muteRoleId = ModDbUtils.getMuteRoleId(server.serverId);
         if (muteRoleId === null) {
-            messageReply(this.generateMuteRoleNotSet());
+            await messageReply(this.generateMuteRoleNotSet());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -78,10 +78,10 @@ export class MuteCommand extends Command {
 
             // Check if role exists on user
             if (roles.cache.array().some((x) => x.id === muteRoleId)) {
-                messageReply(this.generateUserAlreadyMutedEmbed());
+                await messageReply(this.generateUserAlreadyMutedEmbed());
                 return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
             }
-            target.roles.add(muteRoleId);
+            await target.roles.add(muteRoleId);
             const curTime = ModUtils.getUnixTime();
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                            this.type, curTime, emit!, reason, duration);
@@ -93,10 +93,10 @@ export class MuteCommand extends Command {
                     botId!, members!, emit!, muteRoleId,
                 );
             }
-            messageReply(this.generateValidEmbed(target, reason, duration));
+            await messageReply(this.generateValidEmbed(target, reason, duration));
         } catch (err) {
             if (err instanceof DiscordAPIError)
-                messageReply(this.generateUserIdErrorEmbed());
+                await messageReply(this.generateUserIdErrorEmbed());
             else
                 throw err;
         }

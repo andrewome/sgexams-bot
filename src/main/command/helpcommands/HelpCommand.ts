@@ -16,7 +16,7 @@ export class HelpCommand extends HelpCommandBase {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        messageReply(this.generateEmbed(
+        await messageReply(this.generateEmbed(
             HelpCommand.HEADER,
             CommandNamesAndDescriptions.HELP_COMMANDS,
             CommandNamesAndDescriptions.HELP_DESCRIPTIONS,

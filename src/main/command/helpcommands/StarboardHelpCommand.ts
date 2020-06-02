@@ -16,7 +16,7 @@ export class StarboardHelpCommand extends HelpCommandBase {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        messageReply(this.generateEmbed(
+        await messageReply(this.generateEmbed(
             StarboardHelpCommand.HEADER,
             CommandNamesAndDescriptions.STARBOARD_COMMANDS,
             CommandNamesAndDescriptions.STARBOARD_DESCRIPTIONS,

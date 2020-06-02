@@ -41,20 +41,20 @@ export class UnmuteCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Check number of args (absolute minimum should be 1)
         if (this.args.length < 1) {
-            messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply(this.generateInsufficientArgumentsEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
         // Check if mute role is set
         const muteRoleId = ModDbUtils.getMuteRoleId(server.serverId);
         if (muteRoleId === null) {
-            messageReply(this.generateMuteRoleNotSet());
+            await messageReply(this.generateMuteRoleNotSet());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -70,20 +70,20 @@ export class UnmuteCommand extends Command {
 
             // Check if role does not exist on user
             if (!roles.cache.array().some((x) => x.id === muteRoleId)) {
-                messageReply(this.generateUserNotMutedEmbed());
+                await messageReply(this.generateUserNotMutedEmbed());
                 return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
             }
 
-            roles.remove(muteRoleId);
+            await roles.remove(muteRoleId);
             ModDbUtils.addModerationAction(
                 server.serverId, userId!, targetId, this.type,
                 ModUtils.getUnixTime(), emit!, reason,
             );
             ModUtils.handleUnmuteTimeout(targetId, server.serverId);
-            messageReply(this.generateValidEmbed(target.user.tag, reason));
+            await messageReply(this.generateValidEmbed(target.user.tag, reason));
         } catch (err) {
             if (err instanceof DiscordAPIError)
-                messageReply(this.generateInvalidUserIdEmbed());
+                await messageReply(this.generateInvalidUserIdEmbed());
             else
                 throw err;
         }

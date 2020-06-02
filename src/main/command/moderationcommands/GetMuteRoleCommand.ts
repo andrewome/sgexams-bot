@@ -25,7 +25,7 @@ export class GetMuteRoleCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
@@ -34,11 +34,11 @@ export class GetMuteRoleCommand extends Command {
 
         // Check if channel is set
         if (roleId === null) {
-            messageReply(this.generateNotSetEmbed());
+            await messageReply(this.generateNotSetEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        messageReply(this.generateValidEmbed(roleId));
+        await messageReply(this.generateValidEmbed(roleId));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

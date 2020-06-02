@@ -1,6 +1,7 @@
 import {
     GuildMember, MessageEmbed, Permissions, DiscordAPIError, GuildMemberManager,
 } from 'discord.js';
+import log from 'loglevel';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -41,13 +42,13 @@ export class WarnCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Check number of args
         if (this.args.length < 1) {
-            messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply(this.generateInsufficientArgumentsEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -60,16 +61,16 @@ export class WarnCommand extends Command {
             const target = await members!.fetch(targetId);
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                            this.type, curTime, emit!, reason);
-            messageReply(this.generateValidEmbed(target, reason));
+            await messageReply(this.generateValidEmbed(target, reason));
         } catch (err) {
             if (err instanceof DiscordAPIError)
-                messageReply(this.generateUserIdError());
+                await messageReply(this.generateUserIdError());
             else
                 throw err;
         }
 
         // Handle if this warning hit server warn action threshold
-        this.handleWarnThreshold(server.serverId, targetId, botId!, members!, emit!);
+        await this.handleWarnThreshold(server.serverId, targetId, botId!, members!, emit!);
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -98,7 +99,7 @@ export class WarnCommand extends Command {
             const target = await members!.fetch(targetId);
             switch (type) {
                 case ModActions.BAN:
-                    target.ban({ reason });
+                    await target.ban({ reason });
                     ModDbUtils.addModerationAction(
                         serverId, botId, targetId, ModActions.BAN, curTime, emit, reason, duration,
                     );
@@ -109,8 +110,34 @@ export class WarnCommand extends Command {
                         );
                     }
                     break;
-                case ModActions.MUTE:
+                case ModActions.MUTE: {
+                    // Check if mute role is set
+                    const muteRoleId = ModDbUtils.getMuteRoleId(serverId);
+                    if (muteRoleId === null) {
+                        log.warn(`[WarnCommand]: Unable to mute ${targetId} in ${serverId} - No mute role found!`);
+                        return;
+                    }
+
+                    // Check if role exists on user
+                    const { roles } = target;
+                    if (roles.cache.array().some((x) => x.id === muteRoleId)) {
+                        log.warn(`[WarnCommand]: ${targetId} in ${serverId} already has the muted role assigned! Ignoring.`);
+                        return;
+                    }
+
+                    await target.roles.add(muteRoleId);
+                    ModDbUtils.addModerationAction(serverId, botId, targetId, ModActions.MUTE,
+                                                   curTime, emit!, reason, duration);
+                    // Set timeout if any
+                    if (duration) {
+                        const endTime = curTime + duration;
+                        ModUtils.addMuteTimeout(
+                            duration, endTime, targetId, serverId,
+                            botId!, members!, emit!, muteRoleId,
+                        );
+                    }
                     break;
+                }
                 default:
             }
         }

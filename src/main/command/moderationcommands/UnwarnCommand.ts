@@ -43,13 +43,13 @@ export class UnwarnCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Check number of args (absolute minimum should be 1)
         if (this.args.length < 1) {
-            messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply(this.generateInsufficientArgumentsEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -62,7 +62,7 @@ export class UnwarnCommand extends Command {
 
         // Unsuccessful because of invalid caseid
         if (!successful) {
-            messageReply(this.generateInvalidCaseIdEmbed());
+            await messageReply(this.generateInvalidCaseIdEmbed());
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -71,7 +71,7 @@ export class UnwarnCommand extends Command {
             server.serverId, userId!, caseId.toString(),
             this.type, ModUtils.getUnixTime(), emit!, reason,
         );
-        messageReply(this.generateValidEmbed(caseId.toString(), reason));
+        await messageReply(this.generateValidEmbed(caseId.toString(), reason));
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
