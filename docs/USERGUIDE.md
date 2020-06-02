@@ -25,19 +25,19 @@ Command | Example | Description | Permissions
 Command | Example | Description | Permissions
 --- | --- | --- | ---
 `Kick` | `@bot kick userId [reason]` | Kicks a user from the server. | KICK_MEMBERS
-`Ban` | `@bot ban userId [reason] [X{m|h|d}]` | Bans a user from the server with an optional timeout.<br> X is an integer followed by `m` for minutes, `h` for hours and `d` for days. This is optional and if not specified, it means that the timeout is permanent. | BAN_MEMBERS
+`Ban` | `@bot ban userId [reason] [X{m\|h\|d}]` | Bans a user from the server with an optional timeout.<br> X is an integer followed by `m` for minutes, `h` for hours and `d` for days. This is optional and if not specified, it means that the timeout is permanent. | BAN_MEMBERS
 `Unban` | `@bot unban userId [reason]` | Unbans a user from the server. | BAN_MEMBERS
-`Mute` | `@bot mute userId [reason] [X{m|h|d}]` | Mutes a user from the server with an optional timeout.<br> X is an integer followed by `m` for minutes, `h` for hours and `d` for days. This is optional and if not specified, it means that the timeout is permanent. | KICK_MEMBERS, BAN_MEMBERS
+`Mute` | `@bot mute userId [reason] [X{m\|h\|d}]` | Mutes a user from the server with an optional timeout.<br> X is an integer followed by `m` for minutes, `h` for hours and `d` for days. This is optional and if not specified, it means that the timeout is permanent. | KICK_MEMBERS, BAN_MEMBERS
 `Unmute` | `@bot unmute userId [reason]` | Unmutes a user. | KICK_MEMBERS, BAN_MEMBERS
 `Warn` | `@bot warn userId [reason]` | Warns a user. | KICK_MEMBERS, BAN_MEMBERS
 `Purge` | `@bot purge numMessages [userId]` | Deletes messages from the channel this command is used in.<br> `numMessages` is the number of messages to fetch. <br>Optional `userId` can be specified to only delete messages from that user within the messages fetched.<br> **Only deletes messages that are under 2 weeks old due to Discord API limitations.** | MANAGE_MESSAGES
 `SetMuteRole` | `@bot SetMuteRole [roleId]` | Sets the mute role that the bot will assign upon the `mute` command.<br> If `roleId` is not specified, the role is resetted. | KICK_MEMBERS, BAN_MEMBERS
 `GetMuteRole` | `@bot GetMuteRole` | Displays the currently set Mute Role | KICK_MEMBERS, BAN_MEMBERS
-`SetWarnPunishments` | `@bot SetWarnPunishments [numWarns-{MUTE|BAN}[-X{m|h|d}] ...]` | Sets punishments when a user has accumulated a certain number of warnings.<br> `numWarns` is the number of warns the user has accumulated.<br> X is an integer followed by `m` for minutes, `h` for hours and `d` for days. This is optional and if not specified, it means that the timeout is permanent.<br> `@bot SetWarnPunishments 5-mute-3d 6-ban-7d 7-ban` will: <ul><li>mute the user for 3 days upon reaching 5 warnings</li><li>ban the user for 7 days upon reaching 6 warnings</li><li>ban the user permanently upon reaching 7 warnings</li></ul> | KICK_MEMBERS, BAN_MEMBERS
+`SetWarnPunishments` | `@bot SetWarnPunishments [numWarns-{MUTE\|BAN}[-X{m\|h\|d}] ...]` | Sets punishments when a user has accumulated a certain number of warnings.<br> `numWarns` is the number of warns the user has accumulated.<br> X is an integer followed by `m` for minutes, `h` for hours and `d` for days. This is optional and if not specified, it means that the timeout is permanent.<br> `@bot SetWarnPunishments 5-mute-3d 6-ban-7d 7-ban` will: <ul><li>mute the user for 3 days upon reaching 5 warnings</li><li>ban the user for 7 days upon reaching 6 warnings</li><li>ban the user permanently upon reaching 7 warnings</li></ul> | KICK_MEMBERS, BAN_MEMBERS
 `GetWarnPunishments` | `@bot GetWarnPunishments` | Gets Warn threshold punishments | KICK_MEMBERS, BAN_MEMBERS
 `SetModLogChannel` | `@bot SetModLogChannel [channelId]` | Sets the ModLog reporting channel. | KICK_MEMBERS, BAN_MEMBERS
 `GetModLogChannel` | `@bot GetModLogChannel` | Displays the currently set ModLog channel | KICK_MEMBERS, BAN_MEMBERS
-`ModLogs` | `@bot ModLogs [userId] [{KICK|BAN|MUTE|WARN}]` | Displays moderation logs.<br> Optional userId and type filtering is available as well. If userId and type are specified, the position of the arguments matter. | KICK_MEMBERS, BAN_MEMBERS
+`ModLogs` | `@bot ModLogs [userId] [{KICK\|BAN\|MUTE\|WARN}]` | Displays moderation logs.<br> Optional userId and type filtering is available as well. If userId and type are specified, the position of the arguments matter. | KICK_MEMBERS, BAN_MEMBERS
 
 # Starboard
 This module creates a `Starboard` in the server. Whenever a message receives enough counts of a specified emoji reaction, the message will be posted onto the `Starboard` channel to be immortalised.
@@ -108,4 +108,4 @@ Command | Example | Description | Permissions
 `MsgCheckerGetReportChannel`  | `@bot MsgCheckerGetReportChannel` | Displays the currently set reporting channel. | KICK_MEMBERS, BAN_MEMBERS
 `MsgCheckerSetResponseMsg`  | `@bot MsgCheckerSetResponseMsg [response message]` | Sets the response message to the user upon detection of blacklisted words for this server.<br> Use the string `{user}` inside the message to have the bot tag the user.<br> If no message is given, the message is resetted. | KICK_MEMBERS, BAN_MEMBERS
 `MsgCheckerGetResponseMsg`  | `@bot MsgCheckerGetResponseMsg` | Displays the response message to the user upon detection of blacklisted words for this server. | KICK_MEMBERS, BAN_MEMBERS
-`MsgCheckerSetDeleteMsg`  | `@bot MsgCheckerSetDeleteMsg {TRUE|FALSE}` | Sets whether the bot should delete instances of blacklisted words being used. | KICK_MEMBERS, BAN_MEMBERS
+`MsgCheckerSetDeleteMsg`  | `@bot MsgCheckerSetDeleteMsg {TRUE\|FALSE}` | Sets whether the bot should delete instances of blacklisted words being used. | KICK_MEMBERS, BAN_MEMBERS
