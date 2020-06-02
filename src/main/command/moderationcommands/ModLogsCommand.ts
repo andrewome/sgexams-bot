@@ -1,5 +1,3 @@
-/* eslint-disable prefer-template */
-/* eslint-disable no-nested-ternary */
 import {
     Permissions, MessageEmbed, MessageReaction, User, ReactionCollectorOptions, Message,
 } from 'discord.js';
@@ -61,7 +59,7 @@ export class ModLogsCommand extends Command {
 
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            server, memberPerms, messageReply, userId, botId,
+            server, memberPerms, messageReply, userId,
         } = commandArgs;
 
         // Check for permissions first

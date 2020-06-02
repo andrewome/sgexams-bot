@@ -19,7 +19,7 @@ export class WarnCommand extends Command {
 
     public static COMMAND_USAGE = '**Usage:** @bot warn userId [reason]';
 
-    public static EMBED_TITLE = 'Warn User';
+    public static EMBED_TITLE = 'Warn Member';
 
     private type = ModActions.WARN;
 

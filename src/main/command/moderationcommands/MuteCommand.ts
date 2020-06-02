@@ -1,6 +1,7 @@
 import {
     GuildMember, MessageEmbed, Permissions, DiscordAPIError,
 } from 'discord.js';
+import log from 'loglevel';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -12,9 +13,9 @@ export class MuteCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['BAN_MEMBERS']);
+    private permissions = new Permissions(['BAN_MEMBERS', 'KICK_MEMBERS']);
 
-    public static EMBED_TITLE = 'Ban Member';
+    public static EMBED_TITLE = 'Mute Member';
 
     public static COMMAND_USAGE = '**Usage:** @bot mute userId [reason] [X{m|h|d}]';
 
@@ -95,9 +96,10 @@ export class MuteCommand extends Command {
             }
             await messageReply(this.generateValidEmbed(target, reason, duration));
         } catch (err) {
-            if (err instanceof DiscordAPIError)
+            if (err instanceof DiscordAPIError) {
+                log.info(err);
                 await messageReply(this.generateUserIdErrorEmbed());
-            else
+            } else
                 throw err;
         }
 

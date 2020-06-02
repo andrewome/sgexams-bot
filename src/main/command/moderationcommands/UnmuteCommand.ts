@@ -12,7 +12,7 @@ export class UnmuteCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['BAN_MEMBERS']);
+    private permissions = new Permissions(['BAN_MEMBERS', 'KICK_MEMBERS']);
 
     public static COMMAND_USAGE = '**Usage:** @bot unmute userId [reason]';
 
