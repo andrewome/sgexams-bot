@@ -16,7 +16,7 @@ export class MessageReactionRemoveEventHandler extends MessageReactionEventHandl
             return;
         }
 
-        const server = this.getServer(this.reaction.message.guild!.id.toString());
+        const server = this.getServer(this.reaction.message.guild!.id);
         const { starboardSettings } = server;
         const starboardChecker = new StarboardRemoveReactChecker(starboardSettings, this.reaction);
 
@@ -30,7 +30,7 @@ export class MessageReactionRemoveEventHandler extends MessageReactionEventHandl
             // Check if emoji in channel is the same as the emoji reacted.
             const toEdit = await starboardChecker.checkEmojiInStarboardMessage(pair[1]);
             if (toEdit === true) {
-                starboardResponse.editStarboardMessageCount(pair[0], pair[1]);
+                await starboardResponse.editStarboardMessageCount(pair[0], pair[1]);
             }
         }
     }

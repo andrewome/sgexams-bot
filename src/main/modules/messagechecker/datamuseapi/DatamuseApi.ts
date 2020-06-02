@@ -1,6 +1,6 @@
 import axios from 'axios';
+import log from 'loglevel';
 import { DatamuseSpellingQueryResult } from './DatamuseSpellingQueryResult';
-import { DatamuseQueryError } from './errors/DatamuseQueryError';
 
 // http://www.datamuse.com/api/
 export class DatamuseApi {
@@ -13,19 +13,19 @@ export class DatamuseApi {
      * @returns Promise holding the return data from the API.
      */
     public async checkSpelling(word: string): Promise<DatamuseSpellingQueryResult[]> {
-        return new Promise<DatamuseSpellingQueryResult[]>((resolve): void => {
-            const query = `${this.endpoint}?sp=${word}`;
-            axios.get(query)
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                .then((res): any => {
-                    const { data } = res;
-                    const output: DatamuseSpellingQueryResult[] = [];
-                    for (const d of data) {
-                        output.push(new DatamuseSpellingQueryResult(d.word, d.score));
-                    }
-                    resolve(output);
-                })
-                .catch((): void => { throw new DatamuseQueryError('Error fetching result'); });
-        });
+        const query = `${this.endpoint}?sp=${word}`;
+
+        try {
+            const { data } = await axios.get(query);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const output: DatamuseSpellingQueryResult[] = [];
+            for (const d of data) {
+                output.push({ word: d.word, score: d.score });
+            }
+            return output;
+        } catch (err) {
+            log.info(err);
+            return [];
+        }
     }
 }

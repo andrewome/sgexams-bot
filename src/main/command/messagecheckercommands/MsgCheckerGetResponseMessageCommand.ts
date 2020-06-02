@@ -20,28 +20,33 @@ export class MsgCheckerGetResponseMessageCommand extends Command {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const { server, memberPerms, messageReply } = commandArgs;
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        // Get embed
+        // Generate embed and send
         const responseMessage = server.messageCheckerSettings.getResponseMessage();
-        const embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
+        let embed: MessageEmbed;
         if (responseMessage === null) {
-            embed.addField(MsgCheckerGetResponseMessageCommand.EMBED_TITLE,
-                           MsgCheckerGetResponseMessageCommand.CHANNEL_NOT_SET);
+            embed = this.generateGenericEmbed(
+                MsgCheckerGetResponseMessageCommand.EMBED_TITLE,
+                MsgCheckerGetResponseMessageCommand.CHANNEL_NOT_SET,
+                MsgCheckerGetResponseMessageCommand.EMBED_DEFAULT_COLOUR,
+            );
         } else {
             const msg = `Response message is ${responseMessage}.`;
-            embed.addField(MsgCheckerGetResponseMessageCommand.EMBED_TITLE, msg);
+            embed = this.generateGenericEmbed(
+                MsgCheckerGetResponseMessageCommand.EMBED_TITLE,
+                msg,
+                MsgCheckerGetResponseMessageCommand.EMBED_DEFAULT_COLOUR,
+            );
         }
-
-        // Execute
-        messageReply(embed);
+        await messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

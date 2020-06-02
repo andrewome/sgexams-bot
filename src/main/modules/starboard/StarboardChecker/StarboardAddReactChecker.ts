@@ -23,23 +23,17 @@ export class StarboardAddReactChecker extends StarboardChecker {
      * @returns Promise<number | null> Null if no changes or number of reacts.
      */
     public async checkAddReact(): Promise<number | null> {
-        return new Promise<number | null>((resolve): void => {
-            if (!this.standardChecks()) {
-                resolve(null);
-                return;
-            }
+        if (!this.standardChecks()) {
+            return null;
+        }
 
-            // Get the count of the number of reactions of starboard emoji.
-            const threshold = this.starboardSettings.getThreshold();
-            this.getNumberOfReactions().then((size: number): void => {
-                if (size < threshold!) {
-                    resolve(null);
-                } else {
-                    resolve(size);
-                }
-            });
-        });
+        // Get the count of the number of reactions of starboard emoji.
+        const threshold = this.starboardSettings.getThreshold();
+        const size = await this.getNumberOfReactions();
+
+        if (size < threshold!)
+            return null;
+
+        return size;
     }
-
-
 }

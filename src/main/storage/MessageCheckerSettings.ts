@@ -165,16 +165,12 @@ export class MessageCheckerSettings {
         return this.responseMessage;
     }
 
-    public setDeleteMessage(
-        { serverId, bool }: { serverId: string; bool: boolean },
-    ): void {
+    public setDeleteMessage(serverId: string, bool: boolean): void {
         this.deleteMessage = bool;
-        MessageCheckerSettings.updateDeleteMessageInDb({ serverId, bool });
+        MessageCheckerSettings.updateDeleteMessageInDb(serverId, bool);
     }
 
-    private static updateDeleteMessageInDb(
-        { serverId, bool }: { serverId: string; bool: boolean },
-    ): void {
+    private static updateDeleteMessageInDb(serverId: string, bool: boolean): void {
         const db = DatabaseConnection.connect();
         const update = db.prepare(
             'UPDATE messageCheckerSettings SET deleteMessage = (?) WHERE serverId = (?)',

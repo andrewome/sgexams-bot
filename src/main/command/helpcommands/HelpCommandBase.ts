@@ -14,7 +14,6 @@ export abstract class HelpCommandBase extends Command {
      * @param  {string[]} descriptions Descriptions of the commands in the module
      * @returns RichEmbed
      */
-    /* eslint-disable class-methods-use-this */
     protected generateEmbed(header: string, commands: string[],
                             descriptions: string[]): MessageEmbed {
         const embed = new MessageEmbed();

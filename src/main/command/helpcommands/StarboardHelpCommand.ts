@@ -12,11 +12,11 @@ export class StarboardHelpCommand extends HelpCommandBase {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        messageReply(this.generateEmbed(
+        await messageReply(this.generateEmbed(
             StarboardHelpCommand.HEADER,
             CommandNamesAndDescriptions.STARBOARD_COMMANDS,
             CommandNamesAndDescriptions.STARBOARD_DESCRIPTIONS,

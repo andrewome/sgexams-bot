@@ -1,4 +1,4 @@
-import { Message, TextChannel } from 'discord.js';
+import { Message, TextChannel, Client } from 'discord.js';
 import log from 'loglevel';
 import { CommandParser } from '../command/CommandParser';
 import { CommandResult } from '../command/classes/CommandResult';
@@ -11,11 +11,12 @@ import { MessageEventHandler } from './MessageEventHandler';
 export class OnMessageEventHandler extends MessageEventHandler {
     private botId: string;
 
-    public constructor(storage: Storage,
-                       message: Message,
-                       botId: string) {
+    private emit: Function;
+
+    public constructor(storage: Storage, message: Message, bot: Client) {
         super(storage, message);
-        this.botId = botId;
+        this.botId = bot.user!.id;
+        this.emit = bot.emit.bind(bot);
     }
 
     /**
@@ -24,21 +25,25 @@ export class OnMessageEventHandler extends MessageEventHandler {
      * @returns Promise
      */
     public async handleEvent(): Promise<void> {
-        // Handle partial message
-        await this.handlePartial();
-        // If it is a DM, ignore.
-        if (this.message.guild === null) return;
-        // If it's a bot, ignore :)
-        if (this.message.author.bot) return;
+        try {
+            // Handle partial message
+            await this.handlePartial();
+            // If it is a DM, ignore.
+            if (this.message.guild === null) return;
+            // If it's a bot, ignore :)
+            if (this.message.author.bot) return;
 
-        const server = this.getServer(this.message.guild.id.toString());
+            const server = this.getServer(this.message.guild.id.toString());
 
-        // Handle Command
-        const commandResult = this.handleCommand(server);
+            // Handle Command
+            const commandResult = await this.handleCommand(server);
 
-        // Check message if command result says so
-        if (commandResult.shouldCheckMessage) {
-            this.handleMessageCheck(server);
+            // Check message if command result says so
+            if (commandResult.shouldCheckMessage) {
+                await this.handleMessageCheck(server);
+            }
+        } catch (err) {
+            this.handleError(err);
         }
     }
 
@@ -48,7 +53,7 @@ export class OnMessageEventHandler extends MessageEventHandler {
      * @param  {Server} server
      * @returns CommandResult
      */
-    private handleCommand(server: Server): CommandResult {
+    private async handleCommand(server: Server): Promise<CommandResult> {
         // Default command result - check messages.
         const defaultCommandResult = new CommandResult(true);
 
@@ -57,19 +62,24 @@ export class OnMessageEventHandler extends MessageEventHandler {
         const commandParser = new CommandParser(content);
         if (commandParser.isCommand(this.botId)) {
             // Get args required for the command
-            const { permissions } = this.message.member!;
-            const { channels, emojis, name } = this.message.guild!;
+            const memberPerms = this.message.member!.permissions;
+            const {
+                channels, emojis, members, name, roles,
+            } = this.message.guild!;
             const { channel, author } = this.message;
-            const { id, tag } = author;
+            const { tag } = author;
             const { uptime } = this.message.client;
-            const sendFunction = this.message.channel.send.bind(this.message.channel);
+            const messageReply = this.message.channel.send.bind(this.message.channel);
             const deleteFunction = this.message.delete.bind(this.message);
-            const commandArgs = new CommandArgs(
-                server, permissions,
-                sendFunction, uptime!,
-                channels, emojis,
-                channel, id, deleteFunction,
-            );
+            const messageId = this.message.id;
+            const userId = author.id;
+            const { emit, botId } = this;
+            const commandArgs: CommandArgs = {
+                server, memberPerms, messageReply,
+                deleteFunction, uptime, channels,
+                emojis, members, channel, userId,
+                messageId, emit, botId, roles,
+            };
 
             // Execute command with commandArgs.
             const command = commandParser.getCommand();

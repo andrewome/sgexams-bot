@@ -1,7 +1,7 @@
+import { SqliteError } from 'better-sqlite3';
+import log from 'loglevel';
 import { Server } from '../storage/Server';
 import { Storage } from '../storage/Storage';
-import { MessageCheckerSettings } from '../storage/MessageCheckerSettings';
-import { StarboardSettings } from '../storage/StarboardSettings';
 
 /** Base class of Event Handlers */
 export abstract class EventHandler {
@@ -19,16 +19,23 @@ export abstract class EventHandler {
      */
     protected getServer(id: string): Server {
         if (this.storage.servers.has(id) === false) {
-            this.storage.servers.set(
-                id,
-                new Server(
-                    id,
-                    new MessageCheckerSettings(null, null, null, null),
-                    new StarboardSettings(null, null, null),
-                ),
-            );
+            this.storage.initNewServer(id);
         }
         return this.storage.servers.get(id)!;
+    }
+
+    /**
+     * Warn uncaught error. If sqlite error shut bot down.
+     *
+     * @param  {Error} err
+     * @returns void
+     */
+    protected handleError(err: Error): void {
+        log.warn(err.stack);
+        if (err instanceof SqliteError) {
+            log.error('Sqlite Error detected. Shutting down.');
+            process.exit();
+        }
     }
 
     /**

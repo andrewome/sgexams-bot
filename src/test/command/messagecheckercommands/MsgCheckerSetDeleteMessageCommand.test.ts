@@ -44,7 +44,7 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         deleteDbFile();
     });
 
-    it('No permission check', (): void => {
+    it('No permission check', async (): Promise<void> => {
         command = new MsgCheckerSetDeleteMessageCommand([]);
         const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
@@ -55,14 +55,18 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: new Permissions([]),
+            messageReply: checkEmbed,
+        };
 
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('No arguments', (): void => {
+    it('No arguments', async (): Promise<void> => {
         command = new MsgCheckerSetDeleteMessageCommand([]);
 
         const checkEmbed = (embed: MessageEmbed): void => {
@@ -73,13 +77,17 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
             field.value.should.equals(NO_ARGUMENTS);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('Wrong format', (): void => {
+    it('Wrong format', async (): Promise<void> => {
         command = new MsgCheckerSetDeleteMessageCommand(['something']);
 
         const checkEmbed = (embed: MessageEmbed): void => {
@@ -90,14 +98,18 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
             field.value.should.equals(INCORRECT_FORMAT);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
 
-    it('Correct format, true', (): void => {
+    it('Correct format, true', async (): Promise<void> => {
         command = new MsgCheckerSetDeleteMessageCommand(['true']);
         const msg = 'Delete Message set to: **TRUE**';
 
@@ -109,8 +121,12 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
             field.value.should.equals(msg);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check server settings, should be true
         server.messageCheckerSettings.getDeleteMessage().should.be.true;
@@ -119,7 +135,7 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('Correct format, true all caps', (): void => {
+    it('Correct format, true all caps', async (): Promise<void> => {
         command = new MsgCheckerSetDeleteMessageCommand(['TRUE']);
         const msg = 'Delete Message set to: **TRUE**';
 
@@ -131,8 +147,12 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
             field.value.should.equals(msg);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check server settings, should be true
         server.messageCheckerSettings.getDeleteMessage().should.be.true;
@@ -141,7 +161,7 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('Correct format, true mixed caps', (): void => {
+    it('Correct format, true mixed caps', async (): Promise<void> => {
         command = new MsgCheckerSetDeleteMessageCommand(['TRuE']);
         const msg = 'Delete Message set to: **TRUE**';
 
@@ -153,8 +173,12 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
             field.value.should.equals(msg);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check server settings, should be true
         server.messageCheckerSettings.getDeleteMessage().should.be.true;
@@ -163,7 +187,7 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('Correct format, false', (): void => {
+    it('Correct format, false', async (): Promise<void> => {
         command = new MsgCheckerSetDeleteMessageCommand(['false']);
         const msg = 'Delete Message set to: **FALSE**';
 
@@ -178,8 +202,12 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         // Check server settings, should be true
         server.messageCheckerSettings.getDeleteMessage().should.be.false;
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check server settings, should be false
         server.messageCheckerSettings.getDeleteMessage().should.be.false;

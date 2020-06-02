@@ -1,5 +1,5 @@
 import {
-    MessageReaction, TextChannel, Message, MessageAttachment, MessageEmbed, Collection,
+    MessageReaction, TextChannel, MessageAttachment, MessageEmbed, Collection,
 } from 'discord.js';
 import { StarboardSettings } from '../../storage/StarboardSettings';
 import { StarboardCache } from '../../storage/StarboardCache';
@@ -63,12 +63,11 @@ export class StarboardResponse {
         const { message } = this.reaction;
         const starboardChannel = message.guild!.channels.resolve(starboardChannelId)!;
         const { tag } = message.author;
-        const channel = `<#${message.channel.id.toString()}>`;
+        const channel = `<#${message.channel.id}>`;
         const {
             url, id, attachments, embeds,
         } = message;
-        const content = message.cleanContent;
-        const { member } = message; // null if member has left the guild.
+        const { content, member } = message; // null if member has left the guild.
         let nickname = null;
         // assign nickname if member is not null
         if (member)
@@ -79,11 +78,10 @@ export class StarboardResponse {
 
         // Generate embed
         let username = '';
-        if (!nickname) {
+        if (!nickname)
             username = `${tag}`;
-        } else {
+        else
             username = `${nickname}, aka ${tag}`;
-        }
 
         const embed = new MessageEmbed()
             .setColor(StarboardResponse.EMBED_COLOUR)
@@ -100,13 +98,9 @@ export class StarboardResponse {
 
         const outputMsg
             = `**${numberOfReacts}** <:${emoji.name}:${emoji.id}> **In:** ${channel} **ID:** ${id}`;
-        (starboardChannel as TextChannel).send(outputMsg, embed)
-            // Don't forget to set the starboard channel in the cache.
-            .then((m: Message | Message[]): void => {
-                if (m instanceof Message) {
-                    cacheArr[1] = m.id;
-                }
-            });
+        const sentMessage = await (starboardChannel as TextChannel).send(outputMsg, embed);
+        // Don't forget to set the starboard channel in the cache.
+        cacheArr[1] = sentMessage.id;
     }
 
     /**
@@ -142,7 +136,7 @@ export class StarboardResponse {
             newContent += str;
             newContent += ' ';
         }
-        message.edit(newContent);
+        await message.edit(newContent);
     }
 
     /**
@@ -152,16 +146,12 @@ export class StarboardResponse {
      * @returns Promise
      */
     public async deleteStarboardMessage(messageId: string): Promise<void> {
-        return new Promise<void>((): void => {
-            // Get channel, then message
-            const starboardChannel
-                = this.reaction.message.guild!.channels.resolve(
-                    this.starboardSettings.getChannel()!,
-                );
-            (starboardChannel as TextChannel).messages.fetch(messageId)
-                .then((message: Message): void => {
-                    message.delete();
-                });
-        });
+        // Get channel, then message
+        const starboardChannel = this.reaction.message.guild!.channels.resolve(
+                this.starboardSettings.getChannel()!,
+        );
+
+        const message = await (starboardChannel as TextChannel).messages.fetch(messageId);
+        await message.delete();
     }
 }

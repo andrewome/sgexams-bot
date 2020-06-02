@@ -12,11 +12,11 @@ export class MiscCommandHelpCommand extends HelpCommandBase {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        messageReply(this.generateEmbed(
+        await messageReply(this.generateEmbed(
             MiscCommandHelpCommand.HEADER,
             CommandNamesAndDescriptions.MISC_COMMANDS,
             CommandNamesAndDescriptions.MISC_DESCRIPTIONS,

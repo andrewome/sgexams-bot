@@ -47,7 +47,7 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
         deleteDbFile();
     });
 
-    it('No permission check', (): void => {
+    it('No permission check', async (): Promise<void> => {
         command = new StarboardSetThresholdCommand([]);
         const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
@@ -58,14 +58,18 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: new Permissions([]),
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
 
-    it('Reset threshold', (): void => {
+    it('Reset threshold', async (): Promise<void> => {
         const threshold = 10;
         server.starboardSettings.setThreshold(serverId, threshold);
         command = new StarboardSetThresholdCommand([]);
@@ -78,8 +82,12 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
             field.value.should.equals(THRESHOLD_RESETTED);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -88,7 +96,7 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
         (server.starboardSettings.getThreshold() === null).should.be.true;
         compareWithReserialisedStorage(storage).should.be.true;
     });
-    it('Valid threshold', (): void => {
+    it('Valid threshold', async (): Promise<void> => {
         const threshold = 10;
         const msg = `Starboard threshold set to ${threshold}.`;
         command = new StarboardSetThresholdCommand([threshold.toString(10)]);
@@ -101,8 +109,12 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
             field.value.should.equals(msg);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -111,7 +123,7 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
         server.starboardSettings.getThreshold()!.should.equals(threshold);
         compareWithReserialisedStorage(storage).should.be.true;
     });
-    it('Invalid threshold - String', (): void => {
+    it('Invalid threshold - String', async (): Promise<void> => {
         command = new StarboardSetThresholdCommand(['haha']);
 
         const checkEmbed = (embed: MessageEmbed): void => {
@@ -122,13 +134,17 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
             field.value.should.equals(NOT_AN_INTEGER);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('Invalid threshold - Out of range value 1', (): void => {
+    it('Invalid threshold - Out of range value 1', async (): Promise<void> => {
         command = new StarboardSetThresholdCommand(['0']);
 
         const checkEmbed = (embed: MessageEmbed): void => {
@@ -139,13 +155,17 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
             field.value.should.equals(NOT_AN_INTEGER);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('Invalid threshold - Out of range value 2', (): void => {
+    it('Invalid threshold - Out of range value 2', async (): Promise<void> => {
         command = new StarboardSetThresholdCommand(['-5']);
 
         const checkEmbed = (embed: MessageEmbed): void => {
@@ -156,8 +176,12 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
             field.value.should.equals(NOT_AN_INTEGER);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;

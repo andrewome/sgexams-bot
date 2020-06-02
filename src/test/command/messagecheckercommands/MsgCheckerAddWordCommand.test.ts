@@ -43,7 +43,7 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         deleteDbFile();
     });
 
-    it('No permission check', (): void => {
+    it('No permission check', async (): Promise<void> => {
         command = new MsgCheckerAddWordCommand([]);
         const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
@@ -54,15 +54,19 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: new Permissions([]),
+            messageReply: checkEmbed,
+        };
 
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
 
-    it('Adding words, no duplicates', (): void => {
+    it('Adding words, no duplicates', async (): Promise<void> => {
         // Add some words
         const args = ['word1', 'word2', 'word3'];
         const addedWordsStr = `${args[0]}\n${args[1]}\n${args[2]}\n`;
@@ -78,8 +82,12 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         };
 
         // Execute
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;
@@ -93,7 +101,7 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         compareWithReserialisedStorage(storage).should.be.true;
     });
 
-    it('Adding words, with duplicates', (): void => {
+    it('Adding words, with duplicates', async (): Promise<void> => {
         // Add some words first
         const args = ['word1', 'word2', 'word3'];
         command = new MsgCheckerAddWordCommand(args.slice(0, 2));
@@ -118,8 +126,12 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
 
         // Execute
         command = new MsgCheckerAddWordCommand(args);
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;
@@ -133,7 +145,7 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         compareWithReserialisedStorage(storage).should.be.true;
     });
 
-    it('Adding words, with duplicates in args', (): void => {
+    it('Adding words, with duplicates in args', async (): Promise<void> => {
         // Add some words first
         const args = ['word1', 'word2', 'word3', 'word3'];
         command = new MsgCheckerAddWordCommand(args);
@@ -155,8 +167,12 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         };
 
         // Execute
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;
@@ -170,7 +186,7 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         compareWithReserialisedStorage(storage).should.be.true;
     });
 
-    it('No arguments', (): void => {
+    it('No arguments', async (): Promise<void> => {
         const args: string[] = [];
         command = new MsgCheckerAddWordCommand(args);
 
@@ -185,8 +201,12 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
         };
 
         // Execute
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.false;

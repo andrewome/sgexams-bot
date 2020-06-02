@@ -59,16 +59,8 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.MSGCHECKER_SET_DELETE_MESSAGE_COMMAND_DESCRIPTION,
     ];
 
-    public static readonly MSGCHECKER_COMMANDS_LOWERCASE = [
-        CommandNamesAndDescriptions.MSGCHECKER_LIST_WORDS_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_ADD_WORD_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_REMOVE_WORD_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_SET_REPORT_CHANNEL_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_GET_REPORT_CHANNEL_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_SET_RESPONSE_MESSAGE_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_GET_RESPONSE_MESSAGE_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_SET_DELETE_MESSAGE_COMMAND_NAME.toLowerCase(),
-    ];
+    public static readonly MSGCHECKER_COMMANDS_LOWERCASE
+        = CommandNamesAndDescriptions.MSGCHECKER_COMMANDS.map((x) => x.toLowerCase());
 
     /** Starboard Commands */
     public static readonly STARBOARD_SET_CHANNEL_COMMAND_NAME = 'StarboardSetChannel';
@@ -126,15 +118,8 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.STARBOARD_GET_THRESHOLD_COMMAND_DESCRIPTION,
     ];
 
-    public static readonly STARBOARD_COMMANDS_LOWERCASE = [
-        CommandNamesAndDescriptions.STARBOARD_SET_CHANNEL_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_GET_CHANNEL_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_ADD_EMOJI_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_REMOVE_EMOJI_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_GET_EMOJI_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_SET_THRESHOLD_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_GET_THRESHOLD_COMMAND_NAME.toLowerCase(),
-    ];
+    public static readonly STARBOARD_COMMANDS_LOWERCASE
+        = CommandNamesAndDescriptions.STARBOARD_COMMANDS.map((x) => x.toLowerCase());
 
     /** Misc Commands */
     public static readonly ROTATE_IMAGE_COMMAND_NAME = 'Rotate';
@@ -171,12 +156,8 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.OKZOOMER_COMMAND_DESCRIPTION,
     ];
 
-    public static readonly MISC_COMMANDS_LOWERCASE = [
-        CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.OKBOOMER_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.OKZOOMER_COMMAND_NAME.toLowerCase(),
-    ];
+    public static readonly MISC_COMMANDS_LOWERCASE
+        = CommandNamesAndDescriptions.MISC_COMMANDS.map((x) => x.toLowerCase());
 
     /** Help Commands */
     public static readonly HELP_COMMAND_NAME = 'Help';
@@ -199,11 +180,17 @@ export abstract class CommandNamesAndDescriptions {
     public static readonly MISC_COMMAND_HELP_COMMAND_DESCRIPTION
         = 'Displays other Miscellaneous commands';
 
+    public static readonly MODERATION_HELP_COMMAND_NAME = 'ModHelp'
+
+    public static readonly MODERATION_HELP_COMMAND_DESCRIPTION
+        = 'Displays other Moderation commands';
+
     public static readonly HELP_COMMANDS = [
         CommandNamesAndDescriptions.HELP_COMMAND_NAME,
         CommandNamesAndDescriptions.MSGCHECKER_HELP_COMMAND_NAME,
         CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_NAME,
         CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME,
+        CommandNamesAndDescriptions.MODERATION_HELP_COMMAND_NAME,
     ];
 
     public static readonly HELP_DESCRIPTIONS = [
@@ -211,12 +198,114 @@ export abstract class CommandNamesAndDescriptions {
         CommandNamesAndDescriptions.MSGCHECKER_HELP_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.MODERATION_HELP_COMMAND_DESCRIPTION,
     ];
 
-    public static readonly HELP_COMMANDS_LOWERCASE = [
-        CommandNamesAndDescriptions.HELP_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MSGCHECKER_HELP_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_NAME.toLowerCase(),
-        CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME.toLowerCase(),
-    ];
+    public static readonly HELP_COMMANDS_LOWERCASE
+        = CommandNamesAndDescriptions.HELP_COMMANDS.map((x) => x.toLowerCase());
+
+    /** Moderation Commands */
+    public static readonly WARN_COMMAND_NAME = 'Warn';
+
+    public static readonly WARN_COMMAND_DESCRIPTION = 'Warns a User.';
+
+    public static readonly KICK_COMMAND_NAME = 'Kick';
+
+    public static readonly KICK_COMMAND_DESCRIPTION = 'Kicks a User.';
+
+    public static readonly BAN_COMMAND_NAME = 'Ban';
+
+    public static readonly BAN_COMMAND_DESCRIPTION = 'Bans a User.';
+
+    public static readonly PURGE_COMMAND_NAME = 'Purge';
+
+    public static readonly PURGE_COMMAND_DESCRIPTION = 'Purges messages.';
+
+    public static readonly UNBAN_COMMAND_NAME = 'Unban';
+
+    public static readonly UNBAN_COMMAND_DESCRIPTION = 'Unbans a User.';
+
+    public static readonly UNWARN_COMMAND_NAME = 'Unwarn'
+
+    public static readonly UNWARN_COMMAND_DESCRIPTION = 'Undo a warn case.';
+
+    public static readonly MUTE_COMMAND_NAME = 'Mute'
+
+    public static readonly MUTE_COMMAND_DESCRIPTION = 'Mutes a User.';
+
+    public static readonly UNMUTE_COMMAND_NAME = 'Unmute'
+
+    public static readonly UNMUTE_COMMAND_DESCRIPTION = 'Unmutes a User.';
+
+    public static readonly SET_WARN_PUNISHMENTS_COMMAND_NAME = 'SetWarnPunishments';
+
+    public static readonly SET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION = 'Sets Warn threshold punishments';
+
+    public static readonly GET_WARN_PUNISHMENTS_COMMAND_NAME = 'GetWarnPunishments';
+
+    public static readonly GET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION = 'Gets Warn threshold punishments';
+
+    public static readonly SET_MODLOG_CHANNEL_COMMAND_NAME = 'SetModLogChannel';
+
+    public static readonly SET_MODLOG_CHANNEL_COMMAND_DESCRIPTION
+        = 'Sets the ModLog reporting channel.';
+
+    public static readonly GET_MODLOG_CHANNEL_COMMAND_NAME = 'GetModLogChannel';
+
+    public static readonly GET_MODLOG_CHANNEL_COMMAND_DESCRIPTION
+        = 'Displays the currently set ModLog channel';
+
+    public static readonly MOD_LOGS_COMMAND_NAME = 'ModLogs';
+
+    public static readonly MOD_LOGS_COMMAND_DESCRIPTION
+        = 'Displays Moderation Logs';
+
+    public static readonly SET_MUTE_ROLE_COMMAND_NAME = 'SetMuteRole';
+
+    public static readonly SET_MUTE_ROLE_COMMAND_DESCRIPTION
+        = 'Sets the Mute Role.';
+
+    public static readonly GET_MUTE_ROLE_COMMAND_NAME = 'GetMuteRole';
+
+    public static readonly GET_MUTE_ROLE_COMMAND_DESCRIPTION
+        = 'Displays the currently set Mute Role';
+
+    public static readonly MODERATION_COMMANDS = [
+        CommandNamesAndDescriptions.KICK_COMMAND_NAME,
+        CommandNamesAndDescriptions.BAN_COMMAND_NAME,
+        CommandNamesAndDescriptions.UNBAN_COMMAND_NAME,
+        CommandNamesAndDescriptions.MUTE_COMMAND_NAME,
+        CommandNamesAndDescriptions.UNMUTE_COMMAND_NAME,
+        CommandNamesAndDescriptions.WARN_COMMAND_NAME,
+        CommandNamesAndDescriptions.UNWARN_COMMAND_NAME,
+        CommandNamesAndDescriptions.PURGE_COMMAND_NAME,
+        CommandNamesAndDescriptions.SET_MUTE_ROLE_COMMAND_NAME,
+        CommandNamesAndDescriptions.GET_MUTE_ROLE_COMMAND_NAME,
+        CommandNamesAndDescriptions.SET_WARN_PUNISHMENTS_COMMAND_NAME,
+        CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_NAME,
+        CommandNamesAndDescriptions.SET_MODLOG_CHANNEL_COMMAND_NAME,
+        CommandNamesAndDescriptions.GET_MODLOG_CHANNEL_COMMAND_NAME,
+        CommandNamesAndDescriptions.MOD_LOGS_COMMAND_NAME,
+    ]
+
+    public static readonly MODERATION_DESCRIPTIONS = [
+        CommandNamesAndDescriptions.KICK_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.BAN_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.UNBAN_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.MUTE_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.UNMUTE_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.WARN_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.UNWARN_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.PURGE_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.SET_MUTE_ROLE_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.GET_MUTE_ROLE_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.SET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.SET_MODLOG_CHANNEL_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.GET_MODLOG_CHANNEL_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.MOD_LOGS_COMMAND_DESCRIPTION,
+    ]
+
+    public static readonly MODERATION_COMMANDS_LOWERCASE
+        = CommandNamesAndDescriptions.MODERATION_COMMANDS.map((x) => x.toLowerCase());
 }

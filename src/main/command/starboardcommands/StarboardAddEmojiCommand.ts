@@ -34,7 +34,7 @@ export class StarboardAddEmojiCommand extends Command {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
             server, memberPerms, messageReply, emojis,
         } = commandArgs;
@@ -42,19 +42,19 @@ export class StarboardAddEmojiCommand extends Command {
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Check if there's arguments
-        const embed = new MessageEmbed();
+        let embed: MessageEmbed;
         if (this.args.length === 0) {
-            embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(
+            embed = this.generateGenericEmbed(
                 StarboardAddEmojiCommand.ERROR_EMBED_TITLE,
                 StarboardAddEmojiCommand.NO_ARGUMENTS,
+                StarboardAddEmojiCommand.EMBED_ERROR_COLOUR,
             );
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
@@ -64,12 +64,12 @@ export class StarboardAddEmojiCommand extends Command {
         // Check if valid emoji
         const emoji = emojis!.resolve(emojiId);
         if (emoji === null) {
-            embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(
-                StarboardAddEmojiCommand.EMBED_TITLE,
+            embed = this.generateGenericEmbed(
+                StarboardAddEmojiCommand.ERROR_EMBED_TITLE,
                 StarboardAddEmojiCommand.EMOJI_NOT_FOUND,
+                StarboardAddEmojiCommand.EMBED_ERROR_COLOUR,
             );
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
@@ -80,22 +80,25 @@ export class StarboardAddEmojiCommand extends Command {
         );
 
         if (successfullyAdded) {
-            embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(StarboardAddEmojiCommand.EMBED_TITLE, `Added Emoji: <:${emoji!.name}:${emoji!.id}>`);
+            embed = this.generateGenericEmbed(
+                StarboardAddEmojiCommand.ERROR_EMBED_TITLE,
+                `Added Emoji: <:${emoji!.name}:${emoji!.id}>`,
+                StarboardAddEmojiCommand.EMBED_DEFAULT_COLOUR,
+            );
 
             // Send output
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(
-            StarboardAddEmojiCommand.EMBED_TITLE,
+        embed = this.generateGenericEmbed(
+            StarboardAddEmojiCommand.ERROR_EMBED_TITLE,
             StarboardAddEmojiCommand.MAYBE_EMOJI_ALREADY_ADDED,
+            StarboardAddEmojiCommand.EMBED_ERROR_COLOUR,
         );
 
         // Send output
-        messageReply(embed);
+        await messageReply(embed);
         return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
     }
 }

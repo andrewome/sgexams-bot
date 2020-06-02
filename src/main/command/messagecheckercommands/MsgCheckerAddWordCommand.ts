@@ -30,12 +30,12 @@ export class MsgCheckerAddWordCommand extends Command {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const { server, memberPerms, messageReply } = commandArgs;
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
@@ -46,7 +46,7 @@ export class MsgCheckerAddWordCommand extends Command {
         const embed = this.generateEmbed(wordsAdded, wordsNotAdded);
 
         // Send output
-        messageReply(embed);
+        await messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

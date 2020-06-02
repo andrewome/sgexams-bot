@@ -34,6 +34,8 @@
         "max-classes-per-file": "off",
         "nonblock-statement-body-position": "off",
         "curly": "off",
+        "object-property-newline": "off",
+        "no-param-reassign": "off",
         "indent": [
             "error", 
             4, 

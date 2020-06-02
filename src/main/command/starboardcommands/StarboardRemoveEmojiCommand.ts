@@ -29,25 +29,25 @@ export class StarboardRemoveEmojiCommand extends Command {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const { server, memberPerms, messageReply } = commandArgs;
         const { serverId, starboardSettings } = server;
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
         // Check if there's arguments
-        const embed = new MessageEmbed();
+        let embed: MessageEmbed;
         if (this.args.length === 0) {
-            embed.setColor(Command.EMBED_ERROR_COLOUR);
-            embed.addField(
+            embed = this.generateGenericEmbed(
                 StarboardRemoveEmojiCommand.ERROR_EMBED_TITLE,
                 StarboardRemoveEmojiCommand.NO_ARGUMENTS,
+                StarboardRemoveEmojiCommand.EMBED_ERROR_COLOUR,
             );
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
@@ -60,20 +60,23 @@ export class StarboardRemoveEmojiCommand extends Command {
         );
 
         if (successfullyRemoved) {
-            embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            embed.addField(StarboardRemoveEmojiCommand.EMBED_TITLE, `Removed Emoji: <:${emoji!.name}:${emoji!.id}>`);
+            embed = this.generateGenericEmbed(
+                StarboardRemoveEmojiCommand.EMBED_TITLE,
+                `Removed Emoji: <:${emoji!.name}:${emoji!.id}>`,
+                StarboardRemoveEmojiCommand.EMBED_DEFAULT_COLOUR,
+            );
             // Send output
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(
+        embed = this.generateGenericEmbed(
             StarboardRemoveEmojiCommand.EMBED_TITLE,
             StarboardRemoveEmojiCommand.MAYBE_EMOJI_NOT_INSIDE,
+            StarboardRemoveEmojiCommand.EMBED_DEFAULT_COLOUR,
         );
         // Send output
-        messageReply(embed);
+        await messageReply(embed);
         return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
     }
 }

@@ -47,7 +47,7 @@ describe('MsgCheckerSetResponseMessageCommand test suite', (): void => {
         deleteDbFile();
     });
 
-    it('No permission check', (): void => {
+    it('No permission check', async (): Promise<void> => {
         command = new MsgCheckerSetResponseMessageCommand([]);
         const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
@@ -58,14 +58,18 @@ describe('MsgCheckerSetResponseMessageCommand test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: new Permissions([]),
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
 
-    it('Reset response message', (): void => {
+    it('Reset response message', async (): Promise<void> => {
         command = new MsgCheckerSetResponseMessageCommand([]);
         server.messageCheckerSettings.setResponseMessage(serverId, 'XD');
 
@@ -77,8 +81,12 @@ describe('MsgCheckerSetResponseMessageCommand test suite', (): void => {
             field.value.should.equals(MESSAGE_RESETTED);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
@@ -87,7 +95,8 @@ describe('MsgCheckerSetResponseMessageCommand test suite', (): void => {
         (server.messageCheckerSettings.getResponseMessage() === null).should.be.true;
         compareWithReserialisedStorage(storage).should.be.true;
     });
-    it('Valid channelid', (): void => {
+
+    it('Valid channelid', async (): Promise<void> => {
         const responseMessage = 'Hey there';
         const msg = `Response Message set to ${responseMessage}`;
         command = new MsgCheckerSetResponseMessageCommand(responseMessage.split(' '));
@@ -100,8 +109,12 @@ describe('MsgCheckerSetResponseMessageCommand test suite', (): void => {
             field.value.should.equals(msg);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;

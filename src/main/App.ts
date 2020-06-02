@@ -1,19 +1,23 @@
 import './lib/env';
 import {
-    Client, Message, MessageReaction, User,
+    Client, Message, MessageReaction, User, GuildMember,
 } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
+import { SqliteError } from 'better-sqlite3';
 import { Storage } from './storage/Storage';
 import { MessageReactionAddEventHandler } from './eventhandler/MessageReactionAddEventHandler';
 import { MessageReactionRemoveEventHandler } from './eventhandler/MessageReactionRemoveEventHandler';
 import { OnMessageEventHandler } from './eventhandler/OnMessageEventHandler';
 import { MessageUpdateEventHandler } from './eventhandler/MessageUpdateEventHandler';
-import { StarboardCache } from './storage/StarboardCache';
+import { ReadyEventHandler } from './eventhandler/ReadyEventHandler';
+import { ModLogUpdateEventHandler } from './eventhandler/ModLogUpdateEventHandler';
+import { ModLog } from './modules/moderation/classes/ModLog';
+import { UserJoinEventHandler } from './eventhandler/UserJoinEventHandler';
 
 export class App {
     private bot: Client;
 
-    private storage: Storage;
+    private storage: Storage = new Storage();
 
     public static readonly MESSAGE = 'message';
 
@@ -25,7 +29,9 @@ export class App {
 
     public static readonly REACTION_DELETED = 'messageReactionDeleted';
 
-    public static readonly RAW = 'raw';
+    public static readonly MODLOG_UPDATE = 'modLogUpdate';
+
+    public static readonly USER_JOIN = 'guildMemberAdd';
 
     public static readonly READY = 'ready';
 
@@ -35,19 +41,45 @@ export class App {
             restTimeOffset: 0,
             partials: ['MESSAGE', 'REACTION'],
         });
+    }
+
+    /**
+     * This function initialises the app by logging the bot in and filling up the storage.
+     *
+     * @returns App
+     */
+    public async initialise(): Promise<App> {
         log.info('Logging the bot in...');
-        this.bot.login(process.env.BOT_TOKEN);
-        this.storage = new Storage().loadServers();
+        await this.bot.login(process.env.BOT_TOKEN)
+            .catch((err) => {
+                log.error('Unable to login. Shutting down.');
+                process.exit();
+            });
+        try {
+            this.storage = new Storage().loadServers();
+        } catch (err) {
+            log.warn(err.stack);
+            if (err instanceof SqliteError) {
+                log.error('Sqlite Error detected. Shutting down.');
+                process.exit();
+            }
+        }
+        return this;
     }
 
     /**
      * Contains event emitters that the bot is listening to
      */
     public run(): void {
-        this.bot.on(App.MESSAGE, (message: Message): void => {
-            new OnMessageEventHandler(this.storage, message, this.bot.user!.id).handleEvent();
+        this.bot.on(App.READY, (): void => {
+            new ReadyEventHandler(this.bot, this.storage).handleEvent();
         });
 
+        this.bot.on(App.MESSAGE, (message: Message): void => {
+            new OnMessageEventHandler(this.storage, message, this.bot).handleEvent();
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.bot.on(App.MESSAGE_UPDATE, (oldMessage: Message, newMessage: Message): void => {
             new MessageUpdateEventHandler(this.storage, newMessage).handleEvent();
         });
@@ -62,34 +94,37 @@ export class App {
             new MessageReactionRemoveEventHandler(this.storage, reaction).handleEvent();
         });
 
-        this.bot.on(App.READY, (): void => {
-            log.info('Populating Starboard Cache...');
-            StarboardCache.generateStarboardMessagesCache(this.bot, this.storage);
-            log.info('I am ready!');
-            this.bot.user!.setActivity('with NUKES!!!!', { type: 'PLAYING' });
+        this.bot.on(App.USER_JOIN, (member: GuildMember): void => {
+            new UserJoinEventHandler(this.storage, member).handleEvent();
+        });
+
+        this.bot.on(App.MODLOG_UPDATE, (modLog: ModLog): void => {
+            new ModLogUpdateEventHandler(this.storage, this.bot, modLog).handleEvent();
         });
     }
 }
 
-// Set up logging method
-log.enableAll();
-const originalFactory = log.methodFactory;
+if (require.main === module) {
+    // Set up logging method
+    log.enableAll();
+    const originalFactory = log.methodFactory;
 
-// Make logs show current date
-const newMethodFactory = (methodName: string,
-                          logLevel: 0 | 1 | 2 | 3 | 4 | 5,
-                          loggerName: string): LoggingMethod => {
-    const rawMethod = originalFactory(methodName, logLevel, loggerName);
-    const editedMethodFactory = (message: string): void => {
-        const curDate = new Date().toLocaleString();
-        const logMsg = `[${curDate}]: ${message}`;
-        rawMethod(logMsg);
+    // Make logs show current date
+    const newMethodFactory = (methodName: string,
+                              logLevel: 0 | 1 | 2 | 3 | 4 | 5,
+                              loggerName: string): LoggingMethod => {
+        const rawMethod = originalFactory(methodName, logLevel, loggerName);
+        const editedMethodFactory = (message: string): void => {
+            const curDate = new Date().toLocaleString('en-SG');
+            const logMsg = `[${curDate}]: ${message}`;
+            rawMethod(logMsg);
+        };
+
+        return editedMethodFactory;
     };
+    log.methodFactory = newMethodFactory;
+    log.setLevel(log.getLevel());
 
-    return editedMethodFactory;
-};
-log.methodFactory = newMethodFactory;
-
-log.setLevel(log.getLevel());
-
-new App().run();
+    // Start bot
+    new App().initialise().then((app) => app.run());
+}

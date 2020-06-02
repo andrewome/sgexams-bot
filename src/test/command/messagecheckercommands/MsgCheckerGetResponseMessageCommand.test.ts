@@ -4,12 +4,10 @@ import { MessageEmbed, Permissions } from 'discord.js';
 import { MsgCheckerGetResponseMessageCommand } from '../../../main/command/messagecheckercommands/MsgCheckerGetResponseMessageCommand';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
-import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
-import { StarboardSettings } from '../../../main/storage/StarboardSettings';
-import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 import { deleteDbFile, TEST_STORAGE_PATH } from '../../TestsHelper';
 import { DatabaseConnection } from '../../../main/DatabaseConnection';
 import { Storage } from '../../../main/storage/Storage';
+import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 
 should();
 
@@ -41,7 +39,7 @@ describe('MsgCheckerGetResponseMessageCommand class test suite', (): void => {
         deleteDbFile();
     });
 
-    it('No permission check', (): void => {
+    it('No permission check', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
@@ -51,14 +49,18 @@ describe('MsgCheckerGetResponseMessageCommand class test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: new Permissions([]),
+            messageReply: checkEmbed,
+        };
 
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('Message not set', (): void => {
+    it('Message not set', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -68,15 +70,19 @@ describe('MsgCheckerGetResponseMessageCommand class test suite', (): void => {
             field.value.should.equals(CHANNEL_NOT_SET);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
 
-        const commandResult = command.execute(commandArgs);
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
 
-    it('Message set', (): void => {
+    it('Message set', async (): Promise<void> => {
         const responseMessage = 'testing';
         server.messageCheckerSettings.setResponseMessage(
             server.serverId,
@@ -92,8 +98,12 @@ describe('MsgCheckerGetResponseMessageCommand class test suite', (): void => {
             field.value.should.equals(`Response message is ${responseMessage}.`);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;

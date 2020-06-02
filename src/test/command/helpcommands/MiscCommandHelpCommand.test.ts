@@ -24,7 +24,7 @@ beforeEach((): void => {
 });
 
 describe('MiscHelp Command Test Suite', (): void => {
-    it('Execute test', (): void => {
+    it('Execute test', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -41,8 +41,12 @@ describe('MiscHelp Command Test Suite', (): void => {
             field.value.should.equals(output);
         };
 
-        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: new Permissions([]),
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;

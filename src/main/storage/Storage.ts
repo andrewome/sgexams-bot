@@ -82,6 +82,9 @@ export class Storage {
         db.prepare(
             'INSERT INTO starboardSettings (serverId, channel, threshold) VALUES (?, ?, ?)',
         ).run(serverId, null, null);
+        db.prepare(
+            'INSERT INTO moderationSettings(serverId, channelId, muteRoleId) VALUES (?, ?, ?)',
+        ).run(serverId, null, null);
         db.close();
     }
 

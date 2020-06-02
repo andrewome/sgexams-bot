@@ -33,12 +33,12 @@ export class StarboardSetThresholdCommand extends Command {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const { server, memberPerms, messageReply } = commandArgs;
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
@@ -47,7 +47,7 @@ export class StarboardSetThresholdCommand extends Command {
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
             server.starboardSettings.setThreshold(server.serverId, null);
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -57,13 +57,13 @@ export class StarboardSetThresholdCommand extends Command {
         const thresholdVal = parseInt(threshold, 10);
         if (Number.isNaN(thresholdVal) || thresholdVal < 1) {
             embed = this.generateInvalidEmbed();
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
         embed = this.generateValidEmbed(thresholdVal);
         server.starboardSettings.setThreshold(server.serverId, thresholdVal);
-        messageReply(embed);
+        await messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
@@ -72,13 +72,12 @@ export class StarboardSetThresholdCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateResetEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(StarboardSetThresholdCommand.EMBED_TITLE,
-                       StarboardSetThresholdCommand.THRESHOLD_RESETTED);
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardSetThresholdCommand.EMBED_TITLE,
+            StarboardSetThresholdCommand.THRESHOLD_RESETTED,
+            StarboardSetThresholdCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 
     /**
@@ -86,13 +85,12 @@ export class StarboardSetThresholdCommand extends Command {
      *
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateInvalidEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_ERROR_COLOUR);
-        embed.addField(StarboardSetThresholdCommand.EMBED_TITLE,
-                       StarboardSetThresholdCommand.NOT_AN_INTEGER);
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardSetThresholdCommand.EMBED_TITLE,
+            StarboardSetThresholdCommand.NOT_AN_INTEGER,
+            StarboardSetThresholdCommand.EMBED_ERROR_COLOUR,
+        );
     }
 
     /**
@@ -101,12 +99,11 @@ export class StarboardSetThresholdCommand extends Command {
      * @param  {number} threshold
      * @returns RichEmbed
      */
-    // eslint-disable-next-line class-methods-use-this
     private generateValidEmbed(threshold: number): MessageEmbed {
-        const embed = new MessageEmbed();
-        const msg = `Starboard threshold set to ${threshold}.`;
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(StarboardSetThresholdCommand.EMBED_TITLE, msg);
-        return embed;
+        return this.generateGenericEmbed(
+            StarboardSetThresholdCommand.EMBED_TITLE,
+            `Starboard threshold set to ${threshold}.`,
+            StarboardSetThresholdCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 }

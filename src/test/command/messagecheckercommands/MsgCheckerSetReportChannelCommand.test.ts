@@ -47,7 +47,7 @@ beforeEach((): void => {
 });
 
 describe('MsgCheckerSetReportChannelCommand test suite', (): void => {
-    it('No permission check', (): void => {
+    it('No permission check', async (): Promise<void> => {
         command = new MsgCheckerSetReportChannelCommand([]);
         const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
@@ -58,8 +58,12 @@ describe('MsgCheckerSetReportChannelCommand test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: new Permissions([]),
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;

@@ -29,12 +29,12 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const { server, memberPerms, messageReply } = commandArgs;
 
         // Check for permissions first
         if (!this.hasPermissions(this.permissions, memberPerms)) {
-            this.sendNoPermissionsMessage(messageReply);
+            await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
@@ -47,7 +47,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
                 null,
             );
             embed = this.generateResetEmbed();
-            messageReply(embed);
+            await messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -61,7 +61,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
             msg,
         );
         embed = this.generateValidEmbed(msg);
-        messageReply(embed);
+        await messageReply(embed);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
@@ -72,12 +72,11 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
      */
     // eslint-disable-next-line class-methods-use-this
     private generateResetEmbed(): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        embed.addField(MsgCheckerSetResponseMessageCommand.EMBED_TITLE,
-                       MsgCheckerSetResponseMessageCommand.MESSAGE_RESETTED);
-
-        return embed;
+        return this.generateGenericEmbed(
+            MsgCheckerSetResponseMessageCommand.EMBED_TITLE,
+            MsgCheckerSetResponseMessageCommand.MESSAGE_RESETTED,
+            MsgCheckerSetResponseMessageCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 
     /**
@@ -88,11 +87,10 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
      */
     // eslint-disable-next-line class-methods-use-this
     private generateValidEmbed(msg: string): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-        const responseMessage = `Response Message set to ${msg}`;
-        embed.addField(MsgCheckerSetResponseMessageCommand.EMBED_TITLE, responseMessage);
-
-        return embed;
+        return this.generateGenericEmbed(
+            MsgCheckerSetResponseMessageCommand.EMBED_TITLE,
+            `Response Message set to ${msg}`,
+            MsgCheckerSetResponseMessageCommand.EMBED_DEFAULT_COLOUR,
+        );
     }
 }

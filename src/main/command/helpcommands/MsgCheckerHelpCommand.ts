@@ -12,11 +12,11 @@ export class MsgCheckerHelpCommand extends HelpCommandBase {
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
      */
-    public execute(commandArgs: CommandArgs): CommandResult {
+    public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        messageReply(this.generateEmbed(
+        await messageReply(this.generateEmbed(
             MsgCheckerHelpCommand.HEADER,
             CommandNamesAndDescriptions.MSGCHECKER_COMMANDS,
             CommandNamesAndDescriptions.MSGCHECKER_DESCRIPTIONS,

@@ -8,6 +8,14 @@ import { CommandArgs } from './classes/CommandArgs';
 export abstract class Command {
     public static NO_ARGUMENTS = 'Oops! I received no arguments. Please try again.';
 
+    public static INSUFFICIENT_ARGUMENTS = 'Insufficient arguments. Please try again.';
+
+    public static INTERNAL_ERROR_OCCURED = 'An internal error occured.'
+
+    public static USERID_ERROR = 'Invalid User. Please try again.';
+
+    public static MISSING_REASON = 'Missing a reason. Please try again';
+
     public static EMBED_DEFAULT_COLOUR = '125bd1';
 
     public static EMBED_ERROR_COLOUR = 'ff0000';
@@ -26,7 +34,7 @@ export abstract class Command {
      *                                   a command may use.
      * @returns CommandResult
      */
-    public abstract execute(commandArgs: CommandArgs): CommandResult;
+    public async abstract execute(commandArgs: CommandArgs): Promise<CommandResult>;
 
     /**
      * This function checks if a given guildmember has the permissions required
@@ -35,7 +43,6 @@ export abstract class Command {
      * @param  {Permissions} userPermissions Permissions of the user
      * @returns boolean
      */
-    // eslint-disable-next-line class-methods-use-this
     public hasPermissions(commandPermissions: Permissions,
                           userPermissions: Readonly<Permissions>): boolean {
         // Check if user permissions exist inside command permissions
@@ -51,12 +58,26 @@ export abstract class Command {
      * @param  {Function} messageReply
      * @returns void
      */
-    // eslint-disable-next-line class-methods-use-this
-    protected sendNoPermissionsMessage(messageReply: Function): void {
-        const embed = new MessageEmbed();
-        embed.setColor(Command.EMBED_ERROR_COLOUR)
-            .addField(Command.ERROR_EMBED_TITLE, Command.NO_PERMISSIONS_MSG);
+    protected async sendNoPermissionsMessage(messageReply: Function): Promise<void> {
+        const embed = this.generateGenericEmbed(
+            Command.ERROR_EMBED_TITLE,
+            Command.NO_PERMISSIONS_MSG,
+            Command.EMBED_ERROR_COLOUR,
+        );
+        await messageReply(embed);
+    }
 
-        messageReply(embed);
+    /**
+     * This function generates a generic embed used by most of the command classes.
+     *
+     * @param  {string} title
+     * @param  {string} message
+     * @param  {string} colour
+     * @returns MessageEmbed
+     */
+    protected generateGenericEmbed(title: string, message: string, colour: string): MessageEmbed {
+        const embed = new MessageEmbed();
+        embed.setColor(colour).addField(title, message);
+        return embed;
     }
 }

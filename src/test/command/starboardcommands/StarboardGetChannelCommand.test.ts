@@ -39,7 +39,7 @@ describe('StarboardGetChannelCommand class test suite', (): void => {
         deleteDbFile();
     });
 
-    it('No permission check', (): void => {
+    it('No permission check', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
@@ -49,13 +49,17 @@ describe('StarboardGetChannelCommand class test suite', (): void => {
             field.value.should.equals(Command.NO_PERMISSIONS_MSG);
         };
 
-        const commandArgs = new CommandArgs(server, new Permissions([]), checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: new Permissions([]),
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('Channel not set', (): void => {
+    it('Channel not set', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
             embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
@@ -65,13 +69,17 @@ describe('StarboardGetChannelCommand class test suite', (): void => {
             field.value.should.equals(CHANNEL_NOT_SET);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
     });
-    it('Channel set', (): void => {
+    it('Channel set', async (): Promise<void> => {
         const channelId = '111';
         server.starboardSettings.setChannel(serverId, channelId);
 
@@ -84,8 +92,12 @@ describe('StarboardGetChannelCommand class test suite', (): void => {
             field.value.should.equals(`Starboard Channel is currently set to <#${channelId}>.`);
         };
 
-        const commandArgs = new CommandArgs(server, adminPerms, checkEmbed);
-        const commandResult = command.execute(commandArgs);
+        const commandArgs: CommandArgs = {
+            server,
+            memberPerms: adminPerms,
+            messageReply: checkEmbed,
+        };
+        const commandResult = await command.execute(commandArgs);
 
         // Check command result
         commandResult.shouldCheckMessage.should.be.true;
