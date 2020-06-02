@@ -25,21 +25,25 @@ export class OnMessageEventHandler extends MessageEventHandler {
      * @returns Promise
      */
     public async handleEvent(): Promise<void> {
-        // Handle partial message
-        await this.handlePartial();
-        // If it is a DM, ignore.
-        if (this.message.guild === null) return;
-        // If it's a bot, ignore :)
-        if (this.message.author.bot) return;
+        try {
+            // Handle partial message
+            await this.handlePartial();
+            // If it is a DM, ignore.
+            if (this.message.guild === null) return;
+            // If it's a bot, ignore :)
+            if (this.message.author.bot) return;
 
-        const server = this.getServer(this.message.guild.id.toString());
+            const server = this.getServer(this.message.guild.id.toString());
 
-        // Handle Command
-        const commandResult = await this.handleCommand(server);
+            // Handle Command
+            const commandResult = await this.handleCommand(server);
 
-        // Check message if command result says so
-        if (commandResult.shouldCheckMessage) {
-            this.handleMessageCheck(server);
+            // Check message if command result says so
+            if (commandResult.shouldCheckMessage) {
+                this.handleMessageCheck(server);
+            }
+        } catch (err) {
+            this.handleError(err);
         }
     }
 

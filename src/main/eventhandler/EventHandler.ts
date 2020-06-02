@@ -25,7 +25,7 @@ export abstract class EventHandler {
     }
 
     /**
-     * Warn error. If sqlite error shut bot down.
+     * Warn uncaught error. If sqlite error shut bot down.
      *
      * @param  {Error} err
      * @returns void

@@ -1,6 +1,7 @@
 import {
     Guild, Client, TextChannel, Collection, Message,
 } from 'discord.js';
+import log from 'loglevel';
 import { Storage } from './Storage';
 
 export class StarboardServerCache {
@@ -145,6 +146,9 @@ export abstract class StarboardCache {
                         const msgId = splittedMsg[length - 1];
                         starboardCache.addToCache(msgId, message.id);
                     }
+                })
+                .catch((err) => {
+                    log.info(`${err}: Unable to fetch messages in ${guild.id}, Starboard channel - ${channelId}`);
                 });
         });
     }

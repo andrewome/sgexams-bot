@@ -45,7 +45,7 @@ export class MessageResponse {
         const wordsUsed = result.contexts;
         const { id } = this.message;
         const { url } = this.message;
-        const channel = `<#${this.message.channel.id.toString()}>`;
+        const channel = `<#${this.message.channel.id}>`;
         const { content } = this.message;
 
         // Generate strings
@@ -88,7 +88,9 @@ export class MessageResponse {
             .addField(this.CONTEXT, `${this.CODE_BLOCK}${contexts}${this.CODE_BLOCK}`, true);
 
         const reportingChannel = this.message.guild!.channels.resolve(reportingChannelId)!;
-        (reportingChannel as TextChannel).send(this.BAD_WORD_DETECTED, embed);
+        (reportingChannel as TextChannel)
+            .send(this.BAD_WORD_DETECTED, embed)
+            .catch((err) => log.info(`${err}: Unable to send reporting message in ${reportingChannelId}`));
 
         // Log it
         log.info(`Bad Word Detected in guild "${this.message.guild!.name}". ${offenderStr} said "${content}" which has banned words: ${words.replace(/\n/g, ' ')}`);
@@ -113,8 +115,8 @@ export class MessageResponse {
         const replacedMessage = message.replace(/{user}/g, user);
         log.info(`Sending response message - ${replacedMessage}`);
         channel.send(replacedMessage)
-            .catch((err): void => {
-                if (err.message === 'Missing Permissions') log.warn('Unable to send message. Insufficient permissions.');
+            .catch((err) => {
+                log.info(`${err}: Unable to send message response.`);
             });
         return this;
     }
@@ -130,8 +132,8 @@ export class MessageResponse {
 
         log.info('Deleting message...');
         this.message.delete()
-            .catch((err): void => {
-                if (err.message === 'Missing Permissions') { log.warn('Unable to delete message. Insufficient permissions.'); }
+            .catch((err) => {
+                log.info(`${err}: Unable to delete message.`);
             });
         return this;
     }

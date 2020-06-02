@@ -81,14 +81,15 @@ export class ReadyEventHandler extends EventHandler {
                 ModUtils.handleUnbanTimeout(userId, serverId);
                 members!.unban(userId)
                     .catch((err) => {
-                        log.info(err);
                         log.info(
-                            `Unable to unban user ${userId} from server ${serverId}.`,
+                            `${err}: Unable to unban user ${userId} from server ${serverId}.`,
                         );
                     });
                 break;
             case ModActions.MUTE: {
                 let muteRoleId = ModDbUtils.getMuteRoleId(serverId);
+                // We set the mute role id to be a non-snowflake val if null as a blanket so that
+                // GuildMemberRoleManager#remove can still work. Then try catch it.
                 if (muteRoleId === null)
                     muteRoleId = '0';
                 ModDbUtils.addModerationAction(
@@ -98,9 +99,8 @@ export class ReadyEventHandler extends EventHandler {
                 members!.fetch(userId)
                     .then((user) => user.roles.remove(muteRoleId!))
                     .catch((err) => {
-                        log.info(err);
                         log.info(
-                            `Unable to unmute user ${userId} from server ${serverId}. Mute Role is ${muteRoleId}`,
+                            `${err}: Unable to unmute user ${userId} from server ${serverId}. Mute role is ${muteRoleId}`,
                         );
                     });
                 break;
@@ -133,6 +133,8 @@ export class ReadyEventHandler extends EventHandler {
                 break;
             case ModActions.MUTE: {
                 let muteRoleId = ModDbUtils.getMuteRoleId(serverId);
+                // We set the mute role id to be a non-snowflake val if null as a blanket so that
+                // GuildMemberRoleManager#remove can still work. Then try catch it.
                 if (muteRoleId === null)
                     muteRoleId = '0';
                 ModUtils.addMuteTimeout(
