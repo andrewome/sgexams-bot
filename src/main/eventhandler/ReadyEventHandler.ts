@@ -15,6 +15,14 @@ export class ReadyEventHandler extends EventHandler {
         this.bot = bot;
     }
 
+    /**
+     * This function handles the ready event of the bot. It fires when the bot has logged in.
+     * It populates the starboard messages cache for each server that it is in
+     * Then it checks for any outstanding timeouts (warns/bans).
+     * Lastly it sets the bot's activity.
+     *
+     * @returns Promise
+     */
     public async handleEvent(): Promise<void> {
         try {
             log.info('Populating Starboard Cache...');

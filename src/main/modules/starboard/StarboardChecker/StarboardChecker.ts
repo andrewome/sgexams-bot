@@ -117,9 +117,14 @@ export abstract class StarboardChecker {
         const content = message.content.split(' ');
         const regexEmote = new RegExp('<a?:(.+):(\\d+)>', 'g');
         const match = regexEmote.exec(content[1])!;
-        const name = match[1];
-        const id = match[2];
+        if (!match) {
+            const { id } = this.reaction.message.guild!;
+            throw new Error(
+                `Starboard format not adhered to! Server: ${id}, Channel: ${starboardChannel!.id}, Message: ${messageId}`,
+            );
+        }
 
+        const { 1: name, 2: id } = match;
         if (name === this.reaction.emoji.name && id === this.reaction.emoji.id)
             return true;
 
