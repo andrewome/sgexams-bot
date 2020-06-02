@@ -40,7 +40,7 @@ export class OnMessageEventHandler extends MessageEventHandler {
 
             // Check message if command result says so
             if (commandResult.shouldCheckMessage) {
-                this.handleMessageCheck(server);
+                await this.handleMessageCheck(server);
             }
         } catch (err) {
             this.handleError(err);
