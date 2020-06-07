@@ -18,7 +18,7 @@ export class MessageUpdateEventHandler extends MessageEventHandler {
 
             // Check updated message
             const server = this.getServer(this.message.guild.id);
-            this.handleMessageCheck(server);
+            await this.handleMessageCheck(server);
         } catch (err) {
             this.handleError(err);
         }
