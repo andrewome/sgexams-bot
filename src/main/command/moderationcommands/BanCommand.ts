@@ -22,9 +22,12 @@ export class BanCommand extends Command {
 
     private args: string[];
 
-    public constructor(args: string[]) {
+    private removeMsgs: boolean;
+
+    public constructor(args: string[], removeMsgs: boolean) {
         super();
         this.args = args;
+        this.removeMsgs = removeMsgs;
     }
 
     /**
@@ -66,7 +69,7 @@ export class BanCommand extends Command {
         // Handle ban
         try {
             const target = await members!.fetch(targetId);
-            await target.ban({ reason });
+            await target.ban({ reason, days: this.removeMsgs ? 1 : 0 });
             const curTime = ModUtils.getUnixTime();
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                            this.type, curTime, emit!, reason, duration);
