@@ -217,6 +217,10 @@ export abstract class CommandNamesAndDescriptions {
 
     public static readonly BAN_COMMAND_DESCRIPTION = 'Bans a User.';
 
+    public static readonly BANRM_COMMAND_NAME = 'BanRM'
+
+    public static readonly BANRM_COMMAND_DESCRIPTION = 'Bans a User and removes all messages sent by the user in the last 24 hours.'
+
     public static readonly PURGE_COMMAND_NAME = 'Purge';
 
     public static readonly PURGE_COMMAND_DESCRIPTION = 'Purges messages.';
@@ -273,6 +277,7 @@ export abstract class CommandNamesAndDescriptions {
     public static readonly MODERATION_COMMANDS = [
         CommandNamesAndDescriptions.KICK_COMMAND_NAME,
         CommandNamesAndDescriptions.BAN_COMMAND_NAME,
+        CommandNamesAndDescriptions.BANRM_COMMAND_NAME,
         CommandNamesAndDescriptions.UNBAN_COMMAND_NAME,
         CommandNamesAndDescriptions.MUTE_COMMAND_NAME,
         CommandNamesAndDescriptions.UNMUTE_COMMAND_NAME,
@@ -291,6 +296,7 @@ export abstract class CommandNamesAndDescriptions {
     public static readonly MODERATION_DESCRIPTIONS = [
         CommandNamesAndDescriptions.KICK_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.BAN_COMMAND_DESCRIPTION,
+        CommandNamesAndDescriptions.BANRM_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.UNBAN_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.MUTE_COMMAND_DESCRIPTION,
         CommandNamesAndDescriptions.UNMUTE_COMMAND_DESCRIPTION,

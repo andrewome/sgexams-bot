@@ -177,7 +177,9 @@ export class CommandParser {
             case CommandNamesAndDescriptions.KICK_COMMAND_NAME.toLowerCase():
                 return new KickCommand(args);
             case CommandNamesAndDescriptions.BAN_COMMAND_NAME.toLowerCase():
-                return new BanCommand(args);
+                return new BanCommand(args, false);
+            case CommandNamesAndDescriptions.BANRM_COMMAND_NAME.toLowerCase():
+                return new BanCommand(args, true);
             case CommandNamesAndDescriptions.MUTE_COMMAND_NAME.toLowerCase():
                 return new MuteCommand(args);
             case CommandNamesAndDescriptions.PURGE_COMMAND_NAME.toLowerCase():

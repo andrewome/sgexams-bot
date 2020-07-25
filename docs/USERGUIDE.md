@@ -1,9 +1,13 @@
 # Currently Implemented Modules
 
-1. [Miscallenous Commands](#misc-commands)
-2. [Moderation](#moderation)
-3. [Starboard](#starboard)
-4. [Message Checker](#message-checker)
+- [Currently Implemented Modules](#currently-implemented-modules)
+- [Commands](#commands)
+- [Miscallenous Commands](#miscallenous-commands)
+- [Moderation](#moderation)
+- [Starboard](#starboard)
+        - [Starboard Commands](#starboard-commands)
+- [Message Checker](#message-checker)
+        - [Message Checker Commands](#message-checker-commands)
 
 # Commands
 The bot listens to commands only if you tag it. Since this bot does not require constant commands, figured this was a better solution than using prefixes since it might clash with other bots.
@@ -26,6 +30,7 @@ Command | Example | Description | Permissions
 --- | --- | --- | ---
 `Kick` | `@bot kick userId [reason]` | Kicks a user from the server. | KICK_MEMBERS
 `Ban` | `@bot ban userId [reason] [X{m\|h\|d}]` | Bans a user from the server with an optional timeout.<br> X is an integer followed by `m` for minutes, `h` for hours and `d` for days. This is optional and if not specified, it means that the timeout is permanent. | BAN_MEMBERS
+`BanRM` | `@bot banrm userId [reason] [X{m\|h\|d}]` | Exactly the same as the `Ban` command, but it also deletes all messages sent by the user in the last 24 hours. | BAN_MEMBERS
 `Unban` | `@bot unban userId [reason]` | Unbans a user from the server. | BAN_MEMBERS
 `Mute` | `@bot mute userId [reason] [X{m\|h\|d}]` | Mutes a user from the server with an optional timeout.<br> X is an integer followed by `m` for minutes, `h` for hours and `d` for days. This is optional and if not specified, it means that the timeout is permanent. | KICK_MEMBERS, BAN_MEMBERS
 `Unmute` | `@bot unmute userId [reason]` | Unmutes a user. | KICK_MEMBERS, BAN_MEMBERS
