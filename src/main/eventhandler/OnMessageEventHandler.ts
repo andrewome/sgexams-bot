@@ -33,7 +33,7 @@ export class OnMessageEventHandler extends MessageEventHandler {
             // If it's a bot, ignore :)
             if (this.message.author.bot) return;
 
-            const server = this.getServer(this.message.guild.id.toString());
+            const server = this.getServer(this.message.guild.id);
 
             // Handle Command
             const commandResult = await this.handleCommand(server);
