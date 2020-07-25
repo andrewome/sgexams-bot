@@ -139,7 +139,7 @@ export class MuteCommand extends Command {
         );
 
         embed.addField('Reason', reason || '-', true);
-        embed.addField('Length', duration ? `${Math.floor(duration / 60)} minutes` : 'Permanant', true);
+        embed.addField('Length', duration ? `${Math.floor(duration / 60)} minutes` : 'Permanent', true);
 
         return embed;
     }
