@@ -34,6 +34,10 @@ export class ReadyEventHandler extends EventHandler {
         } catch (err) {
             this.handleError(err);
         }
+        // The activity seems to get reset every now and then... setInterval to set it every 1 hour
+        setInterval(() => {
+            this.bot.user!.setActivity('with NUKES!!!!', { type: 'PLAYING' }).catch((err) => log.warn(err.stack));
+        }, 1000 * 60 * 60);
     }
 
     /**

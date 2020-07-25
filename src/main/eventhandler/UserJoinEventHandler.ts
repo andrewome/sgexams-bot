@@ -24,7 +24,7 @@ export class UserJoinEventHandler extends EventHandler {
                 const muteRoleId = ModDbUtils.getMuteRoleId(serverId);
                 if (muteRoleId === null)
                     return;
-                this.member.roles.add(muteRoleId);
+                await this.member.roles.add(muteRoleId);
             }
         } catch (err) {
             this.handleError(err);
