@@ -10,8 +10,9 @@ It uses `SQLite3` to store persistent code.
 2. `npm i` to install dependencies.
 3. Add `BOT_TOKEN="your discord bot token"` to a file called `.env` in the root of this project.
 4. You're ready!
-   * `npm run-script build` to transpile the code into `javascript`. Output files can be found in `./build`
-   * `npm start` to use `ts-node` and `nodemon` for testing.
+   * `npm run build` to transpile the code into `javascript`. Output files can be found in `./build`
+   * `npm start` to run the transpiled code.
+   * `npm run dev` to use `ts-node` and `nodemon` for testing.
    * `npm test` to run tests.
    * `npx eslint ./src/**` to check for code style violations.
 

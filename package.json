@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "rimraf -rf build/ && npm run build && mocha --exit \"./build/test/**/*.js\"",
-    "start": "npm run build:live",
+    "start": "node NODE_ENV=production build/main/App.js",
+    "dev": "npm run build:live",
     "build": "tsc -p .",
     "build:live": "nodemon",
     "lint": "eslint ./src/**"
