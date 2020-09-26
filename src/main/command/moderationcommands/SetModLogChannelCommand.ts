@@ -54,7 +54,11 @@ export class SetModLogChannelCommand extends Command {
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        const channelId = this.args[0];
+        let channelId = this.args[0];
+        // Check if `channelId` is a channel tag (e.g. #general)
+        if (channelId.startsWith('<#') && channelId.endsWith('>')) {
+            channelId = channelId.substr(2, channelId.length - 3);
+        }
         const channel = channels!.resolve(channelId);
 
         // Check if valid channel
