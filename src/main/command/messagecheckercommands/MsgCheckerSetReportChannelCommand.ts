@@ -88,7 +88,6 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         return this.COMMAND_DEFAULT_COMMANDRESULT;
     }
 
-
     /**
      * Generates reset response
      *
@@ -102,7 +101,6 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         );
     }
 
-
     /**
      * Generates invalid response
      *
@@ -115,7 +113,6 @@ export class MsgCheckerSetReportChannelCommand extends Command {
             MsgCheckerSetReportChannelCommand.EMBED_ERROR_COLOUR,
         );
     }
-
 
     /**
      * Generates not text channel response

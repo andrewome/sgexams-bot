@@ -11,7 +11,6 @@ export interface StarboardSettingsObj {
     emojis: SimplifiedEmojiObj[];
 }
 
-
 export class SimplifiedEmoji {
     public name: string;
 

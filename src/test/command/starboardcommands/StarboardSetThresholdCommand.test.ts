@@ -24,7 +24,6 @@ const { THRESHOLD_RESETTED } = StarboardSetThresholdCommand;
 const { THRESHOLD_CANNOT_BE_UNDEFINED } = StarboardSetThresholdCommand;
 const { NOT_AN_INTEGER } = StarboardSetThresholdCommand;
 
-
 describe('StarboardSetThresholdCommand test suite', (): void => {
     // Set storage path and remove testing.db
     before((): void => {

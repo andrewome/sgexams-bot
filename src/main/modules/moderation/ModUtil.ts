@@ -49,7 +49,6 @@ export class ModUtils {
         return Math.floor(Date.now() / 1000);
     }
 
-
     /**
      * Assigns a random ID to a timeout stored in timers map
      *

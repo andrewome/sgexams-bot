@@ -122,7 +122,6 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
             unableToAddWordsField.value.should.equals(unableToRemoveWordsStr);
         };
 
-
         // Execute
         command = new MsgCheckerRemoveWordCommand(args);
         const commandArgs: CommandArgs = {

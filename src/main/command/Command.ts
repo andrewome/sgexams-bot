@@ -26,7 +26,6 @@ export abstract class Command {
 
     public NO_PERMISSIONS_COMMANDRESULT = new CommandResult(true);
 
-
     /**
      * This function executes the command.
      *

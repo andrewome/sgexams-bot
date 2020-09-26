@@ -51,7 +51,7 @@ export class App {
     public async initialise(): Promise<App> {
         log.info('Logging the bot in...');
         await this.bot.login(process.env.BOT_TOKEN)
-            .catch((err) => {
+            .catch(() => {
                 log.error('Unable to login. Shutting down.');
                 process.exit();
             });
