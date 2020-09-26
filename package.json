@@ -4,10 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "rimraf -rf build/ && npm run build && mocha --exit \"./build/test/**/*.js\"",
+    "test": "npm run build && mocha --exit \"./build/test/**/*.js\"",
     "start": "node NODE_ENV=production build/main/App.js",
     "dev": "ts-node-dev --transpile-only src/main/App.ts",
-    "build": "tsc -p .",
+    "build": "rimraf -rf build/ && tsc -p .",
     "lint": "eslint ./src/**"
   },
   "repository": {
