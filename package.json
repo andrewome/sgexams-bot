@@ -6,9 +6,8 @@
   "scripts": {
     "test": "rimraf -rf build/ && npm run build && mocha --exit \"./build/test/**/*.js\"",
     "start": "node NODE_ENV=production build/main/App.js",
-    "dev": "npm run build:live",
+    "dev": "ts-node-dev --transpile-only src/main/App.ts",
     "build": "tsc -p .",
-    "build:live": "nodemon",
     "lint": "eslint ./src/**"
   },
   "repository": {
@@ -50,11 +49,10 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
     "mocha": "^6.2.2",
-    "nodemon": "^1.19.4",
     "rimraf": "^2.7.1",
     "sinon": "^7.5.0",
     "sinon-chai": "^3.5.0",
-    "ts-node": "^8.7.0",
+    "ts-node-dev": "^1.0.0-pre.63",
     "typescript": "^3.8.3"
   }
 }

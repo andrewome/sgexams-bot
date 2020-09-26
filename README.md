@@ -12,7 +12,7 @@ It uses `SQLite3` to store persistent code.
 4. You're ready!
    * `npm run build` to transpile the code into `javascript`. Output files can be found in `./build`
    * `npm start` to run the transpiled code.
-   * `npm run dev` to use `ts-node` and `nodemon` for testing.
+   * `npm run dev` to use `ts-node-dev` for hot-reloading during development.
    * `npm test` to run tests.
    * `npx eslint ./src/**` to check for code style violations.
 
