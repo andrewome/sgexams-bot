@@ -4,9 +4,11 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "npm run build && mocha --exit \"./build/test/**/*.js\"",
-    "start": "node NODE_ENV=production build/main/App.js",
-    "dev": "ts-node-dev --transpile-only src/main/App.ts",
+    "test": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml -f docker-compose.test.yml up --build",
+    "docker-test": "mocha --exit build/test/**/*.js",
+    "start": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build",
+    "dev": "docker-compose -f docker-compose.yml up --build",
+    "docker-dev": "ts-node-dev --transpile-only --poll src/main/App.ts",
     "build": "rimraf -rf build/ && tsc -p .",
     "lint": "eslint ./src/**"
   },
