@@ -5,7 +5,7 @@ export class DatabaseConnection {
 
     private static DEBUG = false;
 
-    private static storagePath = './servers.db';
+    private static storagePath = './database/servers.db';
 
     public static setStoragePath(path: string): void {
         this.storagePath = path;

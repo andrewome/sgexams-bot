@@ -113,7 +113,6 @@ export class CommandParser {
         return [];
     }
 
-
     /**
      * This method returns the Command object based on the Command word mentioned.
      *

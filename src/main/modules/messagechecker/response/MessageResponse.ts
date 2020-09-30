@@ -2,7 +2,6 @@ import { Message, TextChannel, MessageEmbed } from 'discord.js';
 import log from 'loglevel';
 import { MessageCheckerResult } from '../classes/MessageCheckerResult';
 
-
 export class MessageResponse {
     private message: Message;
 

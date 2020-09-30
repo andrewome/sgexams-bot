@@ -58,7 +58,11 @@ export class MsgCheckerSetReportChannelCommand extends Command {
             return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
-        const channelId = this.args[0];
+        let channelId = this.args[0];
+        // Check if `channelId` is a channel tag (e.g. #general)
+        if (channelId.startsWith('<#') && channelId.endsWith('>')) {
+            channelId = channelId.substr(2, channelId.length - 3);
+        }
 
         // Check if valid channel
         const channel = channels!.resolve(channelId);
@@ -84,7 +88,6 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         return this.COMMAND_DEFAULT_COMMANDRESULT;
     }
 
-
     /**
      * Generates reset response
      *
@@ -98,7 +101,6 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         );
     }
 
-
     /**
      * Generates invalid response
      *
@@ -111,7 +113,6 @@ export class MsgCheckerSetReportChannelCommand extends Command {
             MsgCheckerSetReportChannelCommand.EMBED_ERROR_COLOUR,
         );
     }
-
 
     /**
      * Generates not text channel response
