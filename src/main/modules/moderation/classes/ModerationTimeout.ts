@@ -7,6 +7,8 @@ export interface ModerationTimeout {
 
     type: ModActions;
 
+    startTime: number;
+
     endTime: number;
 
     timerId: number;

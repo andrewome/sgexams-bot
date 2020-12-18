@@ -22,6 +22,7 @@ export class ModDbUtils {
     /**
      * Adds an action with a timeout into the timeout database, updates on conflict of pkeys
      *
+     * @param  {number} startTIme
      * @param  {number} endTime
      * @param  {string} userId
      * @param  {ModActions} type
@@ -29,13 +30,13 @@ export class ModDbUtils {
      * @param  {number} timerId
      * @returns void
      */
-    public static addActionTimeout(endTime: number, userId: string, type: ModActions,
-                                   serverId: string, timerId: number): void {
+    public static addActionTimeout(startTime: number, endTime: number, userId: string,
+                                   type: ModActions, serverId: string, timerId: number): void {
         const db = DatabaseConnection.connect();
         db.prepare(
-            'INSERT INTO moderationTimeouts (serverId, userId, type, endTime, timerId) VALUES (?, ?, ?, ?, ?) ' +
+            'INSERT INTO moderationTimeouts (serverId, userId, type, startTime, endTime, timerId) VALUES (?, ?, ?, ?, ?, ?) ' +
             'ON CONFLICT(serverId, userId, type) DO UPDATE SET timerId = excluded.timerId',
-        ).run(serverId, userId, type, endTime, timerId);
+        ).run(serverId, userId, type, startTime, endTime, timerId);
         db.close();
     }
 

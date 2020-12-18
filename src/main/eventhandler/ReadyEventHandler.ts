@@ -50,7 +50,7 @@ export class ReadyEventHandler extends EventHandler {
         const curTime = ModUtils.getUnixTime();
         timeouts.forEach((timeout) => {
             const {
-                serverId, userId, type, endTime,
+                serverId, userId, type, startTime, endTime,
             } = timeout;
             const guild = this.bot.guilds.resolve(serverId);
             if (!guild) { // Guild can't be found
@@ -62,9 +62,14 @@ export class ReadyEventHandler extends EventHandler {
 
             const { members } = guild;
             if (endTime > curTime) { // Timer has not expired yet, reset the timeout
-                this.handleUnexpiredTimeouts(serverId, userId, type, endTime, curTime, members);
+                this.handleUnexpiredTimeouts(
+                    serverId, userId, type, startTime, endTime, curTime, members,
+                );
             } else { // Timers have expired
-                this.handleExpiredTimeouts(serverId, userId, curTime, type, members);
+                this.handleExpiredTimeouts(
+                    serverId, userId, startTime,
+                    endTime, curTime, type, members,
+                );
             }
         });
     }
@@ -75,18 +80,22 @@ export class ReadyEventHandler extends EventHandler {
      *
      * @param  {string} serverId
      * @param  {string} userId
+     * @param  {string} startTime
+     * @param  {string} endTime
      * @param  {number} curTime
      * @param  {ModActions} type
      * @param  {GuildMemberManager} members
      * @returns void
      */
-    private handleExpiredTimeouts(serverId: string, userId: string, curTime: number,
-                                  type: ModActions, members: GuildMemberManager): void {
+    private handleExpiredTimeouts(serverId: string, userId: string, startTime: number,
+                                  endTime: number, curTime: number, type: ModActions,
+                                  members: GuildMemberManager): void {
         const emit = this.bot.emit.bind(this.bot);
         const botId = this.bot.user!.id;
-        const reason = 'Expired timeout on boot';
+        const actualDuration = (endTime - startTime) / 60;
         switch (type) {
-            case ModActions.BAN:
+            case ModActions.BAN: {
+                const reason = `Unban after ${actualDuration} minutes`;
                 ModDbUtils.addModerationAction(
                     serverId, botId, userId, ModActions.UNBAN, curTime, emit, reason,
                 );
@@ -98,12 +107,14 @@ export class ReadyEventHandler extends EventHandler {
                         );
                     });
                 break;
+            }
             case ModActions.MUTE: {
                 let muteRoleId = ModDbUtils.getMuteRoleId(serverId);
                 // We set the mute role id to be a non-snowflake val if null as a blanket so that
                 // GuildMemberRoleManager#remove can still work. Then try catch it.
                 if (muteRoleId === null)
                     muteRoleId = '0';
+                const reason = `Unmute after ${actualDuration} minutes`;
                 ModDbUtils.addModerationAction(
                     serverId, botId, userId, ModActions.UNMUTE, curTime, emit, reason,
                 );
@@ -128,20 +139,23 @@ export class ReadyEventHandler extends EventHandler {
      * @param  {string} serverId
      * @param  {string} userId
      * @param  {ModActions} type
+     * @param  {number} startTime
      * @param  {number} endTime
      * @param  {number} curTime
      * @param  {GuildMemberManager} members
      * @returns void
      */
-    private handleUnexpiredTimeouts(serverId: string, userId: string,
-                                    type: ModActions, endTime: number,
+    private handleUnexpiredTimeouts(serverId: string, userId: string, type: ModActions,
+                                    startTime: number, endTime: number,
                                     curTime: number, members: GuildMemberManager): void {
         const emit = this.bot.emit.bind(this.bot);
         const botId = this.bot.user!.id;
         const duration = endTime - curTime;
         switch (type) {
             case ModActions.BAN:
-                ModUtils.addBanTimeout(duration, endTime, userId, serverId, botId, members, emit);
+                ModUtils.addBanTimeout(
+                    duration, startTime, endTime, userId, serverId, botId, members, emit,
+                );
                 break;
             case ModActions.MUTE: {
                 let muteRoleId = ModDbUtils.getMuteRoleId(serverId);
@@ -150,7 +164,8 @@ export class ReadyEventHandler extends EventHandler {
                 if (muteRoleId === null)
                     muteRoleId = '0';
                 ModUtils.addMuteTimeout(
-                    duration, endTime, userId, serverId, botId, members, emit, muteRoleId,
+                    duration, startTime, endTime, userId, serverId,
+                    botId, members, emit, muteRoleId,
                 );
                 break;
             }

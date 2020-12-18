@@ -106,7 +106,7 @@ export class WarnCommand extends Command {
                     if (duration) {
                         const endTime = curTime + duration;
                         ModUtils.addBanTimeout(
-                            duration, endTime, targetId, serverId, botId, members!, emit,
+                            duration, curTime, endTime, targetId, serverId, botId, members!, emit,
                         );
                     }
                     break;
@@ -132,7 +132,7 @@ export class WarnCommand extends Command {
                     if (duration) {
                         const endTime = curTime + duration;
                         ModUtils.addMuteTimeout(
-                            duration, endTime, targetId, serverId,
+                            duration, curTime, endTime, targetId, serverId,
                             botId!, members!, emit!, muteRoleId,
                         );
                     }
