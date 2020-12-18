@@ -103,7 +103,7 @@ export class RotateImageCommand extends Command {
             };
 
             // Options
-            const options: ReactionCollectorOptions = { time: 30000, max: 1 };
+            const options: ReactionCollectorOptions = { time: 10000, max: 1 };
             const collector = sentMessage.createReactionCollector(filter, options);
             const COLLECT = 'collect';
 
@@ -148,10 +148,16 @@ export class RotateImageCommand extends Command {
 
                 // Make it listen
                 collector.on(COLLECT, onReaction);
+                collector.on('end', async () => {
+                    await sentMessage.reactions.removeAll();
+                });
             };
 
             // Set up initial event handler.
             collector.on(COLLECT, onReaction);
+            collector.on('end', async () => {
+                await sentMessage.reactions.removeAll();
+            });
         } catch (err) {
             await messageReply(this.ERROR_MESSAGE);
             (channel as TextChannel).stopTyping(true);
