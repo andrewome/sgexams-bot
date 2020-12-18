@@ -90,7 +90,7 @@ export class MuteCommand extends Command {
             if (duration) {
                 const endTime = curTime + duration;
                 ModUtils.addMuteTimeout(
-                    duration, endTime, targetId, server.serverId,
+                    duration, curTime, endTime, targetId, server.serverId,
                     botId!, members!, emit!, muteRoleId,
                 );
             }

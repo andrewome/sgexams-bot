@@ -84,8 +84,12 @@ export class ModUtils {
 
     /**
      * This function adds the ban timeout to the database and calls setBanTimeout
+     * We need the timeout duration for the setTimeout function as startTime and endTime
+     * duration passed into this function may not reflect the actual length of the ban.
+     * ie if the bot is restarted, the actual startTime will be reflected in the database
      *
-     * @param  {number} duration
+     * @param  {number} timeoutDuration
+     * @param  {number} startTime
      * @param  {number} endTime
      * @param  {string} userId
      * @param  {string} serverId
@@ -94,23 +98,28 @@ export class ModUtils {
      * @param  {Function} emit
      * @returns void
      */
-    public static addBanTimeout(duration: number, endTime: number, userId: string, serverId: string,
-                                botId: string, guildMemberManager: GuildMemberManager,
-                                emit: Function): void {
+    public static addBanTimeout(timeoutDuration: number, startTime: number, endTime: number,
+                                userId: string, serverId: string, botId: string,
+                                guildMemberManager: GuildMemberManager, emit: Function): void {
         const timer =
-            ModUtils.setBanTimeout(duration, userId, serverId, botId, guildMemberManager, emit);
+            ModUtils.setBanTimeout(
+                timeoutDuration, startTime, endTime, userId,
+                serverId, botId, guildMemberManager, emit,
+            );
 
         const timerId = ModUtils.assignTimeout(timer);
 
         ModDbUtils.addActionTimeout(
-            endTime, userId, ModActions.BAN, serverId, timerId,
+            startTime, endTime, userId, ModActions.BAN, serverId, timerId,
         );
     }
 
     /**
      * This function handles the timeout of the ban to unban the user when timeout is up.
      *
-     * @param  {number} duration
+     * @param  {number} timeoutDuration
+     * @param  {number} startTime
+     * @param  {number} endTime
      * @param  {string} userId
      * @param  {string} serverId
      * @param  {string} botId
@@ -118,12 +127,13 @@ export class ModUtils {
      * @param  {Function} emit
      * @returns NodeJS.Timer
      */
-    public static setBanTimeout(duration: number, userId: string, serverId: string,
-                                botId: string, guildMemberManager: GuildMemberManager,
+    public static setBanTimeout(timeoutDuration: number, startTime: number, endTime: number,
+                                userId: string, serverId: string, botId: string,
+                                guildMemberManager: GuildMemberManager,
                                 emit: Function): NodeJS.Timer {
         const callback = (): void => {
-            const durationInMinutes = Math.floor(duration / 60);
-            log.info(`Unbanning ${userId} after ${durationInMinutes} minutes timeout.`);
+            const actualDuration = Math.floor((endTime - startTime) / 60);
+            log.info(`Unbanning ${userId} after ${actualDuration} minutes timeout.`);
             // Unban member
             guildMemberManager.unban(userId)
                 .catch((err) => {
@@ -138,14 +148,14 @@ export class ModUtils {
             ModUtils.removeTimeout(timerId);
 
             // Add unban entry to db
-            const reason = `Unban after ${Math.floor(duration / 60)} minutes.`;
+            const reason = `Unban after ${actualDuration} minutes`;
             ModDbUtils.addModerationAction(
                 serverId, botId, userId, ModActions.UNBAN, ModUtils.getUnixTime(), emit, reason,
             );
             log.info(`Done removing ${userId} from Database.`);
         };
 
-        return setTimeout(callback, duration * 1000);
+        return setTimeout(callback, timeoutDuration * 1000);
     }
 
     /**
@@ -163,9 +173,12 @@ export class ModUtils {
     }
 
     /**
-     * This function adds the ban timeout to the database and calls setBanTimeout
+     * This function adds the mute timeout to the database and calls setMuteTimeout
+     * We need the timeout duration for the setTimeout function as startTime and endTime
+     * duration passed into this function may not reflect the actual length of the ban.
+     * ie if the bot is restarted, the actual startTime will be reflected in the database
      *
-     * @param  {number} duration
+     * @param  {number} startTime
      * @param  {number} endTime
      * @param  {string} userId
      * @param  {string} serverId
@@ -175,25 +188,29 @@ export class ModUtils {
      * @param  {muteroleId} muteroleId
      * @returns void
      */
-    // eslint-disable-next-line max-len
-    public static addMuteTimeout(duration: number, endTime: number, userId: string, serverId: string,
-                                 botId: string, guildMemberManager: GuildMemberManager,
+    public static addMuteTimeout(timeoutDuration: number, startTime: number, endTime: number,
+                                 userId: string, serverId: string, botId: string,
+                                 guildMemberManager: GuildMemberManager,
                                  emit: Function, muteRoleId: string): void {
         const timer = ModUtils.setMuteTimeout(
-            duration, userId, serverId, botId, guildMemberManager, emit, muteRoleId,
+            timeoutDuration, startTime, endTime, userId, serverId,
+            botId, guildMemberManager, emit, muteRoleId,
         );
 
         const timerId = ModUtils.assignTimeout(timer);
 
         ModDbUtils.addActionTimeout(
-            endTime, userId, ModActions.MUTE, serverId, timerId,
+            startTime, endTime, userId, ModActions.MUTE, serverId, timerId,
         );
     }
 
     /**
-     * This function handles the timeout of the ban to unban the user when timeout is up.
+     * This function handles the timeout of the ban to unmute the user when timeout is up.
      *
-     * @param  {number} duration
+     * @param  {number} timeoutDuration
+     * @param  {number} startTime
+     * @param  {number} endTime
+     * @param  {number} endTime
      * @param  {string} userId
      * @param  {string} serverId
      * @param  {string} botId
@@ -202,12 +219,13 @@ export class ModUtils {
      * @param  {muteroleId} muteroleId
      * @returns NodeJS.Timer
      */
-    public static setMuteTimeout(duration: number, userId: string, serverId: string,
-                                 botId: string, guildMemberManager: GuildMemberManager,
-                                 emit: Function, muteRoleId: string): NodeJS.Timer {
+    public static setMuteTimeout(timeoutDuration: number, startTime: number, endTime: number,
+                                 userId: string, serverId: string, botId: string,
+                                 guildMemberManager: GuildMemberManager, emit: Function,
+                                 muteRoleId: string): NodeJS.Timer {
         const callback = (): void => {
-            const durationInMinutes = Math.floor(duration / 60);
-            log.info(`Unmuting ${userId} after ${durationInMinutes} minutes timeout.`);
+            const actualDuration = Math.floor((endTime - startTime) / 60);
+            log.info(`Unmuting ${userId} after ${actualDuration} minutes timeout.`);
             // Unmute member
             guildMemberManager.fetch(userId)
                 .then((guildMember) => guildMember.roles.remove(muteRoleId))
@@ -223,14 +241,14 @@ export class ModUtils {
             ModUtils.removeTimeout(timerId);
 
             // Add unmute entry to db
-            const reason = `Unmute after ${Math.floor(duration / 60)} minutes.`;
+            const reason = `Unmute after ${actualDuration} minutes`;
             ModDbUtils.addModerationAction(
                 serverId, botId, userId, ModActions.UNMUTE, ModUtils.getUnixTime(), emit, reason,
             );
             log.info(`Done removing ${userId} from Database.`);
         };
 
-        return setTimeout(callback, duration * 1000);
+        return setTimeout(callback, timeoutDuration * 1000);
     }
 
     /**

@@ -77,7 +77,7 @@ export class BanCommand extends Command {
             if (duration) {
                 const endTime = curTime + duration;
                 ModUtils.addBanTimeout(
-                    duration, endTime, targetId, server.serverId, botId!, members!, emit!,
+                    duration, curTime, endTime, targetId, server.serverId, botId!, members!, emit!,
                 );
             }
             await messageReply(this.generateValidEmbed(target, reason, duration));

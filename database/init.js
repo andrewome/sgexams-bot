@@ -65,6 +65,7 @@ initStatements.push(
     serverId TEXT REFERENCES servers(serverId) ON DELETE CASCADE,
     userId TEXT NOT NULL,
     type TEXT NOT NULL,
+    startTime INTEGER NOT NULL,
     endTime INTEGER NOT NULL,
     timerId INTEGER NOT NULL,
     PRIMARY KEY(serverId, userId, type)
