@@ -1,5 +1,5 @@
 import {
-    GuildMember, MessageEmbed, Permissions, DiscordAPIError,
+    GuildMember, MessageEmbed, Permissions, DiscordAPIError, User,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -66,13 +66,18 @@ export class BanCommand extends Command {
         let reason = this.args.slice(1).join(' ');
         if (reason.length > 512)
             reason = reason.substr(0, 512);
+
         // Handle ban
         try {
-            const target = await members!.fetch(targetId);
-            await target.ban({ reason, days: this.removeMsgs ? 1 : 0 });
+            const bannedUser
+                = await members!.ban(targetId, { reason, days: this.removeMsgs ? 1 : 0 });
             const curTime = ModUtils.getUnixTime();
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                            this.type, curTime, emit!, reason, duration);
+
+            // Remove any existing timeout if any
+            ModUtils.handleUnbanTimeout(targetId, server.serverId);
+
             // Set timeout if any
             if (duration) {
                 const endTime = curTime + duration;
@@ -80,7 +85,7 @@ export class BanCommand extends Command {
                     duration, curTime, endTime, targetId, server.serverId, botId!, members!, emit!,
                 );
             }
-            await messageReply(this.generateValidEmbed(target, reason, duration));
+            await messageReply(this.generateValidEmbed(bannedUser, reason, duration));
         } catch (err) {
             if (err instanceof DiscordAPIError)
                 await messageReply(this.generateUserIdErrorEmbed());
@@ -99,11 +104,12 @@ export class BanCommand extends Command {
         );
     }
 
-    private generateValidEmbed(target: GuildMember, reason: string,
+    private generateValidEmbed(target: User | GuildMember | string, reason: string,
                                duration: number|null): MessageEmbed {
+        const targetStr = target instanceof String ? target : (target as User).tag;
         const embed = this.generateGenericEmbed(
             BanCommand.EMBED_TITLE,
-            `${target.user.tag} was banned.`,
+            `${targetStr} was banned.`,
             BanCommand.EMBED_DEFAULT_COLOUR,
         );
 
