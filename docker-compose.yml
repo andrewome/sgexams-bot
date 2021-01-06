@@ -7,3 +7,5 @@ services:
     volumes:
       - ./src:/usr/src/app/src
       - ./database:/usr/src/app/database
+    environment:
+      - TZ=Asia/Singapore
