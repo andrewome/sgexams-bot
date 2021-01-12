@@ -1,95 +1,90 @@
 /* eslint-disable */
 const Database = require('better-sqlite3');
-const initStatements = [];
+const fs = require('fs');
 
-// Servers table
-initStatements.push(
-`CREATE TABLE servers (
-    serverId TEXT NOT NULL,
-    PRIMARY KEY(serverId) 
-);`)
+function migrateToVersion(
+    db /* BetterSqlite3.Database */,
+    versionNumber /* number */,
+) {
+    const { migrationStatements } = require(`./migrations/${versionNumber}`);
+    for (const statement of migrationStatements) {
+        db.prepare(statement).run();
+    }
+    db.pragma(`user_version = ${versionNumber}`);
+}
 
-// MessageCheckerSettings table
-initStatements.push(
-`CREATE TABLE messageCheckerSettings (
-    serverId TEXT REFERENCES servers(serverId) ON DELETE CASCADE,
-    reportingChannelId TEXT,
-    responseMessage TEXT,
-    deleteMessage boolean,
-    PRIMARY KEY(serverId)
-);`)
+function initOrMigrate(dbPath /* string */, dbConfig /* Database.Options */) {
+    const isInitialStart = !fs.existsSync(dbPath);
+    const db = new Database(dbPath, {
+        verbose: console.log,
+        ...dbConfig,
+    });
 
-// MessageCheckerSettings bannedWords table
-initStatements.push(
-`CREATE TABLE messageCheckerBannedWords (
-    serverId TEXT REFERENCES servers(serverId) ON DELETE CASCADE,
-    word TEXT,
-    PRIMARY KEY(serverId, word)
-);`)
+    // Populate the database with pre-v0 data if it is the initial start.
+    if (isInitialStart) {
+        migrateToVersion(db, 0);
 
-// StarboardSettings table
-initStatements.push(
-`CREATE TABLE starboardSettings (
-    serverId TEXT REFERENCES servers(serverId) ON DELETE CASCADE,
-    channel TEXT,
-    threshold INT,
-    PRIMARY KEY(serverId)
-)`)
+        // Parse json and insert to db.
+        if (fs.existsSync('./database/servers.json')) {
+            const servers = JSON.parse(
+                fs.readFileSync('./database/servers.json', 'utf-8'),
+            );
+            for (const server of servers) {
+                const {
+                    serverId,
+                    starboardSettings,
+                    messageCheckerSettings,
+                } = server;
 
-// StarboardSettings emoji table
-initStatements.push(
-`CREATE TABLE starboardEmojis (
-    serverId TEXT REFERENCES servers(serverId) ON DELETE CASCADE,
-    id TEXT,
-    name TEXT,
-    PRIMARY KEY(serverId, id)
-)`)
+                // Add serverId into db
+                db.prepare(`INSERT INTO servers VALUES (?)`).run(serverId);
 
-// ModerationLogs table
-initStatements.push(
-`CREATE TABLE moderationLogs (
-    serverId TEXT REFERENCES servers(serverId) ON DELETE CASCADE,
-    caseId INTEGER NOT NULL,
-    modId TEXT NOT NULL,
-    userId TEXT NOT NULL,
-    type TEXT NOT NULL,
-    reason TEXT,
-    timeout INT,
-    timestamp INT NOT NULL,
-    PRIMARY KEY(serverId, caseId)
-)`)
+                // Add starboardSettings
+                const { channel, emojis, threshold } = starboardSettings;
+                db.prepare(
+                    `INSERT INTO starboardSettings (serverId, channel, threshold) VALUES (?, ?, ?)`,
+                ).run(serverId, channel, threshold);
+                for (const emoji of emojis) {
+                    const { name, id } = emoji;
+                    db.prepare(
+                        `INSERT INTO starboardEmojis (serverId, id, name) VALUES (?, ?, ?)`,
+                    ).run(serverId, id, name);
+                }
 
-// Timeouts
-initStatements.push(
-`CREATE TABLE moderationTimeouts (
-    serverId TEXT REFERENCES servers(serverId) ON DELETE CASCADE,
-    userId TEXT NOT NULL,
-    type TEXT NOT NULL,
-    startTime INTEGER NOT NULL,
-    endTime INTEGER NOT NULL,
-    timerId INTEGER NOT NULL,
-    PRIMARY KEY(serverId, userId, type)
-)`)
+                // Add messageCheckerSettings
+                let {
+                    deleteMessage,
+                    reportingChannelId,
+                    responseMessage,
+                    bannedWords,
+                } = messageCheckerSettings;
+                deleteMessage = deleteMessage === true ? 1 : 0;
+                db.prepare(
+                    `INSERT INTO messageCheckerSettings
+                        (serverId, reportingChannelId, responseMessage, deleteMessage)
+                        VALUES (?, ?, ?, ?)`,
+                ).run(
+                    serverId,
+                    reportingChannelId,
+                    responseMessage,
+                    deleteMessage,
+                );
+                for (const bannedWord of bannedWords) {
+                    db.prepare(
+                        `INSERT INTO messageCheckerBannedWords (serverId, word) VALUES (?, ?)`,
+                    ).run(serverId, bannedWord);
+                }
+            }
+        }
+    }
 
-initStatements.push(
-`CREATE TABLE moderationSettings (
-    serverId TEXT REFERENCES servers(serverId) ON DELETE CASCADE,
-    channelId TEXT,
-    muteRoleId TEXT,
-    PRIMARY KEY(serverId)
-)`)
+    // Migrate the database to the latest version.
+    // Note: update LATEST_VERSION whenever the database schema changes!
+    const LATEST_VERSION = 0;
+    const curVersion = db.pragma('user_version', { simple: true });
+    for (let i = curVersion + 1; i <= LATEST_VERSION; ++i) {
+        migrateToVersion(db, i);
+    }
+}
 
-initStatements.push(
-`CREATE TABLE moderationWarnSettings (
-    serverId TEXT REFERENCES servers(serverId) ON DELETE CASCADE,
-    numWarns INTEGER NOT NULL,
-    type TEXT NOT NULL,
-    duration INTEGER,
-    PRIMARY KEY(serverId, numWarns)
-)`)
-
-exports.initStatements = initStatements;
-exports.initDb = (db) => {
-    for (const initStatement of initStatements)
-        db.prepare(initStatement).run();
-};
+exports.initOrMigrate = initOrMigrate;

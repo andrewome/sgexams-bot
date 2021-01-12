@@ -29,13 +29,9 @@ export class DatabaseConnection {
      *
      * @returns void
      */
-    public static initDatabase(): void {
+    public static initOrMigrateDatabase(): void {
         // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
-        const { initStatements } = require('../../database/init.js');
-        const db = new Database(this.storagePath, { verbose: this.DEBUG ? log.debug : undefined });
-        for (const initStatement of initStatements) {
-            db.prepare(initStatement).run();
-        }
-        db.close();
+        const { initOrMigrate } = require('../../database/init.js');
+        initOrMigrate(this.storagePath, { verbose: this.DEBUG ? log.debug : undefined });
     }
 }

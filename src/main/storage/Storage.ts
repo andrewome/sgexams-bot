@@ -1,6 +1,5 @@
 import log from 'loglevel';
 import { Database } from 'better-sqlite3';
-import * as fs from 'fs';
 import { Server } from './Server';
 import { DatabaseConnection } from '../DatabaseConnection';
 import { MessageCheckerSettingsObj, MessageCheckerSettings } from './MessageCheckerSettings';
@@ -19,12 +18,8 @@ export class Storage {
     public loadServers(): Storage {
         log.info('Loading Servers...');
 
-        // If datapath file does not exist, init new db.
-        const storagePath = DatabaseConnection.getStoragePath();
-        if (!fs.existsSync(storagePath)) {
-            log.info('Database not found - Initialising a new database');
-            DatabaseConnection.initDatabase();
-        }
+        // Run any database initialization/migration methods if necessary.
+        DatabaseConnection.initOrMigrateDatabase();
 
         const db = DatabaseConnection.connect();
 
