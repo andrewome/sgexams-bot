@@ -7,6 +7,10 @@ import { CommandArgs } from '../classes/CommandArgs';
 import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 
 export class SetMuteRoleCommand extends Command {
+    public static readonly NAME = 'SetMuteRole';
+
+    public static readonly DESCRIPTION = 'Sets the Mute Role.';
+
     public static ROLE_NOT_FOUND = 'Role was not found. Please submit a valid role ID.';
 
     public static EMBED_TITLE = 'Mute Role';

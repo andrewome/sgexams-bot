@@ -4,7 +4,11 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class StarboardSetThresholdCommand extends Command {
-    public static NOT_AN_INTEGER = 'Threshold not a positive integer.';
+    public static readonly NAME = 'StarboardSetThreshold';
+
+    public static readonly DESCRIPTION = 'Sets the emoji threshold for a message to be starred.';
+
+   public static NOT_AN_INTEGER = 'Threshold not a positive integer.';
 
     public static EMBED_TITLE = 'Starboard Threshold';
 

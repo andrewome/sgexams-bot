@@ -5,6 +5,10 @@ import { CommandArgs } from '../classes/CommandArgs';
 import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 
 export class GetModLogChannelCommand extends Command {
+    public static readonly NAME = 'GetModLogChannel';
+
+    public static readonly DESCRIPTION = 'Displays the currently set ModLog channel';
+
     public static CHANNEL_NOT_SET = 'There is no ModLog channel set for this server.';
 
     public static EMBED_TITLE = 'ModLog Channel';

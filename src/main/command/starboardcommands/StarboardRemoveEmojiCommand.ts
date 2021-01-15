@@ -8,6 +8,10 @@ export class StarboardRemoveEmojiCommand extends Command {
 
     public static EMBED_TITLE = 'Starboard Emoji';
 
+    public static readonly NAME = 'StarboardRemoveEmoji';
+
+    public static readonly DESCRIPTION = 'Removes a Starboard emoji.';
+
     /** CheckMessage: false */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false);
 

@@ -7,6 +7,10 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class PurgeCommand extends Command {
+    public static readonly NAME = 'Purge';
+
+    public static readonly DESCRIPTION = 'Purges messages.';
+
     private args: string[];
 
     /** CheckMessage: false */

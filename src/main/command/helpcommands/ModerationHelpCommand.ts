@@ -1,10 +1,14 @@
 import { CommandResult } from '../classes/CommandResult';
-import { CommandNamesAndDescriptions } from '../classes/CommandNamesAndDescriptions';
+import { CommandCollection } from '../classes/CommandCollection';
 import { HelpCommandBase } from './HelpCommandBase';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class ModerationHelpCommand extends HelpCommandBase {
     public static HEADER = '__Moderation Commands__';
+
+    public static readonly NAME = 'ModHelp';
+
+    public static readonly DESCRIPTION = 'Displays other Moderation commands';
 
     /**
      * This method sends a help embed for the Moderation module.
@@ -18,8 +22,7 @@ export class ModerationHelpCommand extends HelpCommandBase {
         // Generate embed and send
         await messageReply(this.generateEmbed(
             ModerationHelpCommand.HEADER,
-            CommandNamesAndDescriptions.MODERATION_COMMANDS,
-            CommandNamesAndDescriptions.MODERATION_DESCRIPTIONS,
+            CommandCollection.MODERATION_COMMANDS,
         ));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }

@@ -7,6 +7,10 @@ import { CommandArgs } from '../classes/CommandArgs';
 import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 
 export class SetModLogChannelCommand extends Command {
+    public static readonly NAME = 'SetModLogChannel';
+
+    public static readonly DESCRIPTION = 'Sets the ModLog reporting channel.';
+
     public static NOT_TEXT_CHANNEL = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
 
     public static CHANNEL_NOT_FOUND = 'Channel was not found. Please submit a valid channel ID.';

@@ -11,6 +11,10 @@ export class MsgCheckerAddWordCommand extends Command {
 
     public static UNABLE_TO_ADD_WORDS = 'Unable To Add:';
 
+    public static readonly NAME = 'MsgCheckerAddWords';
+
+    public static readonly DESCRIPTION = 'Add word(s) to the blacklist.';
+
     /** CheckMessage: false */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false);
 

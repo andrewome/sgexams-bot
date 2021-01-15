@@ -10,6 +10,11 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
 
     public static RESPONSE_MESSAGE_CANNOT_BE_UNDEFINED = 'Reponse Message cannot be undefined!';
 
+    public static readonly NAME = 'MsgCheckerSetResponseMsg';
+
+    public static readonly DESCRIPTION =
+        'Sets the response message to the user upon detection of blacklisted words for this server.';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 

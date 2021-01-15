@@ -5,6 +5,10 @@ import { CommandArgs } from '../classes/CommandArgs';
 import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 
 export class GetMuteRoleCommand extends Command {
+    public static readonly NAME = 'GetMuteRole';
+
+    public static readonly DESCRIPTION = 'Displays the currently set Mute Role';
+
     public static ROLE_NOT_SET = 'There is no Mute Role set for this server.';
 
     public static EMBED_TITLE = 'Mute Role';

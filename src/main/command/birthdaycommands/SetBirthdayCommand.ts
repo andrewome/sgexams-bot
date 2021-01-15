@@ -9,6 +9,10 @@ const SUCCESSFUL_COMMANDRESULT = new CommandResult(true);
 const UNSUCCESSFUL_COMMANDRESULT = new CommandResult(false);
 
 export class SetBirthdayCommand extends Command {
+    public static readonly NAME = 'SetBirthday';
+
+    public static readonly DESCRIPTION = 'Sets your birthday announcement to the specified date.';
+
     private args: string[];
 
     public constructor(args: string[]) {

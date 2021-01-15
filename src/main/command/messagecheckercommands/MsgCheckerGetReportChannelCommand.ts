@@ -8,6 +8,11 @@ export class MsgCheckerGetReportChannelCommand extends Command {
 
     public static EMBED_TITLE = 'Message Checker Reporting Channel';
 
+    public static readonly NAME = 'MsgCheckerGetReportChannel';
+
+    public static readonly DESCRIPTION =
+        'Displays the reporting channel to post incident reports for this server when blacklisted words are used.';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 

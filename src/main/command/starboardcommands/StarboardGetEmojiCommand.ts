@@ -9,6 +9,10 @@ export class StarboardGetEmojiCommand extends Command {
 
     public static EMBED_TITLE = 'Starboard Emoji';
 
+    public static readonly NAME = 'StarboardGetEmoji';
+
+    public static readonly DESCRIPTION = 'Displays the currently set Starboard emojis';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 

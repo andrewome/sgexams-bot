@@ -5,7 +5,7 @@ import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
-import { CommandNamesAndDescriptions } from '../../../main/command/classes/CommandNamesAndDescriptions';
+import { CommandCollection } from '../../../main/command/classes/CommandCollection';
 import { MiscCommandHelpCommand } from '../../../main/command/helpcommands/MiscCommandHelpCommand';
 import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 
@@ -33,11 +33,9 @@ describe('MiscHelp Command Test Suite', (): void => {
             field.name.should.equals(HEADER);
 
             // Check field value
-            let output = '';
-            const { MISC_COMMANDS, MISC_DESCRIPTIONS } = CommandNamesAndDescriptions;
-            for (let i = 0; i < MISC_COMMANDS.length; i++) {
-                output += `**${MISC_COMMANDS[i]}** - ${MISC_DESCRIPTIONS[i]}\n`;
-            }
+            const output = CommandCollection.MISC_COMMANDS.map(
+                (cmd) => `**${cmd.NAME}** - ${cmd.DESCRIPTION}`,
+            ).join('\n');
             field.value.should.equals(output);
         };
 

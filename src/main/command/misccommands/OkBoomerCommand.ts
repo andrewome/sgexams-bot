@@ -4,6 +4,10 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class OkBoomerCommand extends Command {
+    public static readonly NAME = 'Okboomer';
+
+    public static readonly DESCRIPTION = 'Reacts "Ok Boomer" onto a specified message.';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 

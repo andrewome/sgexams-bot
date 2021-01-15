@@ -19,6 +19,11 @@ const CHANNEL_RESETTED =
 const SUCCESSFUL_COMMANDRESULT = new CommandResult(true);
 
 export class SetBirthdayChannelCommand extends Command {
+    public static readonly NAME = 'SetBirthdayChannel';
+
+    public static readonly DESCRIPTION
+        = 'Assigns the given channel as the birthday announcements channel.';
+
     private args: string[];
 
     private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);

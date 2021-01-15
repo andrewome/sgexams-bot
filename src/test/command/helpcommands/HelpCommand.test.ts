@@ -6,7 +6,7 @@ import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
 import { HelpCommand } from '../../../main/command/helpcommands/HelpCommand';
-import { CommandNamesAndDescriptions } from '../../../main/command/classes/CommandNamesAndDescriptions';
+import { CommandCollection } from '../../../main/command/classes/CommandCollection';
 import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 
 should();
@@ -33,11 +33,9 @@ describe('Help Command Test Suite', (): void => {
             field.name.should.equals(HEADER);
 
             // Check field value
-            let output = '';
-            const { HELP_COMMANDS, HELP_DESCRIPTIONS } = CommandNamesAndDescriptions;
-            for (let i = 0; i < HELP_COMMANDS.length; i++) {
-                output += `**${HELP_COMMANDS[i]}** - ${HELP_DESCRIPTIONS[i]}\n`;
-            }
+            const output = CommandCollection.HELP_COMMANDS.map(
+                (cmd) => `**${cmd.NAME}** - ${cmd.DESCRIPTION}`,
+            ).join('\n');
             field.value.should.equals(output);
         };
 

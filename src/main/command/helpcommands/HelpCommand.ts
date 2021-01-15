@@ -1,10 +1,14 @@
 import { CommandResult } from '../classes/CommandResult';
-import { CommandNamesAndDescriptions } from '../classes/CommandNamesAndDescriptions';
+import { CommandCollection } from '../classes/CommandCollection';
 import { HelpCommandBase } from './HelpCommandBase';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class HelpCommand extends HelpCommandBase {
     public static readonly HEADER = '__Available Commands__';
+
+    public static readonly NAME = 'Help';
+
+    public static readonly DESCRIPTION = 'Displays all the available commands that this bot listens to.';
 
     /**
      * This function lists out the commands that the bot will respond to.
@@ -18,8 +22,7 @@ export class HelpCommand extends HelpCommandBase {
         // Generate embed and send
         await messageReply(this.generateEmbed(
             HelpCommand.HEADER,
-            CommandNamesAndDescriptions.HELP_COMMANDS,
-            CommandNamesAndDescriptions.HELP_DESCRIPTIONS,
+            CommandCollection.HELP_COMMANDS,
         ));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }

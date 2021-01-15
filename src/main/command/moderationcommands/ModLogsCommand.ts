@@ -9,6 +9,10 @@ import { ModLog } from '../../modules/moderation/classes/ModLog';
 import { ModActions } from '../../modules/moderation/classes/ModActions';
 
 export class ModLogsCommand extends Command {
+    public static readonly NAME = 'ModLogs';
+
+    public static readonly DESCRIPTION = 'Displays Moderation Logs';
+
     private static PAGE_SIZE = 4;
 
     private static EMBED_TITLE = 'Mod Logs';

@@ -9,6 +9,10 @@ const SUCCESSFUL_COMMANDRESULT = new CommandResult(true);
 const UNSUCCESSFUL_COMMANDRESULT = new CommandResult(false);
 
 export class ListBirthdaysCommand extends Command {
+    public static readonly NAME = 'ListBirthdays';
+
+    public static readonly DESCRIPTION = 'Lists users with the given birthday.';
+
     private args: string[];
 
     public constructor(args: string[]) {

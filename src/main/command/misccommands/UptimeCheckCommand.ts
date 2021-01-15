@@ -3,6 +3,10 @@ import { CommandArgs } from '../classes/CommandArgs';
 import { CommandResult } from '../classes/CommandResult';
 
 export class UptimeCheckCommand extends Command {
+    public static readonly NAME = 'Uptime';
+
+    public static readonly DESCRIPTION = 'Returns how long the bot has been online for.';
+
     public static EMBED_TITLE = 'Uptime';
 
     /**

@@ -11,6 +11,10 @@ export class MsgCheckerRemoveWordCommand extends Command {
 
     public static UNABLE_TO_REMOVE_WORDS = 'Unable To Remove';
 
+    public static readonly NAME = 'MsgCheckerRemoveWords';
+
+    public static readonly DESCRIPTION = 'Remove word(s) from the blacklist.';
+
     /** CheckMessage: false */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false);
 

@@ -1,10 +1,14 @@
 import { CommandResult } from '../classes/CommandResult';
-import { CommandNamesAndDescriptions } from '../classes/CommandNamesAndDescriptions';
+import { CommandCollection } from '../classes/CommandCollection';
 import { HelpCommandBase } from './HelpCommandBase';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class BirthdayHelpCommand extends HelpCommandBase {
     public static HEADER = '__Birthday Commands__';
+
+    public static readonly NAME = 'BirthdayHelp';
+
+    public static readonly DESCRIPTION = 'Displays other Birthday commands';
 
     /**
      * This method sends a help embed for the Birthday module.
@@ -19,8 +23,7 @@ export class BirthdayHelpCommand extends HelpCommandBase {
         await messageReply(
             this.generateEmbed(
                 BirthdayHelpCommand.HEADER,
-                CommandNamesAndDescriptions.BIRTHDAY_COMMANDS,
-                CommandNamesAndDescriptions.BIRTHDAY_DESCRIPTIONS,
+                CommandCollection.BIRTHDAY_COMMANDS,
             ),
         );
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
