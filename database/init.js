@@ -80,7 +80,7 @@ function initOrMigrate(dbPath /* string */, dbConfig /* Database.Options */) {
 
     // Migrate the database to the latest version.
     // Note: update LATEST_VERSION whenever the database schema changes!
-    const LATEST_VERSION = 0;
+    const LATEST_VERSION = 1;
     const curVersion = db.pragma('user_version', { simple: true });
     for (let i = curVersion + 1; i <= LATEST_VERSION; ++i) {
         migrateToVersion(db, i);
