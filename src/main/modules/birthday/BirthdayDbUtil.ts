@@ -1,5 +1,50 @@
 import { DatabaseConnection } from '../../DatabaseConnection';
 
+export function getLastAnnouncedDate(
+    serverId: string,
+): { day: number; month: number; year: number } {
+    const db = DatabaseConnection.connect();
+    const res = db
+        .prepare(
+            `SELECT lastAnnouncedDay, lastAnnouncedMonth, lastAnnouncedYear
+                    FROM birthdaySettings
+                    WHERE serverId = ?`,
+        )
+        .get(serverId);
+    db.close();
+    return {
+        day: res?.lastAnnouncedDay ?? 0,
+        month: res?.lastAnnouncedMonth ?? 0,
+        year: res?.lastAnnouncedYear ?? 0,
+    };
+}
+
+export function getBirthdayChannelId(serverId: string): string | undefined {
+    const db = DatabaseConnection.connect();
+    const channelId = db
+        .prepare('SELECT channelId FROM birthdaySettings WHERE serverId = ?')
+        .get(serverId);
+    db.close();
+    return channelId?.channelId;
+}
+
+export function setLastAnnouncedDate(
+    serverId: string,
+    day: number,
+    month: number,
+    year: number,
+): void {
+    const db = DatabaseConnection.connect();
+    db.prepare(
+        `INSERT INTO birthdaySettings(serverId, lastAnnouncedDay, lastAnnouncedMonth, lastAnnouncedYear)
+                VALUES (?, ?, ?, ?)
+                ON CONFLICT(serverId) DO UPDATE SET
+                    lastAnnouncedDay=excluded.lastAnnouncedDay,
+                    lastAnnouncedMonth=excluded.lastAnnouncedMonth,
+                    lastAnnouncedYear=excluded.lastAnnouncedYear`,
+    ).run(serverId, day, month, year);
+    db.close();
+}
 export function getUserIdsWithBirthday(
     serverId: string,
     day: number,

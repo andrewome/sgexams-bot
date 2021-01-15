@@ -6,6 +6,7 @@ import { StarboardCache } from '../storage/StarboardCache';
 import { ModDbUtils } from '../modules/moderation/ModDbUtils';
 import { ModUtils } from '../modules/moderation/ModUtil';
 import { ModActions } from '../modules/moderation/classes/ModActions';
+import { BirthdayAnnouncer } from '../modules/birthday/BirthdayAnnouncer';
 
 export class ReadyEventHandler extends EventHandler {
     private bot: Client;
@@ -29,6 +30,10 @@ export class ReadyEventHandler extends EventHandler {
             StarboardCache.generateStarboardMessagesCache(this.bot, this.storage);
             log.info('Handling outstanding timeouts...');
             this.handleTimeouts();
+
+            // Announce outstanding birthdays.
+            new BirthdayAnnouncer(this.bot, this.storage).start();
+
             log.info('I am ready!');
             await this.bot.user!.setActivity('with NUKES!!!!', { type: 'PLAYING' });
         } catch (err) {
