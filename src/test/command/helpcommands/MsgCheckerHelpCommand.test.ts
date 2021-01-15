@@ -5,7 +5,7 @@ import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
-import { CommandNamesAndDescriptions } from '../../../main/command/classes/CommandNamesAndDescriptions';
+import { CommandCollection } from '../../../main/command/classes/CommandCollection';
 import { MsgCheckerHelpCommand } from '../../../main/command/helpcommands/MsgCheckerHelpCommand';
 import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 
@@ -33,11 +33,9 @@ describe('MsgCheckerHelp Command Test Suite', (): void => {
             field.name.should.equals(HEADER);
 
             // Check field value
-            let output = '';
-            const { MSGCHECKER_COMMANDS, MSGCHECKER_DESCRIPTIONS } = CommandNamesAndDescriptions;
-            for (let i = 0; i < MSGCHECKER_COMMANDS.length; i++) {
-                output += `**${MSGCHECKER_COMMANDS[i]}** - ${MSGCHECKER_DESCRIPTIONS[i]}\n`;
-            }
+            const output = CommandCollection.MSGCHECKER_COMMANDS.map(
+                (cmd) => `**${cmd.NAME}** - ${cmd.DESCRIPTION}`,
+            ).join('\n');
             field.value.should.equals(output);
         };
 

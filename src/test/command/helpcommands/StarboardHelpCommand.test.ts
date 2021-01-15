@@ -5,7 +5,7 @@ import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { StarboardSettings } from '../../../main/storage/StarboardSettings';
-import { CommandNamesAndDescriptions } from '../../../main/command/classes/CommandNamesAndDescriptions';
+import { CommandCollection } from '../../../main/command/classes/CommandCollection';
 import { StarboardHelpCommand } from '../../../main/command/helpcommands/StarboardHelpCommand';
 import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 
@@ -33,11 +33,9 @@ describe('StarboardHelp Command Test Suite', (): void => {
             field.name.should.equals(HEADER);
 
             // Check field value
-            let output = '';
-            const { STARBOARD_COMMANDS, STARBOARD_DESCRIPTIONS } = CommandNamesAndDescriptions;
-            for (let i = 0; i < STARBOARD_COMMANDS.length; i++) {
-                output += `**${STARBOARD_COMMANDS[i]}** - ${STARBOARD_DESCRIPTIONS[i]}\n`;
-            }
+            const output = CommandCollection.STARBOARD_COMMANDS.map(
+                (cmd) => `**${cmd.NAME}** - ${cmd.DESCRIPTION}`,
+            ).join('\n');
             field.value.should.equals(output);
         };
 

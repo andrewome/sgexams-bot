@@ -10,6 +10,10 @@ import { ModActions } from '../../modules/moderation/classes/ModActions';
 import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 
 export class MuteCommand extends Command {
+    public static readonly NAME = 'Mute';
+
+    public static readonly DESCRIPTION = 'Mutes a User.';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 

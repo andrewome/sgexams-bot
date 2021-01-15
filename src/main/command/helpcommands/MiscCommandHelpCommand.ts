@@ -1,10 +1,14 @@
 import { CommandResult } from '../classes/CommandResult';
-import { CommandNamesAndDescriptions } from '../classes/CommandNamesAndDescriptions';
+import { CommandCollection } from '../classes/CommandCollection';
 import { HelpCommandBase } from './HelpCommandBase';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class MiscCommandHelpCommand extends HelpCommandBase {
     public static HEADER = '__Miscellaneous Commands__'
+
+    public static readonly NAME = 'MiscHelp';
+
+    public static readonly DESCRIPTION = 'Displays other Miscellaneous commands';
 
     /**
      * This method sends a help embed for the RotateImage module.
@@ -18,8 +22,7 @@ export class MiscCommandHelpCommand extends HelpCommandBase {
         // Generate embed and send
         await messageReply(this.generateEmbed(
             MiscCommandHelpCommand.HEADER,
-            CommandNamesAndDescriptions.MISC_COMMANDS,
-            CommandNamesAndDescriptions.MISC_DESCRIPTIONS,
+            CommandCollection.MISC_COMMANDS,
         ));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }

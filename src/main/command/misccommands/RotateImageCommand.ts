@@ -10,6 +10,10 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class RotateImageCommand extends Command {
+    public static readonly NAME = 'Rotate';
+
+    public static readonly DESCRIPTION = 'Rotates an image by 90 degrees via reactions.';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 

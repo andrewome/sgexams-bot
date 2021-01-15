@@ -1,10 +1,15 @@
 import { CommandResult } from '../classes/CommandResult';
-import { CommandNamesAndDescriptions } from '../classes/CommandNamesAndDescriptions';
+import { CommandCollection } from '../classes/CommandCollection';
 import { HelpCommandBase } from './HelpCommandBase';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class StarboardHelpCommand extends HelpCommandBase {
     public static HEADER = '__Starboard Commands__';
+
+    public static readonly NAME = 'StarboardHelp';
+
+    public static readonly DESCRIPTION
+        = 'Displays available commands for the Starboard function.';
 
     /**
      * This method sends a help embed for the Starboard module.
@@ -18,8 +23,7 @@ export class StarboardHelpCommand extends HelpCommandBase {
         // Generate embed and send
         await messageReply(this.generateEmbed(
             StarboardHelpCommand.HEADER,
-            CommandNamesAndDescriptions.STARBOARD_COMMANDS,
-            CommandNamesAndDescriptions.STARBOARD_DESCRIPTIONS,
+            CommandCollection.STARBOARD_COMMANDS,
         ));
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }

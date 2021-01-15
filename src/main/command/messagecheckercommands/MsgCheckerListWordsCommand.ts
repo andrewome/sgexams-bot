@@ -8,6 +8,10 @@ export class MsgCheckerListWordsCommand extends Command {
 
     public static EMBED_TITLE = 'Blacklisted Words';
 
+    public static readonly NAME = 'MsgCheckerListWords';
+
+    public static readonly DESCRIPTION = 'Displays all blacklisted words.';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 

@@ -1,58 +1,21 @@
-import { Command } from './Command';
-import { MsgCheckerListWordsCommand } from './messagecheckercommands/MsgCheckerListWordsCommand';
-import { MsgCheckerSetReportChannelCommand } from './messagecheckercommands/MsgCheckerSetReportChannelCommand';
-import { MsgCheckerAddWordCommand } from './messagecheckercommands/MsgCheckerAddWordCommand';
-import { MsgCheckerRemoveWordCommand } from './messagecheckercommands/MsgCheckerRemoveWordCommand';
+import { Command, CommandClassRef } from './Command';
 import { NoSuchCommandError } from './error/NoSuchCommandError';
-import { MsgCheckerGetReportChannelCommand } from './messagecheckercommands/MsgCheckerGetReportChannelCommand';
-import { HelpCommand } from './helpcommands/HelpCommand';
-import { MsgCheckerSetResponseMessageCommand } from './messagecheckercommands/MsgCheckerSetResponseMessageCommand';
-import { MsgCheckerGetResponseMessageCommand } from './messagecheckercommands/MsgCheckerGetResponseMessageCommand';
-import { MsgCheckerSetDeleteMessageCommand } from './messagecheckercommands/MsgCheckerSetDeleteMessageCommand';
-import { StarboardSetChannelCommand } from './starboardcommands/StarboardSetChannelCommand';
-import { StarboardGetChannelCommand } from './starboardcommands/StarboardGetChannelCommand';
-import { StarboardGetEmojiCommand } from './starboardcommands/StarboardGetEmojiCommand';
-import { StarboardGetThresholdCommand } from './starboardcommands/StarboardGetThresholdCommand';
-import { StarboardSetThresholdCommand } from './starboardcommands/StarboardSetThresholdCommand';
-import { RotateImageCommand } from './misccommands/RotateImageCommand';
-import { CommandNamesAndDescriptions } from './classes/CommandNamesAndDescriptions';
-import { MsgCheckerHelpCommand } from './helpcommands/MsgCheckerHelpCommand';
-import { StarboardHelpCommand } from './helpcommands/StarboardHelpCommand';
-import { MiscCommandHelpCommand } from './helpcommands/MiscCommandHelpCommand';
-import { UptimeCheckCommand } from './misccommands/UptimeCheckCommand';
-import { StarboardAddEmojiCommand } from './starboardcommands/StarboardAddEmojiCommand';
-import { StarboardRemoveEmojiCommand } from './starboardcommands/StarboardRemoveEmojiCommand';
-import { OkBoomerCommand } from './misccommands/OkBoomerCommand';
-import { OkZoomerCommand } from './misccommands/OkZoomerCommand';
-import { WarnCommand } from './moderationcommands/WarnCommand';
-import { KickCommand } from './moderationcommands/KickCommand';
-import { BanCommand } from './moderationcommands/BanCommand';
-import { PurgeCommand } from './moderationcommands/PurgeCommand';
-import { ModerationHelpCommand } from './helpcommands/ModerationHelpCommand';
-import { UnbanCommand } from './moderationcommands/UnbanCommand';
-import { UnwarnCommand } from './moderationcommands/UnwarnCommand';
-import { SetWarnPunishmentsCommand } from './moderationcommands/SetWarnPunishmentsCommand';
-import { GetWarnPunishmentsCommand } from './moderationcommands/GetWarnPunishmentsCommand';
-import { SetModLogChannelCommand } from './moderationcommands/SetModLogChannelCommand';
-import { GetModLogChannelCommand } from './moderationcommands/GetModLogChannelCommand';
-import { ModLogsCommand } from './moderationcommands/ModLogsCommand';
-import { SetMuteRoleCommand } from './moderationcommands/SetMuteRoleCommand';
-import { GetMuteRoleCommand } from './moderationcommands/GetMuteRoleCommand';
-import { MuteCommand } from './moderationcommands/MuteCommand';
-import { UnmuteCommand } from './moderationcommands/UnmuteCommand';
+import { CommandCollection } from './classes/CommandCollection';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
 
-    /** Set of all Command Names from CommandNamesAndDescriptions */
-    public static commandsLowerCase: Set<string>
-        = new Set<string>(([] as string[]).concat(
-            CommandNamesAndDescriptions.MSGCHECKER_COMMANDS_LOWERCASE,
-            CommandNamesAndDescriptions.MISC_COMMANDS_LOWERCASE,
-            CommandNamesAndDescriptions.STARBOARD_COMMANDS_LOWERCASE,
-            CommandNamesAndDescriptions.HELP_COMMANDS_LOWERCASE,
-            CommandNamesAndDescriptions.MODERATION_COMMANDS_LOWERCASE,
-        ));
+    /** Map of command name (lowercased) -> command class references */
+    public static commands = new Map<string, CommandClassRef>(
+        [
+            ...CommandCollection.HELP_COMMANDS,
+            ...CommandCollection.MSGCHECKER_COMMANDS,
+            ...CommandCollection.MISC_COMMANDS,
+            ...CommandCollection.STARBOARD_COMMANDS,
+            ...CommandCollection.MODERATION_COMMANDS,
+            ...CommandCollection.BIRTHDAY_COMMANDS,
+        ].map((command) => [command.NAME.toLowerCase(), command]),
+    );
 
     private content: string;
 
@@ -77,7 +40,7 @@ export class CommandParser {
      */
     public isCommand(selfId: string): boolean {
         // Check if bot is mentioned as the 1st word
-        if (!(new RegExp(`<@!?${selfId}>`).test(this.splittedContent[0]))) {
+        if (!new RegExp(`<@!?${selfId}>`).test(this.splittedContent[0])) {
             return false;
         }
 
@@ -91,7 +54,7 @@ export class CommandParser {
         command = command.toLowerCase();
 
         // Check if command word is the 2nd word
-        if (!CommandParser.commandsLowerCase.has(command)) {
+        if (!CommandParser.commands.has(command)) {
             return false;
         }
 
@@ -122,89 +85,9 @@ export class CommandParser {
     public getCommand(): Command {
         const command = this.splittedContent[1].toLowerCase();
         const args = this.getArgs();
-        switch (command) {
-            case CommandNamesAndDescriptions.MSGCHECKER_LIST_WORDS_COMMAND_NAME.toLowerCase():
-                return new MsgCheckerListWordsCommand();
-            case CommandNamesAndDescriptions.MSGCHECKER_SET_REPORT_CHANNEL_COMMAND_NAME.toLowerCase():
-                return new MsgCheckerSetReportChannelCommand(args);
-            case CommandNamesAndDescriptions.MSGCHECKER_ADD_WORD_COMMAND_NAME.toLowerCase():
-                return new MsgCheckerAddWordCommand(args);
-            case CommandNamesAndDescriptions.MSGCHECKER_REMOVE_WORD_COMMAND_NAME.toLowerCase():
-                return new MsgCheckerRemoveWordCommand(args);
-            case CommandNamesAndDescriptions.MSGCHECKER_GET_REPORT_CHANNEL_COMMAND_NAME.toLowerCase():
-                return new MsgCheckerGetReportChannelCommand();
-            case CommandNamesAndDescriptions.MSGCHECKER_SET_RESPONSE_MESSAGE_COMMAND_NAME.toLowerCase():
-                return new MsgCheckerSetResponseMessageCommand(args);
-            case CommandNamesAndDescriptions.MSGCHECKER_GET_RESPONSE_MESSAGE_COMMAND_NAME.toLowerCase():
-                return new MsgCheckerGetResponseMessageCommand();
-            case CommandNamesAndDescriptions.MSGCHECKER_SET_DELETE_MESSAGE_COMMAND_NAME.toLowerCase():
-                return new MsgCheckerSetDeleteMessageCommand(args);
-            case CommandNamesAndDescriptions.STARBOARD_SET_CHANNEL_COMMAND_NAME.toLowerCase():
-                return new StarboardSetChannelCommand(args);
-            case CommandNamesAndDescriptions.STARBOARD_GET_CHANNEL_COMMAND_NAME.toLowerCase():
-                return new StarboardGetChannelCommand();
-            case CommandNamesAndDescriptions.STARBOARD_GET_EMOJI_COMMAND_NAME.toLowerCase():
-                return new StarboardGetEmojiCommand();
-            case CommandNamesAndDescriptions.STARBOARD_ADD_EMOJI_COMMAND_NAME.toLowerCase():
-                return new StarboardAddEmojiCommand(args);
-            case CommandNamesAndDescriptions.STARBOARD_REMOVE_EMOJI_COMMAND_NAME.toLowerCase():
-                return new StarboardRemoveEmojiCommand(args);
-            case CommandNamesAndDescriptions.STARBOARD_GET_THRESHOLD_COMMAND_NAME.toLowerCase():
-                return new StarboardGetThresholdCommand();
-            case CommandNamesAndDescriptions.STARBOARD_SET_THRESHOLD_COMMAND_NAME.toLowerCase():
-                return new StarboardSetThresholdCommand(args);
-            case CommandNamesAndDescriptions.ROTATE_IMAGE_COMMAND_NAME.toLowerCase():
-                return new RotateImageCommand(args);
-            case CommandNamesAndDescriptions.HELP_COMMAND_NAME.toLowerCase():
-                return new HelpCommand();
-            case CommandNamesAndDescriptions.MSGCHECKER_HELP_COMMAND_NAME.toLowerCase():
-                return new MsgCheckerHelpCommand();
-            case CommandNamesAndDescriptions.STARBOARD_HELP_COMMAND_NAME.toLowerCase():
-                return new StarboardHelpCommand();
-            case CommandNamesAndDescriptions.MISC_COMMAND_HELP_COMMAND_NAME.toLowerCase():
-                return new MiscCommandHelpCommand();
-            case CommandNamesAndDescriptions.MODERATION_HELP_COMMAND_NAME.toLowerCase():
-                return new ModerationHelpCommand();
-            case CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME.toLowerCase():
-                return new UptimeCheckCommand();
-            case CommandNamesAndDescriptions.OKBOOMER_COMMAND_NAME.toLowerCase():
-                return new OkBoomerCommand(args);
-            case CommandNamesAndDescriptions.OKZOOMER_COMMAND_NAME.toLowerCase():
-                return new OkZoomerCommand(args);
-            case CommandNamesAndDescriptions.WARN_COMMAND_NAME.toLowerCase():
-                return new WarnCommand(args);
-            case CommandNamesAndDescriptions.KICK_COMMAND_NAME.toLowerCase():
-                return new KickCommand(args);
-            case CommandNamesAndDescriptions.BAN_COMMAND_NAME.toLowerCase():
-                return new BanCommand(args, false);
-            case CommandNamesAndDescriptions.BANRM_COMMAND_NAME.toLowerCase():
-                return new BanCommand(args, true);
-            case CommandNamesAndDescriptions.MUTE_COMMAND_NAME.toLowerCase():
-                return new MuteCommand(args);
-            case CommandNamesAndDescriptions.PURGE_COMMAND_NAME.toLowerCase():
-                return new PurgeCommand(args);
-            case CommandNamesAndDescriptions.UNBAN_COMMAND_NAME.toLowerCase():
-                return new UnbanCommand(args);
-            case CommandNamesAndDescriptions.UNWARN_COMMAND_NAME.toLowerCase():
-                return new UnwarnCommand(args);
-            case CommandNamesAndDescriptions.UNMUTE_COMMAND_NAME.toLowerCase():
-                return new UnmuteCommand(args);
-            case CommandNamesAndDescriptions.SET_WARN_PUNISHMENTS_COMMAND_NAME.toLowerCase():
-                return new SetWarnPunishmentsCommand(args);
-            case CommandNamesAndDescriptions.GET_WARN_PUNISHMENTS_COMMAND_NAME.toLowerCase():
-                return new GetWarnPunishmentsCommand();
-            case CommandNamesAndDescriptions.SET_MODLOG_CHANNEL_COMMAND_NAME.toLowerCase():
-                return new SetModLogChannelCommand(args);
-            case CommandNamesAndDescriptions.GET_MODLOG_CHANNEL_COMMAND_NAME.toLowerCase():
-                return new GetModLogChannelCommand();
-            case CommandNamesAndDescriptions.MOD_LOGS_COMMAND_NAME.toLowerCase():
-                return new ModLogsCommand(args);
-            case CommandNamesAndDescriptions.SET_MUTE_ROLE_COMMAND_NAME.toLowerCase():
-                return new SetMuteRoleCommand(args);
-            case CommandNamesAndDescriptions.GET_MUTE_ROLE_COMMAND_NAME.toLowerCase():
-                return new GetMuteRoleCommand();
-            default:
-                throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
+        if (!CommandParser.commands.has(command)) {
+            throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }
+        return new (CommandParser.commands.get(command)!)(args);
     }
 }

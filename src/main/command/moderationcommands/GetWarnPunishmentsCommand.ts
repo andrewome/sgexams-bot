@@ -8,6 +8,10 @@ import { ModActions } from '../../modules/moderation/classes/ModActions';
 import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 
 export class GetWarnPunishmentsCommand extends Command {
+    public static readonly NAME = 'GetWarnPunishments';
+
+    public static readonly DESCRIPTION = 'Gets Warn threshold punishments';
+
     public static EMBED_TITLE = 'Warn Punishments';
 
     public static NO_SETTINGS_FOUND = 'Warn punishments not set on this server';

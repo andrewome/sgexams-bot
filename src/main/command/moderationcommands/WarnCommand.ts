@@ -10,6 +10,10 @@ import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 import { ModUtils } from '../../modules/moderation/ModUtil';
 
 export class WarnCommand extends Command {
+    public static readonly NAME = 'Warn';
+
+    public static readonly DESCRIPTION = 'Warns a User.';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 

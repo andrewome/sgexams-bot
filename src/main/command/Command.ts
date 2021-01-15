@@ -4,6 +4,12 @@ import {
 import { CommandResult } from './classes/CommandResult';
 import { CommandArgs } from './classes/CommandArgs';
 
+export type CommandClassRef<T = Command> = {
+    NAME: string;
+    DESCRIPTION: string;
+    new(args: string[]): T;
+};
+
 /** Base class of the Commands */
 export abstract class Command {
     public static NO_ARGUMENTS = 'Oops! I received no arguments. Please try again.';

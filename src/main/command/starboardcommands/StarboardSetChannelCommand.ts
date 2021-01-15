@@ -16,6 +16,11 @@ export class StarboardSetChannelCommand extends Command {
 
     public static CHANNELID_CANNOT_BE_UNDEFINED = 'Channel ID cannot be undefined!';
 
+    public static readonly NAME = 'StarboardSetChannel';
+
+    public static readonly DESCRIPTION
+        = 'Sets the Starboard channel where the bot will star messages.';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 

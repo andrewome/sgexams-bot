@@ -9,6 +9,10 @@ import { ModActions } from '../../modules/moderation/classes/ModActions';
 import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 
 export class UnbanCommand extends Command {
+    public static readonly NAME = 'Unban';
+
+    public static readonly DESCRIPTION = 'Unbans a User.';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 

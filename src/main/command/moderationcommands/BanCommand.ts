@@ -9,6 +9,10 @@ import { ModActions } from '../../modules/moderation/classes/ModActions';
 import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 
 export class BanCommand extends Command {
+    public static readonly NAME = 'Ban';
+
+    public static readonly DESCRIPTION = 'Bans a User.';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
@@ -24,10 +28,10 @@ export class BanCommand extends Command {
 
     private removeMsgs: boolean;
 
-    public constructor(args: string[], removeMsgs: boolean) {
+    public constructor(args: string[], removeMsgs?: boolean) {
         super();
         this.args = args;
-        this.removeMsgs = removeMsgs;
+        this.removeMsgs = removeMsgs ?? false;
     }
 
     /**

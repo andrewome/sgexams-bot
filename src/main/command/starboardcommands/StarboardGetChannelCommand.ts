@@ -8,6 +8,10 @@ export class StarboardGetChannelCommand extends Command {
 
     public static EMBED_TITLE = 'Starboard Channel';
 
+    public static readonly NAME = 'StarboardGetChannel';
+
+    public static readonly DESCRIPTION = 'Displays the currently set Starboard channel';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 

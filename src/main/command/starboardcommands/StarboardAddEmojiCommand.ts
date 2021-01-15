@@ -13,6 +13,10 @@ export class StarboardAddEmojiCommand extends Command {
 
     public static MAYBE_EMOJI_ALREADY_ADDED = 'Emoji was not added. Perhaps the it was already added?';
 
+    public static readonly NAME = 'StarboardAddEmoji';
+
+    public static readonly DESCRIPTION = 'Adds a Starboard emoji that the bot will look out for.';
+
     /** CheckMessage: false */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false);
 

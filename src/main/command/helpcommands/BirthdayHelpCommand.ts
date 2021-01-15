@@ -3,15 +3,15 @@ import { CommandCollection } from '../classes/CommandCollection';
 import { HelpCommandBase } from './HelpCommandBase';
 import { CommandArgs } from '../classes/CommandArgs';
 
-export class HelpCommand extends HelpCommandBase {
-    public static readonly HEADER = '__Available Commands__';
+export class BirthdayHelpCommand extends HelpCommandBase {
+    public static HEADER = '__Birthday Commands__';
 
-    public static readonly NAME = 'Help';
+    public static readonly NAME = 'BirthdayHelp';
 
-    public static readonly DESCRIPTION = 'Displays all the available commands that this bot listens to.';
+    public static readonly DESCRIPTION = 'Displays other Birthday commands';
 
     /**
-     * This function lists out the commands that the bot will respond to.
+     * This method sends a help embed for the Birthday module.
      *
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
@@ -20,10 +20,12 @@ export class HelpCommand extends HelpCommandBase {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        await messageReply(this.generateEmbed(
-            HelpCommand.HEADER,
-            CommandCollection.HELP_COMMANDS,
-        ));
+        await messageReply(
+            this.generateEmbed(
+                BirthdayHelpCommand.HEADER,
+                CommandCollection.BIRTHDAY_COMMANDS,
+            ),
+        );
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

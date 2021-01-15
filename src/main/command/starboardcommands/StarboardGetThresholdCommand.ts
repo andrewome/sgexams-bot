@@ -4,6 +4,11 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class StarboardGetThresholdCommand extends Command {
+    public static readonly NAME = 'StarboardGetThreshold';
+
+    public static readonly DESCRIPTION =
+        'Displays the emoji threshold for a message to be starred.';
+
     public static THRESHOLD_NOT_SET = 'Threshold has not been set!';
 
     public static EMBED_TITLE = 'Starboard Threshold';

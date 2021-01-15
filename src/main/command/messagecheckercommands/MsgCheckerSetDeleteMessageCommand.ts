@@ -10,6 +10,12 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
 
     public static BOOL_CANNOT_BE_UNDEFINED = 'Boolean should not be undefined!';
 
+    public static readonly NAME =
+        'MsgCheckerSetDeleteMsg';
+
+    public static readonly DESCRIPTION =
+        'Sets whether the bot should delete instances of blacklisted words being used.';
+
     /** CheckMessage: true */
     private COMMAND_DEFAULT_COMMANDRESULT: CommandResult = new CommandResult(true);
 

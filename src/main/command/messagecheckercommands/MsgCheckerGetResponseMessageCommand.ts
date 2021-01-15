@@ -8,6 +8,11 @@ export class MsgCheckerGetResponseMessageCommand extends Command {
 
     public static EMBED_TITLE = 'Message Checker Response Message';
 
+    public static readonly NAME = 'MsgCheckerGetResponseMsg';
+
+    public static readonly DESCRIPTION =
+        'Displays the response message to the user upon detection of blacklisted words for this server.';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 

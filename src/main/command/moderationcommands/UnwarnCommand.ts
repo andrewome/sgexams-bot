@@ -9,6 +9,10 @@ import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 import { ModUtils } from '../../modules/moderation/ModUtil';
 
 export class UnwarnCommand extends Command {
+    public static readonly NAME = 'Unwarn';
+
+    public static readonly DESCRIPTION = 'Undo a warn case.';
+
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
