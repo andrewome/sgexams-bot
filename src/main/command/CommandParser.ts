@@ -40,6 +40,10 @@ import { SetMuteRoleCommand } from './moderationcommands/SetMuteRoleCommand';
 import { GetMuteRoleCommand } from './moderationcommands/GetMuteRoleCommand';
 import { MuteCommand } from './moderationcommands/MuteCommand';
 import { UnmuteCommand } from './moderationcommands/UnmuteCommand';
+import { SetBirthdayCommand } from './birthdaycommands/SetBirthdayCommand';
+import { SetBirthdayChannelCommand } from './birthdaycommands/SetBirthdayChannelCommand';
+import { BirthdayHelpCommand } from './helpcommands/BirthdayHelpCommand';
+import { ListBirthdaysCommand } from './birthdaycommands/ListBirthdaysCommand';
 
 export class CommandParser {
     public static NO_SUCH_COMMAND = 'No such command!';
@@ -52,6 +56,7 @@ export class CommandParser {
             CommandNamesAndDescriptions.STARBOARD_COMMANDS_LOWERCASE,
             CommandNamesAndDescriptions.HELP_COMMANDS_LOWERCASE,
             CommandNamesAndDescriptions.MODERATION_COMMANDS_LOWERCASE,
+            CommandNamesAndDescriptions.BIRTHDAY_COMMANDS_LOWERCASE,
         ));
 
     private content: string;
@@ -165,6 +170,8 @@ export class CommandParser {
                 return new MiscCommandHelpCommand();
             case CommandNamesAndDescriptions.MODERATION_HELP_COMMAND_NAME.toLowerCase():
                 return new ModerationHelpCommand();
+            case CommandNamesAndDescriptions.BIRTHDAY_HELP_COMMAND_NAME.toLowerCase():
+                return new BirthdayHelpCommand();
             case CommandNamesAndDescriptions.UPTIME_CHECK_COMMAND_NAME.toLowerCase():
                 return new UptimeCheckCommand();
             case CommandNamesAndDescriptions.OKBOOMER_COMMAND_NAME.toLowerCase():
@@ -203,6 +210,12 @@ export class CommandParser {
                 return new SetMuteRoleCommand(args);
             case CommandNamesAndDescriptions.GET_MUTE_ROLE_COMMAND_NAME.toLowerCase():
                 return new GetMuteRoleCommand();
+            case CommandNamesAndDescriptions.SET_BIRTHDAY_COMMAND_NAME.toLowerCase():
+                return new SetBirthdayCommand(args);
+            case CommandNamesAndDescriptions.SET_BIRTHDAY_CHANNEL_COMMAND_NAME.toLowerCase():
+                return new SetBirthdayChannelCommand(args);
+            case CommandNamesAndDescriptions.LIST_BIRTHDAYS_COMMAND_NAME.toLowerCase():
+                return new ListBirthdaysCommand(args);
             default:
                 throw new NoSuchCommandError(CommandParser.NO_SUCH_COMMAND);
         }
