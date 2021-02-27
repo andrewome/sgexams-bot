@@ -108,11 +108,16 @@ export class BirthdayAnnouncer {
 
             if (userNames.length) {
                 const embed = new MessageEmbed({
-                    title: `Wish a happy birthday to the birthday babies for ${day}/${month}!`,
+                    title: `Wish a happy birthday to the birthday babies for ${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}!`,
                     description: userNames
                         .join('\n'),
                 });
-                await (channel as TextChannel).send(embed);
+                const message = await (channel as TextChannel).send(embed);
+                await Promise.all([
+                    message.react('🎂'),
+                    message.react('🎉'),
+                    message.react('🎊'),
+                ]);
             }
             // Update last announced date.
             setLastAnnouncedDate(serverId, day, month, year);
