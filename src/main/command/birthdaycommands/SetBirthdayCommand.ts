@@ -2,7 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
-import { isDateValid, parseDate } from '../../modules/birthday/BirthdayUtil';
+import { prettifyDate, parseDate } from '../../modules/birthday/BirthdayUtil';
 import { setBirthday } from '../../modules/birthday/BirthdayDbUtil';
 
 const SUCCESSFUL_COMMANDRESULT = new CommandResult(true);
@@ -35,21 +35,20 @@ export class SetBirthdayCommand extends Command {
             return UNSUCCESSFUL_COMMANDRESULT;
         }
         const dateString = this.args[0];
+        const date = parseDate(dateString);
 
-        if (!userId || !isDateValid(dateString)) {
+        if (!userId || !date) {
             await messageReply(this.generateInvalidEmbed());
             return UNSUCCESSFUL_COMMANDRESULT;
         }
-
-        // Parse the date string in the format 'DD/MM'.
-        const { day, month } = parseDate(dateString)!;
+        const { day, month } = date;
 
         // Store birthday into database
         setBirthday(server.serverId, userId, day, month);
         await messageReply(
             this.generateGenericEmbed(
                 'Birthday set',
-                `I'll announce your birthday on ${day}/${month}!`,
+                `I'll announce your birthday on ${prettifyDate(date)}.`,
                 Command.EMBED_DEFAULT_COLOUR,
             ),
         );
@@ -60,7 +59,7 @@ export class SetBirthdayCommand extends Command {
     private generateInvalidEmbed(): MessageEmbed {
         return this.generateGenericEmbed(
             'Invalid birthday',
-            'Please input your birthday in the format "DD/MM".',
+            'Please input a valid date in the format "DD/MM".',
             Command.EMBED_ERROR_COLOUR,
         );
     }

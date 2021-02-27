@@ -7,6 +7,7 @@ import {
     getUserIdsWithBirthday,
     setLastAnnouncedDate,
 } from './BirthdayDbUtil';
+import { prettifyDate } from './BirthdayUtil';
 
 const MSEC_PER_MIN = 60 * 1000;
 const ANNOUNCEMENT_TIME_IN_MIN = 24 * 60;
@@ -108,7 +109,7 @@ export class BirthdayAnnouncer {
 
             if (userNames.length) {
                 const embed = new MessageEmbed({
-                    title: `Wish a happy birthday to the birthday babies for ${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}!`,
+                    title: `Wish a happy birthday to the birthday babies for ${prettifyDate({ day, month })}!`,
                     description: userNames
                         .join('\n'),
                 });

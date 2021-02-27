@@ -2,7 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
-import { isDateValid, parseDate } from '../../modules/birthday/BirthdayUtil';
+import { parseDate, prettifyDate } from '../../modules/birthday/BirthdayUtil';
 import { getUserIdsWithBirthday } from '../../modules/birthday/BirthdayDbUtil';
 
 const SUCCESSFUL_COMMANDRESULT = new CommandResult(true);
@@ -35,13 +35,12 @@ export class ListBirthdaysCommand extends Command {
         }
         const dateString = this.args[0];
 
-        if (!isDateValid(dateString)) {
+        const date = parseDate(dateString);
+        if (!date) {
             await messageReply(this.generateInvalidEmbed());
             return UNSUCCESSFUL_COMMANDRESULT;
         }
-
-        // Parse the date string in the format 'DD/MM'.
-        const { day, month } = parseDate(dateString)!;
+        const { day, month } = date;
 
         // Get all users with the given birthdate.
         const userIds = getUserIdsWithBirthday(server.serverId, day, month);
@@ -53,7 +52,7 @@ export class ListBirthdaysCommand extends Command {
         }
         await messageReply(
             this.generateGenericEmbed(
-                `Birthdays on ${day}/${month}`,
+                `Birthdays on ${prettifyDate(date)}`,
                 description,
                 Command.EMBED_DEFAULT_COLOUR,
             ),
@@ -65,7 +64,7 @@ export class ListBirthdaysCommand extends Command {
     private generateInvalidEmbed(): MessageEmbed {
         return this.generateGenericEmbed(
             'Invalid birthday',
-            'Please input the birthday in the format "DD/MM".',
+            'Please input a valid date in the format "DD/MM"',
             Command.EMBED_ERROR_COLOUR,
         );
     }
