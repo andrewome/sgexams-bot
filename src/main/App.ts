@@ -1,6 +1,6 @@
 import './lib/env';
 import {
-    Client, Message, MessageReaction, User, GuildMember,
+    Client, Message, MessageReaction, User, GuildMember, PartialMessage, PartialUser,
 } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
 import { SqliteError } from 'better-sqlite3';
@@ -80,17 +80,20 @@ export class App {
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        this.bot.on(App.MESSAGE_UPDATE, (oldMessage: Message, newMessage: Message): void => {
+        this.bot.on(App.MESSAGE_UPDATE, async (_: Message | PartialMessage, newMessage: Message | PartialMessage): Promise<void> => {
+            if (newMessage.partial) {
+                newMessage = await newMessage.fetch();
+            }
             new MessageUpdateEventHandler(this.storage, newMessage).handleEvent();
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        this.bot.on(App.REACTION_ADD, (reaction: MessageReaction, user: User): void => {
+        this.bot.on(App.REACTION_ADD, (reaction: MessageReaction, _: User | PartialUser): void => {
             new MessageReactionAddEventHandler(this.storage, reaction).handleEvent();
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        this.bot.on(App.REACTION_REMOVE, (reaction: MessageReaction, user: User): void => {
+        this.bot.on(App.REACTION_REMOVE, (reaction: MessageReaction, _: User | PartialUser): void => {
             new MessageReactionRemoveEventHandler(this.storage, reaction).handleEvent();
         });
 
