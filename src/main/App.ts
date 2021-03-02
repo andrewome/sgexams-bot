@@ -80,7 +80,10 @@ export class App {
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        this.bot.on(App.MESSAGE_UPDATE, async (_: Message | PartialMessage, newMessage: Message | PartialMessage): Promise<void> => {
+        this.bot.on(App.MESSAGE_UPDATE, async (
+            _: Message | PartialMessage,
+            newMessage: Message | PartialMessage,
+        ): Promise<void> => {
             if (newMessage.partial) {
                 newMessage = await newMessage.fetch();
             }
@@ -92,8 +95,11 @@ export class App {
             new MessageReactionAddEventHandler(this.storage, reaction).handleEvent();
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        this.bot.on(App.REACTION_REMOVE, (reaction: MessageReaction, _: User | PartialUser): void => {
+        this.bot.on(App.REACTION_REMOVE, (
+            reaction: MessageReaction,
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            _: User | PartialUser,
+        ): void => {
             new MessageReactionRemoveEventHandler(this.storage, reaction).handleEvent();
         });
 
