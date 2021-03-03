@@ -84,9 +84,6 @@ export class App {
             _: Message | PartialMessage,
             newMessage: Message | PartialMessage,
         ): Promise<void> => {
-            if (newMessage.partial) {
-                newMessage = await newMessage.fetch();
-            }
             new MessageUpdateEventHandler(this.storage, newMessage).handleEvent();
         });
 
