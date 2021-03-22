@@ -42,6 +42,7 @@ import { StarboardGetThresholdCommand } from '../starboardcommands/StarboardGetT
 import { StarboardRemoveEmojiCommand } from '../starboardcommands/StarboardRemoveEmojiCommand';
 import { StarboardSetChannelCommand } from '../starboardcommands/StarboardSetChannelCommand';
 import { StarboardSetThresholdCommand } from '../starboardcommands/StarboardSetThresholdCommand';
+import { DeleteBirthdayCommand } from '../birthdaycommands/DeleteBirthdayCommand';
 
 export abstract class CommandCollection {
     /** Message Checker Commands */
@@ -110,5 +111,6 @@ export abstract class CommandCollection {
         SetBirthdayCommand,
         SetBirthdayChannelCommand,
         ListBirthdaysCommand,
+        DeleteBirthdayCommand,
     ];
 }

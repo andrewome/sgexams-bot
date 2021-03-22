@@ -97,3 +97,14 @@ export function setBirthday(
     ).run(serverId, userId, day, month);
     db.close();
 }
+
+export function deleteBirthday(
+    serverId: string,
+    userId: string,
+): void {
+    const db = DatabaseConnection.connect();
+    db.prepare(
+        'DELETE FROM birthdays WHERE serverId = ? AND userId = ?',
+    ).run(serverId, userId);
+    db.close();
+}
