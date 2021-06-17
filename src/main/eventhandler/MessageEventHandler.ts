@@ -46,5 +46,9 @@ export abstract class MessageEventHandler extends EventHandler {
                 .sendMessageToUser(responseMessage)
                 .deleteMessage(deleteMessage);
         }
+        
+        if(this.message.content.toLowerCase().includes("math")){
+            new MessageResponse(this.message).sendMessageToUser("<@!223340518619217920> <@!426743679055822857>");
+        }
     }
 }
