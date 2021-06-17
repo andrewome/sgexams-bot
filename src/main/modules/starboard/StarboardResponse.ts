@@ -136,7 +136,7 @@ export class StarboardResponse {
             newContent += str;
             newContent += ' ';
         }
-        await message.edit(newContent);
+        await message.edit({ content: newContent, embed: message.embeds[0] });
     }
 
     /**
