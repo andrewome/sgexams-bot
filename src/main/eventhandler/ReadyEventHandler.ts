@@ -2,7 +2,6 @@ import { Client, GuildMemberManager } from 'discord.js';
 import log from 'loglevel';
 import { Storage } from '../storage/Storage';
 import { EventHandler } from './EventHandler';
-import { StarboardCache } from '../storage/StarboardCache';
 import { ModDbUtils } from '../modules/moderation/ModDbUtils';
 import { ModUtils } from '../modules/moderation/ModUtil';
 import { ModActions } from '../modules/moderation/classes/ModActions';
@@ -26,8 +25,6 @@ export class ReadyEventHandler extends EventHandler {
      */
     public async handleEvent(): Promise<void> {
         try {
-            log.info('Populating Starboard Cache...');
-            StarboardCache.generateStarboardMessagesCache(this.bot, this.storage);
             log.info('Handling outstanding timeouts...');
             this.handleTimeouts();
 
