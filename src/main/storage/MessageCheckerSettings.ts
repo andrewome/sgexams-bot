@@ -191,6 +191,7 @@ export class MessageCheckerSettings {
      * @returns MessageCheckerSettings
      */
     /* eslint-disable @typescript-eslint/no-explicit-any */
+    /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
     public static convertFromJsonFriendly(obj: any): MessageCheckerSettings {
         // Check attributes
         if (!(obj.hasOwnProperty('bannedWords')
@@ -210,4 +211,5 @@ export class MessageCheckerSettings {
         );
     }
     /* eslint-enable @typescript-eslint/no-explicit-any */
+    /* eslint-enable @typescript-eslint/explicit-module-boundary-types */
 }

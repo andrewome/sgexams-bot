@@ -1,6 +1,6 @@
 import './lib/env';
 import {
-    Client, Message, MessageReaction, User, GuildMember,
+    Client, Message, MessageReaction, User, GuildMember, PartialMessage, PartialUser,
 } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
 import { SqliteError } from 'better-sqlite3';
@@ -80,19 +80,26 @@ export class App {
         });
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        this.bot.on(App.MESSAGE_UPDATE, (oldMessage: Message, newMessage: Message): void => {
-            new MessageUpdateEventHandler(this.storage, newMessage).handleEvent();
-        });
+        this.bot.on(
+            App.MESSAGE_UPDATE,
+            (oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage): void => {
+                new MessageUpdateEventHandler(this.storage, newMessage).handleEvent();
+            },
+        );
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        this.bot.on(App.REACTION_ADD, (reaction: MessageReaction, user: User): void => {
-            new MessageReactionAddEventHandler(this.storage, reaction).handleEvent();
-        });
+        this.bot.on(
+            App.REACTION_ADD, // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            (reaction: MessageReaction, user: User | PartialUser): void => {
+                new MessageReactionAddEventHandler(this.storage, reaction).handleEvent();
+            },
+        );
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        this.bot.on(App.REACTION_REMOVE, (reaction: MessageReaction, user: User): void => {
-            new MessageReactionRemoveEventHandler(this.storage, reaction).handleEvent();
-        });
+        this.bot.on(
+            App.REACTION_REMOVE, // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            (reaction: MessageReaction, user: User | PartialUser): void => {
+                new MessageReactionRemoveEventHandler(this.storage, reaction).handleEvent();
+            },
+        );
 
         this.bot.on(App.USER_JOIN, (member: GuildMember): void => {
             new UserJoinEventHandler(this.storage, member).handleEvent();
@@ -112,7 +119,7 @@ if (require.main === module) {
     // Make logs show current date
     const newMethodFactory = (methodName: string,
                               logLevel: 0 | 1 | 2 | 3 | 4 | 5,
-                              loggerName: string): LoggingMethod => {
+                              loggerName: string | symbol): LoggingMethod => {
         const rawMethod = originalFactory(methodName, logLevel, loggerName);
         const editedMethodFactory = (message: string): void => {
             const curDate = new Date().toLocaleString('en-SG');

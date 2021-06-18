@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message, PartialMessage } from 'discord.js';
 import { EventHandler } from './EventHandler';
 import { Storage } from '../storage/Storage';
 import { Server } from '../storage/Server';
@@ -7,9 +7,9 @@ import { MessageResponse } from '../modules/messagechecker/response/MessageRespo
 
 /* This class is the base class for message events. */
 export abstract class MessageEventHandler extends EventHandler {
-    protected message: Message;
+    protected message: Message | PartialMessage;
 
-    public constructor(storage: Storage, message: Message) {
+    public constructor(storage: Storage, message: Message | PartialMessage) {
         super(storage);
         this.message = message;
     }
@@ -17,12 +17,13 @@ export abstract class MessageEventHandler extends EventHandler {
     /**
      * Handles fetching of message if it's partial.
      *
-     * @returns Promise<void>
+     * @returns Promise<Message>
      */
-    protected async handlePartial(): Promise<void> {
+    protected async handlePartial(): Promise<Message> {
         if (this.message.partial) {
-            await this.message.fetch();
+            this.message = await this.message.fetch();
         }
+        return this.message;
     }
 
     /**
@@ -32,6 +33,8 @@ export abstract class MessageEventHandler extends EventHandler {
      * @returns Promise
      */
     protected async handleMessageCheck(server: Server): Promise<void> {
+        this.message = await this.handlePartial();
+
         // Retrieve settings
         const bannedWords = server.messageCheckerSettings.getBannedWords();
         const reportingChannelId = server.messageCheckerSettings.getReportingChannelId();

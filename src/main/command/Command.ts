@@ -4,12 +4,6 @@ import {
 import { CommandResult } from './classes/CommandResult';
 import { CommandArgs } from './classes/CommandArgs';
 
-export type CommandClassRef<T = Command> = {
-    NAME: string;
-    DESCRIPTION: string;
-    new(args: string[]): T;
-};
-
 /** Base class of the Commands */
 export abstract class Command {
     public static NO_ARGUMENTS = 'Oops! I received no arguments. Please try again.';
@@ -39,7 +33,7 @@ export abstract class Command {
      *                                   a command may use.
      * @returns CommandResult
      */
-    public async abstract execute(commandArgs: CommandArgs): Promise<CommandResult>;
+    public abstract execute(commandArgs: CommandArgs): Promise<CommandResult>;
 
     /**
      * This function checks if a given guildmember has the permissions required
@@ -86,3 +80,9 @@ export abstract class Command {
         return embed;
     }
 }
+
+export type CommandClassRef<T = Command> = {
+    NAME: string;
+    DESCRIPTION: string;
+    new(args: string[]): T;
+};
