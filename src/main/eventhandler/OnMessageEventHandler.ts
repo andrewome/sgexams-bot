@@ -27,7 +27,8 @@ export class OnMessageEventHandler extends MessageEventHandler {
     public async handleEvent(): Promise<void> {
         try {
             // Handle partial message
-            await this.handlePartial();
+            this.message = await this.handlePartial();
+
             // If it is a DM, ignore.
             if (this.message.guild === null) return;
             // If it's a bot, ignore :)
@@ -56,6 +57,8 @@ export class OnMessageEventHandler extends MessageEventHandler {
     private async handleCommand(server: Server): Promise<CommandResult> {
         // Default command result - check messages.
         const defaultCommandResult = new CommandResult(true);
+
+        this.message = await this.handlePartial();
 
         // If it's a command, execute the command
         this.message = await this.handlePartial();

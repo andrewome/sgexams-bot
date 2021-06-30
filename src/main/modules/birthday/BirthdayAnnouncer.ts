@@ -7,6 +7,7 @@ import {
     getUserIdsWithBirthday,
     setLastAnnouncedDate,
 } from './BirthdayDbUtil';
+import { prettifyDate } from './BirthdayUtil';
 
 const MSEC_PER_MIN = 60 * 1000;
 const ANNOUNCEMENT_TIME_IN_MIN = 24 * 60;
@@ -82,27 +83,48 @@ export class BirthdayAnnouncer {
     }
 
     async announce(serverId: string): Promise<void> {
-        // Get the birthday announcement channel.
-        const channelId = getBirthdayChannelId(serverId);
-        if (!channelId) return;
-        const channel = await this.bot.channels.fetch(channelId);
-        if (!channel || channel.type !== 'text') return;
+        try {
+            // Get the birthday announcement channel.
+            const channelId = getBirthdayChannelId(serverId);
+            if (!channelId) return;
+            const channel = await this.bot.channels.fetch(channelId);
+            if (!channel || channel.type !== 'text') return;
 
-        // Announce the birthdays for all users who were born on this day.
-        const { day, month, year } = getCurDate();
-        const userIds = getUserIdsWithBirthday(serverId, day, month);
-        if (userIds.length > 0) {
-            const embed = new MessageEmbed({
-                title: `Wish a happy birthday to the birthday babies for ${day}/${month}!`,
-                description: userIds
-                    .map((userId) => `<@!${userId}>`)
-                    .join('\n'),
-            });
-            await (channel as TextChannel).send(embed);
+            const guild = await this.bot.guilds.fetch(serverId);
+            if (!guild.available) return;
+
+            // Announce the birthdays for all users who were born on this day.
+            const { day, month, year } = getCurDate();
+            const userIds = getUserIdsWithBirthday(serverId, day, month);
+            const userNames = (await Promise.all(
+                userIds.map(async (id: string) => {
+                    try {
+                        const member = await guild.members.fetch(id);
+                        return member.displayName;
+                    } catch (err) {
+                        return null;
+                    }
+                }),
+            )).filter((name: string | null) => name !== null);
+
+            if (userNames.length) {
+                const embed = new MessageEmbed({
+                    title: `Wish a happy birthday to the birthday babies for ${prettifyDate({ day, month })}!`,
+                    description: userNames
+                        .join('\n'),
+                });
+                const message = await (channel as TextChannel).send(embed);
+                await Promise.all([
+                    message.react('🎂'),
+                    message.react('🎉'),
+                    message.react('🎊'),
+                ]);
+            }
+            // Update last announced date.
+            setLastAnnouncedDate(serverId, day, month, year);
+        } catch (err) {
+            log.error(err);
         }
-
-        // Update last announced date.
-        setLastAnnouncedDate(serverId, day, month, year);
     }
 
     /**
