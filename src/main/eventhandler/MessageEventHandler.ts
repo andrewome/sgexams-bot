@@ -17,7 +17,7 @@ export abstract class MessageEventHandler extends EventHandler {
     /**
      * Handles fetching of message if it's partial.
      *
-     * @returns Promise<void>
+     * @returns Promise<Message>
      */
     protected async handlePartial(): Promise<Message> {
         if (this.message.partial) {

@@ -32,7 +32,7 @@ export class OnMessageEventHandler extends MessageEventHandler {
             // If it is a DM, ignore.
             if (this.message.guild === null) return;
             // If it's a bot, ignore :)
-            if (this.message.author.bot) return;
+            if (this.message!.author!.bot) return;
 
             const server = this.getServer(this.message.guild.id);
 
@@ -61,6 +61,7 @@ export class OnMessageEventHandler extends MessageEventHandler {
         this.message = await this.handlePartial();
 
         // If it's a command, execute the command
+        this.message = await this.handlePartial();
         const { content } = this.message;
         const commandParser = new CommandParser(content);
         if (commandParser.isCommand(this.botId)) {

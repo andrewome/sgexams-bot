@@ -27,13 +27,16 @@ export class MessageReactionRemoveEventHandler extends MessageReactionEventHandl
 
             // If it does, edit the starboard message, but don't delete to prevent abuse
             if (pair !== null) {
-                const starboardResponse = new StarboardResponse(starboardSettings, this.reaction);
+                MessageReactionRemoveEventHandler.queue.add(async () => {
+                    const starboardResponse
+                        = new StarboardResponse(starboardSettings, this.reaction);
 
-                // Check if emoji in channel is the same as the emoji reacted.
-                const toEdit = await starboardChecker.checkEmojiInStarboardMessage(pair[1]);
-                if (toEdit === true) {
-                    await starboardResponse.editStarboardMessageCount(pair[0], pair[1]);
-                }
+                    // Check if emoji in channel is the same as the emoji reacted.
+                    const toEdit = await starboardChecker.checkEmojiInStarboardMessage(pair[1]);
+                    if (toEdit === true) {
+                        await starboardResponse.editStarboardMessageCount(pair[0], pair[1]);
+                    }
+                });
             }
         } catch (err) {
             this.handleError(err);

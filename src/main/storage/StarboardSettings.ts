@@ -245,6 +245,7 @@ export class StarboardSettings {
     }
 
     /* eslint-disable @typescript-eslint/no-explicit-any */
+    /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
     public static convertFromJsonFriendly(obj: any): StarboardSettings {
         // Check attributes
         if (!(obj.hasOwnProperty('emojis')

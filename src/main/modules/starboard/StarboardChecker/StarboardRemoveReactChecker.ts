@@ -15,7 +15,7 @@ export class StarboardRemoveReactChecker extends StarboardChecker {
 
         // Check if id of message appears in the Starboard
         // If exists, definitely need to update (delete or edit)
-        const starboardMsgId = this.fetchStarboardId();
+        const starboardMsgId = await this.checkIfMessageExists();
         if (starboardMsgId !== null) {
             // Get the count of the number of reactions of starboard emoji.
             const size = await this.getNumberOfReactions();
