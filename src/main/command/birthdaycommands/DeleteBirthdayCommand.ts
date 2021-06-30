@@ -1,11 +1,9 @@
-import { MessageEmbed } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 import { deleteBirthday } from '../../modules/birthday/BirthdayDbUtil';
 
 const SUCCESSFUL_COMMANDRESULT = new CommandResult(true);
-const UNSUCCESSFUL_COMMANDRESULT = new CommandResult(false);
 
 export class DeleteBirthdayCommand extends Command {
     public static readonly NAME = 'DeleteBirthday';
@@ -13,7 +11,7 @@ export class DeleteBirthdayCommand extends Command {
     public static readonly DESCRIPTION = "Deletes the user's birthday.";
 
     /**
-     * Displays all the users with a birthday on the date given as an argument.
+     * Deletes user's birthday from bot database.
      *
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
@@ -21,12 +19,7 @@ export class DeleteBirthdayCommand extends Command {
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const { userId, messageReply, server } = commandArgs;
 
-        if (!userId) {
-            await messageReply(this.generateInvalidEmbed());
-            return UNSUCCESSFUL_COMMANDRESULT;
-        }
-
-        deleteBirthday(server.serverId, userId);
+        deleteBirthday(server.serverId, userId!);
 
         await messageReply(
             this.generateGenericEmbed(
@@ -37,13 +30,5 @@ export class DeleteBirthdayCommand extends Command {
         );
 
         return SUCCESSFUL_COMMANDRESULT;
-    }
-
-    private generateInvalidEmbed(): MessageEmbed {
-        return this.generateGenericEmbed(
-            'Invalid user',
-            'Please try again',
-            Command.EMBED_ERROR_COLOUR,
-        );
     }
 }
