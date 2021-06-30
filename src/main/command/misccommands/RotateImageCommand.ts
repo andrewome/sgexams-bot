@@ -27,10 +27,11 @@ export class RotateImageCommand extends Command {
 
     private ERROR_MESSAGE = this.generateGenericEmbed(
         this.EMBED_TITLE,
-        'Not a valid message ID.\n' +
+        'Invalid message ID or image index provided\n' +
         'Please check if the message\n' +
-        '1) contains an image\n2) is in this channel.\n\n' +
-        '**Usage:** @bot rotate <message ID>\n',
+        '> 1. contains an image\n> 2. is in this channel.\n' +
+        'If you provided an index, please double check that it is valid\n\n' +
+        '**Usage:** @bot rotate <message ID> [0 based index]\n',
         RotateImageCommand.EMBED_ERROR_COLOUR,
     )
 
@@ -51,6 +52,7 @@ export class RotateImageCommand extends Command {
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const { messageReply, channel, userId } = commandArgs;
         const messageId = this.commandArgs[0];
+        const idx = parseInt(this.commandArgs[1] ?? '0', 10);
 
         if (messageId === undefined) {
             await messageReply(this.ERROR_MESSAGE);
@@ -63,15 +65,17 @@ export class RotateImageCommand extends Command {
             const message = await (channel as TextChannel).messages.fetch(messageId);
             const { embeds, attachments } = message;
 
-            // Attachments take precedence.
+            // Check if index provided is legitimate
             let url = '';
-            if (embeds.length !== 0) {
-                url = embeds[0].url!;
-            }
+            if (embeds.length <= idx && attachments.size <= idx)
+                throw Error;
 
-            if (attachments.size !== 0) {
-                url = attachments.array()[0].url;
-            }
+            // Attachments take precedence
+            if (embeds.length > idx)
+                url = embeds[idx].url!;
+
+            if (attachments.size > idx)
+                url = attachments.array()[idx].url;
 
             // Set up react collector
             let img: Sharp;
