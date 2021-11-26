@@ -1,7 +1,14 @@
 import {
-    Permissions, Channel, GuildChannelManager, GuildEmojiManager, GuildMemberManager, RoleManager,
+    Permissions, GuildChannelManager, GuildEmojiManager,
+    GuildMemberManager, RoleManager, TextChannel, ThreadChannel,
 } from 'discord.js';
 import { Server } from '../../storage/Server';
+
+/** This interface has to be disabled because tests inject a custom check under this function to test for output embeds.
+interface IMessageReply {
+    (options: string | MessagePayload | ReplyMessageOptions): Promise<Message>
+}
+* */
 
 /** This interface contains the arguments for the Command class */
 export interface CommandArgs {
@@ -9,7 +16,7 @@ export interface CommandArgs {
 
     memberPerms: Readonly<Permissions>;
 
-    messageReply: Function;
+    messageReply: Function; // IMessageReply
 
     deleteFunction?: Function;
 
@@ -23,7 +30,7 @@ export interface CommandArgs {
 
     members?: GuildMemberManager;
 
-    channel?: Channel;
+    channel?: TextChannel | ThreadChannel;
 
     userId?: string;
 

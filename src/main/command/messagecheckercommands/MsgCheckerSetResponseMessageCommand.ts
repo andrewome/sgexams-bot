@@ -52,7 +52,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
                 null,
             );
             embed = this.generateResetEmbed();
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -66,7 +66,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
             msg,
         );
         embed = this.generateValidEmbed(msg);
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

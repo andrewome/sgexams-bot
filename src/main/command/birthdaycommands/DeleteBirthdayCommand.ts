@@ -21,13 +21,13 @@ export class DeleteBirthdayCommand extends Command {
 
         deleteBirthday(server.serverId, userId!);
 
-        await messageReply(
-            this.generateGenericEmbed(
+        await messageReply({
+            embeds: [this.generateGenericEmbed(
                 'Birthday deleted',
                 'Your birthday has been successfully deleted.',
                 Command.EMBED_DEFAULT_COLOUR,
-            ),
-        );
+            )],
+        });
 
         return SUCCESSFUL_COMMANDRESULT;
     }

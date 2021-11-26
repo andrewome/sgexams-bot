@@ -1,5 +1,5 @@
 import {
-    Permissions, MessageEmbed,
+    Permissions, MessageEmbed, ColorResolvable,
 } from 'discord.js';
 import { CommandResult } from './classes/CommandResult';
 import { CommandArgs } from './classes/CommandArgs';
@@ -10,15 +10,15 @@ export abstract class Command {
 
     public static INSUFFICIENT_ARGUMENTS = 'Insufficient arguments. Please try again.';
 
-    public static INTERNAL_ERROR_OCCURED = 'An internal error occured.'
+    public static INTERNAL_ERROR_OCCURED = 'An internal error occured.';
 
     public static USERID_ERROR = 'Invalid User. Please try again.';
 
     public static MISSING_REASON = 'Missing a reason. Please try again';
 
-    public static EMBED_DEFAULT_COLOUR = '125bd1';
+    public static readonly EMBED_DEFAULT_COLOUR = 0x125bd1;
 
-    public static EMBED_ERROR_COLOUR = 'ff0000';
+    public static readonly EMBED_ERROR_COLOUR = 0xff0000;
 
     public static ERROR_EMBED_TITLE = 'Error';
 
@@ -42,8 +42,10 @@ export abstract class Command {
      * @param  {Permissions} userPermissions Permissions of the user
      * @returns boolean
      */
-    public hasPermissions(commandPermissions: Permissions,
-                          userPermissions: Readonly<Permissions>): boolean {
+    public hasPermissions(
+        commandPermissions: Permissions,
+        userPermissions: Readonly<Permissions>,
+    ): boolean {
         // Check if user permissions exist inside command permissions
         if (!userPermissions.has(commandPermissions)) {
             return false;
@@ -63,7 +65,7 @@ export abstract class Command {
             Command.NO_PERMISSIONS_MSG,
             Command.EMBED_ERROR_COLOUR,
         );
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
     }
 
     /**
@@ -74,7 +76,7 @@ export abstract class Command {
      * @param  {string} colour
      * @returns MessageEmbed
      */
-    protected generateGenericEmbed(title: string, message: string, colour: string): MessageEmbed {
+    protected generateGenericEmbed(title: string, message: string, colour: ColorResolvable): MessageEmbed {
         const embed = new MessageEmbed();
         embed.setColor(colour).addField(title, message);
         return embed;

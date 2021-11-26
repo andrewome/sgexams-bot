@@ -1,5 +1,5 @@
 import {
-    Permissions, MessageEmbed, Channel,
+    Permissions, MessageEmbed, TextChannel,
 } from 'discord.js';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -8,11 +8,13 @@ import { Command } from '../Command';
 export class MsgCheckerSetReportChannelCommand extends Command {
     public static CHANNEL_NOT_FOUND = 'Channel was not found. Please submit a valid channel ID.';
 
-    public static NOT_TEXT_CHANNEL = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
+    public static NOT_TEXT_CHANNEL
+        = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
 
     public static EMBED_TITLE = 'Message Checker Reporting Channel';
 
-    public static CHANNEL_RESETTED = 'Reporting Channel has been resetted because there were no arguments. Please set a new one.';
+    public static CHANNEL_RESETTED
+        = 'Reporting Channel has been resetted because there were no arguments. Please set a new one.';
 
     public static CHANNELID_CANNOT_BE_UNDEFINED = 'Channel ID cannot be undefined!';
 
@@ -59,7 +61,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
                 server.serverId,
                 null,
             );
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
@@ -73,14 +75,14 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         const channel = channels!.resolve(channelId);
         if (channel === null) {
             embed = this.generateInvalidEmbed();
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
         // If not text
-        if ((channel as Channel).type !== 'text') {
+        if (!(channel instanceof TextChannel)) {
             embed = this.generateNotTextChannelEmbed();
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
@@ -89,7 +91,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
             server.serverId,
             channelId,
         );
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
         return this.COMMAND_DEFAULT_COMMANDRESULT;
     }
 

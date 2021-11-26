@@ -50,7 +50,7 @@ export class SetMuteRoleCommand extends Command {
         // Check number of args, 0 args means reset.
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             ModDbUtils.setMuteRoleId(server.serverId, null);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
@@ -61,14 +61,14 @@ export class SetMuteRoleCommand extends Command {
         // Check if valid role
         if (channel === null) {
             embed = this.generateNotFoundEmbed();
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
         // Valid roleId
         ModDbUtils.setMuteRoleId(server.serverId, roleId);
         embed = this.generateValidEmbed(roleId);
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

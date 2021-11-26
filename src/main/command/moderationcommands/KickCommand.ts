@@ -51,7 +51,7 @@ export class KickCommand extends Command {
 
         // Check number of args
         if (this.args.length < 1) {
-            await messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply({ embeds: [this.generateInsufficientArgumentsEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -65,10 +65,10 @@ export class KickCommand extends Command {
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                            this.type, ModUtils.getUnixTime(), emit!, reason);
             await target.kick();
-            await messageReply(this.generateValidEmbed(target, reason));
+            await messageReply({ embeds: [this.generateValidEmbed(target, reason)] });
         } catch (err) {
             if (err instanceof DiscordAPIError)
-                await messageReply(this.generateUserIdErrorEmbed());
+                await messageReply({ embeds: [this.generateUserIdErrorEmbed()] });
             else
                 throw err;
         }

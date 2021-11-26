@@ -57,7 +57,7 @@ export class MsgCheckerListWordsCommand extends Command {
         }
 
         // Send reply
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

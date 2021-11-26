@@ -1,6 +1,6 @@
 import './lib/env';
 import {
-    Client, Message, MessageReaction, User, GuildMember, PartialMessage, PartialUser,
+    Client, Message, MessageReaction, User, GuildMember, PartialMessage, PartialUser, Intents, PartialMessageReaction,
 } from 'discord.js';
 import log, { LoggingMethod } from 'loglevel';
 import { SqliteError } from 'better-sqlite3';
@@ -19,7 +19,7 @@ export class App {
 
     private storage: Storage = new Storage();
 
-    public static readonly MESSAGE = 'message';
+    public static readonly MESSAGE = 'messageCreate';
 
     public static readonly MESSAGE_UPDATE = 'messageUpdate';
 
@@ -38,6 +38,11 @@ export class App {
     public constructor() {
         // set restTimeOffset to 0ms, original 500ms.
         this.bot = new Client({
+            intents: [
+                Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS,
+                Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+                Intents.FLAGS.GUILD_MESSAGE_TYPING,
+            ],
             restTimeOffset: 0,
             partials: ['MESSAGE', 'REACTION'],
         });
@@ -57,7 +62,8 @@ export class App {
             });
         try {
             this.storage = new Storage().loadServers();
-        } catch (err) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
             log.warn(err.stack);
             if (err instanceof SqliteError) {
                 log.error('Sqlite Error detected. Shutting down.');
@@ -89,14 +95,14 @@ export class App {
 
         this.bot.on(
             App.REACTION_ADD, // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            (reaction: MessageReaction, user: User | PartialUser): void => {
+            (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser): void => {
                 new MessageReactionAddEventHandler(this.storage, reaction).handleEvent();
             },
         );
 
         this.bot.on(
             App.REACTION_REMOVE, // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            (reaction: MessageReaction, user: User | PartialUser): void => {
+            (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser): void => {
                 new MessageReactionRemoveEventHandler(this.storage, reaction).handleEvent();
             },
         );
@@ -117,9 +123,11 @@ if (require.main === module) {
     const originalFactory = log.methodFactory;
 
     // Make logs show current date
-    const newMethodFactory = (methodName: string,
-                              logLevel: 0 | 1 | 2 | 3 | 4 | 5,
-                              loggerName: string | symbol): LoggingMethod => {
+    const newMethodFactory = (
+        methodName: string,
+        logLevel: 0 | 1 | 2 | 3 | 4 | 5,
+        loggerName: string | symbol,
+    ): LoggingMethod => {
         const rawMethod = originalFactory(methodName, logLevel, loggerName);
         const editedMethodFactory = (message: string): void => {
             const curDate = new Date().toLocaleString('en-SG');

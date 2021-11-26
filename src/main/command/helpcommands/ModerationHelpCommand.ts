@@ -20,10 +20,12 @@ export class ModerationHelpCommand extends HelpCommandBase {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        await messageReply(this.generateEmbed(
-            ModerationHelpCommand.HEADER,
-            CommandCollection.MODERATION_COMMANDS,
-        ));
+        await messageReply({
+            embeds: [this.generateEmbed(
+                ModerationHelpCommand.HEADER,
+                CommandCollection.MODERATION_COMMANDS,
+            )],
+        });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

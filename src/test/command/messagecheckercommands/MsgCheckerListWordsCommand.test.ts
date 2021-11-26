@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, no-restricted-syntax, no-unused-expressions */
 import { should } from 'chai';
-import { MessageEmbed, Permissions } from 'discord.js';
+import { MessageEmbed, MessageOptions, Permissions } from 'discord.js';
 import { MsgCheckerListWordsCommand } from '../../../main/command/messagecheckercommands/MsgCheckerListWordsCommand';
 import { Command } from '../../../main/command/Command';
 import { Server } from '../../../main/storage/Server';
@@ -12,8 +12,8 @@ import { deleteDbFile, TEST_STORAGE_PATH } from '../../TestsHelper';
 should();
 
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
-const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
+const { EMBED_DEFAULT_COLOUR } = Command;
+const { EMBED_ERROR_COLOUR } = Command;
 const { EMBED_TITLE } = MsgCheckerListWordsCommand;
 const { NO_WORDS_FOUND } = MsgCheckerListWordsCommand;
 
@@ -40,8 +40,9 @@ describe('ListCommandsCommand test suite', (): void => {
     });
 
     it('No permission check', async (): Promise<void> => {
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
             const field = embed.fields![0];
@@ -66,7 +67,8 @@ describe('ListCommandsCommand test suite', (): void => {
         const bannedWords = ['word1', 'word2', 'word3'];
         server.messageCheckerSettings.addBannedWords(serverId, bannedWords);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
             // Get output string
             let output = '';
             for (const word of bannedWords) {
@@ -74,7 +76,7 @@ describe('ListCommandsCommand test suite', (): void => {
             }
 
             // Check colour
-            embed.color!.toString(16).should.equal(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equal(EMBED_DEFAULT_COLOUR);
 
             // Check field
             embed.fields!.length.should.be.equals(1);
@@ -95,9 +97,10 @@ describe('ListCommandsCommand test suite', (): void => {
         commandResult.shouldCheckMessage.should.be.true;
     });
     it('Embed should show if no bannedWords', async (): Promise<void> => {
-        const checkEmbed = (embed: MessageEmbed): void => {
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
             // Check colour
-            embed.color!.toString(16).should.equal(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equal(EMBED_DEFAULT_COLOUR);
 
             // Check field
             embed.fields!.length.should.be.equals(1);

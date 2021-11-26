@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import {
-    MessageEmbed, Permissions, Collection, Emoji,
+    MessageEmbed, Permissions, Collection, Emoji, MessageOptions,
 } from 'discord.js';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -29,8 +29,8 @@ emojis.set(emoji_.id, emoji_);
 */
 
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
-const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
+const { EMBED_DEFAULT_COLOUR } = Command;
+const { EMBED_ERROR_COLOUR } = Command;
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
 const { MAYBE_EMOJI_NOT_INSIDE } = StarboardRemoveEmojiCommand;
@@ -47,8 +47,9 @@ beforeEach((): void => {
 describe('StarboardAddEmojiCommand test suite', (): void => {
     it('No permission check', async (): Promise<void> => {
         command = new StarboardRemoveEmojiCommand([]);
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
             const field = embed.fields![0];
@@ -70,8 +71,9 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
     it('No arguments', (): void => {
         command = new StarboardRemoveEmojiCommand([]);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(ERROR_EMBED_TITLE);
@@ -94,8 +96,9 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
         server.starboardSettings.addEmoji(emoji);
         command = new StarboardRemoveEmojiCommand(['test']);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -116,8 +119,9 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
     it('Remove non existent emoji', (): void => {
         command = new StarboardRemoveEmojiCommand(['test']);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);

@@ -138,7 +138,7 @@ describe('messageCheckerSettings test suite', (): void => {
             obj.reportingChannelId = '123';
             try {
                 const messageCheckerSettings_ = MessageCheckerSettings.convertFromJsonFriendly(obj);
-            } catch (err) {
+            } catch (err: any) {
                 err.message.should.equals('Object is not valid');
             }
         });
@@ -148,7 +148,7 @@ describe('messageCheckerSettings test suite', (): void => {
             obj.responseMessage = '111';
             try {
                 const messageCheckerSettings_ = MessageCheckerSettings.convertFromJsonFriendly(obj);
-            } catch (err) {
+            } catch (err: any) {
                 err.message.should.equals('Object is not valid');
             }
         });
@@ -158,7 +158,7 @@ describe('messageCheckerSettings test suite', (): void => {
             obj.reportingChannelId = '123';
             try {
                 const messageCheckerSettings_ = MessageCheckerSettings.convertFromJsonFriendly(obj);
-            } catch (err) {
+            } catch (err: any) {
                 err.message.should.equals('Object is not valid');
             }
         });
@@ -166,7 +166,7 @@ describe('messageCheckerSettings test suite', (): void => {
             const obj: any = {};
             try {
                 const messageCheckerSettings_ = MessageCheckerSettings.convertFromJsonFriendly(obj);
-            } catch (err) {
+            } catch (err: any) {
                 err.message.should.equals('Object is not valid');
             }
         });

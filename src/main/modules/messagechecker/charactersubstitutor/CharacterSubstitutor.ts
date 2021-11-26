@@ -58,7 +58,9 @@ export class CharacterSubstitutor {
 
         // Round 2 convert one to many chars, if any
         // If empty, return in array
-        const charSet = new Set<string>(['[', '\\', '^', '$', '.', '|', '?', '*', '+', '(', ')']); // Chars that need to be escaped in regex
+
+        // Chars that need to be escaped in regex
+        const charSet = new Set<string>(['[', '\\', '^', '$', '.', '|', '?', '*', '+', '(', ')']);
         const { length } = oneToManyCharsFound;
         const outputs: string[] = [];
         if (length === 0) {

@@ -37,11 +37,11 @@ export class StarboardGetThresholdCommand extends Command {
         const threshold = server.starboardSettings.getThreshold();
         // Check if threshold is set
         if (threshold === null) {
-            await messageReply(this.generateNotSetEmbed());
+            await messageReply({ embeds: [this.generateNotSetEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        await messageReply(this.generateValidEmbed(threshold));
+        await messageReply({ embeds: [this.generateValidEmbed(threshold)] });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

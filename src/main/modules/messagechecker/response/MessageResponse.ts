@@ -5,7 +5,7 @@ import { MessageCheckerResult } from '../classes/MessageCheckerResult';
 export class MessageResponse {
     private message: Message;
 
-    private EMBED_COLOUR = '#ff0000';
+    private EMBED_COLOUR = 0xff0000;
 
     private REPORT = 'Report';
 
@@ -54,7 +54,8 @@ export class MessageResponse {
             offenderStr = `${tag}`;
         else
             offenderStr = `${username}, aka ${tag}`;
-        const report = `**Offender:** ${offender}\n**Message ID:** ${id}\n**Channel:** ${channel}\n**[Message Link](${url})**`;
+        const report = `**Offender:** ${offender}\n**Message ID:** ${id}\n` +
+                       `**Channel:** ${channel}\n**[Message Link](${url})**`;
 
         // Get list of words used
         let words = '';
@@ -88,11 +89,14 @@ export class MessageResponse {
 
         const reportingChannel = this.message.guild!.channels.resolve(reportingChannelId)!;
         (reportingChannel as TextChannel)
-            .send(this.BAD_WORD_DETECTED, embed)
+            .send({ content: this.BAD_WORD_DETECTED, embeds: [embed] })
             .catch((err) => log.info(`${err}: Unable to send reporting message in ${reportingChannelId}`));
 
         // Log it
-        log.info(`Bad Word Detected in guild "${this.message.guild!.name}". ${offenderStr} said "${content}" which has banned words: ${words.replace(/\n/g, ' ')}`);
+        log.info(
+            `Bad Word Detected in guild "${this.message.guild!.name}". ${offenderStr} said "${content}" ` +
+            `which has banned words: ${words.replace(/\n/g, ' ')}`,
+        );
 
         return this;
     }

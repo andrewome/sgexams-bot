@@ -88,7 +88,7 @@ export class BirthdayAnnouncer {
             const channelId = getBirthdayChannelId(serverId);
             if (!channelId) return;
             const channel = await this.bot.channels.fetch(channelId);
-            if (!channel || channel.type !== 'text') return;
+            if (!channel || !(channel instanceof TextChannel)) return;
 
             const guild = await this.bot.guilds.fetch(serverId);
             if (!guild.available) return;
@@ -113,7 +113,7 @@ export class BirthdayAnnouncer {
                     description: userNames
                         .join('\n'),
                 });
-                const message = await (channel as TextChannel).send(embed);
+                const message = await (channel as TextChannel).send({ embeds: [embed] });
                 await Promise.all([
                     message.react('🎂'),
                     message.react('🎉'),

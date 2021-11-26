@@ -24,7 +24,8 @@ export class PurgeCommand extends Command {
 
     public static COMMAND_USAGE = '**Usage:** @bot purge limit [userId]';
 
-    public static ERROR_MESSAGE_INVALID_LIMIT = `Invalid limit. Make sure that that it is below 0 < x <= ${PurgeCommand.MSG_LIMIT}`;
+    public static ERROR_MESSAGE_INVALID_LIMIT
+        = `Invalid limit. Make sure that that it is below 0 < x <= ${PurgeCommand.MSG_LIMIT}`;
 
     public constructor(args: string[]) {
         super();
@@ -52,7 +53,7 @@ export class PurgeCommand extends Command {
 
         // Check number of args
         if (this.args.length === 0) {
-            await messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply({ embeds: [this.generateInsufficientArgumentsEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -60,15 +61,17 @@ export class PurgeCommand extends Command {
         const userId = this.args.length > 1 ? this.args[1].replace(/[<@!>]/g, '') : null;
         // Check for error on the limit
         if (Number.isNaN(limit) || limit > PurgeCommand.MSG_LIMIT || limit <= 0) {
-            await messageReply(this.generateInvalidLimitEmbed());
+            await messageReply({ embeds: [this.generateInvalidLimitEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
         // Fetch and bulk delete messages
-        const sentMessage = await messageReply(this.generateEmbed(`Fetching messages... 0/${limit} messages fetched.`));
+        const sentMessage = await messageReply({
+            embeds: [this.generateEmbed(`Fetching messages... 0/${limit} messages fetched.`)],
+        });
         const messages = await this.fetchMessages(messageManager, limit, messageId!, sentMessage);
         const numDeleted = await this.bulkDeleteMessages(userId, messages, channel!, sentMessage);
-        await sentMessage.edit(this.generateEmbed(`Deleted ${numDeleted} messages.`));
+        await sentMessage.edit({ embeds: [this.generateEmbed(`Deleted ${numDeleted} messages.`)] });
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -84,7 +87,7 @@ export class PurgeCommand extends Command {
     private async bulkDeleteMessages(userId: string|null, collectedMessages: Message[],
                                      channel: Channel, sentMessage: Message): Promise<number> {
 
-        await sentMessage.edit(this.generateEmbed('Deleting messages...'));
+        await sentMessage.edit({ embeds: [this.generateEmbed('Deleting messages...')] });
 
         // Filter messages by userId if specified
         if (userId) {
@@ -127,7 +130,7 @@ export class PurgeCommand extends Command {
 
             // eslint-disable-next-line no-await-in-loop
             const messages = await messageManager.fetch(options);
-            collectedMessages.push(...messages.array());
+            collectedMessages.push(...messages.values());
             const lastMsg = messages.last();
             if (lastMsg)
                 lastId = lastMsg.id;
@@ -136,9 +139,11 @@ export class PurgeCommand extends Command {
             const { length } = collectedMessages;
             if (length && length % 200 === 0)
                 // eslint-disable-next-line no-await-in-loop
-                await sentMessage.edit(this.generateEmbed(
-                    `Fetching messages... ${length}/${limit} messages fetched.`,
-                ));
+                await sentMessage.edit({
+                    embeds: [
+                        this.generateEmbed(`Fetching messages... ${length}/${limit} messages fetched.`),
+                    ],
+                });
 
             if (messages.size !== 100 || length >= limit) {
                 break;

@@ -38,7 +38,7 @@ export abstract class StarboardChecker {
         }
 
         // Check if message author is not a bot.
-        if (this.reaction.message.author.bot) {
+        if (this.reaction.message.author!.bot) {
             return false;
         }
 
@@ -108,7 +108,8 @@ export abstract class StarboardChecker {
         if (!match) {
             const { id } = this.reaction.message.guild!;
             throw new Error(
-                `Starboard format not adhered to! Server: ${id}, Channel: ${starboardChannel!.id}, Message: ${messageId}`,
+                `Starboard format not adhered to! Server: ${id}, ` +
+                `Channel: ${starboardChannel!.id}, Message: ${messageId}`,
             );
         }
 
