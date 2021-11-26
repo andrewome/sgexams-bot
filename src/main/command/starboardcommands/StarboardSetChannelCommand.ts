@@ -1,18 +1,20 @@
 import {
-    MessageEmbed, Permissions, Channel,
+    MessageEmbed, Permissions, TextChannel,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class StarboardSetChannelCommand extends Command {
-    public static NOT_TEXT_CHANNEL = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
+    public static NOT_TEXT_CHANNEL
+        = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
 
     public static CHANNEL_NOT_FOUND = 'Channel was not found. Please submit a valid channel ID.';
 
     public static EMBED_TITLE = 'Starboard Channel';
 
-    public static CHANNEL_RESETTED = 'Starboard Channel has been resetted because there were no arguments. Please set a new one.';
+    public static CHANNEL_RESETTED
+        = 'Starboard Channel has been resetted because there were no arguments. Please set a new one.';
 
     public static CHANNELID_CANNOT_BE_UNDEFINED = 'Channel ID cannot be undefined!';
 
@@ -75,7 +77,7 @@ export class StarboardSetChannelCommand extends Command {
         }
 
         // If not text channel
-        if ((channel as Channel).type !== 'text') {
+        if (!(channel instanceof TextChannel)) {
             embed = this.generateNotTextChannelEmbed();
             await messageReply(embed);
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;

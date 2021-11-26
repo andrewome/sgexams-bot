@@ -80,7 +80,7 @@ export class StarboardAddEmojiCommand extends Command {
         // Add emoji
         const successfullyAdded = starboardSettings.addEmoji(
             serverId,
-            new SimplifiedEmoji(emoji!.name, emoji!.id),
+            new SimplifiedEmoji(emoji!.name!, emoji!.id),
         );
 
         if (successfullyAdded) {

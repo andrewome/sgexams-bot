@@ -8,11 +8,12 @@ export class StarboardSetThresholdCommand extends Command {
 
     public static readonly DESCRIPTION = 'Sets the emoji threshold for a message to be starred.';
 
-   public static NOT_AN_INTEGER = 'Threshold not a positive integer.';
+    public static NOT_AN_INTEGER = 'Threshold not a positive integer.';
 
     public static EMBED_TITLE = 'Starboard Threshold';
 
-    public static THRESHOLD_RESETTED = 'Starboard Threshold has been resetted because there were no arguments. Please set a new one.';
+    public static THRESHOLD_RESETTED
+        = 'Starboard Threshold has been resetted because there were no arguments. Please set a new one.';
 
     public static THRESHOLD_CANNOT_BE_UNDEFINED = 'Channel ID cannot be undefined!';
 
