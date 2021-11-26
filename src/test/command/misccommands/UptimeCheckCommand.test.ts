@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import { should } from 'chai';
-import { MessageEmbed, MessageOptions, Permissions } from 'discord.js';
+import { MessageOptions, Permissions } from 'discord.js';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { UptimeCheckCommand } from '../../../main/command/misccommands/UptimeCheckCommand';
 import { Command } from '../../../main/command/Command';

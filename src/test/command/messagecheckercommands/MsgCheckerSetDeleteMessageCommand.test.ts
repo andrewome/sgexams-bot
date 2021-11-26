@@ -116,8 +116,8 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         command = new MsgCheckerSetDeleteMessageCommand(['true']);
         const msg = 'Delete Message set to: **TRUE**';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (outMsg: MessageOptions): void => {
+            const embed = outMsg!.embeds![0];
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
@@ -143,8 +143,8 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         command = new MsgCheckerSetDeleteMessageCommand(['TRUE']);
         const msg = 'Delete Message set to: **TRUE**';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (outMsg: MessageOptions): void => {
+            const embed = outMsg!.embeds![0];
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
@@ -170,8 +170,8 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         command = new MsgCheckerSetDeleteMessageCommand(['TRuE']);
         const msg = 'Delete Message set to: **TRUE**';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (outMsg: MessageOptions): void => {
+            const embed = outMsg!.embeds![0];
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
@@ -197,8 +197,8 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         command = new MsgCheckerSetDeleteMessageCommand(['false']);
         const msg = 'Delete Message set to: **FALSE**';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (outMsg: MessageOptions): void => {
+            const embed = outMsg!.embeds![0];
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];

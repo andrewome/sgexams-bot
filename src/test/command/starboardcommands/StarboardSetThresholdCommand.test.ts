@@ -102,8 +102,8 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
         const msg = `Starboard threshold set to ${threshold}.`;
         command = new StarboardSetThresholdCommand([threshold.toString(10)]);
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (outMsg: MessageOptions): void => {
+            const embed = outMsg!.embeds![0];
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
