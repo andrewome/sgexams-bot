@@ -29,8 +29,8 @@ emojis.set(emoji_.id, emoji_);
 */
 
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
-const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
+const { EMBED_DEFAULT_COLOUR } = Command;
+const { EMBED_ERROR_COLOUR } = Command;
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
 const { EMOJI_NOT_FOUND } = StarboardAddEmojiCommand;
@@ -49,7 +49,7 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
     it('No permission check', async (): Promise<void> => {
         command = new StarboardAddEmojiCommand([]);
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
             const field = embed.fields![0];
@@ -72,7 +72,7 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
         command = new StarboardAddEmojiCommand([]);
 
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(ERROR_EMBED_TITLE);
@@ -93,7 +93,7 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
         command = new StarboardAddEmojiCommand(['does_not_exist']);
 
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -113,7 +113,7 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
         command = new StarboardAddEmojiCommand(['test']);
 
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -138,7 +138,7 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
         server.starboardSettings.addEmoji(emoji);
 
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);

@@ -12,8 +12,8 @@ import { deleteDbFile, TEST_STORAGE_PATH } from '../../TestsHelper';
 should();
 
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
-const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
+const { EMBED_DEFAULT_COLOUR } = Command;
+const { EMBED_ERROR_COLOUR } = Command;
 const { EMBED_TITLE } = MsgCheckerListWordsCommand;
 const { NO_WORDS_FOUND } = MsgCheckerListWordsCommand;
 
@@ -41,7 +41,7 @@ describe('ListCommandsCommand test suite', (): void => {
 
     it('No permission check', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
             const field = embed.fields![0];
@@ -74,7 +74,7 @@ describe('ListCommandsCommand test suite', (): void => {
             }
 
             // Check colour
-            embed.color!.toString(16).should.equal(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equal(EMBED_DEFAULT_COLOUR);
 
             // Check field
             embed.fields!.length.should.be.equals(1);
@@ -97,7 +97,7 @@ describe('ListCommandsCommand test suite', (): void => {
     it('Embed should show if no bannedWords', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check colour
-            embed.color!.toString(16).should.equal(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equal(EMBED_DEFAULT_COLOUR);
 
             // Check field
             embed.fields!.length.should.be.equals(1);

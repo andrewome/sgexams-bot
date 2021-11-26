@@ -12,8 +12,8 @@ import { DatabaseConnection } from '../../../main/DatabaseConnection';
 should();
 
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
-const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
+const { EMBED_DEFAULT_COLOUR } = Command;
+const { EMBED_ERROR_COLOUR } = Command;
 const { ERROR_EMBED_TITLE } = Command;
 const { REMOVED_WORDS } = MsgCheckerRemoveWordCommand;
 const { MAYBE_WORDS_NOT_INSIDE } = MsgCheckerRemoveWordCommand;
@@ -48,7 +48,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
     it('No permission check', async (): Promise<void> => {
         command = new MsgCheckerRemoveWordCommand([]);
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
             const field = embed.fields![0];
@@ -75,7 +75,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
 
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(REMOVED_WORDS);
@@ -110,7 +110,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
 
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(2);
 
             const addedWordsField = embed.fields![0];
@@ -147,7 +147,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
 
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(2);
 
             const addedWordsField = embed.fields![0];
@@ -181,7 +181,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
 
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
             const field = embed.fields![0];

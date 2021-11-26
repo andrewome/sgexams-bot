@@ -13,8 +13,8 @@ import { SimplifiedEmoji } from '../../../main/storage/StarboardSettings';
 should();
 
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
-const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
+const { EMBED_DEFAULT_COLOUR } = Command;
+const { EMBED_ERROR_COLOUR } = Command;
 const { EMOJI_NOT_SET } = StarboardGetEmojiCommand;
 const { EMBED_TITLE } = StarboardGetEmojiCommand;
 
@@ -42,7 +42,7 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
 
     it('No permission check', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
             const field = embed.fields![0];
@@ -63,7 +63,7 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
     it('Emoji not set', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -85,7 +85,7 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
         server.starboardSettings.addEmoji(serverId, emoji);
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -107,7 +107,7 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
         server.starboardSettings.addEmoji(serverId, new SimplifiedEmoji('test2', 'test2'));
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);

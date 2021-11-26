@@ -13,7 +13,7 @@ should();
 
 let server: Server;
 const command = new MsgCheckerHelpCommand();
-const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
+const { EMBED_DEFAULT_COLOUR } = Command;
 const { HEADER } = MsgCheckerHelpCommand;
 beforeEach((): void => {
     server = new Server(
@@ -27,7 +27,7 @@ describe('MsgCheckerHelp Command Test Suite', (): void => {
     it('Execute test', async (): Promise<void> => {
         const checkEmbed = (embed: MessageEmbed): void => {
             // Check embed
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(HEADER);

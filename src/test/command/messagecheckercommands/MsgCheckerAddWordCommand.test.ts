@@ -13,8 +13,8 @@ import { Storage } from '../../../main/storage/Storage';
 should();
 
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
-const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
+const { EMBED_DEFAULT_COLOUR } = Command;
+const { EMBED_ERROR_COLOUR } = Command;
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
 const { ADDED_WORDS } = MsgCheckerAddWordCommand;
@@ -46,7 +46,7 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
     it('No permission check', async (): Promise<void> => {
         command = new MsgCheckerAddWordCommand([]);
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
             const field = embed.fields![0];
@@ -74,7 +74,7 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
 
         // Embed check
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(ADDED_WORDS);
@@ -112,7 +112,7 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
 
         // Embed Check
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(2);
 
             const addedWordsField = embed.fields![0];
@@ -154,7 +154,7 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
 
         // Embed check
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(2);
 
             const addedWordsField = embed.fields![0];
@@ -192,7 +192,7 @@ describe('MsgCheckerAddWordCommand test suite', (): void => {
 
         // Check embed
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
             const field = embed.fields![0];

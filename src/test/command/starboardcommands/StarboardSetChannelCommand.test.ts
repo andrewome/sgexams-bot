@@ -28,8 +28,8 @@ channels.set('not_text_channel', channel);
 */
 
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
-const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
+const { EMBED_DEFAULT_COLOUR } = Command;
+const { EMBED_ERROR_COLOUR } = Command;
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
 const { CHANNEL_NOT_FOUND } = StarboardSetChannelCommand;
@@ -50,7 +50,7 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
     it('No permission check', async (): Promise<void> => {
         command = new StarboardSetChannelCommand([]);
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
             const field = embed.fields![0];
@@ -74,7 +74,7 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
         command = new StarboardSetChannelCommand([]);
 
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -95,7 +95,7 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
         command = new StarboardSetChannelCommand(['not_text_channel']);
 
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -113,7 +113,7 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
         command = new StarboardSetChannelCommand(['does_not_exist']);
 
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -133,7 +133,7 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
         command = new StarboardSetChannelCommand([channelId]);
 
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);

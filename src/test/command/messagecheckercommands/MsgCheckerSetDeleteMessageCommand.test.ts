@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars, max-len */
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { MessageEmbed, Permissions } from 'discord.js';
@@ -13,8 +13,8 @@ import { Storage } from '../../../main/storage/Storage';
 should();
 
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
-const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
+const { EMBED_DEFAULT_COLOUR } = Command;
+const { EMBED_ERROR_COLOUR } = Command;
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
 const { INCORRECT_FORMAT } = MsgCheckerSetDeleteMessageCommand;
@@ -47,7 +47,7 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
     it('No permission check', async (): Promise<void> => {
         command = new MsgCheckerSetDeleteMessageCommand([]);
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
             const field = embed.fields![0];
@@ -70,7 +70,7 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         command = new MsgCheckerSetDeleteMessageCommand([]);
 
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -91,7 +91,7 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         command = new MsgCheckerSetDeleteMessageCommand(['something']);
 
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -114,7 +114,7 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         const msg = 'Delete Message set to: **TRUE**';
 
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -140,7 +140,7 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         const msg = 'Delete Message set to: **TRUE**';
 
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -166,7 +166,7 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         const msg = 'Delete Message set to: **TRUE**';
 
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -192,7 +192,7 @@ describe('MsgCheckerSetDeleteMessageCommand test suite', (): void => {
         const msg = 'Delete Message set to: **FALSE**';
 
         const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
