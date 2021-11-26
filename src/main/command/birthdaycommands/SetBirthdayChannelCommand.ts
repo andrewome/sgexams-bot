@@ -1,4 +1,4 @@
-import { Permissions, MessageEmbed, Channel } from 'discord.js';
+import { Permissions, MessageEmbed, TextChannel } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -74,7 +74,7 @@ export class SetBirthdayChannelCommand extends Command {
         }
 
         // If not text channel
-        if ((channel as Channel).type !== 'text') {
+        if (!(channel instanceof TextChannel)) {
             embed = this.generateNotTextChannelEmbed();
             await messageReply(embed);
             return SUCCESSFUL_COMMANDRESULT;

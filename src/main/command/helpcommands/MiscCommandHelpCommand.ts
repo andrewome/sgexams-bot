@@ -4,7 +4,7 @@ import { HelpCommandBase } from './HelpCommandBase';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class MiscCommandHelpCommand extends HelpCommandBase {
-    public static HEADER = '__Miscellaneous Commands__'
+    public static HEADER = '__Miscellaneous Commands__';
 
     public static readonly NAME = 'MiscHelp';
 

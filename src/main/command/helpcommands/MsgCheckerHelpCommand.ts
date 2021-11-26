@@ -4,7 +4,7 @@ import { HelpCommandBase } from './HelpCommandBase';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class MsgCheckerHelpCommand extends HelpCommandBase {
-    public static HEADER = '__Message Checker Commands__'
+    public static HEADER = '__Message Checker Commands__';
 
     public static readonly NAME = 'MsgCheckerHelp';
 
