@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import {
-    MessageEmbed, Permissions, Collection, Channel, Client,
+    MessageEmbed, Permissions, Collection, Channel, Client, MessageOptions,
 } from 'discord.js';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -28,8 +28,8 @@ channels.set('not_text_channel', channel);
 */
 
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
-const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
+const { EMBED_DEFAULT_COLOUR } = Command;
+const { EMBED_ERROR_COLOUR } = Command;
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
 const { CHANNEL_NOT_FOUND } = StarboardSetChannelCommand;
@@ -49,8 +49,9 @@ beforeEach((): void => {
 describe('StarboardSetReportChannelCommand test suite', (): void => {
     it('No permission check', async (): Promise<void> => {
         command = new StarboardSetChannelCommand([]);
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
             const field = embed.fields![0];
@@ -73,8 +74,9 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
         server.starboardSettings.setChannel('123');
         command = new StarboardSetChannelCommand([]);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -94,8 +96,9 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
     it('not text channel', (): void => {
         command = new StarboardSetChannelCommand(['not_text_channel']);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -112,8 +115,9 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
     it('cannot find channel', (): void => {
         command = new StarboardSetChannelCommand(['does_not_exist']);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -132,8 +136,9 @@ describe('StarboardSetReportChannelCommand test suite', (): void => {
         const msg = `Starboard Channel set to <#${channelId}>.`;
         command = new StarboardSetChannelCommand([channelId]);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);

@@ -4,7 +4,7 @@ import { HelpCommandBase } from './HelpCommandBase';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class MsgCheckerHelpCommand extends HelpCommandBase {
-    public static HEADER = '__Message Checker Commands__'
+    public static HEADER = '__Message Checker Commands__';
 
     public static readonly NAME = 'MsgCheckerHelp';
 
@@ -20,10 +20,12 @@ export class MsgCheckerHelpCommand extends HelpCommandBase {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        await messageReply(this.generateEmbed(
-            MsgCheckerHelpCommand.HEADER,
-            CommandCollection.MSGCHECKER_COMMANDS,
-        ));
+        await messageReply({
+            embeds: [this.generateEmbed(
+                MsgCheckerHelpCommand.HEADER,
+                CommandCollection.MSGCHECKER_COMMANDS,
+            )],
+        });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

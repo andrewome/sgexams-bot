@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, func-names */
+/* eslint-disable @typescript-eslint/no-unused-vars, func-names, max-len */
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { MessageChecker } from '../../main/modules/messagechecker/MessageChecker';

@@ -47,11 +47,13 @@ export class UptimeCheckCommand extends Command {
         const upTimeMinutesStr = `${upTimeInMinutes} minute${this.addSIfPlural(upTimeInMinutes)}`;
         const upTimeSecondsStr = `${upTimeInSeconds} second${this.addSIfPlural(upTimeInSeconds)}`;
 
-        await messageReply(this.generateGenericEmbed(
-            UptimeCheckCommand.EMBED_TITLE,
-            `${upTimeDaysStr}, ${upTimeHoursStr}, ${upTimeMinutesStr} and ${upTimeSecondsStr}`,
-            UptimeCheckCommand.EMBED_DEFAULT_COLOUR,
-        ));
+        await messageReply({
+            embeds: [this.generateGenericEmbed(
+                UptimeCheckCommand.EMBED_TITLE,
+                `${upTimeDaysStr}, ${upTimeHoursStr}, ${upTimeMinutesStr} and ${upTimeSecondsStr}`,
+                UptimeCheckCommand.EMBED_DEFAULT_COLOUR,
+            )],
+        });
 
         /* Check messages true */
         return new CommandResult(true);

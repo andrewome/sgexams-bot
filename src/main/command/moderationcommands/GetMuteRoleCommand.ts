@@ -38,11 +38,11 @@ export class GetMuteRoleCommand extends Command {
 
         // Check if channel is set
         if (roleId === null) {
-            await messageReply(this.generateNotSetEmbed());
+            await messageReply({ embeds: [this.generateNotSetEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        await messageReply(this.generateValidEmbed(roleId));
+        await messageReply({ embeds: [this.generateValidEmbed(roleId)] });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

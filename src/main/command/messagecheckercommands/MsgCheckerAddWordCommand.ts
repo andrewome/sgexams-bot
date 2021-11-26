@@ -50,7 +50,7 @@ export class MsgCheckerAddWordCommand extends Command {
         const embed = this.generateEmbed(wordsAdded, wordsNotAdded);
 
         // Send output
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

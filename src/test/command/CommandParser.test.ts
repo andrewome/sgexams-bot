@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars, max-len */
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import { CommandParser } from '../../main/command/CommandParser';
@@ -193,7 +193,8 @@ describe('CommandParser test suite', (): void => {
                 const command = new CommandParser(content).getCommand();
             } catch (err) {
                 (err instanceof NoSuchCommandError).should.be.true;
-                err.message.should.equals('No such command!');
+                if ((err instanceof NoSuchCommandError))
+                    err.message.should.equals('No such command!');
             }
         });
     });

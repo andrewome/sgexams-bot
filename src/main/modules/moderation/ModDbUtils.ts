@@ -34,8 +34,8 @@ export class ModDbUtils {
                                    type: ModActions, serverId: string, timerId: number): void {
         const db = DatabaseConnection.connect();
         db.prepare(
-            'INSERT INTO moderationTimeouts (serverId, userId, type, startTime, endTime, timerId) VALUES (?, ?, ?, ?, ?, ?) ' +
-            'ON CONFLICT(serverId, userId, type) DO UPDATE SET timerId = excluded.timerId',
+            'INSERT INTO moderationTimeouts (serverId, userId, type, startTime, endTime, timerId) ' +
+            'VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(serverId, userId, type) DO UPDATE SET timerId = excluded.timerId',
         ).run(serverId, userId, type, startTime, endTime, timerId);
         db.close();
     }

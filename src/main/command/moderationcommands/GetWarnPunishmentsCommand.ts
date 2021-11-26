@@ -41,11 +41,11 @@ export class GetWarnPunishmentsCommand extends Command {
         const rows = ModDbUtils.getWarnSettings(server.serverId);
 
         if (!rows.length) {
-            await messageReply(this.generateNoSettingsFoundEmbed());
+            await messageReply({ embeds: [this.generateNoSettingsFoundEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        await messageReply(this.generateEmbed(rows));
+        await messageReply({ embeds: [this.generateEmbed(rows)] });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

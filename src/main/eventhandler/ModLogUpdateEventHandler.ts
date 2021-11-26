@@ -37,7 +37,7 @@ export class ModLogUpdateEventHandler extends EventHandler {
             if (!channelId)
                 return;
             const channel = this.bot.channels.resolve(channelId);
-            if (!channel || channel.type !== 'text')
+            if (!channel || !(channel instanceof TextChannel))
                 return;
 
             // Create embed
@@ -62,7 +62,7 @@ export class ModLogUpdateEventHandler extends EventHandler {
             }
             embed.setTimestamp(timestamp * 1000);
             embed.setColor(Command.EMBED_DEFAULT_COLOUR);
-            await (channel as TextChannel).send(embed);
+            await (channel as TextChannel).send({ embeds: [embed] });
         } catch (err) {
             this.handleError(err);
         }

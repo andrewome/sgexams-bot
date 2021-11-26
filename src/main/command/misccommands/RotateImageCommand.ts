@@ -1,6 +1,6 @@
 /* eslint-disable prefer-destructuring, no-shadow */
 import {
-    TextChannel, Message, MessageReaction,
+    Message, MessageReaction,
     User, ReactionCollectorOptions,
 } from 'discord.js';
 import sharp, { Sharp } from 'sharp';
@@ -23,7 +23,7 @@ export class RotateImageCommand extends Command {
 
     private CLOCKWISE = '↩';
 
-    private EMBED_TITLE = 'Rotate Command'
+    private EMBED_TITLE = 'Rotate Command';
 
     private ERROR_MESSAGE = this.generateGenericEmbed(
         this.EMBED_TITLE,
@@ -33,7 +33,7 @@ export class RotateImageCommand extends Command {
         'If you provided an index, please double check that it is valid\n\n' +
         '**Usage:** @bot rotate <message ID> [0 based index]\n',
         RotateImageCommand.EMBED_ERROR_COLOUR,
-    )
+    );
 
     public constructor(args: string[]) {
         super();
@@ -55,14 +55,14 @@ export class RotateImageCommand extends Command {
         const idx = parseInt(this.commandArgs[1] ?? '0', 10);
 
         if (messageId === undefined) {
-            await messageReply(this.ERROR_MESSAGE);
+            await messageReply({ embeds: [this.ERROR_MESSAGE] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
         // Check if messageId quoted is in in the channel
         try {
-            (channel as TextChannel).startTyping();
-            const message = await (channel as TextChannel).messages.fetch(messageId);
+            channel!.sendTyping();
+            const message = await channel!.messages.fetch(messageId);
             const { embeds, attachments } = message;
 
             // Check if index provided is legitimate
@@ -75,7 +75,7 @@ export class RotateImageCommand extends Command {
                 url = embeds[idx].url!;
 
             if (attachments.size > idx)
-                url = attachments.array()[idx].url;
+                url = attachments.at(idx)!.url;
 
             // Set up react collector
             let img: Sharp;
@@ -90,7 +90,6 @@ export class RotateImageCommand extends Command {
             });
             await sentMessage.react(this.ANTICLOCKWISE);
             await sentMessage.react(this.CLOCKWISE);
-            (channel as TextChannel).stopTyping(true);
 
             // Filter for reaction collector
             const filter = (reaction: MessageReaction, user: User): boolean => {
@@ -111,8 +110,8 @@ export class RotateImageCommand extends Command {
             };
 
             // Options
-            const options: ReactionCollectorOptions = { time: 10000, max: 1 };
-            const collector = sentMessage.createReactionCollector(filter, options);
+            const options: ReactionCollectorOptions = { filter, time: 10000, max: 1 };
+            const collector = sentMessage.createReactionCollector(options);
             const COLLECT = 'collect';
 
             // onReaction function to handle the event. This is a recursive function to
@@ -121,7 +120,7 @@ export class RotateImageCommand extends Command {
             // collector to remain hanging around in the stack for too long when
             // 1 is enough.
             const onReaction = async (reaction: MessageReaction): Promise<void> => {
-                (channel as TextChannel).startTyping();
+                channel!.sendTyping();
                 const { name } = reaction.emoji;
                 const { message } = reaction;
 
@@ -148,11 +147,10 @@ export class RotateImageCommand extends Command {
                 });
                 await (sentMessage as Message).react(this.ANTICLOCKWISE);
                 await (sentMessage as Message).react(this.CLOCKWISE);
-                (channel as TextChannel).stopTyping(true);
 
                 // Set up a new collector
                 const collector
-                    = (sentMessage as Message).createReactionCollector(filter, options);
+                    = (sentMessage as Message).createReactionCollector(options);
 
                 // Make it listen
                 collector.on(COLLECT, onReaction);
@@ -167,8 +165,7 @@ export class RotateImageCommand extends Command {
                 await sentMessage.reactions.removeAll();
             });
         } catch (err) {
-            await messageReply(this.ERROR_MESSAGE);
-            (channel as TextChannel).stopTyping(true);
+            await messageReply({ embeds: [this.ERROR_MESSAGE] });
         }
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;

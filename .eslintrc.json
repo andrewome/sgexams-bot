@@ -50,7 +50,12 @@
                 "ObjectExpression": "first"
             }
         ],
-        "import/extensions": "off"
+        "max-len": ["error", { "code": 120 }],
+        "import/extensions": "off",
+        "import/no-unresolved": "off",
+        "function-call-argument-newline": "off",
+        "function-paren-newline": "off",
+        "prefer-regex-literals": "off"
     },
     "settings": {
         "import/resolver": {

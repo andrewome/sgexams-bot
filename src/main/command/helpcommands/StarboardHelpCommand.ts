@@ -21,10 +21,12 @@ export class StarboardHelpCommand extends HelpCommandBase {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        await messageReply(this.generateEmbed(
-            StarboardHelpCommand.HEADER,
-            CommandCollection.STARBOARD_COMMANDS,
-        ));
+        await messageReply({
+            embeds: [this.generateEmbed(
+                StarboardHelpCommand.HEADER,
+                CommandCollection.STARBOARD_COMMANDS,
+            )],
+        });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

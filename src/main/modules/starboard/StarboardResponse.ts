@@ -4,7 +4,7 @@ import {
 import { StarboardSettings } from '../../storage/StarboardSettings';
 
 export class StarboardResponse {
-    public static EMBED_COLOUR = 'f6ff73';
+    public static EMBED_COLOUR = 0xf6ff73;
 
     private starboardSettings: StarboardSettings;
 
@@ -43,8 +43,8 @@ export class StarboardResponse {
                 // Check attachments
                 // setImage is overriden if img because attachment takes presidence.
                 if (attachments.size > 0) {
-                    const file = attachments.array()[0];
-                    const { url, name } = file;
+                    const file = attachments.at(0);
+                    const { url, name } = file!;
                     const splittedFileUrl = url.split('.');
                     const typeOfImage = splittedFileUrl[splittedFileUrl.length - 1];
                     const image = /(jpg|jpeg|png|gif|webp)/gi.test(typeOfImage);
@@ -61,7 +61,7 @@ export class StarboardResponse {
         const { emoji } = this.reaction;
         const { message } = this.reaction;
         const starboardChannel = message.guild!.channels.resolve(starboardChannelId)!;
-        const { tag } = message.author;
+        const { tag } = message.author!;
         const channel = `<#${message.channel.id}>`;
         const {
             url, id, attachments, embeds,
@@ -81,9 +81,9 @@ export class StarboardResponse {
 
         const embed = new MessageEmbed()
             .setColor(StarboardResponse.EMBED_COLOUR)
-            .setAuthor(`${username}`, message.author.avatarURL()!)
+            .setAuthor(`${username}`, message.author!.avatarURL()!)
             .setTimestamp(message.createdTimestamp)
-            .setDescription(content);
+            .setDescription(content!);
 
         // Handle attachments and embeds in message
         handleAttachmentAndEmbeds(embed, embeds, attachments);
@@ -94,7 +94,7 @@ export class StarboardResponse {
 
         const outputMsg
             = `**${numberOfReacts}** <:${emoji.name}:${emoji.id}> **In:** ${channel} **ID:** ${id}`;
-        await (starboardChannel as TextChannel).send(outputMsg, embed);
+        await (starboardChannel as TextChannel).send({ content: outputMsg, embeds: [embed] });
     }
 
     /**
@@ -130,7 +130,7 @@ export class StarboardResponse {
             newContent += str;
             newContent += ' ';
         }
-        await message.edit({ content: newContent, embed: message.embeds[0] });
+        await message.edit({ content: newContent, embeds: [message.embeds[0]] });
     }
 
     /**

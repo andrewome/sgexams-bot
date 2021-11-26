@@ -1,4 +1,4 @@
-import { Permissions, MessageEmbed, Channel } from 'discord.js';
+import { Permissions, MessageEmbed, TextChannel } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -54,7 +54,7 @@ export class SetBirthdayChannelCommand extends Command {
         // Check number of args, 0 args means reset.
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             setBirthdayChannel(server.serverId, null);
             return SUCCESSFUL_COMMANDRESULT;
         }
@@ -69,21 +69,21 @@ export class SetBirthdayChannelCommand extends Command {
         // Check if valid channel
         if (channel === null) {
             embed = this.generateNotFoundEmbed();
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return SUCCESSFUL_COMMANDRESULT;
         }
 
         // If not text channel
-        if ((channel as Channel).type !== 'text') {
+        if (!(channel instanceof TextChannel)) {
             embed = this.generateNotTextChannelEmbed();
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return SUCCESSFUL_COMMANDRESULT;
         }
 
         // Valid channelId
         setBirthdayChannel(server.serverId, channelId);
         embed = this.generateValidEmbed(channelId);
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
         return SUCCESSFUL_COMMANDRESULT;
     }
 

@@ -1,5 +1,5 @@
 import {
-    Permissions, MessageEmbed, MessageReaction, User, ReactionCollectorOptions, Message,
+    Permissions, MessageEmbed, MessageReaction, User, Message,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -91,7 +91,7 @@ export class ModLogsCommand extends Command {
         if (modLogs.length === 0) {
             const embed = new MessageEmbed();
             embed.setTitle('Mod logs is empty');
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -103,10 +103,10 @@ export class ModLogsCommand extends Command {
         try {
             embed = this.generateEmbed(modLogs, curStartIdx, endStartIdx);
         } catch (_) {
-            await messageReply(this.ERROR_MESSAGE);
+            await messageReply({ embeds: [this.ERROR_MESSAGE] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
-        const sentMessage: Message = await messageReply(embed);
+        const sentMessage: Message = await messageReply({ embeds: [embed] });
 
         // Only display reactions if there is more than 1 page
         if (curStartIdx + 1 < endStartIdx) {
@@ -133,10 +133,7 @@ export class ModLogsCommand extends Command {
             return false;
         };
 
-        // Options
-        const time = 60000;
-        const options: ReactionCollectorOptions = { time, dispose: true };
-        const collector = sentMessage.createReactionCollector(filter, options);
+        const collector = sentMessage.createReactionCollector({ filter, time: 60000, dispose: true });
 
         // onReaction function to handle the event
         const onReaction = async (reaction: MessageReaction): Promise<void> => {
@@ -159,7 +156,7 @@ export class ModLogsCommand extends Command {
                 curStartIdx * ModLogsCommand.PAGE_SIZE,
                 endStartIdx,
             );
-            sentMessage.edit(newEmbed);
+            sentMessage.edit({ embeds: [newEmbed] });
         };
         collector.on('collect', onReaction);
         collector.on('remove', onReaction);

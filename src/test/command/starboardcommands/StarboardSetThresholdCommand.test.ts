@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import {
-    MessageEmbed, Permissions, Collection, Channel, Client,
+    MessageEmbed, Permissions, Collection, Channel, Client, MessageOptions,
 } from 'discord.js';
 import { Command } from '../../../main/command/Command';
 import { Server } from '../../../main/storage/Server';
@@ -15,8 +15,8 @@ import { Storage } from '../../../main/storage/Storage';
 should();
 
 const adminPerms = new Permissions(['ADMINISTRATOR']);
-const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
-const EMBED_ERROR_COLOUR = Command.EMBED_ERROR_COLOUR.replace(/#/g, '');
+const { EMBED_DEFAULT_COLOUR } = Command;
+const { EMBED_ERROR_COLOUR } = Command;
 const { ERROR_EMBED_TITLE } = Command;
 const { NO_ARGUMENTS } = Command;
 const { EMBED_TITLE } = StarboardSetThresholdCommand;
@@ -48,8 +48,9 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
 
     it('No permission check', async (): Promise<void> => {
         command = new StarboardSetThresholdCommand([]);
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(Command.EMBED_ERROR_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
             const field = embed.fields![0];
@@ -73,8 +74,9 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
         server.starboardSettings.setThreshold(serverId, threshold);
         command = new StarboardSetThresholdCommand([]);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -100,8 +102,9 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
         const msg = `Starboard threshold set to ${threshold}.`;
         command = new StarboardSetThresholdCommand([threshold.toString(10)]);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+        const checkEmbed = (outMsg: MessageOptions): void => {
+            const embed = outMsg!.embeds![0];
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -125,8 +128,9 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
     it('Invalid threshold - String', async (): Promise<void> => {
         command = new StarboardSetThresholdCommand(['haha']);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -146,8 +150,9 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
     it('Invalid threshold - Out of range value 1', async (): Promise<void> => {
         command = new StarboardSetThresholdCommand(['0']);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);
@@ -167,8 +172,9 @@ describe('StarboardSetThresholdCommand test suite', (): void => {
     it('Invalid threshold - Out of range value 2', async (): Promise<void> => {
         command = new StarboardSetThresholdCommand(['-5']);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
-            embed.color!.toString(16).should.equals(EMBED_ERROR_COLOUR);
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
+            embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(EMBED_TITLE);

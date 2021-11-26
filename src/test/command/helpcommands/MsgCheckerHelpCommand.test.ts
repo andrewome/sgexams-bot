@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import { should } from 'chai';
-import { MessageEmbed, Permissions } from 'discord.js';
+import { MessageOptions, Permissions } from 'discord.js';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -13,7 +13,7 @@ should();
 
 let server: Server;
 const command = new MsgCheckerHelpCommand();
-const EMBED_DEFAULT_COLOUR = Command.EMBED_DEFAULT_COLOUR.replace(/#/g, '');
+const { EMBED_DEFAULT_COLOUR } = Command;
 const { HEADER } = MsgCheckerHelpCommand;
 beforeEach((): void => {
     server = new Server(
@@ -25,9 +25,10 @@ beforeEach((): void => {
 
 describe('MsgCheckerHelp Command Test Suite', (): void => {
     it('Execute test', async (): Promise<void> => {
-        const checkEmbed = (embed: MessageEmbed): void => {
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
             // Check embed
-            embed.color!.toString(16).should.equals(EMBED_DEFAULT_COLOUR);
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
             field.name.should.equals(HEADER);

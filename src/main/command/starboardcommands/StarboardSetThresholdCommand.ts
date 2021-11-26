@@ -8,11 +8,12 @@ export class StarboardSetThresholdCommand extends Command {
 
     public static readonly DESCRIPTION = 'Sets the emoji threshold for a message to be starred.';
 
-   public static NOT_AN_INTEGER = 'Threshold not a positive integer.';
+    public static NOT_AN_INTEGER = 'Threshold not a positive integer.';
 
     public static EMBED_TITLE = 'Starboard Threshold';
 
-    public static THRESHOLD_RESETTED = 'Starboard Threshold has been resetted because there were no arguments. Please set a new one.';
+    public static THRESHOLD_RESETTED
+        = 'Starboard Threshold has been resetted because there were no arguments. Please set a new one.';
 
     public static THRESHOLD_CANNOT_BE_UNDEFINED = 'Channel ID cannot be undefined!';
 
@@ -51,7 +52,7 @@ export class StarboardSetThresholdCommand extends Command {
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
             server.starboardSettings.setThreshold(server.serverId, null);
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -61,13 +62,13 @@ export class StarboardSetThresholdCommand extends Command {
         const thresholdVal = parseInt(threshold, 10);
         if (Number.isNaN(thresholdVal) || thresholdVal < 1) {
             embed = this.generateInvalidEmbed();
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
         embed = this.generateValidEmbed(thresholdVal);
         server.starboardSettings.setThreshold(server.serverId, thresholdVal);
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
