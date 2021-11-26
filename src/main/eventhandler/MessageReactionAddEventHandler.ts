@@ -1,3 +1,4 @@
+import { MessageReaction } from 'discord.js';
 import { StarboardResponse } from '../modules/starboard/StarboardResponse';
 import { StarboardAddReactChecker } from '../modules/starboard/StarboardChecker/StarboardAddReactChecker';
 import { MessageReactionEventHandler } from './MessageReactionEventHandler';
@@ -10,7 +11,7 @@ export class MessageReactionAddEventHandler extends MessageReactionEventHandler 
      */
     public async handleEvent(): Promise<void> {
         try {
-            await this.handlePartial();
+            this.reaction = await this.handlePartial();
             const server = this.getServer(this.reaction.message.guild!.id);
             const { starboardSettings } = server;
             const starboardChecker = new StarboardAddReactChecker(starboardSettings, this.reaction);
@@ -20,7 +21,7 @@ export class MessageReactionAddEventHandler extends MessageReactionEventHandler 
             if (numberOfReactions !== null) {
                 await MessageReactionAddEventHandler.queue.add(async () => {
                     const starboardResponse
-                        = new StarboardResponse(starboardSettings, this.reaction);
+                        = new StarboardResponse(starboardSettings, this.reaction as MessageReaction);
                     // Our dear race condition
                     const msgId = await starboardChecker.checkIfMessageExists();
                     // If message exists in starboard channel
@@ -28,9 +29,7 @@ export class MessageReactionAddEventHandler extends MessageReactionEventHandler 
                         // Check if emoji in channel is the same as the emoji reacted.
                         const toEdit = await starboardChecker.checkEmojiInStarboardMessage(msgId);
                         if (toEdit) {
-                            await starboardResponse.editStarboardMessageCount(
-                                numberOfReactions, msgId,
-                            );
+                            await starboardResponse.editStarboardMessageCount(numberOfReactions, msgId);
                         }
                     } else if (starboardChecker.checkTimeDifference()) {
                         // If does not exist and within allowed time difference, add to Starboard.

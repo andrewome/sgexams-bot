@@ -1,3 +1,4 @@
+import { MessageReaction } from 'discord.js';
 import { StarboardResponse } from '../modules/starboard/StarboardResponse';
 import { StarboardRemoveReactChecker } from '../modules/starboard/StarboardChecker/StarboardRemoveReactChecker';
 import { MessageReactionEventHandler } from './MessageReactionEventHandler';
@@ -11,7 +12,7 @@ export class MessageReactionRemoveEventHandler extends MessageReactionEventHandl
     public async handleEvent(): Promise<void> {
         // Will error if trying to fetch on a partial removed reaction
         try {
-            await this.handlePartial();
+            this.reaction = await this.handlePartial();
         } catch (err) {
             return;
         }
@@ -29,7 +30,7 @@ export class MessageReactionRemoveEventHandler extends MessageReactionEventHandl
             if (pair !== null) {
                 MessageReactionRemoveEventHandler.queue.add(async () => {
                     const starboardResponse
-                        = new StarboardResponse(starboardSettings, this.reaction);
+                        = new StarboardResponse(starboardSettings, this.reaction as MessageReaction);
 
                     // Check if emoji in channel is the same as the emoji reacted.
                     const toEdit = await starboardChecker.checkEmojiInStarboardMessage(pair[1]);

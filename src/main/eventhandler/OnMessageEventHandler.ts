@@ -1,4 +1,6 @@
-import { Message, TextChannel, Client } from 'discord.js';
+import {
+    Message, TextChannel, Client, ThreadChannel, DMChannel,
+} from 'discord.js';
 import log from 'loglevel';
 import { CommandParser } from '../command/CommandParser';
 import { CommandResult } from '../command/classes/CommandResult';
@@ -30,11 +32,11 @@ export class OnMessageEventHandler extends MessageEventHandler {
             this.message = await this.handlePartial();
 
             // If it is a DM, ignore.
-            if (this.message.guild === null) return;
+            if (this.message.channel instanceof DMChannel) return;
             // If it's a bot, ignore :)
             if (this.message!.author!.bot) return;
 
-            const server = this.getServer(this.message.guild.id);
+            const server = this.getServer(this.message!.guild!.id);
 
             // Handle Command
             const commandResult = await this.handleCommand(server);
@@ -44,7 +46,7 @@ export class OnMessageEventHandler extends MessageEventHandler {
                 await this.handleMessageCheck(server);
             }
         } catch (err) {
-            this.handleError(err);
+            this.handleError(err as Error);
         }
     }
 
@@ -71,6 +73,8 @@ export class OnMessageEventHandler extends MessageEventHandler {
                 channels, emojis, members, name, roles,
             } = this.message.guild!;
             const { channel, author } = this.message;
+            if (!(channel instanceof TextChannel || channel instanceof ThreadChannel))
+                return new CommandResult(false);
             const { tag } = author;
             const { uptime } = this.message.client;
             const messageReply = this.message.channel.send.bind(this.message.channel);

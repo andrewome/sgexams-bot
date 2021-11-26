@@ -30,12 +30,14 @@ export abstract class EventHandler {
      * @param  {Error} err
      * @returns void
      */
-    protected handleError(err: Error): void {
-        log.warn(`Uncaught error in ${this.constructor.name}.`);
-        log.warn(err.stack);
-        if (err instanceof SqliteError) {
-            log.error('Sqlite Error detected. Shutting down.');
-            process.exit();
+    protected handleError(err: unknown): void {
+        if (err instanceof Error) {
+            log.warn(`Uncaught error in ${this.constructor.name}.`);
+            log.warn(err.stack);
+            if (err instanceof SqliteError) {
+                log.error('Sqlite Error detected. Shutting down.');
+                process.exit();
+            }
         }
     }
 

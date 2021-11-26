@@ -38,7 +38,7 @@ export class ReadyEventHandler extends EventHandler {
         }
         // The activity seems to get reset every now and then... setInterval to set it every 1 hour
         setInterval(() => {
-            this.bot.user!.setActivity('with NUKES!!!!', { type: 'PLAYING' }).catch((err) => log.warn(err.stack));
+            this.bot.user!.setActivity('with NUKES!!!!', { type: 'PLAYING' });
         }, 1000 * 60 * 60);
     }
 
@@ -125,7 +125,8 @@ export class ReadyEventHandler extends EventHandler {
                     .then((user) => user.roles.remove(muteRoleId!))
                     .catch((err) => {
                         log.info(
-                            `${err}: Unable to unmute user ${userId} from server ${serverId}. Mute role is ${muteRoleId}`,
+                            `${err}: Unable to unmute user ${userId} from server ${serverId}.` +
+                            `Mute role is ${muteRoleId}`,
                         );
                     });
                 break;
