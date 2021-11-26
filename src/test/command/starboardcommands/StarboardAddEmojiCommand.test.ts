@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import {
-    MessageEmbed, Permissions, Collection, Emoji,
+    MessageEmbed, Permissions, Collection, Emoji, MessageOptions,
 } from 'discord.js';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -48,7 +48,8 @@ beforeEach((): void => {
 describe('StarboardAddEmojiCommand test suite', (): void => {
     it('No permission check', async (): Promise<void> => {
         command = new StarboardAddEmojiCommand([]);
-        const checkEmbed = (embed: MessageEmbed): void => {
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
             embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
@@ -71,7 +72,8 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
     it('No arguments', (): void => {
         command = new StarboardAddEmojiCommand([]);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
             embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
@@ -92,7 +94,8 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
     it('Cannot find emoji', (): void => {
         command = new StarboardAddEmojiCommand(['does_not_exist']);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
             embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
@@ -112,7 +115,8 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
         const msg = `✅Added Emoji: <:${emoji.name}:${emoji.id}>`;
         command = new StarboardAddEmojiCommand(['test']);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
@@ -137,7 +141,8 @@ describe('StarboardAddEmojiCommand test suite', (): void => {
         command = new StarboardAddEmojiCommand(['test']);
         server.starboardSettings.addEmoji(emoji);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
             embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];

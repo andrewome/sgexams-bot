@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle, no-unused-expressions */
 import { should } from 'chai';
 import {
-    MessageEmbed, Permissions, Collection, Channel, Client,
+    MessageEmbed, Permissions, Collection, Channel, Client, MessageOptions,
 } from 'discord.js';
 import { MsgCheckerSetReportChannelCommand } from '../../../main/command/messagecheckercommands/MsgCheckerSetReportChannelCommand';
 import { Command } from '../../../main/command/Command';
@@ -49,7 +49,8 @@ beforeEach((): void => {
 describe('MsgCheckerSetReportChannelCommand test suite', (): void => {
     it('No permission check', async (): Promise<void> => {
         command = new MsgCheckerSetReportChannelCommand([]);
-        const checkEmbed = (embed: MessageEmbed): void => {
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
             embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
@@ -73,7 +74,8 @@ describe('MsgCheckerSetReportChannelCommand test suite', (): void => {
         server.messageCheckerSettings.setReportingChannelId('123');
         command = new MsgCheckerSetReportChannelCommand([]);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
@@ -94,7 +96,8 @@ describe('MsgCheckerSetReportChannelCommand test suite', (): void => {
     it('not text channel', (): void => {
         command = new MsgCheckerSetReportChannelCommand(['not_text_channel']);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
             embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
@@ -112,7 +115,8 @@ describe('MsgCheckerSetReportChannelCommand test suite', (): void => {
     it('cannot find channel', (): void => {
         command = new MsgCheckerSetReportChannelCommand(['does_not_exist']);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
             embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
@@ -132,7 +136,8 @@ describe('MsgCheckerSetReportChannelCommand test suite', (): void => {
         const msg = `Reporting Channel set to <#${channelId}>.`;
         command = new MsgCheckerSetReportChannelCommand([channelId]);
 
-        const checkEmbed = (embed: MessageEmbed): void => {
+        const checkEmbed = (msg: MessageOptions): void => {
+            const embed = msg!.embeds![0];
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
             const field = embed.fields![0];
