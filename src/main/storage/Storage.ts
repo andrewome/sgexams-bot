@@ -72,7 +72,8 @@ export class Storage {
         const db = DatabaseConnection.connect();
         db.prepare('INSERT INTO servers (serverId) VALUES (?)').run(serverId);
         db.prepare(
-            'INSERT INTO messageCheckerSettings (serverId, reportingChannelId, responseMessage, deleteMessage) VALUES (?, ?, ?, ?)',
+            'INSERT INTO messageCheckerSettings (serverId, reportingChannelId, responseMessage,' +
+            ' deleteMessage) VALUES (?, ?, ?, ?)',
         ).run(serverId, null, null, null);
         db.prepare(
             'INSERT INTO starboardSettings (serverId, channel, threshold) VALUES (?, ?, ?)',
