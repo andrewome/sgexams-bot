@@ -82,7 +82,7 @@ export class MuteCommand extends Command {
             const { roles } = target;
 
             // Check if role exists on user
-            if (roles.cache.array().some((x) => x.id === muteRoleId)) {
+            if (roles.cache.some((x) => x.id === muteRoleId)) {
                 await messageReply(this.generateUserAlreadyMutedEmbed());
                 return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
             }

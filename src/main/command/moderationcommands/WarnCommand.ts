@@ -124,8 +124,10 @@ export class WarnCommand extends Command {
 
                     // Check if role exists on user
                     const { roles } = target;
-                    if (roles.cache.array().some((x) => x.id === muteRoleId)) {
-                        log.warn(`[WarnCommand]: ${targetId} in ${serverId} already has the muted role assigned! Ignoring.`);
+                    if (roles.cache.some((x) => x.id === muteRoleId)) {
+                        log.warn(
+                            `[WarnCommand]: ${targetId} in ${serverId} already has the muted role assigned! Ignoring.`,
+                        );
                         return;
                     }
 

@@ -1,5 +1,5 @@
 import {
-    Permissions, MessageEmbed, Channel,
+    Permissions, MessageEmbed, TextChannel,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -11,13 +11,15 @@ export class SetModLogChannelCommand extends Command {
 
     public static readonly DESCRIPTION = 'Sets the ModLog reporting channel.';
 
-    public static NOT_TEXT_CHANNEL = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
+    public static NOT_TEXT_CHANNEL
+        = 'Channel is not a Text Channel. Make sure the Channel you are submitting is a Text Channel';
 
     public static CHANNEL_NOT_FOUND = 'Channel was not found. Please submit a valid channel ID.';
 
     public static EMBED_TITLE = 'ModLog Channel';
 
-    public static CHANNEL_RESETTED = 'ModLog Channel has been resetted because there were no arguments. Please set a new one.';
+    public static CHANNEL_RESETTED
+        = 'ModLog Channel has been resetted because there were no arguments. Please set a new one.';
 
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
@@ -73,7 +75,7 @@ export class SetModLogChannelCommand extends Command {
         }
 
         // If not text channel
-        if ((channel as Channel).type !== 'text') {
+        if (!(channel instanceof TextChannel)) {
             embed = this.generateNotTextChannelEmbed();
             await messageReply(embed);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;

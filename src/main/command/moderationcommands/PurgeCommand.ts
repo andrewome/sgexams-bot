@@ -24,7 +24,8 @@ export class PurgeCommand extends Command {
 
     public static COMMAND_USAGE = '**Usage:** @bot purge limit [userId]';
 
-    public static ERROR_MESSAGE_INVALID_LIMIT = `Invalid limit. Make sure that that it is below 0 < x <= ${PurgeCommand.MSG_LIMIT}`;
+    public static ERROR_MESSAGE_INVALID_LIMIT
+        = `Invalid limit. Make sure that that it is below 0 < x <= ${PurgeCommand.MSG_LIMIT}`;
 
     public constructor(args: string[]) {
         super();
@@ -84,7 +85,7 @@ export class PurgeCommand extends Command {
     private async bulkDeleteMessages(userId: string|null, collectedMessages: Message[],
                                      channel: Channel, sentMessage: Message): Promise<number> {
 
-        await sentMessage.edit(this.generateEmbed('Deleting messages...'));
+        await sentMessage.edit({ embeds: [this.generateEmbed('Deleting messages...')] });
 
         // Filter messages by userId if specified
         if (userId) {
@@ -127,7 +128,7 @@ export class PurgeCommand extends Command {
 
             // eslint-disable-next-line no-await-in-loop
             const messages = await messageManager.fetch(options);
-            collectedMessages.push(...messages.array());
+            collectedMessages.push(...messages.values());
             const lastMsg = messages.last();
             if (lastMsg)
                 lastId = lastMsg.id;
@@ -136,9 +137,11 @@ export class PurgeCommand extends Command {
             const { length } = collectedMessages;
             if (length && length % 200 === 0)
                 // eslint-disable-next-line no-await-in-loop
-                await sentMessage.edit(this.generateEmbed(
-                    `Fetching messages... ${length}/${limit} messages fetched.`,
-                ));
+                await sentMessage.edit({
+                    embeds: [
+                        this.generateEmbed(`Fetching messages... ${length}/${limit} messages fetched.`),
+                    ],
+                });
 
             if (messages.size !== 100 || length >= limit) {
                 break;

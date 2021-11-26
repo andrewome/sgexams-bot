@@ -73,7 +73,7 @@ export class UnmuteCommand extends Command {
             const { roles } = target;
 
             // Check if role does not exist on user
-            if (!roles.cache.array().some((x) => x.id === muteRoleId)) {
+            if (!roles.cache.some((x) => x.id === muteRoleId)) {
                 await messageReply(this.generateUserNotMutedEmbed());
                 return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
             }
