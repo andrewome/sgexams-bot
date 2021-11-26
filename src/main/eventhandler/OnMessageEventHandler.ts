@@ -77,7 +77,7 @@ export class OnMessageEventHandler extends MessageEventHandler {
                 return new CommandResult(false);
             const { tag } = author;
             const { uptime } = this.message.client;
-            const messageReply = this.message.channel.send.bind(this.message.channel);
+            const messageReply = this.message.reply.bind(this.message);
             const deleteFunction = this.message.delete.bind(this.message);
             const messageId = this.message.id;
             const userId = author.id;

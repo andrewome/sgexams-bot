@@ -51,7 +51,7 @@ export class StarboardRemoveEmojiCommand extends Command {
                 StarboardRemoveEmojiCommand.NO_ARGUMENTS,
                 StarboardRemoveEmojiCommand.EMBED_ERROR_COLOUR,
             );
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
@@ -70,7 +70,7 @@ export class StarboardRemoveEmojiCommand extends Command {
                 StarboardRemoveEmojiCommand.EMBED_DEFAULT_COLOUR,
             );
             // Send output
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -80,7 +80,7 @@ export class StarboardRemoveEmojiCommand extends Command {
             StarboardRemoveEmojiCommand.EMBED_DEFAULT_COLOUR,
         );
         // Send output
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
         return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
     }
 }

@@ -61,7 +61,7 @@ export class StarboardSetChannelCommand extends Command {
         // If no args
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             server.starboardSettings.setChannel(server.serverId, null);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
@@ -72,19 +72,19 @@ export class StarboardSetChannelCommand extends Command {
         // Check if valid channel
         if (channel === null) {
             embed = this.generateNotFoundEmbed();
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
         // If not text channel
         if (!(channel instanceof TextChannel)) {
             embed = this.generateNotTextChannelEmbed();
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
         embed = this.generateValidEmbed(channelId);
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
         server.starboardSettings.setChannel(server.serverId, channelId);
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }

@@ -45,14 +45,14 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
 
         // Execute
         if (this.args.length === 0) {
-            await messageReply(this.generateNoArgsEmbed());
+            await messageReply({ embeds: [this.generateNoArgsEmbed()] });
             return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
         const boolStr = this.args[0].toLowerCase();
         const trueFalseRegex = new RegExp(/\btrue\b|\bfalse\b/, 'g');
         if (!trueFalseRegex.test(boolStr)) {
-            await messageReply(this.generateWrongFormatEmbed());
+            await messageReply({ embeds: [this.generateWrongFormatEmbed()] });
             return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
@@ -66,7 +66,7 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
         }
 
         server.messageCheckerSettings.setDeleteMessage(server.serverId, bool!);
-        await messageReply(this.generateValidEmbed(bool!));
+        await messageReply({ embeds: [this.generateValidEmbed(bool!)] });
         return this.COMMAND_DEFAULT_COMMANDRESULT;
     }
 

@@ -52,14 +52,14 @@ export class MuteCommand extends Command {
 
         // Check number of args (absolute minimum should be 1)
         if (this.args.length < 1) {
-            await messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply({ embeds: [this.generateInsufficientArgumentsEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
         // Check if mute role is set
         const muteRoleId = ModDbUtils.getMuteRoleId(server.serverId);
         if (muteRoleId === null) {
-            await messageReply(this.generateMuteRoleNotSet());
+            await messageReply({ embeds: [this.generateMuteRoleNotSet()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -83,7 +83,7 @@ export class MuteCommand extends Command {
 
             // Check if role exists on user
             if (roles.cache.some((x) => x.id === muteRoleId)) {
-                await messageReply(this.generateUserAlreadyMutedEmbed());
+                await messageReply({ embeds: [this.generateUserAlreadyMutedEmbed()] });
                 return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
             }
             await target.roles.add(muteRoleId);
@@ -102,11 +102,11 @@ export class MuteCommand extends Command {
                     botId!, members!, emit!, muteRoleId,
                 );
             }
-            await messageReply(this.generateValidEmbed(target, reason, duration));
+            await messageReply({ embeds: [this.generateValidEmbed(target, reason, duration)] });
         } catch (err) {
             if (err instanceof DiscordAPIError) {
                 log.info(err);
-                await messageReply(this.generateUserIdErrorEmbed());
+                await messageReply({ embeds: [this.generateUserIdErrorEmbed()] });
             } else
                 throw err;
         }

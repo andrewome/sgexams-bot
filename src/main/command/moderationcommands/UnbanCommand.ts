@@ -51,7 +51,7 @@ export class UnbanCommand extends Command {
 
         // Check number of args (absolute minimum should be 1)
         if (this.args.length < 1) {
-            await messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply({ embeds: [this.generateInsufficientArgumentsEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -68,10 +68,10 @@ export class UnbanCommand extends Command {
                 ModUtils.getUnixTime(), emit!, reason,
             );
             ModUtils.handleUnbanTimeout(targetId, server.serverId);
-            await messageReply(this.generateValidEmbed(user.username, reason));
+            await messageReply({ embeds: [this.generateValidEmbed(user.username, reason)] });
         } catch (err) {
             if (err instanceof DiscordAPIError)
-                await messageReply(this.generateInvalidUserIdEmbed());
+                await messageReply({ embeds: [this.generateInvalidUserIdEmbed()] });
             else
                 throw err;
         }

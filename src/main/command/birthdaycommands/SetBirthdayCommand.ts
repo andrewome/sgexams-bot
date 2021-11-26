@@ -31,27 +31,27 @@ export class SetBirthdayCommand extends Command {
         const { userId, messageReply, server } = commandArgs;
 
         if (this.args.length < 1) {
-            await messageReply(this.generateInvalidEmbed());
+            await messageReply({ embeds: [this.generateInvalidEmbed()] });
             return UNSUCCESSFUL_COMMANDRESULT;
         }
         const dateString = this.args[0];
         const date = parseDate(dateString);
 
         if (!userId || !date) {
-            await messageReply(this.generateInvalidEmbed());
+            await messageReply({ embeds: [this.generateInvalidEmbed()] });
             return UNSUCCESSFUL_COMMANDRESULT;
         }
         const { day, month } = date;
 
         // Store birthday into database
         setBirthday(server.serverId, userId, day, month);
-        await messageReply(
-            this.generateGenericEmbed(
+        await messageReply({
+            embeds: [this.generateGenericEmbed(
                 'Birthday set',
                 `I'll announce your birthday on ${prettifyDate(date)}.`,
                 Command.EMBED_DEFAULT_COLOUR,
-            ),
-        );
+            )],
+        });
 
         return SUCCESSFUL_COMMANDRESULT;
     }

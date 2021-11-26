@@ -30,14 +30,14 @@ export class ListBirthdaysCommand extends Command {
         const { messageReply, server } = commandArgs;
 
         if (this.args.length < 1) {
-            await messageReply(this.generateInvalidEmbed());
+            await messageReply({ embeds: [this.generateInvalidEmbed()] });
             return UNSUCCESSFUL_COMMANDRESULT;
         }
         const dateString = this.args[0];
 
         const date = parseDate(dateString);
         if (!date) {
-            await messageReply(this.generateInvalidEmbed());
+            await messageReply({ embeds: [this.generateInvalidEmbed()] });
             return UNSUCCESSFUL_COMMANDRESULT;
         }
         const { day, month } = date;
@@ -50,13 +50,13 @@ export class ListBirthdaysCommand extends Command {
         } else {
             description = 'No users have a birthday on this day.';
         }
-        await messageReply(
-            this.generateGenericEmbed(
+        await messageReply({
+            embeds: [this.generateGenericEmbed(
                 `Birthdays on ${prettifyDate(date)}`,
                 description,
                 Command.EMBED_DEFAULT_COLOUR,
-            ),
-        );
+            )],
+        });
 
         return SUCCESSFUL_COMMANDRESULT;
     }

@@ -20,10 +20,12 @@ export class HelpCommand extends HelpCommandBase {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        await messageReply(this.generateEmbed(
-            HelpCommand.HEADER,
-            CommandCollection.HELP_COMMANDS,
-        ));
+        await messageReply({
+            embeds: [this.generateEmbed(
+                HelpCommand.HEADER,
+                CommandCollection.HELP_COMMANDS,
+            )],
+        });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

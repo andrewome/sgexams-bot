@@ -58,7 +58,7 @@ export class StarboardAddEmojiCommand extends Command {
                 StarboardAddEmojiCommand.NO_ARGUMENTS,
                 StarboardAddEmojiCommand.EMBED_ERROR_COLOUR,
             );
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
@@ -73,7 +73,7 @@ export class StarboardAddEmojiCommand extends Command {
                 StarboardAddEmojiCommand.EMOJI_NOT_FOUND,
                 StarboardAddEmojiCommand.EMBED_ERROR_COLOUR,
             );
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
         }
 
@@ -91,7 +91,7 @@ export class StarboardAddEmojiCommand extends Command {
             );
 
             // Send output
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -102,7 +102,7 @@ export class StarboardAddEmojiCommand extends Command {
         );
 
         // Send output
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
         return this.COMMAND_UNSUCCESSFUL_COMMANDRESULT;
     }
 }

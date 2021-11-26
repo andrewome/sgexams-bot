@@ -38,11 +38,11 @@ export class GetModLogChannelCommand extends Command {
 
         // Check if channel is set
         if (channelId === null) {
-            await messageReply(this.generateNotSetEmbed());
+            await messageReply({ embeds: [this.generateNotSetEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        await messageReply(this.generateValidEmbed(channelId));
+        await messageReply({ embeds: [this.generateValidEmbed(channelId)] });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

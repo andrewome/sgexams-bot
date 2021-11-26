@@ -52,7 +52,7 @@ export class WarnCommand extends Command {
 
         // Check number of args
         if (this.args.length < 1) {
-            await messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply({ embeds: [this.generateInsufficientArgumentsEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -65,10 +65,10 @@ export class WarnCommand extends Command {
             const target = await members!.fetch(targetId);
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                            this.type, curTime, emit!, reason);
-            await messageReply(this.generateValidEmbed(target, reason));
+            await messageReply({ embeds: [this.generateValidEmbed(target, reason)] });
         } catch (err) {
             if (err instanceof DiscordAPIError)
-                await messageReply(this.generateUserIdError());
+                await messageReply({ embeds: [this.generateUserIdError()] });
             else
                 throw err;
         }

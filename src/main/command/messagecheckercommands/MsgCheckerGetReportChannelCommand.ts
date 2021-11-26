@@ -50,7 +50,7 @@ export class MsgCheckerGetReportChannelCommand extends Command {
                 MsgCheckerGetReportChannelCommand.EMBED_DEFAULT_COLOUR,
             );
         }
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

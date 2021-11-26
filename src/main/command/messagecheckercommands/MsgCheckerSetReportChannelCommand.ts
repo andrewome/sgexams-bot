@@ -61,7 +61,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
                 server.serverId,
                 null,
             );
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
@@ -75,14 +75,14 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         const channel = channels!.resolve(channelId);
         if (channel === null) {
             embed = this.generateInvalidEmbed();
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
         // If not text
         if (!(channel instanceof TextChannel)) {
             embed = this.generateNotTextChannelEmbed();
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_DEFAULT_COMMANDRESULT;
         }
 
@@ -91,7 +91,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
             server.serverId,
             channelId,
         );
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
         return this.COMMAND_DEFAULT_COMMANDRESULT;
     }
 

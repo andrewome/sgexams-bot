@@ -50,7 +50,7 @@ export class MsgCheckerRemoveWordCommand extends Command {
         const embed = this.generateEmbed(wordsRemoved, wordsNotRemoved);
 
         // Send output
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

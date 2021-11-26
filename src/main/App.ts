@@ -19,7 +19,7 @@ export class App {
 
     private storage: Storage = new Storage();
 
-    public static readonly MESSAGE = 'message';
+    public static readonly MESSAGE = 'messageCreate';
 
     public static readonly MESSAGE_UPDATE = 'messageUpdate';
 

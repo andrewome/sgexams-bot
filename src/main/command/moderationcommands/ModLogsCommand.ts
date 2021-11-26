@@ -91,7 +91,7 @@ export class ModLogsCommand extends Command {
         if (modLogs.length === 0) {
             const embed = new MessageEmbed();
             embed.setTitle('Mod logs is empty');
-            await messageReply(embed);
+            await messageReply({ embeds: [embed] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -103,10 +103,10 @@ export class ModLogsCommand extends Command {
         try {
             embed = this.generateEmbed(modLogs, curStartIdx, endStartIdx);
         } catch (_) {
-            await messageReply(this.ERROR_MESSAGE);
+            await messageReply({ embeds: [this.ERROR_MESSAGE] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
-        const sentMessage: Message = await messageReply(embed);
+        const sentMessage: Message = await messageReply({ embeds: [embed] });
 
         // Only display reactions if there is more than 1 page
         if (curStartIdx + 1 < endStartIdx) {

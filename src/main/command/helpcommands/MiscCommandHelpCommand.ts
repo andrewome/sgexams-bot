@@ -20,10 +20,12 @@ export class MiscCommandHelpCommand extends HelpCommandBase {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        await messageReply(this.generateEmbed(
-            MiscCommandHelpCommand.HEADER,
-            CommandCollection.MISC_COMMANDS,
-        ));
+        await messageReply({
+            embeds: [this.generateEmbed(
+                MiscCommandHelpCommand.HEADER,
+                CommandCollection.MISC_COMMANDS,
+            )],
+        });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

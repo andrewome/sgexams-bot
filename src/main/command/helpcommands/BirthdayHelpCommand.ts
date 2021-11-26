@@ -20,12 +20,12 @@ export class BirthdayHelpCommand extends HelpCommandBase {
         const { messageReply } = commandArgs;
 
         // Generate embed and send
-        await messageReply(
-            this.generateEmbed(
+        await messageReply({
+            embeds: [this.generateEmbed(
                 BirthdayHelpCommand.HEADER,
                 CommandCollection.BIRTHDAY_COMMANDS,
-            ),
-        );
+            )],
+        });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 }

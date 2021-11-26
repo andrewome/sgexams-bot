@@ -39,11 +39,11 @@ export class StarboardGetEmojiCommand extends Command {
 
         // Check if emoji is set
         if (emojis.length === 0) {
-            await messageReply(this.generateNotSetEmbed());
+            await messageReply({ embeds: [this.generateNotSetEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        await messageReply(this.generateValidEmbed(emojis));
+        await messageReply({ embeds: [this.generateValidEmbed(emojis)] });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 

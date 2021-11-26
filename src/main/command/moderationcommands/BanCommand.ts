@@ -54,7 +54,7 @@ export class BanCommand extends Command {
 
         // Check number of args (absolute minimum should be 1)
         if (this.args.length < 1) {
-            await messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply({ embeds: [this.generateInsufficientArgumentsEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -89,10 +89,10 @@ export class BanCommand extends Command {
                     duration, curTime, endTime, targetId, server.serverId, botId!, members!, emit!,
                 );
             }
-            await messageReply(this.generateValidEmbed(bannedUser, reason, duration));
+            await messageReply({ embeds: [this.generateValidEmbed(bannedUser, reason, duration)] });
         } catch (err) {
             if (err instanceof DiscordAPIError)
-                await messageReply(this.generateUserIdErrorEmbed());
+                await messageReply({ embeds: [this.generateUserIdErrorEmbed()] });
             else
                 throw err;
         }

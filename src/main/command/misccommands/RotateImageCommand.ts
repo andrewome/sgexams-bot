@@ -55,7 +55,7 @@ export class RotateImageCommand extends Command {
         const idx = parseInt(this.commandArgs[1] ?? '0', 10);
 
         if (messageId === undefined) {
-            await messageReply(this.ERROR_MESSAGE);
+            await messageReply({ embeds: [this.ERROR_MESSAGE] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -165,7 +165,7 @@ export class RotateImageCommand extends Command {
                 await sentMessage.reactions.removeAll();
             });
         } catch (err) {
-            await messageReply(this.ERROR_MESSAGE);
+            await messageReply({ embeds: [this.ERROR_MESSAGE] });
         }
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;

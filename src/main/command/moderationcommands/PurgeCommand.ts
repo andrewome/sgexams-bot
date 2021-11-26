@@ -53,7 +53,7 @@ export class PurgeCommand extends Command {
 
         // Check number of args
         if (this.args.length === 0) {
-            await messageReply(this.generateInsufficientArgumentsEmbed());
+            await messageReply({ embeds: [this.generateInsufficientArgumentsEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -61,15 +61,17 @@ export class PurgeCommand extends Command {
         const userId = this.args.length > 1 ? this.args[1].replace(/[<@!>]/g, '') : null;
         // Check for error on the limit
         if (Number.isNaN(limit) || limit > PurgeCommand.MSG_LIMIT || limit <= 0) {
-            await messageReply(this.generateInvalidLimitEmbed());
+            await messageReply({ embeds: [this.generateInvalidLimitEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
         // Fetch and bulk delete messages
-        const sentMessage = await messageReply(this.generateEmbed(`Fetching messages... 0/${limit} messages fetched.`));
+        const sentMessage = await messageReply({
+            embeds: [this.generateEmbed(`Fetching messages... 0/${limit} messages fetched.`)],
+        });
         const messages = await this.fetchMessages(messageManager, limit, messageId!, sentMessage);
         const numDeleted = await this.bulkDeleteMessages(userId, messages, channel!, sentMessage);
-        await sentMessage.edit(this.generateEmbed(`Deleted ${numDeleted} messages.`));
+        await sentMessage.edit({ embeds: [this.generateEmbed(`Deleted ${numDeleted} messages.`)] });
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }

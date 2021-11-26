@@ -65,7 +65,7 @@ export abstract class Command {
             Command.NO_PERMISSIONS_MSG,
             Command.EMBED_ERROR_COLOUR,
         );
-        await messageReply(embed);
+        await messageReply({ embeds: [embed] });
     }
 
     /**
