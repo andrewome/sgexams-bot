@@ -54,7 +54,8 @@
         "import/extensions": "off",
         "import/no-unresolved": "off",
         "function-call-argument-newline": "off",
-        "function-paren-newline": "off"
+        "function-paren-newline": "off",
+        "prefer-regex-literals": "off"
     },
     "settings": {
         "import/resolver": {

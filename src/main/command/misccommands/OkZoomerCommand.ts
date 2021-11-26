@@ -11,7 +11,7 @@ export class OkZoomerCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-     private commandArgs: string[];
+    private commandArgs: string[];
 
     /** Emoji IDs/Unicode Emojis */
     private emojiSequence = ['🆗', '🇿', '🅾️', '🇴', '🇲', '🇪', '🇷'];

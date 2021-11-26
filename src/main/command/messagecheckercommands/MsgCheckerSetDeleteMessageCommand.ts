@@ -4,14 +4,13 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 
 export class MsgCheckerSetDeleteMessageCommand extends Command {
-    public static INCORRECT_FORMAT = 'Incorrect format. Use only "true" or "false".'
+    public static INCORRECT_FORMAT = 'Incorrect format. Use only "true" or "false".';
 
     public static EMBED_TITLE = 'Message Checker Delete Message';
 
     public static BOOL_CANNOT_BE_UNDEFINED = 'Boolean should not be undefined!';
 
-    public static readonly NAME =
-        'MsgCheckerSetDeleteMsg';
+    public static readonly NAME = 'MsgCheckerSetDeleteMsg';
 
     public static readonly DESCRIPTION =
         'Sets whether the bot should delete instances of blacklisted words being used.';
