@@ -112,8 +112,13 @@ export class RotateImageCommand extends Command {
             // Options
             const options: ReactionCollectorOptions = { filter, time: 10000, max: 1 };
             const collector = sentMessage.createReactionCollector(options);
-            const COLLECT = 'collect';
 
+            // Function to pass into collector end event to remove all reactions
+            const onEndDecorator = (sentMessage: Message) => async () => {
+                try {
+                    await sentMessage.reactions.removeAll();
+                } catch {} // eslint-disable-line no-empty
+            };
             // onReaction function to handle the event. This is a recursive function to
             // create a new collector because the original message is deleted after each
             // reaction. That's why max is also set to 1. Because we do not want the
@@ -153,17 +158,13 @@ export class RotateImageCommand extends Command {
                     = (sentMessage as Message).createReactionCollector(options);
 
                 // Make it listen
-                collector.on(COLLECT, onReaction);
-                collector.on('end', async () => {
-                    await sentMessage.reactions.removeAll();
-                });
+                collector.on('collect', onReaction);
+                collector.on('end', onEndDecorator(sentMessage));
             };
 
             // Set up initial event handler.
-            collector.on(COLLECT, onReaction);
-            collector.on('end', async () => {
-                await sentMessage.reactions.removeAll();
-            });
+            collector.on('collect', onReaction);
+            collector.on('end', onEndDecorator(sentMessage));
         } catch (err) {
             await messageReply({ embeds: [this.ERROR_MESSAGE] });
         }
