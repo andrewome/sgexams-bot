@@ -1,5 +1,5 @@
 import {
-    Message, TextChannel, Client, ThreadChannel, DMChannel,
+    Message, TextChannel, Client, ThreadChannel, DMChannel, MessagePayload, MessageOptions,
 } from 'discord.js';
 import log from 'loglevel';
 import { CommandParser } from '../command/CommandParser';
@@ -77,7 +77,19 @@ export class OnMessageEventHandler extends MessageEventHandler {
                 return new CommandResult(false);
             const { tag } = author;
             const { uptime } = this.message.client;
-            const messageReply = this.message.reply.bind(this.message);
+            // if original message is deleted, messageReply will throw 
+            // discord API error; simply default to send in the channel
+            // await return is needed because for some funny reason the function
+            // will throw an error when running in a callback function
+            const messageReply = async (options: string | MessagePayload | MessageOptions): Promise<Message> => {
+                try {
+                    // eslint-disable-next-line no-return-await
+                    return await this.message.reply.bind(this.message)(options);
+                } catch (err) {
+                    // eslint-disable-next-line no-return-await
+                    return await this.message.channel.send.bind(this.message.channel)(options);
+                }
+            };
             const deleteFunction = this.message.delete.bind(this.message);
             const messageId = this.message.id;
             const userId = author.id;
