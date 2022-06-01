@@ -33,7 +33,7 @@
     "dotenv": "^10.0.0",
     "loglevel": "^1.8.0",
     "p-queue": "^6.6.2",
-    "sharp": "^0.29.3"
+    "sharp": "^0.30.5"
   },
   "devDependencies": {
     "@types/chai": "^4.2.22",
