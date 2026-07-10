@@ -10,6 +10,13 @@ export class ModUtils {
 
     public static readonly DAYS_IN_SECONDS = ModUtils.HOURS_IN_SECONDS * 24;
 
+    /**
+     * Discord timeouts cannot be set further than 28 days into the future, but this is
+     * capped tighter at 21 days: setTimeout's delay is a 32-bit signed int (~24.85 day max),
+     * and 21 days keeps setMuteTimeout's delay safely under that limit.
+     */
+    public static readonly MAX_MUTE_DURATION_SECONDS = ModUtils.DAYS_IN_SECONDS * 21;
+
     public static readonly timers: Map<number, NodeJS.Timeout> = new Map();
 
     /**
@@ -173,28 +180,27 @@ export class ModUtils {
     }
 
     /**
-     * This function adds the mute timeout to the database and calls setMuteTimeout
+     * This function adds the mute timeout to the database and calls setMuteTimeout.
      * We need the timeout duration for the setTimeout function as startTime and endTime
-     * duration passed into this function may not reflect the actual length of the ban.
-     * ie if the bot is restarted, the actual startTime will be reflected in the database
+     * duration passed into this function may not reflect the actual length of the mute.
+     * ie if the bot is restarted, the actual startTime will be reflected in the database.
+     *
+     * Discord expires the member's timeout natively, so this only needs to record the
+     * UNMUTE audit log entry when the mute would have ended - it does not touch Discord.
      *
      * @param  {number} startTime
      * @param  {number} endTime
      * @param  {string} userId
      * @param  {string} serverId
      * @param  {string} botId
-     * @param  {GuildMemberManager} guildMemberManager
      * @param  {Function} emit
-     * @param  {muteroleId} muteroleId
      * @returns void
      */
     public static addMuteTimeout(timeoutDuration: number, startTime: number, endTime: number,
                                  userId: string, serverId: string, botId: string,
-                                 guildMemberManager: GuildMemberManager,
-                                 emit: Function, muteRoleId: string): void {
+                                 emit: Function): void {
         const timer = ModUtils.setMuteTimeout(
-            timeoutDuration, startTime, endTime, userId, serverId,
-            botId, guildMemberManager, emit, muteRoleId,
+            timeoutDuration, startTime, endTime, userId, serverId, botId, emit,
         );
 
         const timerId = ModUtils.assignTimeout(timer);
@@ -205,34 +211,25 @@ export class ModUtils {
     }
 
     /**
-     * This function handles the timeout of the ban to unmute the user when timeout is up.
+     * This function handles the timeout of the mute, recording the UNMUTE audit log entry
+     * when the timeout is up. Discord expires the member's timeout on its own; this does not
+     * make any Discord API call.
      *
      * @param  {number} timeoutDuration
      * @param  {number} startTime
      * @param  {number} endTime
-     * @param  {number} endTime
      * @param  {string} userId
      * @param  {string} serverId
      * @param  {string} botId
-     * @param  {GuildMemberManager} guildMemberManager
      * @param  {Function} emit
-     * @param  {muteroleId} muteroleId
      * @returns NodeJS.Timeout
      */
     public static setMuteTimeout(timeoutDuration: number, startTime: number, endTime: number,
                                  userId: string, serverId: string, botId: string,
-                                 guildMemberManager: GuildMemberManager, emit: Function,
-                                 muteRoleId: string): NodeJS.Timeout {
+                                 emit: Function): NodeJS.Timeout {
         const callback = (): void => {
             const actualDuration = Math.floor((endTime - startTime) / 60);
-            log.info(`Unmuting ${userId} after ${actualDuration} minutes timeout.`);
-            // Unmute member
-            guildMemberManager.fetch(userId)
-                .then((guildMember) => guildMember.roles.remove(muteRoleId))
-                .catch((err) => {
-                    log.info(err);
-                    log.info(`Unable to unmute user ${userId} from server ${serverId}. Mute role is ${muteRoleId}`);
-                });
+            log.info(`Recording auto-unmute for ${userId} after ${actualDuration} minutes timeout.`);
 
             // Remove entry from db
             const timerId = ModDbUtils.removeActionTimeout(userId, ModActions.MUTE, serverId);

@@ -123,14 +123,20 @@ export class SetWarnPunishmentsCommand extends Command {
                 action = ModActions.BAN;
 
             // Check duration
-            // If args length = 2, set duration to null (which means forever)
+            // If args length = 2, set duration to null (which means forever).
+            // MUTE has no permanent state (capped at 21 days, see ADR-0001), so it always
+            // requires a duration - see ADR-0001.
             if (splittedArg.length === 2) {
+                if (action === ModActions.MUTE)
+                    return null;
                 out.push([numWarns, action, null]);
                 continue;
             }
 
             const duration = ModUtils.parseDuration(splittedArg[2]);
             if (!duration)
+                return null;
+            if (action === ModActions.MUTE && duration > ModUtils.MAX_MUTE_DURATION_SECONDS)
                 return null;
             out.push([numWarns, action, duration]);
         }

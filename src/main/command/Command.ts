@@ -54,6 +54,21 @@ export abstract class Command {
     }
 
     /**
+     * This function checks if a given guildmember satisfies at least one of the given
+     * permission sets.
+     *
+     * @param  {PermissionsBitField[]} commandPermissionSets
+     * @param  {PermissionsBitField} userPermissions
+     * @returns boolean
+     */
+    public hasAnyPermissions(
+        commandPermissionSets: PermissionsBitField[],
+        userPermissions: Readonly<PermissionsBitField>,
+    ): boolean {
+        return commandPermissionSets.some((set) => this.hasPermissions(set, userPermissions));
+    }
+
+    /**
      * This function sends the no permissions reply
      *
      * @param  {Function} messageReply

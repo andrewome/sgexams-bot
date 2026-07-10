@@ -56,4 +56,36 @@ describe('Command class test suite', (): void => {
             command.hasPermissions(requiredPermissions, userPermissions).should.be.false;
         });
     });
+
+    describe('hasAnyPermissions method test', (): void => {
+        const setA
+            = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
+        const setB = new PermissionsBitField([PermissionFlagsBits.ModerateMembers]);
+
+        it('satisfies first set only', (): void => {
+            const userPermissions
+                = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
+            command.hasAnyPermissions([setA, setB], userPermissions).should.be.true;
+        });
+        it('satisfies second set only', (): void => {
+            const userPermissions = new PermissionsBitField([PermissionFlagsBits.ModerateMembers]);
+            command.hasAnyPermissions([setA, setB], userPermissions).should.be.true;
+        });
+        it('satisfies both sets', (): void => {
+            const userPermissions = new PermissionsBitField([
+                PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers,
+                PermissionFlagsBits.ModerateMembers,
+            ]);
+            command.hasAnyPermissions([setA, setB], userPermissions).should.be.true;
+        });
+        it('satisfies neither set', (): void => {
+            const userPermissions = new PermissionsBitField([PermissionFlagsBits.KickMembers]);
+            command.hasAnyPermissions([setA, setB], userPermissions).should.be.false;
+        });
+        it('satisfies only part of a set (not enough)', (): void => {
+            const userPermissions
+                = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.ManageChannels]);
+            command.hasAnyPermissions([setA, setB], userPermissions).should.be.false;
+        });
+    });
 });

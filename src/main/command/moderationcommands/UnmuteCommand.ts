@@ -16,7 +16,13 @@ export class UnmuteCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
+    /**
+     * Transitional: mods with the old Kick+Ban permission pair keep working, but Discord itself
+     * gates timeouts behind ModerateMembers. See ADR-0001.
+     */
     private permissions = new PermissionsBitField([PermissionFlagsBits.BanMembers, PermissionFlagsBits.KickMembers]);
+
+    private permissionsModerateMembers = new PermissionsBitField([PermissionFlagsBits.ModerateMembers]);
 
     public static COMMAND_USAGE = '**Usage:** @bot unmute userId [reason]';
 
@@ -33,7 +39,7 @@ export class UnmuteCommand extends Command {
 
     /**
      * This function executes the unmute command.
-     * It unmutes the user, updates the moderation logs and removes existing timeout.
+     * It unmutes the user, updates the moderation logs and removes existing timeout bookkeeping.
      *
      * @param  {CommandArgs} commandArgs
      * @returns CommandResult
@@ -44,7 +50,7 @@ export class UnmuteCommand extends Command {
         } = commandArgs;
 
         // Check for permissions first
-        if (!this.hasPermissions(this.permissions, memberPerms)) {
+        if (!this.hasAnyPermissions([this.permissions, this.permissionsModerateMembers], memberPerms)) {
             await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
@@ -55,30 +61,15 @@ export class UnmuteCommand extends Command {
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        // Check if mute role is set
-        const muteRoleId = ModDbUtils.getMuteRoleId(server.serverId);
-        if (muteRoleId === null) {
-            await messageReply({ embeds: [this.generateMuteRoleNotSet()] });
-            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
-        }
-
         const targetId = this.args[0].replace(/[<@!>]/g, '');
         let reason = this.args.slice(1).join(' ');
         if (reason.length > 512)
             reason = reason.substr(0, 512);
 
-        // Unmute, add the action and remove the timeout (if any)
+        // Unmute, add the action and remove the timeout bookkeeping (if any)
         try {
             const target = await members!.fetch(targetId);
-            const { roles } = target;
-
-            // Check if role does not exist on user
-            if (!roles.cache.some((x) => x.id === muteRoleId)) {
-                await messageReply({ embeds: [this.generateUserNotMutedEmbed()] });
-                return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
-            }
-
-            await roles.remove(muteRoleId);
+            await target.timeout(null, reason);
             ModDbUtils.addModerationAction(
                 server.serverId, userId!, targetId, this.type,
                 ModUtils.getUnixTime(), emit!, reason,
@@ -93,22 +84,6 @@ export class UnmuteCommand extends Command {
         }
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
-    }
-
-    private generateUserNotMutedEmbed(): EmbedBuilder {
-        return this.generateGenericEmbed(
-            UnmuteCommand.EMBED_TITLE,
-            'Target user is not muted.',
-            UnmuteCommand.EMBED_ERROR_COLOUR,
-        );
-    }
-
-    private generateMuteRoleNotSet(): EmbedBuilder {
-        return this.generateGenericEmbed(
-            UnmuteCommand.EMBED_TITLE,
-            'Mute role is not set for this server.',
-            UnmuteCommand.EMBED_ERROR_COLOUR,
-        );
     }
 
     private generateValidEmbed(username: string, reason: string): EmbedBuilder {
