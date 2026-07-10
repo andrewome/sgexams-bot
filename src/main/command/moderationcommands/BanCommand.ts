@@ -133,7 +133,7 @@ export class BanCommand extends Command {
 
         embed.addFields({ name: 'Reason', value: reason || '-', inline: true });
         embed.addFields({
-            name: 'Length', value: duration ? `${Math.floor(duration / 60)} minutes` : 'Permanent', inline: true,
+            name: 'Length', value: duration ? ModUtils.formatDuration(duration) : 'Permanent', inline: true,
         });
 
         return embed;

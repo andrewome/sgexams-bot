@@ -144,7 +144,7 @@ export class MuteCommand extends Command {
         );
 
         embed.addFields({ name: 'Reason', value: reason || '-', inline: true });
-        embed.addFields({ name: 'Length', value: `${Math.floor(duration / 60)} minutes`, inline: true });
+        embed.addFields({ name: 'Length', value: ModUtils.formatDuration(duration), inline: true });
 
         return embed;
     }

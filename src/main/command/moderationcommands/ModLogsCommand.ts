@@ -7,6 +7,7 @@ import { CommandResult } from '../classes/CommandResult';
 import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 import { ModLog } from '../../modules/moderation/classes/ModLog';
 import { ModActions } from '../../modules/moderation/classes/ModActions';
+import { ModUtils } from '../../modules/moderation/ModUtil';
 
 export class ModLogsCommand extends Command {
     public static readonly NAME = 'ModLogs';
@@ -182,7 +183,7 @@ export class ModLogsCommand extends Command {
                         Type: ${type}\n`;
             if (type === ModActions.BAN || type === ModActions.MUTE) {
                 desc += 'Length: ';
-                desc += timeout ? `${Math.floor((timeout / 60))} minutes` : 'Permanent';
+                desc += timeout ? ModUtils.formatDuration(timeout) : 'Permanent';
                 desc += '\n';
             }
             desc += `Date: ${dateString.substr(0, 21)}

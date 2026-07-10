@@ -23,6 +23,37 @@ export class ModUtils {
     public static readonly timers: Map<number, NodeJS.Timeout> = new Map();
 
     /**
+     * Formats a duration in seconds as a word-style string, eg. "3 days, 5 hours and 10
+     * minutes". Zero-valued larger units are omitted, eg. a 90 minute duration formats as
+     * "1 hour and 30 minutes", not "0 days, 1 hour and 30 minutes".
+     *
+     * @param  {number} totalSeconds
+     * @returns string
+     */
+    public static formatDuration(totalSeconds: number): string {
+        let remaining = totalSeconds;
+        const days = Math.floor(remaining / ModUtils.DAYS_IN_SECONDS);
+        remaining -= days * ModUtils.DAYS_IN_SECONDS;
+        const hours = Math.floor(remaining / ModUtils.HOURS_IN_SECONDS);
+        remaining -= hours * ModUtils.HOURS_IN_SECONDS;
+        const minutes = Math.floor(remaining / ModUtils.MINUTES_IN_SECONDS);
+
+        const pluralise = (value: number, unit: string): string => `${value} ${unit}${value === 1 ? '' : 's'}`;
+
+        const parts: string[] = [];
+        if (days > 0)
+            parts.push(pluralise(days, 'day'));
+        if (hours > 0)
+            parts.push(pluralise(hours, 'hour'));
+        if (minutes > 0 || parts.length === 0)
+            parts.push(pluralise(minutes, 'minute'));
+
+        if (parts.length === 1)
+            return parts[0];
+        return `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
+    }
+
+    /**
      * Parses a string in the form X{m|h|d} where X is an integer greater than 0.
      * Returns null if string is malformed, else number of seconds
      *
@@ -142,6 +173,8 @@ export class ModUtils {
                                 guildMemberManager: GuildMemberManager,
                                 emit: Function): NodeJS.Timeout {
         const callback = (): void => {
+            // Deliberately left as raw minutes - this is a developer-facing log line, not the
+            // user-facing reason text below, which uses ModUtils.formatDuration.
             const actualDuration = Math.floor((endTime - startTime) / 60);
             log.info(`Unbanning ${userId} after ${actualDuration} minutes timeout.`);
             // Unban member
@@ -158,7 +191,7 @@ export class ModUtils {
             ModUtils.removeTimeout(timerId);
 
             // Add unban entry to db
-            const reason = `Unban after ${actualDuration} minutes`;
+            const reason = `Unban after ${ModUtils.formatDuration(endTime - startTime)}`;
             ModDbUtils.addModerationAction(
                 serverId, botId, userId, ModActions.UNBAN, ModUtils.getUnixTime(), emit, reason,
             );
@@ -231,6 +264,8 @@ export class ModUtils {
                                  userId: string, serverId: string, botId: string,
                                  emit: Function): NodeJS.Timeout {
         const callback = (): void => {
+            // Deliberately left as raw minutes - this is a developer-facing log line, not the
+            // user-facing reason text below, which uses ModUtils.formatDuration.
             const actualDuration = Math.floor((endTime - startTime) / 60);
             log.info(`Recording auto-unmute for ${userId} after ${actualDuration} minutes timeout.`);
 
@@ -241,7 +276,7 @@ export class ModUtils {
             ModUtils.removeTimeout(timerId);
 
             // Add unmute entry to db
-            const reason = `Unmute after ${actualDuration} minutes`;
+            const reason = `Unmute after ${ModUtils.formatDuration(endTime - startTime)}`;
             ModDbUtils.addModerationAction(
                 serverId, botId, userId, ModActions.UNMUTE, ModUtils.getUnixTime(), emit, reason,
             );

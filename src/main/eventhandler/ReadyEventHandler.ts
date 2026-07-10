@@ -94,10 +94,10 @@ export class ReadyEventHandler extends EventHandler {
                                   members: GuildMemberManager): void {
         const emit = this.bot.emit.bind(this.bot);
         const botId = this.bot.user!.id;
-        const actualDuration = (endTime - startTime) / 60;
+        const formattedDuration = ModUtils.formatDuration(endTime - startTime);
         switch (type) {
             case ModActions.BAN: {
-                const reason = `Unban after ${actualDuration} minutes`;
+                const reason = `Unban after ${formattedDuration}`;
                 ModDbUtils.addModerationAction(
                     serverId, botId, userId, ModActions.UNBAN, curTime, emit, reason,
                 );
@@ -113,7 +113,7 @@ export class ReadyEventHandler extends EventHandler {
             case ModActions.MUTE: {
                 // Discord expires the member's timeout natively - this only needs to record
                 // the UNMUTE audit log entry, no Discord API call is needed.
-                const reason = `Unmute after ${actualDuration} minutes`;
+                const reason = `Unmute after ${formattedDuration}`;
                 ModDbUtils.addModerationAction(
                     serverId, botId, userId, ModActions.UNMUTE, curTime, emit, reason,
                 );

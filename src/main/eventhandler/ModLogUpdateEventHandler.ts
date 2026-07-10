@@ -5,6 +5,7 @@ import { ModLog } from '../modules/moderation/classes/ModLog';
 import { ModDbUtils } from '../modules/moderation/ModDbUtils';
 import { ModActions } from '../modules/moderation/classes/ModActions';
 import { Command } from '../command/Command';
+import { ModUtils } from '../modules/moderation/ModUtil';
 
 export class ModLogUpdateEventHandler extends EventHandler {
     private modLog: ModLog;
@@ -57,7 +58,7 @@ export class ModLogUpdateEventHandler extends EventHandler {
             embed.addFields({ name: 'Type', value: type, inline: true });
             embed.addFields({ name: 'Reason', value: reason || '-', inline: true });
             if (type === ModActions.MUTE || type === ModActions.BAN) {
-                const timeoutStr = timeout ? `${Math.floor((timeout / 60))} minutes` : 'Permanent';
+                const timeoutStr = timeout ? ModUtils.formatDuration(timeout) : 'Permanent';
                 embed.addFields({ name: 'Length', value: timeoutStr, inline: true });
             }
             embed.setTimestamp(timestamp * 1000);

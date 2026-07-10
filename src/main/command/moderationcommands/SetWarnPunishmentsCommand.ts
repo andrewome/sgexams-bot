@@ -147,7 +147,7 @@ export class SetWarnPunishmentsCommand extends Command {
         for (const setting of settings) {
             const [numWarns, action, duration] = setting;
             out += `${numWarns} warns - ${action} `;
-            out += (duration ? `${Math.floor(duration / 60)} minutes\n` : 'forever\n');
+            out += (duration ? `${ModUtils.formatDuration(duration)}\n` : 'forever\n');
         }
 
         return this.generateGenericEmbed(
