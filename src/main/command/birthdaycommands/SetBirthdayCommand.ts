@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -56,7 +56,7 @@ export class SetBirthdayCommand extends Command {
         return SUCCESSFUL_COMMANDRESULT;
     }
 
-    private generateInvalidEmbed(): MessageEmbed {
+    private generateInvalidEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             'Invalid birthday',
             'Please input a valid date in the format "DD/MM".',

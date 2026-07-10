@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, no-unused-expressions */
 import { should } from 'chai';
-import { Permissions, MessageEmbed, MessageOptions } from 'discord.js';
+import {
+    PermissionsBitField, PermissionFlagsBits, EmbedBuilder, MessageReplyOptions,
+} from 'discord.js';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
 import { StarboardGetEmojiCommand } from '../../../main/command/starboardcommands/StarboardGetEmojiCommand';
@@ -12,7 +14,7 @@ import { SimplifiedEmoji } from '../../../main/storage/StarboardSettings';
 
 should();
 
-const adminPerms = new Permissions(['ADMINISTRATOR']);
+const adminPerms = new PermissionsBitField([PermissionFlagsBits.Administrator]);
 const { EMBED_DEFAULT_COLOUR } = Command;
 const { EMBED_ERROR_COLOUR } = Command;
 const { EMOJI_NOT_SET } = StarboardGetEmojiCommand;
@@ -41,8 +43,8 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
     });
 
     it('No permission check', async (): Promise<void> => {
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
@@ -53,7 +55,7 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
         };
         const commandResult = await command.execute(commandArgs);
@@ -62,8 +64,8 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
         commandResult.shouldCheckMessage.should.be.true;
     });
     it('Emoji not set', async (): Promise<void> => {
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -85,8 +87,8 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
     it('1 emoji set', async (): Promise<void> => {
         const emoji = new SimplifiedEmoji('test', 'test');
         server.starboardSettings.addEmoji(serverId, emoji);
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -108,8 +110,8 @@ describe('GetStarboardChannelCommand class test suite', (): void => {
     it('2 emojis set', async (): Promise<void> => {
         server.starboardSettings.addEmoji(serverId, new SimplifiedEmoji('test1', 'test1'));
         server.starboardSettings.addEmoji(serverId, new SimplifiedEmoji('test2', 'test2'));
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);

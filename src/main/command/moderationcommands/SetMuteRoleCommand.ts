@@ -1,5 +1,5 @@
 import {
-    Permissions, MessageEmbed,
+    PermissionsBitField, PermissionFlagsBits, EmbedBuilder,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -22,7 +22,7 @@ export class SetMuteRoleCommand extends Command {
 
     private args: string[];
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     public constructor(args: string[]) {
         super();
@@ -46,7 +46,7 @@ export class SetMuteRoleCommand extends Command {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        let embed: MessageEmbed;
+        let embed: EmbedBuilder;
         // Check number of args, 0 args means reset.
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
@@ -77,7 +77,7 @@ export class SetMuteRoleCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateResetEmbed(): MessageEmbed {
+    private generateResetEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             SetMuteRoleCommand.EMBED_TITLE,
             SetMuteRoleCommand.ROLE_RESETTED,
@@ -90,7 +90,7 @@ export class SetMuteRoleCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateNotFoundEmbed(): MessageEmbed {
+    private generateNotFoundEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             SetMuteRoleCommand.EMBED_TITLE,
             SetMuteRoleCommand.ROLE_NOT_FOUND,
@@ -104,7 +104,7 @@ export class SetMuteRoleCommand extends Command {
      * @param  {string} channelId
      * @returns RichEmbed
      */
-    private generateValidEmbed(roleId: string): MessageEmbed {
+    private generateValidEmbed(roleId: string): EmbedBuilder {
         return this.generateGenericEmbed(
             SetMuteRoleCommand.EMBED_TITLE,
             `Mute Role set to <@&${roleId}>.`,

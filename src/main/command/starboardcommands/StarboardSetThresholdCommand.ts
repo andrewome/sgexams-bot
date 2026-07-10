@@ -1,4 +1,4 @@
-import { MessageEmbed, Permissions } from 'discord.js';
+import { EmbedBuilder, PermissionsBitField, PermissionFlagsBits } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -22,7 +22,7 @@ export class StarboardSetThresholdCommand extends Command {
 
     private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     private args: string[];
 
@@ -48,7 +48,7 @@ export class StarboardSetThresholdCommand extends Command {
         }
 
         // Execute
-        let embed: MessageEmbed;
+        let embed: EmbedBuilder;
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
             server.starboardSettings.setThreshold(server.serverId, null);
@@ -77,7 +77,7 @@ export class StarboardSetThresholdCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateResetEmbed(): MessageEmbed {
+    private generateResetEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             StarboardSetThresholdCommand.EMBED_TITLE,
             StarboardSetThresholdCommand.THRESHOLD_RESETTED,
@@ -90,7 +90,7 @@ export class StarboardSetThresholdCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateInvalidEmbed(): MessageEmbed {
+    private generateInvalidEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             StarboardSetThresholdCommand.EMBED_TITLE,
             StarboardSetThresholdCommand.NOT_AN_INTEGER,
@@ -104,7 +104,7 @@ export class StarboardSetThresholdCommand extends Command {
      * @param  {number} threshold
      * @returns RichEmbed
      */
-    private generateValidEmbed(threshold: number): MessageEmbed {
+    private generateValidEmbed(threshold: number): EmbedBuilder {
         return this.generateGenericEmbed(
             StarboardSetThresholdCommand.EMBED_TITLE,
             `Starboard threshold set to ${threshold}.`,

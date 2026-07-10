@@ -1,4 +1,4 @@
-import { Permissions, MessageEmbed } from 'discord.js';
+import { PermissionsBitField, PermissionFlagsBits, EmbedBuilder } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -18,7 +18,7 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_DEFAULT_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     private args: string[];
 
@@ -76,7 +76,7 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
      * @param  {boolean} bool
      * @returns RichEmbed
      */
-    private generateValidEmbed(bool: boolean): MessageEmbed {
+    private generateValidEmbed(bool: boolean): EmbedBuilder {
         return this.generateGenericEmbed(
             MsgCheckerSetDeleteMessageCommand.EMBED_TITLE,
             `Delete Message set to: **${bool ? 'TRUE' : 'FALSE'}**`,
@@ -89,7 +89,7 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateNoArgsEmbed(): MessageEmbed {
+    private generateNoArgsEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             MsgCheckerSetDeleteMessageCommand.EMBED_TITLE,
             MsgCheckerSetDeleteMessageCommand.NO_ARGUMENTS,
@@ -102,7 +102,7 @@ export class MsgCheckerSetDeleteMessageCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateWrongFormatEmbed(): MessageEmbed {
+    private generateWrongFormatEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             MsgCheckerSetDeleteMessageCommand.EMBED_TITLE,
             MsgCheckerSetDeleteMessageCommand.INCORRECT_FORMAT,

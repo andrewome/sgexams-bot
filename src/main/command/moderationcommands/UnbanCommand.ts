@@ -1,5 +1,5 @@
 import {
-    MessageEmbed, Permissions, DiscordAPIError,
+    EmbedBuilder, PermissionsBitField, PermissionFlagsBits, DiscordAPIError,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -16,7 +16,7 @@ export class UnbanCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.BanMembers]);
 
     public static COMMAND_USAGE = '**Usage:** @bot unban userId [reason]';
 
@@ -63,6 +63,10 @@ export class UnbanCommand extends Command {
         // Unban, add the action and remove the timeout (if any)
         try {
             const user = await members!.unban(targetId);
+            if (!user) {
+                await messageReply({ embeds: [this.generateInvalidUserIdEmbed()] });
+                return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+            }
             ModDbUtils.addModerationAction(
                 server.serverId, userId!, targetId, this.type,
                 ModUtils.getUnixTime(), emit!, reason,
@@ -79,16 +83,16 @@ export class UnbanCommand extends Command {
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
-    private generateValidEmbed(username: string, reason: string): MessageEmbed {
+    private generateValidEmbed(username: string, reason: string): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             UnbanCommand.EMBED_TITLE,
             `${username} was unbanned.`,
             UnbanCommand.EMBED_DEFAULT_COLOUR,
         );
-        return embed.addField('Reason', reason || '-');
+        return embed.addFields({ name: 'Reason', value: reason || '-' });
     }
 
-    private generateInsufficientArgumentsEmbed(): MessageEmbed {
+    private generateInsufficientArgumentsEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             UnbanCommand.EMBED_TITLE,
             `${UnbanCommand.INSUFFICIENT_ARGUMENTS}\n${UnbanCommand.COMMAND_USAGE}`,
@@ -96,7 +100,7 @@ export class UnbanCommand extends Command {
         );
     }
 
-    private generateInvalidUserIdEmbed(): MessageEmbed {
+    private generateInvalidUserIdEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             UnbanCommand.EMBED_TITLE,
             `${UnbanCommand.USERID_ERROR}\n${UnbanCommand.COMMAND_USAGE}`,

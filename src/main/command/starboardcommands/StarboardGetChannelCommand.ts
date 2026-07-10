@@ -1,4 +1,4 @@
-import { Permissions, MessageEmbed } from 'discord.js';
+import { PermissionsBitField, PermissionFlagsBits, EmbedBuilder } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -15,7 +15,7 @@ export class StarboardGetChannelCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     /**
      * This function executes the getchannel command
@@ -51,7 +51,7 @@ export class StarboardGetChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateNotSetEmbed(): MessageEmbed {
+    private generateNotSetEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             StarboardGetChannelCommand.EMBED_TITLE,
             StarboardGetChannelCommand.CHANNEL_NOT_SET,
@@ -65,7 +65,7 @@ export class StarboardGetChannelCommand extends Command {
      * @param  {string} channelId
      * @returns RichEmbed
      */
-    private generateValidEmbed(channelId: string): MessageEmbed {
+    private generateValidEmbed(channelId: string): EmbedBuilder {
         return this.generateGenericEmbed(
             StarboardGetChannelCommand.EMBED_TITLE,
             `Starboard Channel is currently set to <#${channelId}>.`,

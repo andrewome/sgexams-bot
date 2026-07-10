@@ -1,5 +1,5 @@
 import {
-    Permissions, MessageEmbed,
+    PermissionsBitField, PermissionFlagsBits, EmbedBuilder,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -18,7 +18,7 @@ export class SetWarnPunishmentsCommand extends Command {
 
     private args: string[];
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     public static COMMAND_USAGE = '**Usage:** @bot SetWarnPunishments [numWarns-{MUTE|BAN}[-X{m|h|d}] ...]';
 
@@ -137,7 +137,7 @@ export class SetWarnPunishmentsCommand extends Command {
         return out;
     }
 
-    private generateValidEmbed(settings: [number, ModActions, number|null][]): MessageEmbed {
+    private generateValidEmbed(settings: [number, ModActions, number|null][]): EmbedBuilder {
         let out = '';
         for (const setting of settings) {
             const [numWarns, action, duration] = setting;
@@ -152,7 +152,7 @@ export class SetWarnPunishmentsCommand extends Command {
         );
     }
 
-    private generateResetEmbed(): MessageEmbed {
+    private generateResetEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             SetWarnPunishmentsCommand.EMBED_TITLE,
             `${SetWarnPunishmentsCommand.SETTINGS_RESETTED}\n${SetWarnPunishmentsCommand.COMMAND_USAGE}`,
@@ -160,7 +160,7 @@ export class SetWarnPunishmentsCommand extends Command {
         );
     }
 
-    private generateInvalidUsageEmbed(): MessageEmbed {
+    private generateInvalidUsageEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             SetWarnPunishmentsCommand.EMBED_TITLE,
             `${SetWarnPunishmentsCommand.INVALID_USAGE}\n${SetWarnPunishmentsCommand.COMMAND_USAGE}`,

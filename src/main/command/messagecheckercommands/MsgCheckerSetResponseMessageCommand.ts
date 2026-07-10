@@ -1,4 +1,4 @@
-import { Permissions, MessageEmbed } from 'discord.js';
+import { PermissionsBitField, PermissionFlagsBits, EmbedBuilder } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -18,7 +18,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     private args: string[];
 
@@ -43,7 +43,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        let embed: MessageEmbed;
+        let embed: EmbedBuilder;
 
         // Check if no args
         if (this.args.length === 0) {
@@ -76,7 +76,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateResetEmbed(): MessageEmbed {
+    private generateResetEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             MsgCheckerSetResponseMessageCommand.EMBED_TITLE,
             MsgCheckerSetResponseMessageCommand.MESSAGE_RESETTED,
@@ -91,7 +91,7 @@ export class MsgCheckerSetResponseMessageCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateValidEmbed(msg: string): MessageEmbed {
+    private generateValidEmbed(msg: string): EmbedBuilder {
         return this.generateGenericEmbed(
             MsgCheckerSetResponseMessageCommand.EMBED_TITLE,
             `Response Message set to ${msg}`,

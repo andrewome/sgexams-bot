@@ -5,7 +5,7 @@ export function getLastAnnouncedDate(
 ): { day: number; month: number; year: number } {
     const db = DatabaseConnection.connect();
     const res = db
-        .prepare(
+        .prepare<unknown[], { lastAnnouncedDay: number; lastAnnouncedMonth: number; lastAnnouncedYear: number }>(
             `SELECT lastAnnouncedDay, lastAnnouncedMonth, lastAnnouncedYear
                     FROM birthdaySettings
                     WHERE serverId = ?`,
@@ -22,7 +22,7 @@ export function getLastAnnouncedDate(
 export function getBirthdayChannelId(serverId: string): string | undefined {
     const db = DatabaseConnection.connect();
     const channelId = db
-        .prepare('SELECT channelId FROM birthdaySettings WHERE serverId = ?')
+        .prepare<unknown[], { channelId: string }>('SELECT channelId FROM birthdaySettings WHERE serverId = ?')
         .get(serverId);
     db.close();
     return channelId?.channelId;
@@ -52,7 +52,7 @@ export function getUserIdsWithBirthday(
 ): string[] {
     const db = DatabaseConnection.connect();
     const userIds = db
-        .prepare(
+        .prepare<unknown[], { userId: string }>(
             'SELECT userId FROM birthdays WHERE serverId=? AND day=? AND month=?',
         )
         .all(serverId, day, month);

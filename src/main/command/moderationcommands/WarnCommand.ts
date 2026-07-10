@@ -1,5 +1,5 @@
 import {
-    GuildMember, MessageEmbed, Permissions, DiscordAPIError, GuildMemberManager,
+    GuildMember, EmbedBuilder, PermissionsBitField, PermissionFlagsBits, DiscordAPIError, GuildMemberManager,
 } from 'discord.js';
 import log from 'loglevel';
 import { Command } from '../Command';
@@ -19,7 +19,7 @@ export class WarnCommand extends Command {
 
     private args: string[];
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     public static COMMAND_USAGE = '**Usage:** @bot warn userId [reason]';
 
@@ -149,7 +149,7 @@ export class WarnCommand extends Command {
         }
     }
 
-    private generateUserIdError(): MessageEmbed {
+    private generateUserIdError(): EmbedBuilder {
         return this.generateGenericEmbed(
             WarnCommand.EMBED_TITLE,
             `${WarnCommand.USERID_ERROR}\n${WarnCommand.COMMAND_USAGE}`,
@@ -157,7 +157,7 @@ export class WarnCommand extends Command {
         );
     }
 
-    private generateInsufficientArgumentsEmbed(): MessageEmbed {
+    private generateInsufficientArgumentsEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             WarnCommand.EMBED_TITLE,
             `${WarnCommand.INSUFFICIENT_ARGUMENTS}\n${WarnCommand.COMMAND_USAGE}`,
@@ -165,12 +165,12 @@ export class WarnCommand extends Command {
         );
     }
 
-    private generateValidEmbed(target: GuildMember, reason: string): MessageEmbed {
+    private generateValidEmbed(target: GuildMember, reason: string): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             WarnCommand.EMBED_TITLE,
             `${target.user.tag} was warned.`,
             WarnCommand.EMBED_DEFAULT_COLOUR,
         );
-        return embed.addField('Reason', reason || '-');
+        return embed.addFields({ name: 'Reason', value: reason || '-' });
     }
 }

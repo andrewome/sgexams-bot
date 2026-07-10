@@ -1,4 +1,4 @@
-import { Permissions, MessageEmbed } from 'discord.js';
+import { PermissionsBitField, PermissionFlagsBits, EmbedBuilder } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { SimplifiedEmoji } from '../../storage/StarboardSettings';
@@ -16,7 +16,7 @@ export class StarboardGetEmojiCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     /**
      * This function executes the getchannel command
@@ -52,7 +52,7 @@ export class StarboardGetEmojiCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateNotSetEmbed(): MessageEmbed {
+    private generateNotSetEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             StarboardGetEmojiCommand.EMBED_TITLE,
             StarboardGetEmojiCommand.EMOJI_NOT_SET,
@@ -65,7 +65,7 @@ export class StarboardGetEmojiCommand extends Command {
      *
      * @param  {SimplifiedEmoji} emoji
      */
-    private generateValidEmbed(emojis: SimplifiedEmoji[]): MessageEmbed {
+    private generateValidEmbed(emojis: SimplifiedEmoji[]): EmbedBuilder {
         let msg = '';
         for (let i = 0; i < emojis.length; i++) {
             msg += `<:${emojis[i].name}:${emojis[i].id}>`;

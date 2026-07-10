@@ -1,6 +1,6 @@
 import {
-    MessageManager, ChannelLogsQueryOptions, Message, Permissions, TextChannel, Channel,
-    MessageEmbed,
+    MessageManager, FetchMessagesOptions, Message, PermissionsBitField, PermissionFlagsBits, TextChannel,
+    ThreadChannel, EmbedBuilder,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -16,7 +16,7 @@ export class PurgeCommand extends Command {
     /** CheckMessage: false */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false);
 
-    private permissions = new Permissions(['MANAGE_MESSAGES']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.ManageMessages]);
 
     public static MSG_LIMIT = 5000;
 
@@ -85,7 +85,7 @@ export class PurgeCommand extends Command {
      * @returns Promise<number> Number of messages successfully deleted
      */
     private async bulkDeleteMessages(userId: string|null, collectedMessages: Message[],
-                                     channel: Channel, sentMessage: Message): Promise<number> {
+                                     channel: TextChannel | ThreadChannel, sentMessage: Message): Promise<number> {
 
         await sentMessage.edit({ embeds: [this.generateEmbed('Deleting messages...')] });
 
@@ -126,7 +126,7 @@ export class PurgeCommand extends Command {
 
         // eslint-disable-next-line no-constant-condition
         while (true) {
-            const options: ChannelLogsQueryOptions = { limit: 100, before: lastId };
+            const options: FetchMessagesOptions = { limit: 100, before: lastId };
 
             // eslint-disable-next-line no-await-in-loop
             const messages = await messageManager.fetch(options);
@@ -157,7 +157,7 @@ export class PurgeCommand extends Command {
         return collectedMessages;
     }
 
-    private generateInsufficientArgumentsEmbed(): MessageEmbed {
+    private generateInsufficientArgumentsEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             PurgeCommand.EMBED_TITLE,
             `${PurgeCommand.INSUFFICIENT_ARGUMENTS}\n${PurgeCommand.COMMAND_USAGE}`,
@@ -165,7 +165,7 @@ export class PurgeCommand extends Command {
         );
     }
 
-    private generateInvalidLimitEmbed(): MessageEmbed {
+    private generateInvalidLimitEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             PurgeCommand.EMBED_TITLE,
             `${PurgeCommand.ERROR_MESSAGE_INVALID_LIMIT}\n${PurgeCommand.COMMAND_USAGE}`,
@@ -173,7 +173,7 @@ export class PurgeCommand extends Command {
         );
     }
 
-    private generateEmbed(message: string): MessageEmbed {
+    private generateEmbed(message: string): EmbedBuilder {
         return this.generateGenericEmbed(
             PurgeCommand.EMBED_TITLE,
             message,

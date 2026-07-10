@@ -1,4 +1,4 @@
-import { Permissions, MessageEmbed } from 'discord.js';
+import { PermissionsBitField, PermissionFlagsBits, EmbedBuilder } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -17,7 +17,7 @@ export class StarboardRemoveEmojiCommand extends Command {
 
     private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     private args: string[];
 
@@ -44,7 +44,7 @@ export class StarboardRemoveEmojiCommand extends Command {
         }
 
         // Check if there's arguments
-        let embed: MessageEmbed;
+        let embed: EmbedBuilder;
         if (this.args.length === 0) {
             embed = this.generateGenericEmbed(
                 StarboardRemoveEmojiCommand.ERROR_EMBED_TITLE,

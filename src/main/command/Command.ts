@@ -1,5 +1,5 @@
 import {
-    Permissions, MessageEmbed, ColorResolvable,
+    PermissionsBitField, EmbedBuilder, ColorResolvable,
 } from 'discord.js';
 import { CommandResult } from './classes/CommandResult';
 import { CommandArgs } from './classes/CommandArgs';
@@ -38,13 +38,13 @@ export abstract class Command {
     /**
      * This function checks if a given guildmember has the permissions required
      *
-     * @param  {Permissions} commandPermissions Permissions of the command
-     * @param  {Permissions} userPermissions Permissions of the user
+     * @param  {PermissionsBitField} commandPermissions PermissionsBitField of the command
+     * @param  {PermissionsBitField} userPermissions PermissionsBitField of the user
      * @returns boolean
      */
     public hasPermissions(
-        commandPermissions: Permissions,
-        userPermissions: Readonly<Permissions>,
+        commandPermissions: PermissionsBitField,
+        userPermissions: Readonly<PermissionsBitField>,
     ): boolean {
         // Check if user permissions exist inside command permissions
         if (!userPermissions.has(commandPermissions)) {
@@ -74,11 +74,11 @@ export abstract class Command {
      * @param  {string} title
      * @param  {string} message
      * @param  {string} colour
-     * @returns MessageEmbed
+     * @returns EmbedBuilder
      */
-    protected generateGenericEmbed(title: string, message: string, colour: ColorResolvable): MessageEmbed {
-        const embed = new MessageEmbed();
-        embed.setColor(colour).addField(title, message);
+    protected generateGenericEmbed(title: string, message: string, colour: ColorResolvable): EmbedBuilder {
+        const embed = new EmbedBuilder();
+        embed.setColor(colour).addFields({ name: title, value: message });
         return embed;
     }
 }

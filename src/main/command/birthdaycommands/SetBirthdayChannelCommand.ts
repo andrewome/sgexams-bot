@@ -1,4 +1,6 @@
-import { Permissions, MessageEmbed, TextChannel } from 'discord.js';
+import {
+    PermissionsBitField, PermissionFlagsBits, EmbedBuilder, TextChannel,
+} from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -26,7 +28,7 @@ export class SetBirthdayChannelCommand extends Command {
 
     private args: string[];
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     public constructor(args: string[]) {
         super();
@@ -50,7 +52,7 @@ export class SetBirthdayChannelCommand extends Command {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        let embed: MessageEmbed;
+        let embed: EmbedBuilder;
         // Check number of args, 0 args means reset.
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
@@ -92,7 +94,7 @@ export class SetBirthdayChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateResetEmbed(): MessageEmbed {
+    private generateResetEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             EMBED_TITLE,
             CHANNEL_RESETTED,
@@ -105,7 +107,7 @@ export class SetBirthdayChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateNotFoundEmbed(): MessageEmbed {
+    private generateNotFoundEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             EMBED_TITLE,
             CHANNEL_NOT_FOUND,
@@ -118,7 +120,7 @@ export class SetBirthdayChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateNotTextChannelEmbed(): MessageEmbed {
+    private generateNotTextChannelEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             EMBED_TITLE,
             NOT_TEXT_CHANNEL,
@@ -132,7 +134,7 @@ export class SetBirthdayChannelCommand extends Command {
      * @param  {string} channelId
      * @returns RichEmbed
      */
-    private generateValidEmbed(channelId: string): MessageEmbed {
+    private generateValidEmbed(channelId: string): EmbedBuilder {
         return this.generateGenericEmbed(
             EMBED_TITLE,
             `Birthday Channel set to <#${channelId}>.`,

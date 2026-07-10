@@ -1,4 +1,4 @@
-import { Permissions, MessageEmbed } from 'discord.js';
+import { PermissionsBitField, PermissionFlagsBits, EmbedBuilder } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -16,7 +16,7 @@ export class StarboardGetThresholdCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     /**
      * This function executes the getchannel command
@@ -50,7 +50,7 @@ export class StarboardGetThresholdCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateNotSetEmbed(): MessageEmbed {
+    private generateNotSetEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             StarboardGetThresholdCommand.EMBED_TITLE,
             StarboardGetThresholdCommand.THRESHOLD_NOT_SET,
@@ -64,7 +64,7 @@ export class StarboardGetThresholdCommand extends Command {
      * @param  {number} threshold
      * @returns RichEmbed
      */
-    private generateValidEmbed(threshold: number): MessageEmbed {
+    private generateValidEmbed(threshold: number): EmbedBuilder {
         return this.generateGenericEmbed(
             StarboardGetThresholdCommand.EMBED_TITLE,
             `The emoji threshold is currently ${threshold}.`,

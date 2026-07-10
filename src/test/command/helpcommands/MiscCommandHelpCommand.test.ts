@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import { should } from 'chai';
-import { MessageOptions, Permissions } from 'discord.js';
+import { MessageReplyOptions, PermissionsBitField, EmbedBuilder } from 'discord.js';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
@@ -25,8 +25,8 @@ beforeEach((): void => {
 
 describe('MiscHelp Command Test Suite', (): void => {
     it('Execute test', async (): Promise<void> => {
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -42,7 +42,7 @@ describe('MiscHelp Command Test Suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
         };
         const commandResult = await command.execute(commandArgs);

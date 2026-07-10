@@ -1,4 +1,4 @@
-import { Permissions, MessageEmbed } from 'discord.js';
+import { PermissionsBitField, PermissionFlagsBits, EmbedBuilder } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -15,7 +15,7 @@ export class MsgCheckerListWordsCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     /**
      * This function executes the list words command.
@@ -37,7 +37,7 @@ export class MsgCheckerListWordsCommand extends Command {
         const bannedWords = server.messageCheckerSettings.getBannedWords();
         bannedWords.sort();
 
-        let embed: MessageEmbed;
+        let embed: EmbedBuilder;
         if (bannedWords.length === 0) {
             embed = this.generateGenericEmbed(
                 MsgCheckerListWordsCommand.EMBED_TITLE,

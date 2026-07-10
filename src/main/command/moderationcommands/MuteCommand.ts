@@ -1,5 +1,5 @@
 import {
-    GuildMember, MessageEmbed, Permissions, DiscordAPIError,
+    GuildMember, EmbedBuilder, PermissionsBitField, PermissionFlagsBits, DiscordAPIError,
 } from 'discord.js';
 import log from 'loglevel';
 import { Command } from '../Command';
@@ -17,7 +17,7 @@ export class MuteCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['BAN_MEMBERS', 'KICK_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.BanMembers, PermissionFlagsBits.KickMembers]);
 
     public static EMBED_TITLE = 'Mute Member';
 
@@ -114,7 +114,7 @@ export class MuteCommand extends Command {
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
-    private generateUserAlreadyMutedEmbed(): MessageEmbed {
+    private generateUserAlreadyMutedEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             MuteCommand.EMBED_TITLE,
             'Target user already muted.',
@@ -122,7 +122,7 @@ export class MuteCommand extends Command {
         );
     }
 
-    private generateMuteRoleNotSet(): MessageEmbed {
+    private generateMuteRoleNotSet(): EmbedBuilder {
         return this.generateGenericEmbed(
             MuteCommand.EMBED_TITLE,
             'Mute role is not set for this server.',
@@ -130,7 +130,7 @@ export class MuteCommand extends Command {
         );
     }
 
-    private generateUserIdErrorEmbed(): MessageEmbed {
+    private generateUserIdErrorEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             MuteCommand.EMBED_TITLE,
             `${MuteCommand.USERID_ERROR}\n${MuteCommand.COMMAND_USAGE}`,
@@ -139,20 +139,22 @@ export class MuteCommand extends Command {
     }
 
     private generateValidEmbed(target: GuildMember, reason: string,
-                               duration: number|null): MessageEmbed {
+                               duration: number|null): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             MuteCommand.EMBED_TITLE,
             `${target.user.tag} was muted.`,
             MuteCommand.EMBED_DEFAULT_COLOUR,
         );
 
-        embed.addField('Reason', reason || '-', true);
-        embed.addField('Length', duration ? `${Math.floor(duration / 60)} minutes` : 'Permanent', true);
+        embed.addFields({ name: 'Reason', value: reason || '-', inline: true });
+        embed.addFields({
+            name: 'Length', value: duration ? `${Math.floor(duration / 60)} minutes` : 'Permanent', inline: true,
+        });
 
         return embed;
     }
 
-    private generateInsufficientArgumentsEmbed(): MessageEmbed {
+    private generateInsufficientArgumentsEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             MuteCommand.EMBED_TITLE,
             `${MuteCommand.INSUFFICIENT_ARGUMENTS}\n${MuteCommand.COMMAND_USAGE}`,

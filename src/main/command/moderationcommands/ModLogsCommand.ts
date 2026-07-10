@@ -1,5 +1,5 @@
 import {
-    Permissions, MessageEmbed, MessageReaction, User, Message,
+    PermissionsBitField, PermissionFlagsBits, EmbedBuilder, MessageReaction, User, Message,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -24,7 +24,7 @@ export class ModLogsCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT = new CommandResult(true);
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     private ERROR_MESSAGE = this.generateGenericEmbed(
         ModLogsCommand.EMBED_TITLE,
@@ -89,7 +89,7 @@ export class ModLogsCommand extends Command {
 
         // Display a special message if there are no mod logs
         if (modLogs.length === 0) {
-            const embed = new MessageEmbed();
+            const embed = new EmbedBuilder();
             embed.setTitle('Mod logs is empty');
             await messageReply({ embeds: [embed] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
@@ -99,7 +99,7 @@ export class ModLogsCommand extends Command {
         let curStartIdx = 0;
 
         // Send the initial message
-        let embed: MessageEmbed;
+        let embed: EmbedBuilder;
         try {
             embed = this.generateEmbed(modLogs, curStartIdx, endStartIdx);
         } catch (_) {
@@ -167,9 +167,9 @@ export class ModLogsCommand extends Command {
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
-    private generateEmbed(modLogs: ModLog[], startIdx: number, maxPages: number): MessageEmbed {
+    private generateEmbed(modLogs: ModLog[], startIdx: number, maxPages: number): EmbedBuilder {
         const endIdx = Math.min(startIdx + ModLogsCommand.PAGE_SIZE, modLogs.length);
-        const embed = new MessageEmbed();
+        const embed = new EmbedBuilder();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
         embed.setTitle(`ModLogs Page ${startIdx / ModLogsCommand.PAGE_SIZE + 1} of ${maxPages}`);
         for (let i = startIdx; i < endIdx; ++i) {
@@ -189,7 +189,7 @@ export class ModLogsCommand extends Command {
                      Reason: ${reason || '-'}`;
             if (desc.length > 1024)
                 desc = desc.substr(0, 1024);
-            embed.addField(`Case #${caseId}`, desc);
+            embed.addFields({ name: `Case #${caseId}`, value: desc });
         }
         return embed;
     }

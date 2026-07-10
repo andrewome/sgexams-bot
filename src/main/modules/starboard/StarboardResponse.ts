@@ -1,5 +1,5 @@
 import {
-    MessageReaction, TextChannel, MessageAttachment, MessageEmbed, Collection,
+    MessageReaction, TextChannel, Attachment, Embed, EmbedBuilder, EmbedType, Collection,
 } from 'discord.js';
 import { StarboardSettings } from '../../storage/StarboardSettings';
 
@@ -24,9 +24,9 @@ export class StarboardResponse {
     public async addToStarboard(numberOfReacts: number): Promise<void> {
         // This function handles attaching of images to the embed
         const handleAttachmentAndEmbeds
-            = (embed: MessageEmbed,
-               embeds: MessageEmbed[],
-               attachments: Collection <string, MessageAttachment>): void => {
+            = (embed: EmbedBuilder,
+               embeds: Embed[],
+               attachments: Collection <string, Attachment>): void => {
 
                 // Check embeds for image
                 if (embeds.length > 0) {
@@ -35,7 +35,7 @@ export class StarboardResponse {
 
                     // We're using thumbnail url here because instagram and imgur.
                     // Still works though!
-                    if (msgEmbed.type === 'image' && thumbnail) {
+                    if (msgEmbed.data.type === EmbedType.Image && thumbnail) {
                         embed.setImage(thumbnail.url);
                     }
                 }
@@ -52,7 +52,7 @@ export class StarboardResponse {
                         embed.setImage(url);
                     } else {
                         // It is an attachment that is not an image, send as attachment.
-                        embed.addField('Attachment', `[${name}](${url})`, false);
+                        embed.addFields({ name: 'Attachment', value: `[${name}](${url})`, inline: false });
                     }
                 }
             };
@@ -79,9 +79,9 @@ export class StarboardResponse {
         else
             username = `${nickname}, aka ${tag}`;
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor(StarboardResponse.EMBED_COLOUR)
-            .setAuthor(`${username}`, message.author!.avatarURL()!)
+            .setAuthor({ name: `${username}`, iconURL: message.author!.avatarURL()! })
             .setTimestamp(message.createdTimestamp)
             .setDescription(content!);
 
@@ -90,7 +90,7 @@ export class StarboardResponse {
 
         // Continue with rest of fields
         const details = `**[Message Link](${url})**`;
-        embed.addField('Original', details);
+        embed.addFields({ name: 'Original', value: details });
 
         const outputMsg
             = `**${numberOfReacts}** <:${emoji.name}:${emoji.id}> **In:** ${channel} **ID:** ${id}`;

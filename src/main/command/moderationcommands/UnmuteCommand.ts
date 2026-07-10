@@ -1,5 +1,5 @@
 import {
-    MessageEmbed, Permissions, DiscordAPIError,
+    EmbedBuilder, PermissionsBitField, PermissionFlagsBits, DiscordAPIError,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -16,7 +16,7 @@ export class UnmuteCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['BAN_MEMBERS', 'KICK_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.BanMembers, PermissionFlagsBits.KickMembers]);
 
     public static COMMAND_USAGE = '**Usage:** @bot unmute userId [reason]';
 
@@ -95,7 +95,7 @@ export class UnmuteCommand extends Command {
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
-    private generateUserNotMutedEmbed(): MessageEmbed {
+    private generateUserNotMutedEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             UnmuteCommand.EMBED_TITLE,
             'Target user is not muted.',
@@ -103,7 +103,7 @@ export class UnmuteCommand extends Command {
         );
     }
 
-    private generateMuteRoleNotSet(): MessageEmbed {
+    private generateMuteRoleNotSet(): EmbedBuilder {
         return this.generateGenericEmbed(
             UnmuteCommand.EMBED_TITLE,
             'Mute role is not set for this server.',
@@ -111,16 +111,16 @@ export class UnmuteCommand extends Command {
         );
     }
 
-    private generateValidEmbed(username: string, reason: string): MessageEmbed {
+    private generateValidEmbed(username: string, reason: string): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             UnmuteCommand.EMBED_TITLE,
             `${username} was unmuted.`,
             UnmuteCommand.EMBED_DEFAULT_COLOUR,
         );
-        return embed.addField('Reason', reason || '-');
+        return embed.addFields({ name: 'Reason', value: reason || '-' });
     }
 
-    private generateInsufficientArgumentsEmbed(): MessageEmbed {
+    private generateInsufficientArgumentsEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             UnmuteCommand.EMBED_TITLE,
             `${UnmuteCommand.INSUFFICIENT_ARGUMENTS}\n${UnmuteCommand.COMMAND_USAGE}`,
@@ -128,7 +128,7 @@ export class UnmuteCommand extends Command {
         );
     }
 
-    private generateInvalidUserIdEmbed(): MessageEmbed {
+    private generateInvalidUserIdEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             UnmuteCommand.EMBED_TITLE,
             `${UnmuteCommand.USERID_ERROR}\n${UnmuteCommand.COMMAND_USAGE}`,

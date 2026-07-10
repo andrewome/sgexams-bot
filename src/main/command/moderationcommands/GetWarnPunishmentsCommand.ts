@@ -1,5 +1,5 @@
 import {
-    Permissions, MessageEmbed,
+    PermissionsBitField, PermissionFlagsBits, EmbedBuilder,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -19,7 +19,7 @@ export class GetWarnPunishmentsCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     /**
      * This function gets the warn-actions from the database
@@ -56,7 +56,7 @@ export class GetWarnPunishmentsCommand extends Command {
      * @returns void
      */
     private generateEmbed(rows: { numWarns: number; type: ModActions;
-                                  duration: number|null; }[]): MessageEmbed {
+                                  duration: number|null; }[]): EmbedBuilder {
         let out = '';
         for (const row of rows) {
             const { numWarns, type, duration } = row;
@@ -70,7 +70,7 @@ export class GetWarnPunishmentsCommand extends Command {
         );
     }
 
-    private generateNoSettingsFoundEmbed(): MessageEmbed {
+    private generateNoSettingsFoundEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             GetWarnPunishmentsCommand.EMBED_TITLE,
             GetWarnPunishmentsCommand.NO_SETTINGS_FOUND,

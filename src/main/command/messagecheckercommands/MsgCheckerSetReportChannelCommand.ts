@@ -1,5 +1,5 @@
 import {
-    Permissions, MessageEmbed, TextChannel,
+    PermissionsBitField, PermissionFlagsBits, EmbedBuilder, TextChannel,
 } from 'discord.js';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -26,7 +26,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_DEFAULT_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     private args: string[];
 
@@ -54,7 +54,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
         }
 
         // Execute
-        let embed: MessageEmbed;
+        let embed: EmbedBuilder;
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
             server.messageCheckerSettings.setReportingChannelId(
@@ -100,7 +100,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateResetEmbed(): MessageEmbed {
+    private generateResetEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             MsgCheckerSetReportChannelCommand.EMBED_TITLE,
             MsgCheckerSetReportChannelCommand.CHANNEL_RESETTED,
@@ -113,7 +113,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateInvalidEmbed(): MessageEmbed {
+    private generateInvalidEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             MsgCheckerSetReportChannelCommand.EMBED_TITLE,
             MsgCheckerSetReportChannelCommand.CHANNEL_NOT_FOUND,
@@ -126,7 +126,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
      *
      * @returns RichEmbed
      */
-    private generateNotTextChannelEmbed(): MessageEmbed {
+    private generateNotTextChannelEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             MsgCheckerSetReportChannelCommand.EMBED_TITLE,
             MsgCheckerSetReportChannelCommand.NOT_TEXT_CHANNEL,
@@ -140,7 +140,7 @@ export class MsgCheckerSetReportChannelCommand extends Command {
      * @param  {string} channelId
      * @returns RichEmbed
      */
-    private generateValidEmbed(channelId: string): MessageEmbed {
+    private generateValidEmbed(channelId: string): EmbedBuilder {
         return this.generateGenericEmbed(
             MsgCheckerSetReportChannelCommand.EMBED_TITLE,
             `Reporting Channel set to <#${channelId}>.`,

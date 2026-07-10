@@ -3,7 +3,7 @@ import { Database } from 'better-sqlite3';
 import { Server } from './Server';
 import { DatabaseConnection } from '../DatabaseConnection';
 import { MessageCheckerSettingsObj, MessageCheckerSettings } from './MessageCheckerSettings';
-import { StarboardSettingsObj, StarboardSettings } from './StarboardSettings';
+import { StarboardSettingsObj, StarboardSettings, SimplifiedEmojiObj } from './StarboardSettings';
 
 /** This represents all the servers that the bot is keeping track of */
 export class Storage {
@@ -24,7 +24,7 @@ export class Storage {
         const db = DatabaseConnection.connect();
 
         // Retrieve servers from the DB
-        const selectServers = db.prepare('SELECT * FROM servers');
+        const selectServers = db.prepare<unknown[], { serverId: string }>('SELECT * FROM servers');
         const servers = selectServers.all();
 
         for (const { serverId } of servers) {
@@ -95,25 +95,25 @@ export class Storage {
     private getStarboardSettingsFromDb(db: Database,
                                        serverId: string): StarboardSettingsObj {
         // Retrieve settings and emojis from the DB
-        const selectSettings = db.prepare(
+        const selectSettings = db.prepare<unknown[], { channel: string; threshold: number }>(
             `SELECT * FROM starboardSettings WHERE serverId = ${serverId}`,
         );
-        const selectEmojis = db.prepare(
+        const selectEmojis = db.prepare<unknown[], { id: string; name: string }>(
             `SELECT * FROM starboardEmojis WHERE serverId = ${serverId}`,
         );
-        const starboardSettings = selectSettings.get();
+        const starboardSettings = selectSettings.get()!;
         const starboardEmojis = selectEmojis.all();
 
         // Merge emojis with the main starboardSettings object
-        starboardSettings.emojis = [];
+        const emojis: SimplifiedEmojiObj[] = [];
         for (const emoji of starboardEmojis) {
-            starboardSettings.emojis.push({
+            emojis.push({
                 id: emoji.id,
                 name: emoji.name,
             });
         }
 
-        return starboardSettings;
+        return { ...starboardSettings, emojis };
     }
 
     /**
@@ -127,22 +127,24 @@ export class Storage {
     private getMessageCheckerSettingsFromDb(db: Database,
                                             serverId: string): MessageCheckerSettingsObj {
         // Retrieve settings and banned words from the DB
-        const selectSettings = db.prepare(
+        const selectSettings = db.prepare<unknown[], {
+            reportingChannelId: string | null; responseMessage: string | null; deleteMessage: number | null;
+        }>(
             `SELECT * FROM messageCheckerSettings WHERE serverId = ${serverId}`,
         );
-        const selectBannedWords = db.prepare(
+        const selectBannedWords = db.prepare<unknown[], { word: string }>(
             `SELECT * FROM messageCheckerBannedWords WHERE serverId = ${serverId}`,
         );
-        const messageCheckerSettings = selectSettings.get();
+        const messageCheckerSettings = selectSettings.get()!;
         const messageCheckerBannedWords = selectBannedWords.all();
 
         // Merge banned words with the main messageCheckerSettings object
-        messageCheckerSettings.bannedWords = [];
+        const bannedWords: string[] = [];
         for (const bannedWord of messageCheckerBannedWords) {
-            messageCheckerSettings.bannedWords.push(bannedWord.word);
+            bannedWords.push(bannedWord.word);
         }
 
-        return messageCheckerSettings;
+        return { ...messageCheckerSettings, bannedWords } as unknown as MessageCheckerSettingsObj;
     }
 
     /**

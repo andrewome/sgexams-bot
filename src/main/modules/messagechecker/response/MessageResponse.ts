@@ -1,4 +1,4 @@
-import { Message, TextChannel, MessageEmbed } from 'discord.js';
+import { Message, TextChannel, EmbedBuilder } from 'discord.js';
 import log from 'loglevel';
 import { MessageCheckerResult } from '../classes/MessageCheckerResult';
 
@@ -74,18 +74,18 @@ export class MessageResponse {
         }
 
         // Make embed
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor(this.EMBED_COLOUR)
-            .setAuthor(`${offenderStr} said...`, avatarUrl!)
+            .setAuthor({ name: `${offenderStr} said...`, iconURL: avatarUrl! })
             .setTimestamp();
 
         // Add contents
         embed.setDescription(content);
 
         // Continue with rest of fields
-        embed.addField(this.REPORT, report, false)
-            .addField(this.WORDS_USED, `${this.CODE_BLOCK}${words}${this.CODE_BLOCK}`, true)
-            .addField(this.CONTEXT, `${this.CODE_BLOCK}${contexts}${this.CODE_BLOCK}`, true);
+        embed.addFields({ name: this.REPORT, value: report, inline: false })
+            .addFields({ name: this.WORDS_USED, value: `${this.CODE_BLOCK}${words}${this.CODE_BLOCK}`, inline: true })
+            .addFields({ name: this.CONTEXT, value: `${this.CODE_BLOCK}${contexts}${this.CODE_BLOCK}`, inline: true });
 
         const reportingChannel = this.message.guild!.channels.resolve(reportingChannelId)!;
         (reportingChannel as TextChannel)
@@ -117,7 +117,7 @@ export class MessageResponse {
         // Send message
         const replacedMessage = message.replace(/{user}/g, user);
         log.info(`Sending response message - ${replacedMessage}`);
-        channel.send(replacedMessage)
+        (channel as TextChannel).send(replacedMessage)
             .catch((err) => {
                 log.info(`${err}: Unable to send message response.`);
             });
