@@ -107,4 +107,33 @@ describe('SetWarnPunishmentsCommand test suite', (): void => {
         settings[0].type.should.equal(ModActions.BAN);
         (settings[0].duration === null).should.be.true;
     });
+
+    it('Ban with a duration over 21 days is rejected', async (): Promise<void> => {
+        const command = new SetWarnPunishmentsCommand(['7-ban-22d']);
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
+            embed.fields![0].value.should.equals(`${INVALID_USAGE}\n${SetWarnPunishmentsCommand.COMMAND_USAGE}`);
+        };
+        const commandArgs: CommandArgs = { server, memberPerms: adminPerms, messageReply: checkEmbed };
+        const commandResult = await command.execute(commandArgs);
+
+        commandResult.shouldCheckMessage.should.be.true;
+        ModDbUtils.getWarnSettings(serverId).length.should.equal(0);
+    });
+
+    it('Ban with a duration of exactly 21 days is accepted', async (): Promise<void> => {
+        const command = new SetWarnPunishmentsCommand(['7-ban-21d']);
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
+            embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
+        };
+        const commandArgs: CommandArgs = { server, memberPerms: adminPerms, messageReply: checkEmbed };
+        const commandResult = await command.execute(commandArgs);
+
+        commandResult.shouldCheckMessage.should.be.true;
+        const settings = ModDbUtils.getWarnSettings(serverId);
+        settings.length.should.equal(1);
+        settings[0].type.should.equal(ModActions.BAN);
+        settings[0].duration!.should.be.greaterThan(0);
+    });
 });

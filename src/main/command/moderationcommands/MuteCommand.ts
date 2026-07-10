@@ -75,7 +75,7 @@ export class MuteCommand extends Command {
             await messageReply({ embeds: [this.generateDurationRequiredEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
-        if (duration > ModUtils.MAX_MUTE_DURATION_SECONDS) {
+        if (duration > ModUtils.MAX_TIMEOUT_DURATION_SECONDS) {
             await messageReply({ embeds: [this.generateDurationTooLongEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }

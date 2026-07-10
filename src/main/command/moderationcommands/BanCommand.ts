@@ -22,6 +22,8 @@ export class BanCommand extends Command {
 
     public static COMMAND_USAGE = '**Usage:** @bot ban userId [reason] [X{m|h|d}]';
 
+    public static DURATION_TOO_LONG = 'Duration cannot exceed 21 days.';
+
     private type = ModActions.BAN;
 
     private args: string[];
@@ -63,6 +65,10 @@ export class BanCommand extends Command {
         // Check last val for ban time if any
         const { length } = this.args;
         const duration = ModUtils.parseDuration(this.args[length - 1]);
+        if (duration && duration > ModUtils.MAX_TIMEOUT_DURATION_SECONDS) {
+            await messageReply({ embeds: [this.generateDurationTooLongEmbed()] });
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        }
         if (duration)
             this.args.pop();
 
@@ -104,6 +110,14 @@ export class BanCommand extends Command {
         return this.generateGenericEmbed(
             BanCommand.EMBED_TITLE,
             `${BanCommand.USERID_ERROR}\n${BanCommand.COMMAND_USAGE}`,
+            BanCommand.EMBED_ERROR_COLOUR,
+        );
+    }
+
+    private generateDurationTooLongEmbed(): EmbedBuilder {
+        return this.generateGenericEmbed(
+            BanCommand.EMBED_TITLE,
+            `${BanCommand.DURATION_TOO_LONG}\n${BanCommand.COMMAND_USAGE}`,
             BanCommand.EMBED_ERROR_COLOUR,
         );
     }

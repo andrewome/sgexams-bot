@@ -11,11 +11,14 @@ export class ModUtils {
     public static readonly DAYS_IN_SECONDS = ModUtils.HOURS_IN_SECONDS * 24;
 
     /**
-     * Discord timeouts cannot be set further than 28 days into the future, but this is
-     * capped tighter at 21 days: setTimeout's delay is a 32-bit signed int (~24.85 day max),
-     * and 21 days keeps setMuteTimeout's delay safely under that limit.
+     * setTimeout's delay is a 32-bit signed int (~24.85 day max). Both setMuteTimeout and
+     * setBanTimeout schedule a JS timer for a user-supplied duration, so any duration accepted
+     * by MuteCommand, BanCommand, or SetWarnPunishments is capped here at 21 days - a round
+     * number safely under that limit. (Discord's own timeout limit is 28 days, but the JS
+     * timer is the tighter constraint mute must respect; bans have no Discord-side cap at all,
+     * so this is the only limit on ban duration.)
      */
-    public static readonly MAX_MUTE_DURATION_SECONDS = ModUtils.DAYS_IN_SECONDS * 21;
+    public static readonly MAX_TIMEOUT_DURATION_SECONDS = ModUtils.DAYS_IN_SECONDS * 21;
 
     public static readonly timers: Map<number, NodeJS.Timeout> = new Map();
 
