@@ -1,5 +1,5 @@
 import {
-    GuildMember, MessageEmbed, Permissions, DiscordAPIError,
+    GuildMember, EmbedBuilder, PermissionsBitField, PermissionFlagsBits, DiscordAPIError,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -16,7 +16,7 @@ export class KickCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['KICK_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers]);
 
     private args: string[];
 
@@ -76,7 +76,7 @@ export class KickCommand extends Command {
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
-    private generateInsufficientArgumentsEmbed(): MessageEmbed {
+    private generateInsufficientArgumentsEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             KickCommand.EMBED_TITLE,
             `${KickCommand.INSUFFICIENT_ARGUMENTS}\n${KickCommand.COMMAND_USAGE}`,
@@ -84,7 +84,7 @@ export class KickCommand extends Command {
         );
     }
 
-    private generateUserIdErrorEmbed(): MessageEmbed {
+    private generateUserIdErrorEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             KickCommand.EMBED_TITLE,
             `${KickCommand.USERID_ERROR}\n${KickCommand.COMMAND_USAGE}`,
@@ -92,12 +92,12 @@ export class KickCommand extends Command {
         );
     }
 
-    private generateValidEmbed(target: GuildMember, reason: string): MessageEmbed {
+    private generateValidEmbed(target: GuildMember, reason: string): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             KickCommand.EMBED_TITLE,
             `${target.user.tag} was kicked.`,
             KickCommand.EMBED_DEFAULT_COLOUR,
         );
-        return embed.addField('Reason', reason || '-');
+        return embed.addFields({ name: 'Reason', value: reason || '-' });
     }
 }

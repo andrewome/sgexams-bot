@@ -1,4 +1,4 @@
-import { MessageEmbed, TextChannel, Client } from 'discord.js';
+import { EmbedBuilder, TextChannel, Client } from 'discord.js';
 import { Storage } from '../storage/Storage';
 import { EventHandler } from './EventHandler';
 import { ModLog } from '../modules/moderation/classes/ModLog';
@@ -41,24 +41,24 @@ export class ModLogUpdateEventHandler extends EventHandler {
                 return;
 
             // Create embed
-            const embed = new MessageEmbed();
-            embed.addField('Moderator', `<@${modId}>`, true);
+            const embed = new EmbedBuilder();
+            embed.addFields({ name: 'Moderator', value: `<@${modId}>`, inline: true });
 
             // Delete warn is a bit different
             if (type !== ModActions.UNWARN) {
                 const user = await this.bot.users.fetch(userId);
                 embed.setTitle(`Case ${caseId}: ${user.tag} (${userId})`);
-                embed.addField('User', `<@${userId}>`, true);
+                embed.addFields({ name: 'User', value: `<@${userId}>`, inline: true });
             } else {
                 embed.setTitle(`Case ${caseId}: Remove Warn`);
-                embed.addField('Case ID', `${userId}`, true);
+                embed.addFields({ name: 'Case ID', value: `${userId}`, inline: true });
             }
-            embed.addField('\u200b', '\u200b', true);
-            embed.addField('Type', type, true);
-            embed.addField('Reason', reason || '-', true);
+            embed.addFields({ name: '\u200b', value: '\u200b', inline: true });
+            embed.addFields({ name: 'Type', value: type, inline: true });
+            embed.addFields({ name: 'Reason', value: reason || '-', inline: true });
             if (type === ModActions.MUTE || type === ModActions.BAN) {
                 const timeoutStr = timeout ? `${Math.floor((timeout / 60))} minutes` : 'Permanent';
-                embed.addField('Length', timeoutStr, true);
+                embed.addFields({ name: 'Length', value: timeoutStr, inline: true });
             }
             embed.setTimestamp(timestamp * 1000);
             embed.setColor(Command.EMBED_DEFAULT_COLOUR);

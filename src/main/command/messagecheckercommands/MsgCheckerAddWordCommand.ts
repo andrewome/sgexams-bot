@@ -1,4 +1,4 @@
-import { Permissions, MessageEmbed } from 'discord.js';
+import { PermissionsBitField, PermissionFlagsBits, EmbedBuilder } from 'discord.js';
 import { Command } from '../Command';
 import { Server } from '../../storage/Server';
 import { CommandResult } from '../classes/CommandResult';
@@ -18,7 +18,7 @@ export class MsgCheckerAddWordCommand extends Command {
     /** CheckMessage: false */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(false);
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     private args: string[];
 
@@ -62,16 +62,16 @@ export class MsgCheckerAddWordCommand extends Command {
      * @returns RichEmbed
      */
     public generateEmbed(wordsAdded: string[],
-                         wordsNotAdded: string[]): MessageEmbed {
+                         wordsNotAdded: string[]): EmbedBuilder {
         const words = this.args;
-        let embed = new MessageEmbed().setColor(Command.EMBED_DEFAULT_COLOUR);
+        let embed = new EmbedBuilder().setColor(Command.EMBED_DEFAULT_COLOUR);
         if (wordsAdded.length !== 0) {
             let output = '';
             for (let i = 0; i < wordsAdded.length; i++) {
                 output += wordsAdded[i];
                 output += '\n';
             }
-            embed.addField(MsgCheckerAddWordCommand.ADDED_WORDS, output, false);
+            embed.addFields({ name: MsgCheckerAddWordCommand.ADDED_WORDS, value: output, inline: false });
         }
 
         if (wordsNotAdded.length !== 0) {
@@ -81,16 +81,16 @@ export class MsgCheckerAddWordCommand extends Command {
                 output += '\n';
             }
             output += MsgCheckerAddWordCommand.MAYBE_WORDS_ALREADY_ADDED;
-            embed.addField(MsgCheckerAddWordCommand.UNABLE_TO_ADD_WORDS, output, false);
+            embed.addFields({ name: MsgCheckerAddWordCommand.UNABLE_TO_ADD_WORDS, value: output, inline: false });
         }
 
         if (words.length === 0) {
-            embed = new MessageEmbed()
+            embed = new EmbedBuilder()
                 .setColor(Command.EMBED_ERROR_COLOUR)
-                .addField(
-                    MsgCheckerAddWordCommand.ERROR_EMBED_TITLE,
-                    MsgCheckerAddWordCommand.NO_ARGUMENTS,
-                );
+                .addFields({
+                    name: MsgCheckerAddWordCommand.ERROR_EMBED_TITLE,
+                    value: MsgCheckerAddWordCommand.NO_ARGUMENTS,
+                });
         }
 
         return embed;

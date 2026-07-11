@@ -12,7 +12,7 @@ export class ModDbUtils {
      */
     public static getLastestCaseId(serverId: string): number {
         const db = DatabaseConnection.connect();
-        const res = db.prepare(
+        const res = db.prepare<unknown[], { caseId: number }>(
             'SELECT caseId FROM moderationLogs WHERE serverId = ? ORDER BY caseId DESC',
         ).get(serverId);
         db.close();
@@ -53,7 +53,7 @@ export class ModDbUtils {
         const db = DatabaseConnection.connect();
 
         // Get the timerId
-        const res = db.prepare(
+        const res = db.prepare<unknown[], { timerId: number }>(
             'SELECT timerId FROM moderationTimeouts WHERE serverId = ? AND userId = ? AND type = ?',
         ).get(serverId, userId, type);
 
@@ -110,7 +110,7 @@ export class ModDbUtils {
      */
     public static fetchActionTimeouts(): ModerationTimeout[] {
         const db = DatabaseConnection.connect();
-        const res = db.prepare('SELECT * FROM moderationTimeouts').all();
+        const res = db.prepare<unknown[], ModerationTimeout>('SELECT * FROM moderationTimeouts').all();
         db.close();
         return res;
     }
@@ -124,7 +124,7 @@ export class ModDbUtils {
      */
     public static fetchNumberOfWarns(serverId: string, userId: string): number {
         const db = DatabaseConnection.connect();
-        const res = db.prepare(
+        const res = db.prepare<unknown[], { 'COUNT(*)': number }>(
             'SELECT COUNT(*) FROM moderationLogs WHERE serverId = ? AND userId = ? AND type = ?',
         ).get(serverId, userId, ModActions.WARN);
         db.close();
@@ -145,7 +145,7 @@ export class ModDbUtils {
                                                                          duration: number|null;
                                                                        } | null {
         const db = DatabaseConnection.connect();
-        const res = db.prepare(
+        const res = db.prepare<unknown[], { type: ModActions; duration: number | null }>(
             'SELECT type, duration FROM moderationWarnSettings WHERE serverId = ? AND numWarns = ?',
         ).get(serverId, numWarns);
         db.close();
@@ -216,7 +216,7 @@ export class ModDbUtils {
     public static getWarnSettings(serverId: string): { numWarns: number; type: ModActions;
                                                        duration: number|null; }[] {
         const db = DatabaseConnection.connect();
-        const res = db.prepare(
+        const res = db.prepare<unknown[], { numWarns: number; type: ModActions; duration: number|null }>(
             'SELECT numWarns, type, duration FROM moderationWarnSettings WHERE serverId = ?',
         ).all(serverId);
         db.close();
@@ -245,11 +245,11 @@ export class ModDbUtils {
      */
     public static getModLogChannel(serverId: string): string|null {
         const db = DatabaseConnection.connect();
-        const res = db.prepare(
+        const res = db.prepare<unknown[], { channelId: string | null }>(
             'SELECT channelId FROM moderationSettings WHERE serverId = ?',
         ).get(serverId);
         db.close();
-        return res.channelId;
+        return res!.channelId;
     }
 
     /**
@@ -270,9 +270,9 @@ export class ModDbUtils {
             prepString += ' AND type=?';
         }
         prepString += ' ORDER BY caseId DESC';
-        const prepped = db.prepare(prepString);
+        const prepped = db.prepare<unknown[], ModLog>(prepString);
 
-        let res;
+        let res: ModLog[];
         if (userId !== null && type !== null) {
             res = prepped.all(serverId, userId, type);
         } else if (type !== null) {
@@ -308,11 +308,11 @@ export class ModDbUtils {
      */
     public static getMuteRoleId(serverId: string): string|null {
         const db = DatabaseConnection.connect();
-        const res = db.prepare(
+        const res = db.prepare<unknown[], { muteRoleId: string | null }>(
             'SELECT muteRoleId FROM moderationSettings WHERE serverId = ?',
         ).get(serverId);
         db.close();
-        return res.muteRoleId;
+        return res!.muteRoleId;
     }
 
     /**
@@ -326,7 +326,7 @@ export class ModDbUtils {
      */
     public static isMemberMuted(serverId: string, userId: string): boolean {
         const db = DatabaseConnection.connect();
-        const res = db.prepare(
+        const res = db.prepare<unknown[], { type: ModActions }>(
             'SELECT type FROM moderationLogs WHERE serverId = ? AND userId = ? AND ' +
             '(type = ? OR type = ?) ORDER BY caseId DESC',
         ).get(serverId, userId, ModActions.MUTE, ModActions.UNMUTE);

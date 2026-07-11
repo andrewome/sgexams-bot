@@ -1,4 +1,4 @@
-import { Client, GuildMemberManager } from 'discord.js';
+import { Client, GuildMemberManager, ActivityType } from 'discord.js';
 import log from 'loglevel';
 import { Storage } from '../storage/Storage';
 import { EventHandler } from './EventHandler';
@@ -32,13 +32,13 @@ export class ReadyEventHandler extends EventHandler {
             new BirthdayAnnouncer(this.bot, this.storage).start();
 
             log.info('I am ready!');
-            await this.bot.user!.setActivity('with NUKES!!!!', { type: 'PLAYING' });
+            await this.bot.user!.setActivity('with NUKES!!!!', { type: ActivityType.Playing });
         } catch (err) {
             this.handleError(err);
         }
         // The activity seems to get reset every now and then... setInterval to set it every 1 hour
         setInterval(() => {
-            this.bot.user!.setActivity('with NUKES!!!!', { type: 'PLAYING' });
+            this.bot.user!.setActivity('with NUKES!!!!', { type: ActivityType.Playing });
         }, 1000 * 60 * 60);
     }
 

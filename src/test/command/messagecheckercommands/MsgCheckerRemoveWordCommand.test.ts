@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, no-restricted-syntax, no-unused-expressions */
 import { should } from 'chai';
-import { MessageEmbed, MessageOptions, Permissions } from 'discord.js';
+import {
+    EmbedBuilder, MessageReplyOptions, PermissionsBitField, PermissionFlagsBits,
+} from 'discord.js';
 import { Server } from '../../../main/storage/Server';
 import { MsgCheckerRemoveWordCommand } from '../../../main/command/messagecheckercommands/MsgCheckerRemoveWordCommand';
 import { Command } from '../../../main/command/Command';
@@ -11,7 +13,7 @@ import { DatabaseConnection } from '../../../main/DatabaseConnection';
 
 should();
 
-const adminPerms = new Permissions(['ADMINISTRATOR']);
+const adminPerms = new PermissionsBitField([PermissionFlagsBits.Administrator]);
 const { EMBED_DEFAULT_COLOUR } = Command;
 const { EMBED_ERROR_COLOUR } = Command;
 const { ERROR_EMBED_TITLE } = Command;
@@ -47,8 +49,8 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
 
     it('No permission check', async (): Promise<void> => {
         command = new MsgCheckerRemoveWordCommand([]);
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
@@ -59,7 +61,7 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
         };
 
@@ -74,8 +76,8 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         const removedWordsStr = `${args[0]}\n${args[1]}\n${args[2]}\n`;
         command = new MsgCheckerRemoveWordCommand(args);
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(1);
@@ -110,8 +112,8 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         const unableToRemoveWordsStr = `${args[0]}\n${args[1]}\n${MAYBE_WORDS_NOT_INSIDE}`;
         const removedWordsStr = `${args[2]}\n`;
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(2);
@@ -148,8 +150,8 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         const removedWordsStr = `${args[0]}\n${args[1]}\n${args[2]}\n`;
         const unableToRemoveWordsStr = `${args[3]}\n${MAYBE_WORDS_NOT_INSIDE}`;
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.be.equals(2);
@@ -183,8 +185,8 @@ describe('MsgCheckerRemoveWordCommand test suite', (): void => {
         const args: string[] = [];
         command = new MsgCheckerRemoveWordCommand(args);
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);

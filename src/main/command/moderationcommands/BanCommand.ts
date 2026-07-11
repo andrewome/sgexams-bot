@@ -1,5 +1,5 @@
 import {
-    GuildMember, MessageEmbed, Permissions, DiscordAPIError, User,
+    GuildMember, EmbedBuilder, PermissionsBitField, PermissionFlagsBits, DiscordAPIError, User,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -16,7 +16,7 @@ export class BanCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.BanMembers]);
 
     public static EMBED_TITLE = 'Ban Member';
 
@@ -74,7 +74,7 @@ export class BanCommand extends Command {
         // Handle ban
         try {
             const bannedUser
-                = await members!.ban(targetId, { reason, days: this.removeMsgs ? 1 : 0 });
+                = await members!.ban(targetId, { reason, deleteMessageSeconds: this.removeMsgs ? 86400 : 0 });
             const curTime = ModUtils.getUnixTime();
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                            this.type, curTime, emit!, reason, duration);
@@ -100,7 +100,7 @@ export class BanCommand extends Command {
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
-    private generateUserIdErrorEmbed(): MessageEmbed {
+    private generateUserIdErrorEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             BanCommand.EMBED_TITLE,
             `${BanCommand.USERID_ERROR}\n${BanCommand.COMMAND_USAGE}`,
@@ -109,7 +109,7 @@ export class BanCommand extends Command {
     }
 
     private generateValidEmbed(target: User | GuildMember | string, reason: string,
-                               duration: number|null): MessageEmbed {
+                               duration: number|null): EmbedBuilder {
         const targetStr = target instanceof String ? target : (target as User).tag;
         const embed = this.generateGenericEmbed(
             BanCommand.EMBED_TITLE,
@@ -117,13 +117,15 @@ export class BanCommand extends Command {
             BanCommand.EMBED_DEFAULT_COLOUR,
         );
 
-        embed.addField('Reason', reason || '-', true);
-        embed.addField('Length', duration ? `${Math.floor(duration / 60)} minutes` : 'Permanent', true);
+        embed.addFields({ name: 'Reason', value: reason || '-', inline: true });
+        embed.addFields({
+            name: 'Length', value: duration ? `${Math.floor(duration / 60)} minutes` : 'Permanent', inline: true,
+        });
 
         return embed;
     }
 
-    private generateInsufficientArgumentsEmbed(): MessageEmbed {
+    private generateInsufficientArgumentsEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             BanCommand.EMBED_TITLE,
             `${BanCommand.INSUFFICIENT_ARGUMENTS}\n${BanCommand.COMMAND_USAGE}`,

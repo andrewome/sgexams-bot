@@ -1,4 +1,4 @@
-import { Permissions, MessageEmbed } from 'discord.js';
+import { PermissionsBitField, PermissionFlagsBits, EmbedBuilder } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -16,7 +16,7 @@ export class MsgCheckerGetReportChannelCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     /**
      * This function executes the getchannel command
@@ -36,7 +36,7 @@ export class MsgCheckerGetReportChannelCommand extends Command {
 
         // Generate and send embed
         const channelId = server.messageCheckerSettings.getReportingChannelId();
-        let embed: MessageEmbed;
+        let embed: EmbedBuilder;
         if (channelId === null) {
             embed = this.generateGenericEmbed(
                 MsgCheckerGetReportChannelCommand.EMBED_TITLE,

@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import { Client, MessageEmbed, TextChannel } from 'discord.js';
+import { Client, EmbedBuilder, TextChannel } from 'discord.js';
 import { Storage } from '../../storage/Storage';
 import {
     getBirthdayChannelId,
@@ -108,7 +108,7 @@ export class BirthdayAnnouncer {
             )).filter((name: string | null) => name !== null);
 
             if (userNames.length) {
-                const embed = new MessageEmbed({
+                const embed = new EmbedBuilder({
                     title: `Wish a happy birthday to the birthday babies for ${prettifyDate({ day, month })}!`,
                     description: userNames
                         .join('\n'),

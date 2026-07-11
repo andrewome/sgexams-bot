@@ -1,8 +1,9 @@
 import './lib/env';
 import {
-    Client, Message, MessageReaction, User, GuildMember, PartialMessage, PartialUser, Intents, PartialMessageReaction,
+    Client, Message, MessageReaction, User, GuildMember, PartialMessage, PartialUser, GatewayIntentBits, Partials,
+    PartialMessageReaction,
 } from 'discord.js';
-import log, { LoggingMethod } from 'loglevel';
+import log, { LoggingMethod, LogLevelNames } from 'loglevel';
 import { SqliteError } from 'better-sqlite3';
 import { Storage } from './storage/Storage';
 import { MessageReactionAddEventHandler } from './eventhandler/MessageReactionAddEventHandler';
@@ -36,15 +37,15 @@ export class App {
     public static readonly READY = 'ready';
 
     public constructor() {
-        // set restTimeOffset to 0ms, original 500ms.
+        // set rest offset to 0ms, original 500ms.
         this.bot = new Client({
             intents: [
-                Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS,
-                Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-                Intents.FLAGS.GUILD_MESSAGE_TYPING,
+                GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildModeration,
+                GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions,
+                GatewayIntentBits.GuildMessageTyping, GatewayIntentBits.MessageContent,
             ],
-            restTimeOffset: 0,
-            partials: ['MESSAGE', 'REACTION'],
+            rest: { offset: 0 },
+            partials: [Partials.Message, Partials.Reaction],
         });
     }
 
@@ -124,7 +125,7 @@ if (require.main === module) {
 
     // Make logs show current date
     const newMethodFactory = (
-        methodName: string,
+        methodName: LogLevelNames,
         logLevel: 0 | 1 | 2 | 3 | 4 | 5,
         loggerName: string | symbol,
     ): LoggingMethod => {

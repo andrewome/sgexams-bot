@@ -10,7 +10,7 @@ export class ModUtils {
 
     public static readonly DAYS_IN_SECONDS = ModUtils.HOURS_IN_SECONDS * 24;
 
-    public static readonly timers: Map<number, NodeJS.Timer> = new Map();
+    public static readonly timers: Map<number, NodeJS.Timeout> = new Map();
 
     /**
      * Parses a string in the form X{m|h|d} where X is an integer greater than 0.
@@ -52,10 +52,10 @@ export class ModUtils {
     /**
      * Assigns a random ID to a timeout stored in timers map
      *
-     * @param  {NodeJS.Timer} timer
+     * @param  {NodeJS.Timeout} timer
      * @returns number ID mapped to that timer
      */
-    private static assignTimeout(timer: NodeJS.Timer): number {
+    private static assignTimeout(timer: NodeJS.Timeout): number {
         // Generates an integer from 1 to 2^31 - 1
         const genRandom = (): number => Math.floor(Math.random() * (2 ** 31 - 2)) + 1;
         const { timers } = ModUtils;
@@ -125,12 +125,12 @@ export class ModUtils {
      * @param  {string} botId
      * @param  {GuildMemberManager} guildMemberManager
      * @param  {Function} emit
-     * @returns NodeJS.Timer
+     * @returns NodeJS.Timeout
      */
     public static setBanTimeout(timeoutDuration: number, startTime: number, endTime: number,
                                 userId: string, serverId: string, botId: string,
                                 guildMemberManager: GuildMemberManager,
-                                emit: Function): NodeJS.Timer {
+                                emit: Function): NodeJS.Timeout {
         const callback = (): void => {
             const actualDuration = Math.floor((endTime - startTime) / 60);
             log.info(`Unbanning ${userId} after ${actualDuration} minutes timeout.`);
@@ -217,12 +217,12 @@ export class ModUtils {
      * @param  {GuildMemberManager} guildMemberManager
      * @param  {Function} emit
      * @param  {muteroleId} muteroleId
-     * @returns NodeJS.Timer
+     * @returns NodeJS.Timeout
      */
     public static setMuteTimeout(timeoutDuration: number, startTime: number, endTime: number,
                                  userId: string, serverId: string, botId: string,
                                  guildMemberManager: GuildMemberManager, emit: Function,
-                                 muteRoleId: string): NodeJS.Timer {
+                                 muteRoleId: string): NodeJS.Timeout {
         const callback = (): void => {
             const actualDuration = Math.floor((endTime - startTime) / 60);
             log.info(`Unmuting ${userId} after ${actualDuration} minutes timeout.`);

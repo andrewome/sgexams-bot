@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import { should } from 'chai';
-import { MessageOptions, Permissions } from 'discord.js';
+import { MessageReplyOptions, PermissionsBitField, EmbedBuilder } from 'discord.js';
 import { MessageCheckerSettings } from '../../../main/storage/MessageCheckerSettings';
 import { UptimeCheckCommand } from '../../../main/command/misccommands/UptimeCheckCommand';
 import { Command } from '../../../main/command/Command';
@@ -29,8 +29,8 @@ describe('UptimeCheck Command Test Suite', (): void => {
         const expectedOutput
             = '0 days, 0 hours, 0 minutes and 1 second';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -43,7 +43,7 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
             uptime,
         };
@@ -57,8 +57,8 @@ describe('UptimeCheck Command Test Suite', (): void => {
         const expectedOutput
             = '0 days, 0 hours, 1 minute and 0 seconds';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -71,7 +71,7 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
             uptime,
         };
@@ -85,8 +85,8 @@ describe('UptimeCheck Command Test Suite', (): void => {
         const expectedOutput
             = '0 days, 1 hour, 0 minutes and 0 seconds';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -99,7 +99,7 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
             uptime,
         };
@@ -113,8 +113,8 @@ describe('UptimeCheck Command Test Suite', (): void => {
         const expectedOutput
             = '1 day, 0 hours, 0 minutes and 0 seconds';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -127,7 +127,7 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
             uptime,
         };
@@ -141,8 +141,8 @@ describe('UptimeCheck Command Test Suite', (): void => {
         const expectedOutput
             = '10 days, 0 hours, 0 minutes and 0 seconds';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -155,7 +155,7 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
             uptime,
         };
@@ -169,8 +169,8 @@ describe('UptimeCheck Command Test Suite', (): void => {
         const expectedOutput
             = '0 days, 0 hours, 0 minutes and 0 seconds';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -183,7 +183,7 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
             uptime,
         };
@@ -197,8 +197,8 @@ describe('UptimeCheck Command Test Suite', (): void => {
         const expectedOutput
             = '0 days, 0 hours, 0 minutes and 0 seconds';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -211,7 +211,7 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
             uptime,
         };
@@ -225,8 +225,8 @@ describe('UptimeCheck Command Test Suite', (): void => {
         const expectedOutput
             = '0 days, 0 hours, 0 minutes and 1 second';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -239,7 +239,7 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
             uptime,
         };
@@ -253,8 +253,8 @@ describe('UptimeCheck Command Test Suite', (): void => {
         const expectedOutput
             = '0 days, 0 hours, 1 minute and 1 second';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -267,7 +267,7 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
             uptime,
         };
@@ -281,8 +281,8 @@ describe('UptimeCheck Command Test Suite', (): void => {
         const expectedOutput
             = '0 days, 1 hour, 1 minute and 1 second';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -295,7 +295,7 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
             uptime,
         };
@@ -309,8 +309,8 @@ describe('UptimeCheck Command Test Suite', (): void => {
         const expectedOutput
             = '1 day, 1 hour, 1 minute and 1 second';
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -323,7 +323,7 @@ describe('UptimeCheck Command Test Suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
             uptime,
         };

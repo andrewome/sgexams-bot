@@ -1,5 +1,5 @@
 import {
-    Permissions, MessageEmbed,
+    PermissionsBitField, PermissionFlagsBits, EmbedBuilder,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -18,7 +18,7 @@ export class UnwarnCommand extends Command {
 
     private args: string[];
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     public static EMBED_TITLE = 'Unwarn Member';
 
@@ -80,7 +80,7 @@ export class UnwarnCommand extends Command {
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
-    private generateInsufficientArgumentsEmbed(): MessageEmbed {
+    private generateInsufficientArgumentsEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             UnwarnCommand.EMBED_TITLE,
             `${UnwarnCommand.INSUFFICIENT_ARGUMENTS}\n${UnwarnCommand.COMMAND_USAGE}`,
@@ -88,7 +88,7 @@ export class UnwarnCommand extends Command {
         );
     }
 
-    private generateInvalidCaseIdEmbed(): MessageEmbed {
+    private generateInvalidCaseIdEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             UnwarnCommand.EMBED_TITLE,
             `${UnwarnCommand.INVALID_CASEID}\n${UnwarnCommand.COMMAND_USAGE}`,
@@ -96,12 +96,12 @@ export class UnwarnCommand extends Command {
         );
     }
 
-    private generateValidEmbed(caseId: string, reason: string): MessageEmbed {
+    private generateValidEmbed(caseId: string, reason: string): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             UnwarnCommand.EMBED_TITLE,
             `Case ${caseId} warn was removed.`,
             UnwarnCommand.EMBED_DEFAULT_COLOUR,
         );
-        return embed.addField('Reason', reason || '-');
+        return embed.addFields({ name: 'Reason', value: reason || '-' });
     }
 }

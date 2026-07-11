@@ -1,5 +1,5 @@
 import {
-    Permissions, GuildChannelManager, GuildEmojiManager,
+    PermissionsBitField, GuildChannelManager, GuildEmojiManager,
     GuildMemberManager, RoleManager, TextChannel, ThreadChannel,
 } from 'discord.js';
 import { Server } from '../../storage/Server';
@@ -14,7 +14,7 @@ interface IMessageReply {
 export interface CommandArgs {
     server: Server;
 
-    memberPerms: Readonly<Permissions>;
+    memberPerms: Readonly<PermissionsBitField>;
 
     messageReply: Function; // IMessageReply
 

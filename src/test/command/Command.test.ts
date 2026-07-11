@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
 /* eslint-disable no-underscore-dangle, no-unused-expressions, class-methods-use-this */
 import chai from 'chai';
-import { Permissions } from 'discord.js';
+import { PermissionsBitField, PermissionFlagsBits } from 'discord.js';
 import { Command } from '../../main/command/Command';
 import { CommandResult } from '../../main/command/classes/CommandResult';
 import { CommandArgs } from '../../main/command/classes/CommandArgs';
@@ -18,33 +18,41 @@ const command = new CommandStub();
 describe('Command class test suite', (): void => {
     describe('hasPermissions method test', (): void => {
         it('sufficient permissions 1', (): void => {
-            const requiredPermissions = new Permissions(['KICK_MEMBERS']);
-            const userPermissions = new Permissions(['ADMINISTRATOR']);
+            const requiredPermissions = new PermissionsBitField([PermissionFlagsBits.KickMembers]);
+            const userPermissions = new PermissionsBitField([PermissionFlagsBits.Administrator]);
             command.hasPermissions(requiredPermissions, userPermissions).should.be.true;
         });
         it('sufficient permissions 2', (): void => {
-            const requiredPermissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
-            const userPermissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+            const requiredPermissions
+                = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
+            const userPermissions
+                = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
             command.hasPermissions(requiredPermissions, userPermissions).should.be.true;
         });
         it('sufficient permissions 3', (): void => {
-            const requiredPermissions = new Permissions(['KICK_MEMBERS']);
-            const userPermissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+            const requiredPermissions = new PermissionsBitField([PermissionFlagsBits.KickMembers]);
+            const userPermissions
+                = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
             command.hasPermissions(requiredPermissions, userPermissions).should.be.true;
         });
         it('insufficient permissions 1', (): void => {
-            const requiredPermissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
-            const userPermissions = new Permissions(['KICK_MEMBERS']);
+            const requiredPermissions
+                = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
+            const userPermissions = new PermissionsBitField([PermissionFlagsBits.KickMembers]);
             command.hasPermissions(requiredPermissions, userPermissions).should.be.false;
         });
         it('insufficient permissions 2', (): void => {
-            const requiredPermissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS', 'MANAGE_CHANNELS']);
-            const userPermissions = new Permissions(['KICK_MEMBERS', 'MANAGE_CHANNELS']);
+            const requiredPermissions = new PermissionsBitField([
+                PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers, PermissionFlagsBits.ManageChannels,
+            ]);
+            const userPermissions
+                = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.ManageChannels]);
             command.hasPermissions(requiredPermissions, userPermissions).should.be.false;
         });
         it('insufficient permissions 3', (): void => {
-            const requiredPermissions = new Permissions(['ADMINISTRATOR']);
-            const userPermissions = new Permissions(['KICK_MEMBERS', 'MANAGE_CHANNELS']);
+            const requiredPermissions = new PermissionsBitField([PermissionFlagsBits.Administrator]);
+            const userPermissions
+                = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.ManageChannels]);
             command.hasPermissions(requiredPermissions, userPermissions).should.be.false;
         });
     });

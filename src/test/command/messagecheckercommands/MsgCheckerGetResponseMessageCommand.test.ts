@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, no-unused-expressions, max-len */
 import { should } from 'chai';
-import { MessageEmbed, MessageOptions, Permissions } from 'discord.js';
+import {
+    EmbedBuilder, MessageReplyOptions, PermissionsBitField, PermissionFlagsBits,
+} from 'discord.js';
 import { MsgCheckerGetResponseMessageCommand } from '../../../main/command/messagecheckercommands/MsgCheckerGetResponseMessageCommand';
 import { Server } from '../../../main/storage/Server';
 import { Command } from '../../../main/command/Command';
@@ -11,7 +13,7 @@ import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 
 should();
 
-const adminPerms = new Permissions(['ADMINISTRATOR']);
+const adminPerms = new PermissionsBitField([PermissionFlagsBits.Administrator]);
 const { EMBED_DEFAULT_COLOUR } = Command;
 const { EMBED_ERROR_COLOUR } = Command;
 const { CHANNEL_NOT_SET } = MsgCheckerGetResponseMessageCommand;
@@ -40,8 +42,8 @@ describe('MsgCheckerGetResponseMessageCommand class test suite', (): void => {
     });
 
     it('No permission check', async (): Promise<void> => {
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             embed.color!.should.equals(Command.EMBED_ERROR_COLOUR);
             embed.fields!.length.should.be.equals(1);
 
@@ -52,7 +54,7 @@ describe('MsgCheckerGetResponseMessageCommand class test suite', (): void => {
 
         const commandArgs: CommandArgs = {
             server,
-            memberPerms: new Permissions([]),
+            memberPerms: new PermissionsBitField([]),
             messageReply: checkEmbed,
         };
 
@@ -62,8 +64,8 @@ describe('MsgCheckerGetResponseMessageCommand class test suite', (): void => {
         commandResult.shouldCheckMessage.should.be.true;
     });
     it('Message not set', async (): Promise<void> => {
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);
@@ -91,8 +93,8 @@ describe('MsgCheckerGetResponseMessageCommand class test suite', (): void => {
             responseMessage,
         );
 
-        const checkEmbed = (msg: MessageOptions): void => {
-            const embed = msg!.embeds![0];
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
             // Check embed
             embed.color!.should.equals(EMBED_DEFAULT_COLOUR);
             embed.fields!.length.should.equals(1);

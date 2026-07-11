@@ -1,5 +1,5 @@
 import {
-    MessageEmbed, Permissions, TextChannel,
+    EmbedBuilder, PermissionsBitField, PermissionFlagsBits, TextChannel,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -28,7 +28,7 @@ export class StarboardSetChannelCommand extends Command {
 
     private COMMAND_UNSUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
-    private permissions = new Permissions(['KICK_MEMBERS', 'BAN_MEMBERS']);
+    private permissions = new PermissionsBitField([PermissionFlagsBits.KickMembers, PermissionFlagsBits.BanMembers]);
 
     private args: string[];
 
@@ -56,7 +56,7 @@ export class StarboardSetChannelCommand extends Command {
         }
 
         // Execute
-        let embed: MessageEmbed;
+        let embed: EmbedBuilder;
 
         // If no args
         if (this.args.length === 0) {
@@ -95,7 +95,7 @@ export class StarboardSetChannelCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateResetEmbed(): MessageEmbed {
+    private generateResetEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             StarboardSetChannelCommand.EMBED_TITLE,
             StarboardSetChannelCommand.CHANNEL_RESETTED,
@@ -109,7 +109,7 @@ export class StarboardSetChannelCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateNotFoundEmbed(): MessageEmbed {
+    private generateNotFoundEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             StarboardSetChannelCommand.EMBED_TITLE,
             StarboardSetChannelCommand.CHANNEL_NOT_FOUND,
@@ -123,7 +123,7 @@ export class StarboardSetChannelCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateNotTextChannelEmbed(): MessageEmbed {
+    private generateNotTextChannelEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             StarboardSetChannelCommand.EMBED_TITLE,
             StarboardSetChannelCommand.NOT_TEXT_CHANNEL,
@@ -138,7 +138,7 @@ export class StarboardSetChannelCommand extends Command {
      * @returns RichEmbed
      */
     // eslint-disable-next-line class-methods-use-this
-    private generateValidEmbed(channelId: string): MessageEmbed {
+    private generateValidEmbed(channelId: string): EmbedBuilder {
         return this.generateGenericEmbed(
             StarboardSetChannelCommand.EMBED_TITLE,
             `Starboard Channel set to <#${channelId}>.`,

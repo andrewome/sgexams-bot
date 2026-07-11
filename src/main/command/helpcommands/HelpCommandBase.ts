@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { Command, CommandClassRef } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 
@@ -13,14 +13,14 @@ export abstract class HelpCommandBase extends Command {
      * @param  {CommandClassRef[]} commands Commands in the module
      * @returns RichEmbed
      */
-    protected generateEmbed(header: string, commands: CommandClassRef[]): MessageEmbed {
-        const embed = new MessageEmbed();
+    protected generateEmbed(header: string, commands: CommandClassRef[]): EmbedBuilder {
+        const embed = new EmbedBuilder();
         embed.setColor(Command.EMBED_DEFAULT_COLOUR);
 
         const output = commands
             .map((command) => `**${command.NAME}** - ${command.DESCRIPTION}`)
             .join('\n');
-        embed.addField(header, output);
+        embed.addFields({ name: header, value: output });
         return embed;
     }
 }
