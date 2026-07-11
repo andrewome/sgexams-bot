@@ -115,33 +115,23 @@ export class WarnCommand extends Command {
                     }
                     break;
                 case ModActions.MUTE: {
-                    // Check if mute role is set
-                    const muteRoleId = ModDbUtils.getMuteRoleId(serverId);
-                    if (muteRoleId === null) {
-                        log.warn(`[WarnCommand]: Unable to mute ${targetId} in ${serverId} - No mute role found!`);
-                        return;
-                    }
-
-                    // Check if role exists on user
-                    const { roles } = target;
-                    if (roles.cache.some((x) => x.id === muteRoleId)) {
+                    // Mute via warn escalation requires a duration - permanent mutes are not
+                    // supported (see ADR-0001). SetWarnPunishmentsCommand enforces this at
+                    // configuration time, so duration should never be null here.
+                    if (!duration) {
                         log.warn(
-                            `[WarnCommand]: ${targetId} in ${serverId} already has the muted role assigned! Ignoring.`,
+                            `[WarnCommand]: Unable to mute ${targetId} in ${serverId} - no duration configured!`,
                         );
                         return;
                     }
 
-                    await target.roles.add(muteRoleId);
+                    await target.timeout(duration * 1000, reason);
                     ModDbUtils.addModerationAction(serverId, botId, targetId, ModActions.MUTE,
                                                    curTime, emit!, reason, duration);
-                    // Set timeout if any
-                    if (duration) {
-                        const endTime = curTime + duration;
-                        ModUtils.addMuteTimeout(
-                            duration, curTime, endTime, targetId, serverId,
-                            botId!, members!, emit!, muteRoleId,
-                        );
-                    }
+                    const endTime = curTime + duration;
+                    ModUtils.addMuteTimeout(
+                        duration, curTime, endTime, targetId, serverId, botId!, emit!,
+                    );
                     break;
                 }
                 default:

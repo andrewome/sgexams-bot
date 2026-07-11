@@ -22,14 +22,12 @@ import { UptimeCheckCommand } from '../misccommands/UptimeCheckCommand';
 import { BanCommand } from '../moderationcommands/BanCommand';
 import { BanRmCommand } from '../moderationcommands/BanRmCommand';
 import { GetModLogChannelCommand } from '../moderationcommands/GetModLogChannelCommand';
-import { GetMuteRoleCommand } from '../moderationcommands/GetMuteRoleCommand';
 import { GetWarnPunishmentsCommand } from '../moderationcommands/GetWarnPunishmentsCommand';
 import { KickCommand } from '../moderationcommands/KickCommand';
 import { ModLogsCommand } from '../moderationcommands/ModLogsCommand';
 import { MuteCommand } from '../moderationcommands/MuteCommand';
 import { PurgeCommand } from '../moderationcommands/PurgeCommand';
 import { SetModLogChannelCommand } from '../moderationcommands/SetModLogChannelCommand';
-import { SetMuteRoleCommand } from '../moderationcommands/SetMuteRoleCommand';
 import { SetWarnPunishmentsCommand } from '../moderationcommands/SetWarnPunishmentsCommand';
 import { UnbanCommand } from '../moderationcommands/UnbanCommand';
 import { UnmuteCommand } from '../moderationcommands/UnmuteCommand';
@@ -97,8 +95,6 @@ export abstract class CommandCollection {
         WarnCommand,
         UnwarnCommand,
         PurgeCommand,
-        SetMuteRoleCommand,
-        GetMuteRoleCommand,
         SetWarnPunishmentsCommand,
         GetWarnPunishmentsCommand,
         SetModLogChannelCommand,

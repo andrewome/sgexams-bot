@@ -17,11 +17,21 @@ export class MuteCommand extends Command {
     /** CheckMessage: true */
     private COMMAND_SUCCESSFUL_COMMANDRESULT: CommandResult = new CommandResult(true);
 
+    /**
+     * Transitional: mods with the old Kick+Ban permission pair keep working, but Discord itself
+     * gates timeouts behind ModerateMembers. See ADR-0001.
+     */
     private permissions = new PermissionsBitField([PermissionFlagsBits.BanMembers, PermissionFlagsBits.KickMembers]);
+
+    private permissionsModerateMembers = new PermissionsBitField([PermissionFlagsBits.ModerateMembers]);
 
     public static EMBED_TITLE = 'Mute Member';
 
-    public static COMMAND_USAGE = '**Usage:** @bot mute userId [reason] [X{m|h|d}]';
+    public static COMMAND_USAGE = '**Usage:** @bot mute userId [reason] X{m|h|d}';
+
+    public static DURATION_REQUIRED = 'A duration is required. Permanent mutes are not supported.';
+
+    public static DURATION_TOO_LONG = 'Duration cannot exceed 21 days.';
 
     private type = ModActions.MUTE;
 
@@ -33,8 +43,8 @@ export class MuteCommand extends Command {
     }
 
     /**
-     * This method executes the ban command.
-     * It bans the user and update action to database.
+     * This method executes the mute command.
+     * It times the user out and updates the action to the database.
      *
      * @param { CommandArgs } commandArgs
      * @returns CommandResult
@@ -45,7 +55,7 @@ export class MuteCommand extends Command {
         } = commandArgs;
 
         // Check for permissions first
-        if (!this.hasPermissions(this.permissions, memberPerms)) {
+        if (!this.hasAnyPermissions([this.permissions, this.permissionsModerateMembers], memberPerms)) {
             await this.sendNoPermissionsMessage(messageReply);
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
@@ -56,20 +66,20 @@ export class MuteCommand extends Command {
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        // Check if mute role is set
-        const muteRoleId = ModDbUtils.getMuteRoleId(server.serverId);
-        if (muteRoleId === null) {
-            await messageReply({ embeds: [this.generateMuteRoleNotSet()] });
-            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
-        }
-
         const targetId = this.args[0].replace(/[<@!>]/g, '');
 
-        // Check last val for mute time if any
+        // Duration is required - permanent mutes are not supported.
         const { length } = this.args;
         const duration = ModUtils.parseDuration(this.args[length - 1]);
-        if (duration)
-            this.args.pop();
+        if (duration === null) {
+            await messageReply({ embeds: [this.generateDurationRequiredEmbed()] });
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        }
+        if (duration > ModUtils.MAX_TIMEOUT_DURATION_SECONDS) {
+            await messageReply({ embeds: [this.generateDurationTooLongEmbed()] });
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        }
+        this.args.pop();
 
         // Get reason
         let reason = this.args.slice(1).join(' ');
@@ -79,29 +89,17 @@ export class MuteCommand extends Command {
         // Handle mute
         try {
             const target = await members!.fetch(targetId);
-            const { roles } = target;
-
-            // Check if role exists on user
-            if (roles.cache.some((x) => x.id === muteRoleId)) {
-                await messageReply({ embeds: [this.generateUserAlreadyMutedEmbed()] });
-                return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
-            }
-            await target.roles.add(muteRoleId);
+            await target.timeout(duration * 1000, reason);
             const curTime = ModUtils.getUnixTime();
             ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                            this.type, curTime, emit!, reason, duration);
 
-            // Remove any existing timeout if any
+            // Remove any existing timeout bookkeeping if any, then set a new one
             ModUtils.handleUnmuteTimeout(targetId, server.serverId);
-
-            // Set timeout if any
-            if (duration) {
-                const endTime = curTime + duration;
-                ModUtils.addMuteTimeout(
-                    duration, curTime, endTime, targetId, server.serverId,
-                    botId!, members!, emit!, muteRoleId,
-                );
-            }
+            const endTime = curTime + duration;
+            ModUtils.addMuteTimeout(
+                duration, curTime, endTime, targetId, server.serverId, botId!, emit!,
+            );
             await messageReply({ embeds: [this.generateValidEmbed(target, reason, duration)] });
         } catch (err) {
             if (err instanceof DiscordAPIError) {
@@ -114,22 +112,6 @@ export class MuteCommand extends Command {
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
-    private generateUserAlreadyMutedEmbed(): EmbedBuilder {
-        return this.generateGenericEmbed(
-            MuteCommand.EMBED_TITLE,
-            'Target user already muted.',
-            MuteCommand.EMBED_ERROR_COLOUR,
-        );
-    }
-
-    private generateMuteRoleNotSet(): EmbedBuilder {
-        return this.generateGenericEmbed(
-            MuteCommand.EMBED_TITLE,
-            'Mute role is not set for this server.',
-            MuteCommand.EMBED_ERROR_COLOUR,
-        );
-    }
-
     private generateUserIdErrorEmbed(): EmbedBuilder {
         return this.generateGenericEmbed(
             MuteCommand.EMBED_TITLE,
@@ -138,8 +120,23 @@ export class MuteCommand extends Command {
         );
     }
 
-    private generateValidEmbed(target: GuildMember, reason: string,
-                               duration: number|null): EmbedBuilder {
+    private generateDurationRequiredEmbed(): EmbedBuilder {
+        return this.generateGenericEmbed(
+            MuteCommand.EMBED_TITLE,
+            `${MuteCommand.DURATION_REQUIRED}\n${MuteCommand.COMMAND_USAGE}`,
+            MuteCommand.EMBED_ERROR_COLOUR,
+        );
+    }
+
+    private generateDurationTooLongEmbed(): EmbedBuilder {
+        return this.generateGenericEmbed(
+            MuteCommand.EMBED_TITLE,
+            `${MuteCommand.DURATION_TOO_LONG}\n${MuteCommand.COMMAND_USAGE}`,
+            MuteCommand.EMBED_ERROR_COLOUR,
+        );
+    }
+
+    private generateValidEmbed(target: GuildMember, reason: string, duration: number): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             MuteCommand.EMBED_TITLE,
             `${target.user.tag} was muted.`,
@@ -147,9 +144,7 @@ export class MuteCommand extends Command {
         );
 
         embed.addFields({ name: 'Reason', value: reason || '-', inline: true });
-        embed.addFields({
-            name: 'Length', value: duration ? `${Math.floor(duration / 60)} minutes` : 'Permanent', inline: true,
-        });
+        embed.addFields({ name: 'Length', value: ModUtils.formatDuration(duration), inline: true });
 
         return embed;
     }

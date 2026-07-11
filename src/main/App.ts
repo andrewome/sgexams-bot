@@ -1,6 +1,6 @@
 import './lib/env';
 import {
-    Client, Message, MessageReaction, User, GuildMember, PartialMessage, PartialUser, GatewayIntentBits, Partials,
+    Client, Message, MessageReaction, User, PartialMessage, PartialUser, GatewayIntentBits, Partials,
     PartialMessageReaction,
 } from 'discord.js';
 import log, { LoggingMethod, LogLevelNames } from 'loglevel';
@@ -13,7 +13,6 @@ import { MessageUpdateEventHandler } from './eventhandler/MessageUpdateEventHand
 import { ReadyEventHandler } from './eventhandler/ReadyEventHandler';
 import { ModLogUpdateEventHandler } from './eventhandler/ModLogUpdateEventHandler';
 import { ModLog } from './modules/moderation/classes/ModLog';
-import { UserJoinEventHandler } from './eventhandler/UserJoinEventHandler';
 
 export class App {
     private bot: Client;
@@ -31,8 +30,6 @@ export class App {
     public static readonly REACTION_DELETED = 'messageReactionDeleted';
 
     public static readonly MODLOG_UPDATE = 'modLogUpdate';
-
-    public static readonly USER_JOIN = 'guildMemberAdd';
 
     public static readonly READY = 'ready';
 
@@ -107,10 +104,6 @@ export class App {
                 new MessageReactionRemoveEventHandler(this.storage, reaction).handleEvent();
             },
         );
-
-        this.bot.on(App.USER_JOIN, (member: GuildMember): void => {
-            new UserJoinEventHandler(this.storage, member).handleEvent();
-        });
 
         this.bot.on(App.MODLOG_UPDATE, (modLog: ModLog): void => {
             new ModLogUpdateEventHandler(this.storage, this.bot, modLog).handleEvent();

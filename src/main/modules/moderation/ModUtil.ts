@@ -10,7 +10,48 @@ export class ModUtils {
 
     public static readonly DAYS_IN_SECONDS = ModUtils.HOURS_IN_SECONDS * 24;
 
+    /**
+     * setTimeout's delay is a 32-bit signed int (~24.85 day max). Both setMuteTimeout and
+     * setBanTimeout schedule a JS timer for a user-supplied duration, so any duration accepted
+     * by MuteCommand, BanCommand, or SetWarnPunishments is capped here at 21 days - a round
+     * number safely under that limit. (Discord's own timeout limit is 28 days, but the JS
+     * timer is the tighter constraint mute must respect; bans have no Discord-side cap at all,
+     * so this is the only limit on ban duration.)
+     */
+    public static readonly MAX_TIMEOUT_DURATION_SECONDS = ModUtils.DAYS_IN_SECONDS * 21;
+
     public static readonly timers: Map<number, NodeJS.Timeout> = new Map();
+
+    /**
+     * Formats a duration in seconds as a word-style string, eg. "3 days, 5 hours and 10
+     * minutes". Zero-valued larger units are omitted, eg. a 90 minute duration formats as
+     * "1 hour and 30 minutes", not "0 days, 1 hour and 30 minutes".
+     *
+     * @param  {number} totalSeconds
+     * @returns string
+     */
+    public static formatDuration(totalSeconds: number): string {
+        let remaining = totalSeconds;
+        const days = Math.floor(remaining / ModUtils.DAYS_IN_SECONDS);
+        remaining -= days * ModUtils.DAYS_IN_SECONDS;
+        const hours = Math.floor(remaining / ModUtils.HOURS_IN_SECONDS);
+        remaining -= hours * ModUtils.HOURS_IN_SECONDS;
+        const minutes = Math.floor(remaining / ModUtils.MINUTES_IN_SECONDS);
+
+        const pluralise = (value: number, unit: string): string => `${value} ${unit}${value === 1 ? '' : 's'}`;
+
+        const parts: string[] = [];
+        if (days > 0)
+            parts.push(pluralise(days, 'day'));
+        if (hours > 0)
+            parts.push(pluralise(hours, 'hour'));
+        if (minutes > 0 || parts.length === 0)
+            parts.push(pluralise(minutes, 'minute'));
+
+        if (parts.length === 1)
+            return parts[0];
+        return `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
+    }
 
     /**
      * Parses a string in the form X{m|h|d} where X is an integer greater than 0.
@@ -132,6 +173,8 @@ export class ModUtils {
                                 guildMemberManager: GuildMemberManager,
                                 emit: Function): NodeJS.Timeout {
         const callback = (): void => {
+            // Deliberately left as raw minutes - this is a developer-facing log line, not the
+            // user-facing reason text below, which uses ModUtils.formatDuration.
             const actualDuration = Math.floor((endTime - startTime) / 60);
             log.info(`Unbanning ${userId} after ${actualDuration} minutes timeout.`);
             // Unban member
@@ -148,7 +191,7 @@ export class ModUtils {
             ModUtils.removeTimeout(timerId);
 
             // Add unban entry to db
-            const reason = `Unban after ${actualDuration} minutes`;
+            const reason = `Unban after ${ModUtils.formatDuration(endTime - startTime)}`;
             ModDbUtils.addModerationAction(
                 serverId, botId, userId, ModActions.UNBAN, ModUtils.getUnixTime(), emit, reason,
             );
@@ -173,28 +216,27 @@ export class ModUtils {
     }
 
     /**
-     * This function adds the mute timeout to the database and calls setMuteTimeout
+     * This function adds the mute timeout to the database and calls setMuteTimeout.
      * We need the timeout duration for the setTimeout function as startTime and endTime
-     * duration passed into this function may not reflect the actual length of the ban.
-     * ie if the bot is restarted, the actual startTime will be reflected in the database
+     * duration passed into this function may not reflect the actual length of the mute.
+     * ie if the bot is restarted, the actual startTime will be reflected in the database.
+     *
+     * Discord expires the member's timeout natively, so this only needs to record the
+     * UNMUTE audit log entry when the mute would have ended - it does not touch Discord.
      *
      * @param  {number} startTime
      * @param  {number} endTime
      * @param  {string} userId
      * @param  {string} serverId
      * @param  {string} botId
-     * @param  {GuildMemberManager} guildMemberManager
      * @param  {Function} emit
-     * @param  {muteroleId} muteroleId
      * @returns void
      */
     public static addMuteTimeout(timeoutDuration: number, startTime: number, endTime: number,
                                  userId: string, serverId: string, botId: string,
-                                 guildMemberManager: GuildMemberManager,
-                                 emit: Function, muteRoleId: string): void {
+                                 emit: Function): void {
         const timer = ModUtils.setMuteTimeout(
-            timeoutDuration, startTime, endTime, userId, serverId,
-            botId, guildMemberManager, emit, muteRoleId,
+            timeoutDuration, startTime, endTime, userId, serverId, botId, emit,
         );
 
         const timerId = ModUtils.assignTimeout(timer);
@@ -205,34 +247,27 @@ export class ModUtils {
     }
 
     /**
-     * This function handles the timeout of the ban to unmute the user when timeout is up.
+     * This function handles the timeout of the mute, recording the UNMUTE audit log entry
+     * when the timeout is up. Discord expires the member's timeout on its own; this does not
+     * make any Discord API call.
      *
      * @param  {number} timeoutDuration
      * @param  {number} startTime
      * @param  {number} endTime
-     * @param  {number} endTime
      * @param  {string} userId
      * @param  {string} serverId
      * @param  {string} botId
-     * @param  {GuildMemberManager} guildMemberManager
      * @param  {Function} emit
-     * @param  {muteroleId} muteroleId
      * @returns NodeJS.Timeout
      */
     public static setMuteTimeout(timeoutDuration: number, startTime: number, endTime: number,
                                  userId: string, serverId: string, botId: string,
-                                 guildMemberManager: GuildMemberManager, emit: Function,
-                                 muteRoleId: string): NodeJS.Timeout {
+                                 emit: Function): NodeJS.Timeout {
         const callback = (): void => {
+            // Deliberately left as raw minutes - this is a developer-facing log line, not the
+            // user-facing reason text below, which uses ModUtils.formatDuration.
             const actualDuration = Math.floor((endTime - startTime) / 60);
-            log.info(`Unmuting ${userId} after ${actualDuration} minutes timeout.`);
-            // Unmute member
-            guildMemberManager.fetch(userId)
-                .then((guildMember) => guildMember.roles.remove(muteRoleId))
-                .catch((err) => {
-                    log.info(err);
-                    log.info(`Unable to unmute user ${userId} from server ${serverId}. Mute role is ${muteRoleId}`);
-                });
+            log.info(`Recording auto-unmute for ${userId} after ${actualDuration} minutes timeout.`);
 
             // Remove entry from db
             const timerId = ModDbUtils.removeActionTimeout(userId, ModActions.MUTE, serverId);
@@ -241,7 +276,7 @@ export class ModUtils {
             ModUtils.removeTimeout(timerId);
 
             // Add unmute entry to db
-            const reason = `Unmute after ${actualDuration} minutes`;
+            const reason = `Unmute after ${ModUtils.formatDuration(endTime - startTime)}`;
             ModDbUtils.addModerationAction(
                 serverId, botId, userId, ModActions.UNMUTE, ModUtils.getUnixTime(), emit, reason,
             );

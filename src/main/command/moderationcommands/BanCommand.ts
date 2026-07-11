@@ -22,6 +22,8 @@ export class BanCommand extends Command {
 
     public static COMMAND_USAGE = '**Usage:** @bot ban userId [reason] [X{m|h|d}]';
 
+    public static DURATION_TOO_LONG = 'Duration cannot exceed 21 days.';
+
     private type = ModActions.BAN;
 
     private args: string[];
@@ -63,6 +65,10 @@ export class BanCommand extends Command {
         // Check last val for ban time if any
         const { length } = this.args;
         const duration = ModUtils.parseDuration(this.args[length - 1]);
+        if (duration && duration > ModUtils.MAX_TIMEOUT_DURATION_SECONDS) {
+            await messageReply({ embeds: [this.generateDurationTooLongEmbed()] });
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        }
         if (duration)
             this.args.pop();
 
@@ -108,6 +114,14 @@ export class BanCommand extends Command {
         );
     }
 
+    private generateDurationTooLongEmbed(): EmbedBuilder {
+        return this.generateGenericEmbed(
+            BanCommand.EMBED_TITLE,
+            `${BanCommand.DURATION_TOO_LONG}\n${BanCommand.COMMAND_USAGE}`,
+            BanCommand.EMBED_ERROR_COLOUR,
+        );
+    }
+
     private generateValidEmbed(target: User | GuildMember | string, reason: string,
                                duration: number|null): EmbedBuilder {
         const targetStr = target instanceof String ? target : (target as User).tag;
@@ -119,7 +133,7 @@ export class BanCommand extends Command {
 
         embed.addFields({ name: 'Reason', value: reason || '-', inline: true });
         embed.addFields({
-            name: 'Length', value: duration ? `${Math.floor(duration / 60)} minutes` : 'Permanent', inline: true,
+            name: 'Length', value: duration ? ModUtils.formatDuration(duration) : 'Permanent', inline: true,
         });
 
         return embed;

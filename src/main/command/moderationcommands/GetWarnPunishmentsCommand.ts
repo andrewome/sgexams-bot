@@ -6,6 +6,7 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 import { ModActions } from '../../modules/moderation/classes/ModActions';
 import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
+import { ModUtils } from '../../modules/moderation/ModUtil';
 
 export class GetWarnPunishmentsCommand extends Command {
     public static readonly NAME = 'GetWarnPunishments';
@@ -61,7 +62,7 @@ export class GetWarnPunishmentsCommand extends Command {
         for (const row of rows) {
             const { numWarns, type, duration } = row;
             out += `${numWarns} warns - ${type} `;
-            out += (duration ? `${Math.floor(duration / 60)} minutes\n` : 'forever\n');
+            out += (duration ? `${ModUtils.formatDuration(duration)}\n` : 'forever\n');
         }
         return this.generateGenericEmbed(
             GetWarnPunishmentsCommand.EMBED_TITLE,
