@@ -6,7 +6,7 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 import { ModUtils } from '../../modules/moderation/ModUtil';
 import { ModActions } from '../../modules/moderation/classes/ModActions';
-import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../modules/moderation/ModerationLog';
 
 export class SetWarnPunishmentsCommand extends Command {
     public static readonly NAME = 'SetWarnPunishments';
@@ -54,7 +54,7 @@ export class SetWarnPunishmentsCommand extends Command {
         // Check number of args, 0 args means reset.
         if (this.args.length === 0) {
             await messageReply({ embeds: [this.generateResetEmbed()] });
-            ModDbUtils.resetWarnSettings(server.serverId);
+            ModerationLog.clearWarnRules(server.serverId);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -65,7 +65,7 @@ export class SetWarnPunishmentsCommand extends Command {
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
-        ModDbUtils.resetWarnSettings(server.serverId);
+        ModerationLog.clearWarnRules(server.serverId);
         this.addToDatabase(server.serverId, settings);
         await messageReply({ embeds: [this.generateValidEmbed(settings)] });
 
@@ -82,7 +82,7 @@ export class SetWarnPunishmentsCommand extends Command {
     private addToDatabase(serverId: string, settings: [number, ModActions, number|null][]): void {
         for (const setting of settings) {
             const [numWarns, action, duration] = setting;
-            ModDbUtils.addWarnSettings(serverId, numWarns, action, duration);
+            ModerationLog.setWarnRule(serverId, numWarns, action, duration);
         }
     }
 

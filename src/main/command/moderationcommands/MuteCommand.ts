@@ -7,7 +7,7 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 import { ModUtils } from '../../modules/moderation/ModUtil';
 import { ModActions } from '../../modules/moderation/classes/ModActions';
-import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../modules/moderation/ModerationLog';
 
 export class MuteCommand extends Command {
     public static readonly NAME = 'Mute';
@@ -91,8 +91,8 @@ export class MuteCommand extends Command {
             const target = await members!.fetch(targetId);
             await target.timeout(duration * 1000, reason);
             const curTime = ModUtils.getUnixTime();
-            ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
-                                           this.type, curTime, emit!, reason, duration);
+            ModerationLog.record(server.serverId, userId!, targetId,
+                                 this.type, curTime, emit!, reason, duration);
 
             // Remove any existing timeout bookkeeping if any, then set a new one
             ModUtils.handleUnmuteTimeout(targetId, server.serverId);

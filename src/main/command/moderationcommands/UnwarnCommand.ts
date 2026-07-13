@@ -5,7 +5,7 @@ import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 import { ModActions } from '../../modules/moderation/classes/ModActions';
-import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../modules/moderation/ModerationLog';
 import { ModUtils } from '../../modules/moderation/ModUtil';
 
 export class UnwarnCommand extends Command {
@@ -62,7 +62,7 @@ export class UnwarnCommand extends Command {
         if (reason.length > 512)
             reason = reason.substr(0, 512);
 
-        const successful = ModDbUtils.deleteWarn(server.serverId, caseId);
+        const successful = ModerationLog.deleteWarnEntry(server.serverId, caseId);
 
         // Unsuccessful because of invalid caseid
         if (!successful) {
@@ -71,7 +71,7 @@ export class UnwarnCommand extends Command {
         }
 
         // Update modlogs
-        ModDbUtils.addModerationAction(
+        ModerationLog.record(
             server.serverId, userId!, caseId.toString(),
             this.type, ModUtils.getUnixTime(), emit!, reason,
         );

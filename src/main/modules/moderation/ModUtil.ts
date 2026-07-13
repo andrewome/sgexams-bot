@@ -1,7 +1,8 @@
 import { GuildMemberManager } from 'discord.js';
 import log from 'loglevel';
 import { ModActions } from './classes/ModActions';
-import { ModDbUtils } from './ModDbUtils';
+import { ModerationLog } from './ModerationLog';
+import { ModerationTimeouts } from './ModerationTimeouts';
 
 export class ModUtils {
     public static readonly MINUTES_IN_SECONDS = 60;
@@ -150,7 +151,7 @@ export class ModUtils {
 
         const timerId = ModUtils.assignTimeout(timer);
 
-        ModDbUtils.addActionTimeout(
+        ModerationTimeouts.schedule(
             startTime, endTime, userId, ModActions.BAN, serverId, timerId,
         );
     }
@@ -185,14 +186,14 @@ export class ModUtils {
                 });
 
             // Remove entry from db
-            const timerId = ModDbUtils.removeActionTimeout(userId, ModActions.BAN, serverId);
+            const timerId = ModerationTimeouts.cancel(userId, ModActions.BAN, serverId);
 
             // Remove timer from timers map
             ModUtils.removeTimeout(timerId);
 
             // Add unban entry to db
             const reason = `Unban after ${ModUtils.formatDuration(endTime - startTime)}`;
-            ModDbUtils.addModerationAction(
+            ModerationLog.record(
                 serverId, botId, userId, ModActions.UNBAN, ModUtils.getUnixTime(), emit, reason,
             );
             log.info(`Done removing ${userId} from Database.`);
@@ -209,7 +210,7 @@ export class ModUtils {
      * @returns void
      */
     public static handleUnbanTimeout(userId: string, serverId: string): void {
-        const timerId = ModDbUtils.removeActionTimeout(userId, ModActions.BAN, serverId);
+        const timerId = ModerationTimeouts.cancel(userId, ModActions.BAN, serverId);
         if (timerId) {
             ModUtils.removeTimeout(timerId);
         }
@@ -241,7 +242,7 @@ export class ModUtils {
 
         const timerId = ModUtils.assignTimeout(timer);
 
-        ModDbUtils.addActionTimeout(
+        ModerationTimeouts.schedule(
             startTime, endTime, userId, ModActions.MUTE, serverId, timerId,
         );
     }
@@ -270,14 +271,14 @@ export class ModUtils {
             log.info(`Recording auto-unmute for ${userId} after ${actualDuration} minutes timeout.`);
 
             // Remove entry from db
-            const timerId = ModDbUtils.removeActionTimeout(userId, ModActions.MUTE, serverId);
+            const timerId = ModerationTimeouts.cancel(userId, ModActions.MUTE, serverId);
 
             // Remove timer from timers map
             ModUtils.removeTimeout(timerId);
 
             // Add unmute entry to db
             const reason = `Unmute after ${ModUtils.formatDuration(endTime - startTime)}`;
-            ModDbUtils.addModerationAction(
+            ModerationLog.record(
                 serverId, botId, userId, ModActions.UNMUTE, ModUtils.getUnixTime(), emit, reason,
             );
             log.info(`Done removing ${userId} from Database.`);
@@ -294,7 +295,7 @@ export class ModUtils {
      * @returns void
      */
     public static handleUnmuteTimeout(userId: string, serverId: string): void {
-        const timerId = ModDbUtils.removeActionTimeout(userId, ModActions.MUTE, serverId);
+        const timerId = ModerationTimeouts.cancel(userId, ModActions.MUTE, serverId);
         if (timerId) {
             ModUtils.removeTimeout(timerId);
         }

@@ -4,7 +4,7 @@ import {
 import { Command } from '../Command';
 import { CommandArgs } from '../classes/CommandArgs';
 import { CommandResult } from '../classes/CommandResult';
-import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../modules/moderation/ModerationLog';
 import { ModLog } from '../../modules/moderation/classes/ModLog';
 import { ModActions } from '../../modules/moderation/classes/ModActions';
 import { ModUtils } from '../../modules/moderation/ModUtil';
@@ -74,12 +74,14 @@ export class ModLogsCommand extends Command {
         }
 
         // Retrieve mod logs and sort them in descending order of caseId
-        const mainModLogs = ModDbUtils.getModLogs(server.serverId, this.userId, this.type);
+        const mainModLogs = ModerationLog.entries(server.serverId, {
+            userId: this.userId ?? undefined, type: (this.type as ModActions) ?? undefined,
+        });
         let complementModLogs: ModLog[] = [];
         if (this.complementType !== null) {
-            complementModLogs = ModDbUtils.getModLogs(
-                server.serverId, this.userId, this.complementType,
-            );
+            complementModLogs = ModerationLog.entries(server.serverId, {
+                userId: this.userId ?? undefined, type: this.complementType as ModActions,
+            });
         }
         const modLogs = [...mainModLogs, ...complementModLogs];
         modLogs.sort((a, b) => {

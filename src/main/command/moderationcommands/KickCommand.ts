@@ -6,7 +6,7 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 import { ModUtils } from '../../modules/moderation/ModUtil';
 import { ModActions } from '../../modules/moderation/classes/ModActions';
-import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../modules/moderation/ModerationLog';
 
 export class KickCommand extends Command {
     public static readonly NAME = 'Kick';
@@ -62,8 +62,8 @@ export class KickCommand extends Command {
 
         try {
             const target = await members!.fetch(targetId);
-            ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
-                                           this.type, ModUtils.getUnixTime(), emit!, reason);
+            ModerationLog.record(server.serverId, userId!, targetId,
+                                 this.type, ModUtils.getUnixTime(), emit!, reason);
             await target.kick();
             await messageReply({ embeds: [this.generateValidEmbed(target, reason)] });
         } catch (err) {
