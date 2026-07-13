@@ -1,5 +1,5 @@
 import {
-    GuildMember, EmbedBuilder, PermissionsBitField, PermissionFlagsBits, DiscordAPIError, GuildMemberManager,
+    EmbedBuilder, PermissionsBitField, PermissionFlagsBits, GuildMemberManager,
 } from 'discord.js';
 import log from 'loglevel';
 import { Command } from '../Command';
@@ -8,6 +8,7 @@ import { CommandArgs } from '../classes/CommandArgs';
 import { ModActions } from '../../modules/moderation/classes/ModActions';
 import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
 import { ModUtils } from '../../modules/moderation/ModUtil';
+import { DiscordMemberPort } from '../../modules/moderation/DiscordMemberPort';
 
 export class WarnCommand extends Command {
     public static readonly NAME = 'Warn';
@@ -41,7 +42,7 @@ export class WarnCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            members, server, userId, memberPerms, messageReply, emit, botId,
+            memberActions, members, server, userId, memberPerms, messageReply, emit, botId,
         } = commandArgs;
 
         // Check for permissions first
@@ -60,21 +61,18 @@ export class WarnCommand extends Command {
         const reason = this.args.slice(1).join(' ');
 
         // Warn
-        try {
-            const curTime = ModUtils.getUnixTime();
-            const target = await members!.fetch(targetId);
-            ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
-                                           this.type, curTime, emit!, reason);
-            await messageReply({ embeds: [this.generateValidEmbed(target, reason)] });
-        } catch (err) {
-            if (err instanceof DiscordAPIError)
-                await messageReply({ embeds: [this.generateUserIdError()] });
-            else
-                throw err;
+        const result = await memberActions!.lookup(targetId);
+        if (!result.ok) {
+            await messageReply({ embeds: [this.generateUserIdError()] });
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
+        const curTime = ModUtils.getUnixTime();
+        ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
+                                       this.type, curTime, emit!, reason);
+        await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason)] });
 
         // Handle if this warning hit server warn action threshold
-        await this.handleWarnThreshold(server.serverId, targetId, botId!, members!, emit!);
+        await this.handleWarnThreshold(server.serverId, targetId, botId!, memberActions!, members, emit!);
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -84,11 +82,17 @@ export class WarnCommand extends Command {
      *
      * @param  {string} serverId
      * @param  {string} targetId
-     * @param  {GuildMemberManager} members
+     * @param  {string} botId
+     * @param  {DiscordMemberPort} memberActions
+     * @param  {GuildMemberManager} members needed only to re-arm a temporary auto-ban's
+     *         eventual unban timer - see ADR-0002, ModUtils.addBanTimeout still takes the raw
+     *         manager (out of this deepening's scope).
+     * @param  {Function} emit
      * @returns Promise
      */
     private async handleWarnThreshold(serverId: string, targetId: string, botId: string,
-                                      members: GuildMemberManager, emit: Function): Promise<void> {
+                                      memberActions: DiscordMemberPort, members: GuildMemberManager | undefined,
+                                      emit: Function): Promise<void> {
         // Check if warn threshold has been met
         const numWarns = ModDbUtils.fetchNumberOfWarns(serverId, targetId);
 
@@ -100,10 +104,13 @@ export class WarnCommand extends Command {
             const curTime = ModUtils.getUnixTime();
             const { type, duration } = res;
             const reason = `**(AUTO)** ${numWarns} warns accumulated`;
-            const target = await members!.fetch(targetId);
             switch (type) {
-                case ModActions.BAN:
-                    await target.ban({ reason });
+                case ModActions.BAN: {
+                    const result = await memberActions.ban(targetId, { reason });
+                    if (!result.ok) {
+                        log.warn(`[WarnCommand]: Unable to auto-ban ${targetId} in ${serverId} - unknown user!`);
+                        return;
+                    }
                     ModDbUtils.addModerationAction(
                         serverId, botId, targetId, ModActions.BAN, curTime, emit, reason, duration,
                     );
@@ -114,6 +121,7 @@ export class WarnCommand extends Command {
                         );
                     }
                     break;
+                }
                 case ModActions.MUTE: {
                     // Mute via warn escalation requires a duration - permanent mutes are not
                     // supported (see ADR-0001). SetWarnPunishmentsCommand enforces this at
@@ -125,7 +133,11 @@ export class WarnCommand extends Command {
                         return;
                     }
 
-                    await target.timeout(duration * 1000, reason);
+                    const result = await memberActions.timeout(targetId, duration * 1000, reason);
+                    if (!result.ok) {
+                        log.warn(`[WarnCommand]: Unable to auto-mute ${targetId} in ${serverId} - unknown user!`);
+                        return;
+                    }
                     ModDbUtils.addModerationAction(serverId, botId, targetId, ModActions.MUTE,
                                                    curTime, emit!, reason, duration);
                     const endTime = curTime + duration;
@@ -155,10 +167,10 @@ export class WarnCommand extends Command {
         );
     }
 
-    private generateValidEmbed(target: GuildMember, reason: string): EmbedBuilder {
+    private generateValidEmbed(tag: string, reason: string): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             WarnCommand.EMBED_TITLE,
-            `${target.user.tag} was warned.`,
+            `${tag} was warned.`,
             WarnCommand.EMBED_DEFAULT_COLOUR,
         );
         return embed.addFields({ name: 'Reason', value: reason || '-' });

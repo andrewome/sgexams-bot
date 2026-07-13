@@ -8,6 +8,7 @@ import { Storage } from '../storage/Storage';
 import { Server } from '../storage/Server';
 import { CommandArgs } from '../command/classes/CommandArgs';
 import { MessageEventHandler } from './MessageEventHandler';
+import { DiscordMemberAdapter } from '../modules/moderation/DiscordMemberAdapter';
 
 /* This class is for the 'message' event */
 export class OnMessageEventHandler extends MessageEventHandler {
@@ -94,10 +95,11 @@ export class OnMessageEventHandler extends MessageEventHandler {
             const messageId = this.message.id;
             const userId = author.id;
             const { emit, botId } = this;
+            const memberActions = new DiscordMemberAdapter(members);
             const commandArgs: CommandArgs = {
                 server, memberPerms, messageReply,
                 deleteFunction, uptime, channels,
-                emojis, members, channel, userId,
+                emojis, members, memberActions, channel, userId,
                 messageId, emit, botId, roles,
             };
 

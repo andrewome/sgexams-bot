@@ -1,5 +1,5 @@
 import {
-    EmbedBuilder, PermissionsBitField, PermissionFlagsBits, DiscordAPIError,
+    EmbedBuilder, PermissionsBitField, PermissionFlagsBits,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -46,7 +46,7 @@ export class UnmuteCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            members, server, userId, memberPerms, messageReply, emit,
+            memberActions, server, userId, memberPerms, messageReply, emit,
         } = commandArgs;
 
         // Check for permissions first
@@ -67,29 +67,25 @@ export class UnmuteCommand extends Command {
             reason = reason.substr(0, 512);
 
         // Unmute, add the action and remove the timeout bookkeeping (if any)
-        try {
-            const target = await members!.fetch(targetId);
-            await target.timeout(null, reason);
-            ModDbUtils.addModerationAction(
-                server.serverId, userId!, targetId, this.type,
-                ModUtils.getUnixTime(), emit!, reason,
-            );
-            ModUtils.handleUnmuteTimeout(targetId, server.serverId);
-            await messageReply({ embeds: [this.generateValidEmbed(target.user.tag, reason)] });
-        } catch (err) {
-            if (err instanceof DiscordAPIError)
-                await messageReply({ embeds: [this.generateInvalidUserIdEmbed()] });
-            else
-                throw err;
+        const result = await memberActions!.timeout(targetId, null, reason);
+        if (!result.ok) {
+            await messageReply({ embeds: [this.generateInvalidUserIdEmbed()] });
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
+        ModDbUtils.addModerationAction(
+            server.serverId, userId!, targetId, this.type,
+            ModUtils.getUnixTime(), emit!, reason,
+        );
+        ModUtils.handleUnmuteTimeout(targetId, server.serverId);
+        await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason)] });
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
 
-    private generateValidEmbed(username: string, reason: string): EmbedBuilder {
+    private generateValidEmbed(tag: string, reason: string): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             UnmuteCommand.EMBED_TITLE,
-            `${username} was unmuted.`,
+            `${tag} was unmuted.`,
             UnmuteCommand.EMBED_DEFAULT_COLOUR,
         );
         return embed.addFields({ name: 'Reason', value: reason || '-' });
