@@ -14,6 +14,7 @@ export const noopEmit = (): void => {};
 /** Shared CommandArgs base for the moderation commands migrated onto DiscordMemberPort. */
 export const baseCommandArgs = (server: Server, memberActions: FakeMemberAdapter): CommandArgs => ({
     server,
+    serverName: 'Test Server',
     memberPerms: adminPerms,
     messageReply: noopMessageReply,
     userId: 'modId',

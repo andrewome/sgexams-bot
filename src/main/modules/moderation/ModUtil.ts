@@ -1,6 +1,7 @@
-import { GuildMemberManager } from 'discord.js';
+import { EmbedBuilder, GuildMemberManager } from 'discord.js';
 import log from 'loglevel';
 import { ModActions } from './classes/ModActions';
+import { Command } from '../../command/Command';
 import { ModerationLog } from './ModerationLog';
 import { ModerationTimeouts } from './ModerationTimeouts';
 
@@ -52,6 +53,58 @@ export class ModUtils {
         if (parts.length === 1)
             return parts[0];
         return `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
+    }
+
+    /**
+     * Builds the "Action notice" DM embed sent to a user after a mute/kick/ban (see
+     * CONTEXT.md, ADR-0004) - not on Command, since Command is the generic base every
+     * command family uses (Starboard, MsgChecker, Birthday too), not just moderation.
+     *
+     * Pass duration to show it (formatted if a number, "Permanent" if null); omit it
+     * entirely for actions with no duration concept, eg. kick.
+     *
+     * @param  {string} action past-tense action word
+     * @param  {string} serverName
+     * @param  {string} reason
+     * @param  {string} modId the moderator (or the bot itself, for auto-escalation)
+     * @param  {number|null} duration
+     * @returns EmbedBuilder
+     */
+    public static buildActionNoticeEmbed(action: 'muted' | 'kicked' | 'banned', serverName: string, reason: string,
+                                         modId: string, duration?: number | null): EmbedBuilder {
+        const embed = new EmbedBuilder()
+            .setColor(Command.EMBED_DEFAULT_COLOUR)
+            .setTitle(`You were ${action} in ${serverName}`)
+            .addFields({ name: 'Reason', value: reason || '-' });
+
+        if (duration !== undefined) {
+            embed.addFields({
+                name: 'Duration',
+                value: duration === null ? 'Permanent' : ModUtils.formatDuration(duration),
+            });
+        }
+
+        embed.addFields({ name: 'Moderator', value: `<@${modId}>` });
+        return embed;
+    }
+
+    /**
+     * Adds a "Notified" field to a moderator's confirmation embed, but only when the
+     * Action notice DM failed to send - success needs no extra line. The raw DiscordAPIError
+     * is logged (see DiscordMemberAdapter.toFailure), not shown here - this is a friendly
+     * summary, not diagnostic detail. See ADR-0004.
+     *
+     * @param  {EmbedBuilder} embed
+     * @param  {boolean} notified
+     * @returns void
+     */
+    public static addDmFailureNotice(embed: EmbedBuilder, notified: boolean): void {
+        if (!notified) {
+            embed.addFields({
+                name: 'Notified',
+                value: 'Could not DM this user - they may have DMs disabled or have blocked the bot.',
+            });
+        }
     }
 
     /**

@@ -50,7 +50,7 @@ export class MuteCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            memberActions, server, userId, memberPerms, messageReply, emit, botId,
+            memberActions, server, serverName, userId, memberPerms, messageReply, emit, botId,
         } = commandArgs;
 
         // Check for permissions first
@@ -102,7 +102,12 @@ export class MuteCommand extends Command {
         ModUtils.addMuteTimeout(
             duration, curTime, endTime, targetId, server.serverId, botId!, emit!,
         );
-        await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason, duration)] });
+
+        // Best-effort - a failed DM never blocks the mute itself. See ADR-0004.
+        const noticeEmbed = ModUtils.buildActionNoticeEmbed('muted', serverName!, reason, userId!, duration);
+        const dmResult = await memberActions!.dm(targetId, { embeds: [noticeEmbed] });
+
+        await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason, duration, dmResult.ok)] });
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -131,7 +136,7 @@ export class MuteCommand extends Command {
         );
     }
 
-    private generateValidEmbed(tag: string, reason: string, duration: number): EmbedBuilder {
+    private generateValidEmbed(tag: string, reason: string, duration: number, notified: boolean): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             MuteCommand.EMBED_TITLE,
             `${tag} was muted.`,
@@ -140,6 +145,7 @@ export class MuteCommand extends Command {
 
         embed.addFields({ name: 'Reason', value: reason || '-', inline: true });
         embed.addFields({ name: 'Length', value: ModUtils.formatDuration(duration), inline: true });
+        ModUtils.addDmFailureNotice(embed, notified);
 
         return embed;
     }

@@ -2,7 +2,9 @@ import {
     GuildMemberManager, DiscordAPIError, GuildMember, User,
 } from 'discord.js';
 import log from 'loglevel';
-import { DiscordMemberPort, MemberActionResult, BanOptions } from './DiscordMemberPort';
+import {
+    DiscordMemberPort, MemberActionResult, BanOptions, DmOptions,
+} from './DiscordMemberPort';
 
 /** Production DiscordMemberPort, backed by a real discord.js GuildMemberManager. */
 export class DiscordMemberAdapter implements DiscordMemberPort {
@@ -56,6 +58,20 @@ export class DiscordMemberAdapter implements DiscordMemberPort {
             const member = await this.members.fetch(userId);
             await member.timeout(durationMs, reason);
             return { ok: true, tag: member.user.tag };
+        } catch (err) {
+            return DiscordMemberAdapter.toFailure(err);
+        }
+    }
+
+    public async dm(userId: string, options: DmOptions): Promise<MemberActionResult> {
+        try {
+            // Fetched through the client's global user manager, not this.members - a
+            // kicked/banned member is no longer fetchable via GuildMemberManager, but DMing
+            // never depended on current guild membership in the first place. This lets every
+            // command send the notice only after confirming the action actually succeeded.
+            const user = await this.members.guild.client.users.fetch(userId);
+            await user.send(options);
+            return { ok: true, tag: user.tag };
         } catch (err) {
             return DiscordMemberAdapter.toFailure(err);
         }

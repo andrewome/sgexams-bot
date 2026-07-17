@@ -42,7 +42,7 @@ export class WarnCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            memberActions, members, server, userId, memberPerms, messageReply, emit, botId,
+            memberActions, members, server, serverName, userId, memberPerms, messageReply, emit, botId,
         } = commandArgs;
 
         // Check for permissions first
@@ -72,7 +72,9 @@ export class WarnCommand extends Command {
         await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason)] });
 
         // Handle if this warning hit server warn action threshold
-        await this.handleWarnThreshold(server.serverId, targetId, botId!, memberActions!, members, emit!);
+        await this.handleWarnThreshold(
+            server.serverId, serverName!, targetId, botId!, memberActions!, members, emit!,
+        );
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -81,6 +83,7 @@ export class WarnCommand extends Command {
      * Checks and handles if this warning has hit the server's warn action threshold.
      *
      * @param  {string} serverId
+     * @param  {string} serverName
      * @param  {string} targetId
      * @param  {string} botId
      * @param  {DiscordMemberPort} memberActions
@@ -90,7 +93,7 @@ export class WarnCommand extends Command {
      * @param  {Function} emit
      * @returns Promise
      */
-    private async handleWarnThreshold(serverId: string, targetId: string, botId: string,
+    private async handleWarnThreshold(serverId: string, serverName: string, targetId: string, botId: string,
                                       memberActions: DiscordMemberPort, members: GuildMemberManager | undefined,
                                       emit: Function): Promise<void> {
         // Check if warn threshold has been met
@@ -120,6 +123,12 @@ export class WarnCommand extends Command {
                             duration, curTime, endTime, targetId, serverId, botId, members!, emit,
                         );
                     }
+
+                    // Best-effort, sent only after the ban is confirmed. Moderator is the bot
+                    // itself: this is an automatic escalation, not a moderator-issued command.
+                    // See ADR-0004.
+                    const noticeEmbed = ModUtils.buildActionNoticeEmbed('banned', serverName, reason, botId, duration);
+                    await memberActions.dm(targetId, { embeds: [noticeEmbed] });
                     break;
                 }
                 case ModActions.MUTE: {
@@ -144,6 +153,11 @@ export class WarnCommand extends Command {
                     ModUtils.addMuteTimeout(
                         duration, curTime, endTime, targetId, serverId, botId!, emit!,
                     );
+
+                    // Best-effort - mute doesn't remove the member, so this can safely
+                    // happen after. See ADR-0004.
+                    const noticeEmbed = ModUtils.buildActionNoticeEmbed('muted', serverName, reason, botId, duration);
+                    await memberActions.dm(targetId, { embeds: [noticeEmbed] });
                     break;
                 }
                 default:
