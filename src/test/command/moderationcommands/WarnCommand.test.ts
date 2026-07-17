@@ -7,7 +7,7 @@ import { Command } from '../../../main/command/Command';
 import { deleteDbFile, TEST_STORAGE_PATH } from '../../TestsHelper';
 import { DatabaseConnection } from '../../../main/DatabaseConnection';
 import { Storage } from '../../../main/storage/Storage';
-import { ModDbUtils } from '../../../main/modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../../main/modules/moderation/ModerationLog';
 import { ModActions } from '../../../main/modules/moderation/classes/ModActions';
 import { FakeMemberAdapter } from '../../modules/moderation/FakeMemberAdapter';
 import { baseCommandArgs, noopMessageReply } from './ModCommandTestHelper';
@@ -52,7 +52,7 @@ describe('WarnCommand test suite', (): void => {
         commandResult.shouldCheckMessage.should.be.true;
         memberActions.calls.length.should.equal(1);
         memberActions.calls[0].method.should.equal('lookup');
-        ModDbUtils.getModLogs(serverId, targetId, ModActions.WARN).length.should.equal(1);
+        ModerationLog.entries(serverId, { userId: targetId, type: ModActions.WARN }).length.should.equal(1);
     });
 
     it('Unknown user is reported and nothing is recorded', async (): Promise<void> => {
@@ -65,12 +65,12 @@ describe('WarnCommand test suite', (): void => {
         const commandResult = await command.execute({ ...baseArgs(), messageReply: checkEmbed });
 
         commandResult.shouldCheckMessage.should.be.true;
-        ModDbUtils.getModLogs(serverId, targetId, ModActions.WARN).length.should.equal(0);
+        ModerationLog.entries(serverId, { userId: targetId, type: ModActions.WARN }).length.should.equal(0);
     });
 
     it('Warn threshold escalates to a permanent ban', async (): Promise<void> => {
         memberActions.nextResult = { ok: true, tag: 'Target#0001' };
-        ModDbUtils.addWarnSettings(serverId, 1, ModActions.BAN, null);
+        ModerationLog.setWarnRule(serverId, 1, ModActions.BAN, null);
         const command = new WarnCommand([targetId, 'final', 'straw']);
         const commandResult = await command.execute({ ...baseArgs(), messageReply: noopMessageReply });
 
@@ -79,12 +79,12 @@ describe('WarnCommand test suite', (): void => {
         memberActions.calls[0].method.should.equal('lookup');
         memberActions.calls[1].method.should.equal('ban');
         memberActions.calls[1].userId.should.equal(targetId);
-        ModDbUtils.getModLogs(serverId, targetId, ModActions.BAN).length.should.equal(1);
+        ModerationLog.entries(serverId, { userId: targetId, type: ModActions.BAN }).length.should.equal(1);
     });
 
     it('Warn threshold escalates to a temporary ban and schedules its unban', async (): Promise<void> => {
         memberActions.nextResult = { ok: true, tag: 'Target#0001' };
-        ModDbUtils.addWarnSettings(serverId, 1, ModActions.BAN, 3600);
+        ModerationLog.setWarnRule(serverId, 1, ModActions.BAN, 3600);
         const command = new WarnCommand([targetId, 'final', 'straw']);
         // members is only closed over for the eventual auto-unban timer, never called
         // synchronously - a stub is enough to exercise this path without a real manager.
@@ -93,14 +93,14 @@ describe('WarnCommand test suite', (): void => {
 
         commandResult.shouldCheckMessage.should.be.true;
         memberActions.calls[1].method.should.equal('ban');
-        const logs = ModDbUtils.getModLogs(serverId, targetId, ModActions.BAN);
+        const logs = ModerationLog.entries(serverId, { userId: targetId, type: ModActions.BAN });
         logs.length.should.equal(1);
         logs[0].timeout!.should.equal(3600);
     });
 
     it('Warn threshold escalates to a timed mute', async (): Promise<void> => {
         memberActions.nextResult = { ok: true, tag: 'Target#0001' };
-        ModDbUtils.addWarnSettings(serverId, 1, ModActions.MUTE, 3600);
+        ModerationLog.setWarnRule(serverId, 1, ModActions.MUTE, 3600);
         const command = new WarnCommand([targetId, 'final', 'straw']);
         const commandResult = await command.execute({ ...baseArgs(), messageReply: noopMessageReply });
 
@@ -108,6 +108,6 @@ describe('WarnCommand test suite', (): void => {
         memberActions.calls.length.should.equal(2);
         memberActions.calls[1].method.should.equal('timeout');
         (memberActions.calls[1].args[0] as number).should.equal(3600 * 1000);
-        ModDbUtils.getModLogs(serverId, targetId, ModActions.MUTE).length.should.equal(1);
+        ModerationLog.entries(serverId, { userId: targetId, type: ModActions.MUTE }).length.should.equal(1);
     });
 });

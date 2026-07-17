@@ -7,7 +7,7 @@ import { Command } from '../../../main/command/Command';
 import { deleteDbFile, TEST_STORAGE_PATH } from '../../TestsHelper';
 import { DatabaseConnection } from '../../../main/DatabaseConnection';
 import { Storage } from '../../../main/storage/Storage';
-import { ModDbUtils } from '../../../main/modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../../main/modules/moderation/ModerationLog';
 import { ModActions } from '../../../main/modules/moderation/classes/ModActions';
 import { FakeMemberAdapter } from '../../modules/moderation/FakeMemberAdapter';
 import { baseCommandArgs } from './ModCommandTestHelper';
@@ -54,7 +54,7 @@ describe('UnbanCommand test suite', (): void => {
         memberActions.calls.length.should.equal(1);
         memberActions.calls[0].method.should.equal('unban');
         memberActions.calls[0].userId.should.equal(targetId);
-        const logs = ModDbUtils.getModLogs(serverId, targetId, ModActions.UNBAN);
+        const logs = ModerationLog.entries(serverId, { userId: targetId, type: ModActions.UNBAN });
         logs.length.should.equal(1);
     });
 
@@ -68,6 +68,6 @@ describe('UnbanCommand test suite', (): void => {
         const commandResult = await command.execute({ ...baseArgs(), messageReply: checkEmbed });
 
         commandResult.shouldCheckMessage.should.be.true;
-        ModDbUtils.getModLogs(serverId, targetId, ModActions.UNBAN).length.should.equal(0);
+        ModerationLog.entries(serverId, { userId: targetId, type: ModActions.UNBAN }).length.should.equal(0);
     });
 });

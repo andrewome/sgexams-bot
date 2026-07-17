@@ -2,7 +2,7 @@ import { EmbedBuilder, TextChannel, Client } from 'discord.js';
 import { Storage } from '../storage/Storage';
 import { EventHandler } from './EventHandler';
 import { ModLog } from '../modules/moderation/classes/ModLog';
-import { ModDbUtils } from '../modules/moderation/ModDbUtils';
+import { ModerationLog } from '../modules/moderation/ModerationLog';
 import { ModActions } from '../modules/moderation/classes/ModActions';
 import { Command } from '../command/Command';
 import { ModUtils } from '../modules/moderation/ModUtil';
@@ -32,7 +32,7 @@ export class ModLogUpdateEventHandler extends EventHandler {
             } = this.modLog;
 
             // Get channel
-            const channelId = ModDbUtils.getModLogChannel(serverId);
+            const channelId = ModerationLog.logChannel(serverId);
 
             // Error checks
             if (!channelId)

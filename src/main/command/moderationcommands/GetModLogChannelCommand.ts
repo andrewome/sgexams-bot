@@ -2,7 +2,7 @@ import { PermissionsBitField, PermissionFlagsBits, EmbedBuilder } from 'discord.
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
-import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../modules/moderation/ModerationLog';
 
 export class GetModLogChannelCommand extends Command {
     public static readonly NAME = 'GetModLogChannel';
@@ -34,7 +34,7 @@ export class GetModLogChannelCommand extends Command {
         }
 
         // Execute
-        const channelId = ModDbUtils.getModLogChannel(server.serverId);
+        const channelId = ModerationLog.logChannel(server.serverId);
 
         // Check if channel is set
         if (channelId === null) {

@@ -2,7 +2,8 @@ import { Client, GuildMemberManager, ActivityType } from 'discord.js';
 import log from 'loglevel';
 import { Storage } from '../storage/Storage';
 import { EventHandler } from './EventHandler';
-import { ModDbUtils } from '../modules/moderation/ModDbUtils';
+import { ModerationLog } from '../modules/moderation/ModerationLog';
+import { ModerationTimeouts } from '../modules/moderation/ModerationTimeouts';
 import { ModUtils } from '../modules/moderation/ModUtil';
 import { ModActions } from '../modules/moderation/classes/ModActions';
 import { BirthdayAnnouncer } from '../modules/birthday/BirthdayAnnouncer';
@@ -48,7 +49,7 @@ export class ReadyEventHandler extends EventHandler {
      * @returns void
      */
     private handleTimeouts(): void {
-        const timeouts = ModDbUtils.fetchActionTimeouts();
+        const timeouts = ModerationTimeouts.allOpen();
         const curTime = ModUtils.getUnixTime();
         timeouts.forEach((timeout) => {
             const {
@@ -58,7 +59,7 @@ export class ReadyEventHandler extends EventHandler {
             if (!guild) { // Guild can't be found
                 // Remove entry if timeout expired
                 if (endTime <= curTime)
-                    ModDbUtils.removeActionTimeout(userId, type, serverId);
+                    ModerationTimeouts.cancel(userId, type, serverId);
                 return;
             }
 
@@ -98,7 +99,7 @@ export class ReadyEventHandler extends EventHandler {
         switch (type) {
             case ModActions.BAN: {
                 const reason = `Unban after ${formattedDuration}`;
-                ModDbUtils.addModerationAction(
+                ModerationLog.record(
                     serverId, botId, userId, ModActions.UNBAN, curTime, emit, reason,
                 );
                 ModUtils.handleUnbanTimeout(userId, serverId);
@@ -114,7 +115,7 @@ export class ReadyEventHandler extends EventHandler {
                 // Discord expires the member's timeout natively - this only needs to record
                 // the UNMUTE audit log entry, no Discord API call is needed.
                 const reason = `Unmute after ${formattedDuration}`;
-                ModDbUtils.addModerationAction(
+                ModerationLog.record(
                     serverId, botId, userId, ModActions.UNMUTE, curTime, emit, reason,
                 );
                 ModUtils.handleUnmuteTimeout(userId, serverId);

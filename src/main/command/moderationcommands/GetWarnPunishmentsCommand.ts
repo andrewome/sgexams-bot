@@ -5,7 +5,7 @@ import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 import { ModActions } from '../../modules/moderation/classes/ModActions';
-import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../modules/moderation/ModerationLog';
 import { ModUtils } from '../../modules/moderation/ModUtil';
 
 export class GetWarnPunishmentsCommand extends Command {
@@ -39,7 +39,7 @@ export class GetWarnPunishmentsCommand extends Command {
             return this.NO_PERMISSIONS_COMMANDRESULT;
         }
 
-        const rows = ModDbUtils.getWarnSettings(server.serverId);
+        const rows = ModerationLog.warnRules(server.serverId);
 
         if (!rows.length) {
             await messageReply({ embeds: [this.generateNoSettingsFoundEmbed()] });

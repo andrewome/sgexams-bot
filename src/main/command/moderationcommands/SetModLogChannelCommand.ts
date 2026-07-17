@@ -4,7 +4,7 @@ import {
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
-import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../modules/moderation/ModerationLog';
 
 export class SetModLogChannelCommand extends Command {
     public static readonly NAME = 'SetModLogChannel';
@@ -56,7 +56,7 @@ export class SetModLogChannelCommand extends Command {
         if (this.args.length === 0) {
             embed = this.generateResetEmbed();
             await messageReply({ embeds: [embed] });
-            ModDbUtils.setModLogChannel(server.serverId, null);
+            ModerationLog.setLogChannel(server.serverId, null);
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
 
@@ -82,7 +82,7 @@ export class SetModLogChannelCommand extends Command {
         }
 
         // Valid channelId
-        ModDbUtils.setModLogChannel(server.serverId, channelId);
+        ModerationLog.setLogChannel(server.serverId, channelId);
         embed = this.generateValidEmbed(channelId);
         await messageReply({ embeds: [embed] });
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;

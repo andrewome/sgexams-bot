@@ -6,7 +6,7 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 import { ModUtils } from '../../modules/moderation/ModUtil';
 import { ModActions } from '../../modules/moderation/classes/ModActions';
-import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../modules/moderation/ModerationLog';
 
 export class UnmuteCommand extends Command {
     public static readonly NAME = 'Unmute';
@@ -72,7 +72,7 @@ export class UnmuteCommand extends Command {
             await messageReply({ embeds: [this.generateInvalidUserIdEmbed()] });
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
-        ModDbUtils.addModerationAction(
+        ModerationLog.record(
             server.serverId, userId!, targetId, this.type,
             ModUtils.getUnixTime(), emit!, reason,
         );
