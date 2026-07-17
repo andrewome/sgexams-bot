@@ -1,5 +1,5 @@
 import {
-    GuildMember, EmbedBuilder, PermissionsBitField, PermissionFlagsBits, DiscordAPIError,
+    EmbedBuilder, PermissionsBitField, PermissionFlagsBits,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -40,7 +40,7 @@ export class KickCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            members, server, userId, memberPerms, messageReply, emit,
+            memberActions, server, userId, memberPerms, messageReply, emit,
         } = commandArgs;
 
         // Check for permissions first
@@ -60,18 +60,14 @@ export class KickCommand extends Command {
         if (reason.length > 512)
             reason = reason.substr(0, 512);
 
-        try {
-            const target = await members!.fetch(targetId);
-            ModerationLog.record(server.serverId, userId!, targetId,
-                                 this.type, ModUtils.getUnixTime(), emit!, reason);
-            await target.kick();
-            await messageReply({ embeds: [this.generateValidEmbed(target, reason)] });
-        } catch (err) {
-            if (err instanceof DiscordAPIError)
-                await messageReply({ embeds: [this.generateUserIdErrorEmbed()] });
-            else
-                throw err;
+        const result = await memberActions!.kick(targetId, reason);
+        if (!result.ok) {
+            await messageReply({ embeds: [this.generateUserIdErrorEmbed()] });
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
+        ModerationLog.record(server.serverId, userId!, targetId,
+                             this.type, ModUtils.getUnixTime(), emit!, reason);
+        await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason)] });
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -92,10 +88,10 @@ export class KickCommand extends Command {
         );
     }
 
-    private generateValidEmbed(target: GuildMember, reason: string): EmbedBuilder {
+    private generateValidEmbed(tag: string, reason: string): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             KickCommand.EMBED_TITLE,
-            `${target.user.tag} was kicked.`,
+            `${tag} was kicked.`,
             KickCommand.EMBED_DEFAULT_COLOUR,
         );
         return embed.addFields({ name: 'Reason', value: reason || '-' });

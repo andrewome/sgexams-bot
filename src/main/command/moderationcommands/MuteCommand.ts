@@ -1,7 +1,6 @@
 import {
-    GuildMember, EmbedBuilder, PermissionsBitField, PermissionFlagsBits, DiscordAPIError,
+    EmbedBuilder, PermissionsBitField, PermissionFlagsBits,
 } from 'discord.js';
-import log from 'loglevel';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
@@ -51,7 +50,7 @@ export class MuteCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            members, server, userId, memberPerms, messageReply, emit, botId,
+            memberActions, server, userId, memberPerms, messageReply, emit, botId,
         } = commandArgs;
 
         // Check for permissions first
@@ -87,27 +86,23 @@ export class MuteCommand extends Command {
             reason = reason.substr(0, 512);
 
         // Handle mute
-        try {
-            const target = await members!.fetch(targetId);
-            await target.timeout(duration * 1000, reason);
-            const curTime = ModUtils.getUnixTime();
-            ModerationLog.record(server.serverId, userId!, targetId,
-                                 this.type, curTime, emit!, reason, duration);
-
-            // Remove any existing timeout bookkeeping if any, then set a new one
-            ModUtils.handleUnmuteTimeout(targetId, server.serverId);
-            const endTime = curTime + duration;
-            ModUtils.addMuteTimeout(
-                duration, curTime, endTime, targetId, server.serverId, botId!, emit!,
-            );
-            await messageReply({ embeds: [this.generateValidEmbed(target, reason, duration)] });
-        } catch (err) {
-            if (err instanceof DiscordAPIError) {
-                log.info(err);
-                await messageReply({ embeds: [this.generateUserIdErrorEmbed()] });
-            } else
-                throw err;
+        const result = await memberActions!.timeout(targetId, duration * 1000, reason);
+        if (!result.ok) {
+            await messageReply({ embeds: [this.generateUserIdErrorEmbed()] });
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
+
+        const curTime = ModUtils.getUnixTime();
+        ModerationLog.record(server.serverId, userId!, targetId,
+                             this.type, curTime, emit!, reason, duration);
+
+        // Remove any existing timeout bookkeeping if any, then set a new one
+        ModUtils.handleUnmuteTimeout(targetId, server.serverId);
+        const endTime = curTime + duration;
+        ModUtils.addMuteTimeout(
+            duration, curTime, endTime, targetId, server.serverId, botId!, emit!,
+        );
+        await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason, duration)] });
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -136,10 +131,10 @@ export class MuteCommand extends Command {
         );
     }
 
-    private generateValidEmbed(target: GuildMember, reason: string, duration: number): EmbedBuilder {
+    private generateValidEmbed(tag: string, reason: string, duration: number): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             MuteCommand.EMBED_TITLE,
-            `${target.user.tag} was muted.`,
+            `${tag} was muted.`,
             MuteCommand.EMBED_DEFAULT_COLOUR,
         );
 

@@ -3,6 +3,7 @@ import {
     GuildMemberManager, RoleManager, TextChannel, ThreadChannel,
 } from 'discord.js';
 import { Server } from '../../storage/Server';
+import { DiscordMemberPort } from '../../modules/moderation/DiscordMemberPort';
 
 /** This interface has to be disabled because tests inject a custom check under this function to test for output embeds.
 interface IMessageReply {
@@ -29,6 +30,8 @@ export interface CommandArgs {
     emojis?: GuildEmojiManager;
 
     members?: GuildMemberManager;
+
+    memberActions?: DiscordMemberPort;
 
     channel?: TextChannel | ThreadChannel;
 

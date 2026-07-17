@@ -1,5 +1,5 @@
 import {
-    GuildMember, EmbedBuilder, PermissionsBitField, PermissionFlagsBits, DiscordAPIError, User,
+    EmbedBuilder, PermissionsBitField, PermissionFlagsBits,
 } from 'discord.js';
 import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
@@ -45,7 +45,7 @@ export class BanCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            members, server, userId, memberPerms, messageReply, emit, botId,
+            memberActions, members, server, userId, memberPerms, messageReply, emit, botId,
         } = commandArgs;
 
         // Check for permissions first
@@ -78,30 +78,29 @@ export class BanCommand extends Command {
             reason = reason.substr(0, 512);
 
         // Handle ban
-        try {
-            const bannedUser
-                = await members!.ban(targetId, { reason, deleteMessageSeconds: this.removeMsgs ? 86400 : 0 });
-            const curTime = ModUtils.getUnixTime();
-            ModerationLog.record(server.serverId, userId!, targetId,
-                                 this.type, curTime, emit!, reason, duration);
-
-            // Remove any existing timeout if any
-            ModUtils.handleUnbanTimeout(targetId, server.serverId);
-
-            // Set timeout if any
-            if (duration) {
-                const endTime = curTime + duration;
-                ModUtils.addBanTimeout(
-                    duration, curTime, endTime, targetId, server.serverId, botId!, members!, emit!,
-                );
-            }
-            await messageReply({ embeds: [this.generateValidEmbed(bannedUser, reason, duration)] });
-        } catch (err) {
-            if (err instanceof DiscordAPIError)
-                await messageReply({ embeds: [this.generateUserIdErrorEmbed()] });
-            else
-                throw err;
+        const result = await memberActions!.ban(
+            targetId, { reason, deleteMessageSeconds: this.removeMsgs ? 86400 : 0 },
+        );
+        if (!result.ok) {
+            await messageReply({ embeds: [this.generateUserIdErrorEmbed()] });
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
+
+        const curTime = ModUtils.getUnixTime();
+        ModerationLog.record(server.serverId, userId!, targetId,
+                             this.type, curTime, emit!, reason, duration);
+
+        // Remove any existing timeout if any
+        ModUtils.handleUnbanTimeout(targetId, server.serverId);
+
+        // Set timeout if any
+        if (duration) {
+            const endTime = curTime + duration;
+            ModUtils.addBanTimeout(
+                duration, curTime, endTime, targetId, server.serverId, botId!, members!, emit!,
+            );
+        }
+        await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason, duration)] });
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -122,12 +121,10 @@ export class BanCommand extends Command {
         );
     }
 
-    private generateValidEmbed(target: User | GuildMember | string, reason: string,
-                               duration: number|null): EmbedBuilder {
-        const targetStr = target instanceof String ? target : (target as User).tag;
+    private generateValidEmbed(tag: string, reason: string, duration: number|null): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             BanCommand.EMBED_TITLE,
-            `${targetStr} was banned.`,
+            `${tag} was banned.`,
             BanCommand.EMBED_DEFAULT_COLOUR,
         );
 
