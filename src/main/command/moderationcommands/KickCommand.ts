@@ -60,6 +60,21 @@ export class KickCommand extends Command {
         if (reason.length > 512)
             reason = reason.substr(0, 512);
 
+        // Resolve the target before DMing them - an invalid/non-member id still gets today's
+        // error with no DM sent. See ADR-0005.
+        const lookupResult = await memberActions!.lookup(targetId);
+        if (!lookupResult.ok) {
+            await messageReply({ embeds: [this.generateUserIdErrorEmbed()] });
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        }
+
+        // Sent before the kick, while the target and bot still share this server - Discord
+        // requires a mutual server (or an existing DM channel) to open a DM, and a kick
+        // severs that. Best-effort: if the kick below then fails, the user will have
+        // already received this DM - an accepted, narrower tradeoff. See ADR-0005.
+        const noticeEmbed = ModUtils.buildActionNoticeEmbed('kicked', serverName!, reason, userId!);
+        const dmResult = await memberActions!.dm(targetId, { embeds: [noticeEmbed] });
+
         const result = await memberActions!.kick(targetId, reason);
         if (!result.ok) {
             await messageReply({ embeds: [this.generateUserIdErrorEmbed()] });
@@ -67,11 +82,6 @@ export class KickCommand extends Command {
         }
         ModerationLog.record(server.serverId, userId!, targetId,
                              this.type, ModUtils.getUnixTime(), emit!, reason);
-
-        // Best-effort, sent only after the kick is confirmed - never claim it happened if it
-        // didn't. See ADR-0004.
-        const noticeEmbed = ModUtils.buildActionNoticeEmbed('kicked', serverName!, reason, userId!);
-        const dmResult = await memberActions!.dm(targetId, { embeds: [noticeEmbed] });
 
         await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason, dmResult.ok)] });
 
