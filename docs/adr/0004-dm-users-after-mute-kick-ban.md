@@ -1,5 +1,7 @@
 # DM the affected user after mute/kick/ban
 
+> Kick/ban's DM ordering is superseded by ADR-0005 (DM sent before the action, past a `lookup()` gate). Mute is unaffected and this document still applies to it as written.
+
 After a mute, kick, or ban, the bot now DMs the affected user (an "Action notice" — see `CONTEXT.md`) with the reason, duration if any, and which moderator performed it. This includes `WarnCommand`'s warn-threshold auto-escalation to ban/mute, not just directly-invoked commands — from the affected user's perspective there's no difference, and the notice matters more here since there's no moderator visibly typing a command to ask. The moderator field shows the bot itself for auto-escalation, matching what the DB log already records (`botId` as `modId`).
 
 `DiscordMemberPort` (ADR-0002) gets a new `dm(userId, options: { embeds: EmbedBuilder[] })` method, returning the same `MemberActionResult` as its other methods (resolving the user to DM them naturally produces their tag, same as `ban`/`kick`/`timeout`). The port stays domain-ignorant - it doesn't know what a "mute notice" is, only how to send a DM. The actual embed content is built by a new `ModUtils.buildActionNoticeEmbed(...)`, not on `Command` itself: `Command` is the generic base class every command family uses (Starboard, MsgChecker, Birthday, not just moderation), so putting mute/kick/ban-specific content there would leak domain knowledge into an unrelated shared class. `ModUtils` already holds moderation-specific shared formatting (`formatDuration`), so this is the same role.

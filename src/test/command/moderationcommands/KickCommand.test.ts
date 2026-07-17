@@ -50,11 +50,13 @@ describe('KickCommand test suite', (): void => {
         const commandResult = await command.execute({ ...baseArgs(), messageReply: checkEmbed });
 
         commandResult.shouldCheckMessage.should.be.true;
-        memberActions.calls.length.should.equal(2);
-        memberActions.calls[0].method.should.equal('kick');
+        memberActions.calls.length.should.equal(3);
+        memberActions.calls[0].method.should.equal('lookup');
         memberActions.calls[0].userId.should.equal(targetId);
         memberActions.calls[1].method.should.equal('dm');
         memberActions.calls[1].userId.should.equal(targetId);
+        memberActions.calls[2].method.should.equal('kick');
+        memberActions.calls[2].userId.should.equal(targetId);
         ModerationLog.entries(serverId, { userId: targetId, type: ModActions.KICK }).length.should.equal(1);
     });
 
@@ -73,6 +75,21 @@ describe('KickCommand test suite', (): void => {
     });
 
     it('Unknown user is reported and nothing is recorded', async (): Promise<void> => {
+        memberActions.nextLookupResult = { ok: false };
+        const command = new KickCommand([targetId]);
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
+            embed.color!.should.equal(EMBED_ERROR_COLOUR);
+        };
+        const commandResult = await command.execute({ ...baseArgs(), messageReply: checkEmbed });
+
+        commandResult.shouldCheckMessage.should.be.true;
+        memberActions.calls.length.should.equal(1);
+        memberActions.calls[0].method.should.equal('lookup');
+        ModerationLog.entries(serverId, { userId: targetId, type: ModActions.KICK }).length.should.equal(0);
+    });
+
+    it('Kick failing after a successful lookup still leaves the DM sent', async (): Promise<void> => {
         memberActions.nextResult = { ok: false };
         const command = new KickCommand([targetId]);
         const checkEmbed = (msg: MessageReplyOptions): void => {
@@ -82,6 +99,10 @@ describe('KickCommand test suite', (): void => {
         const commandResult = await command.execute({ ...baseArgs(), messageReply: checkEmbed });
 
         commandResult.shouldCheckMessage.should.be.true;
+        memberActions.calls.length.should.equal(3);
+        memberActions.calls[0].method.should.equal('lookup');
+        memberActions.calls[1].method.should.equal('dm');
+        memberActions.calls[2].method.should.equal('kick');
         ModerationLog.entries(serverId, { userId: targetId, type: ModActions.KICK }).length.should.equal(0);
     });
 });

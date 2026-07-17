@@ -9,13 +9,18 @@ export interface RecordedCall {
 }
 
 /**
- * Test double for DiscordMemberPort. lookup/ban/unban/kick/timeout return whatever
- * `nextResult` is currently set to (default: success); dm() has its own `nextDmResult`
- * (default: success) so a test can make the main action succeed while the DM fails, or
- * vice versa. Every call is recorded for assertions.
+ * Test double for DiscordMemberPort. ban/unban/kick/timeout return whatever `nextResult`
+ * is currently set to (default: success); lookup() has its own `nextLookupResult`
+ * (default: success) so a test can simulate an unresolvable target independently of
+ * whether the mutating call would have succeeded (see ADR-0005 - kick/ban now lookup()
+ * before DMing, so a lookup failure and a kick/ban failure are distinguishable
+ * scenarios). dm() likewise has its own `nextDmResult`. Every call is recorded for
+ * assertions.
  */
 export class FakeMemberAdapter implements DiscordMemberPort {
     public nextResult: MemberActionResult = { ok: true, tag: 'TestUser#0001' };
+
+    public nextLookupResult: MemberActionResult = { ok: true, tag: 'TestUser#0001' };
 
     public nextDmResult: MemberActionResult = { ok: true, tag: 'TestUser#0001' };
 
@@ -23,7 +28,7 @@ export class FakeMemberAdapter implements DiscordMemberPort {
 
     public async lookup(userId: string): Promise<MemberActionResult> {
         this.calls.push({ method: 'lookup', userId, args: [] });
-        return this.nextResult;
+        return this.nextLookupResult;
     }
 
     public async ban(userId: string, options: BanOptions): Promise<MemberActionResult> {

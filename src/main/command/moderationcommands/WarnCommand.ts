@@ -109,6 +109,14 @@ export class WarnCommand extends Command {
             const reason = `**(AUTO)** ${numWarns} warns accumulated`;
             switch (type) {
                 case ModActions.BAN: {
+                    // Sent before the ban, while the mutual server relationship still holds
+                    // (see ADR-0005) - no extra lookup() here, targetId was already validated
+                    // by execute()'s lookup() moments earlier, and ADR-0002 deliberately
+                    // dropped this branch's redundant second fetch. Moderator is the bot
+                    // itself: this is an automatic escalation, not a moderator-issued command.
+                    const noticeEmbed = ModUtils.buildActionNoticeEmbed('banned', serverName, reason, botId, duration);
+                    await memberActions.dm(targetId, { embeds: [noticeEmbed] });
+
                     const result = await memberActions.ban(targetId, { reason });
                     if (!result.ok) {
                         log.warn(`[WarnCommand]: Unable to auto-ban ${targetId} in ${serverId} - unknown user!`);
@@ -123,12 +131,6 @@ export class WarnCommand extends Command {
                             duration, curTime, endTime, targetId, serverId, botId, members!, emit,
                         );
                     }
-
-                    // Best-effort, sent only after the ban is confirmed. Moderator is the bot
-                    // itself: this is an automatic escalation, not a moderator-issued command.
-                    // See ADR-0004.
-                    const noticeEmbed = ModUtils.buildActionNoticeEmbed('banned', serverName, reason, botId, duration);
-                    await memberActions.dm(targetId, { embeds: [noticeEmbed] });
                     break;
                 }
                 case ModActions.MUTE: {

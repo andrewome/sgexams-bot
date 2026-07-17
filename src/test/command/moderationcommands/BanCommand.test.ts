@@ -80,11 +80,13 @@ describe('BanCommand test suite', (): void => {
         const commandResult = await command.execute({ ...baseArgs(), messageReply: checkEmbed });
 
         commandResult.shouldCheckMessage.should.be.true;
-        memberActions.calls.length.should.equal(2);
-        memberActions.calls[0].method.should.equal('ban');
+        memberActions.calls.length.should.equal(3);
+        memberActions.calls[0].method.should.equal('lookup');
         memberActions.calls[0].userId.should.equal(targetId);
         memberActions.calls[1].method.should.equal('dm');
         memberActions.calls[1].userId.should.equal(targetId);
+        memberActions.calls[2].method.should.equal('ban');
+        memberActions.calls[2].userId.should.equal(targetId);
         const logs = ModerationLog.entries(serverId, { userId: targetId, type: ModActions.BAN });
         logs.length.should.equal(1);
         logs[0].reason!.should.equal('being bad');
@@ -117,6 +119,21 @@ describe('BanCommand test suite', (): void => {
     });
 
     it('Unknown user is reported and nothing is recorded', async (): Promise<void> => {
+        memberActions.nextLookupResult = { ok: false };
+        const command = new BanCommand([targetId]);
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
+            embed.color!.should.equal(EMBED_ERROR_COLOUR);
+        };
+        const commandResult = await command.execute({ ...baseArgs(), messageReply: checkEmbed });
+
+        commandResult.shouldCheckMessage.should.be.true;
+        memberActions.calls.length.should.equal(1);
+        memberActions.calls[0].method.should.equal('lookup');
+        ModerationLog.entries(serverId, { userId: targetId, type: ModActions.BAN }).length.should.equal(0);
+    });
+
+    it('Ban failing after a successful lookup still leaves the DM sent', async (): Promise<void> => {
         memberActions.nextResult = { ok: false };
         const command = new BanCommand([targetId]);
         const checkEmbed = (msg: MessageReplyOptions): void => {
@@ -126,6 +143,10 @@ describe('BanCommand test suite', (): void => {
         const commandResult = await command.execute({ ...baseArgs(), messageReply: checkEmbed });
 
         commandResult.shouldCheckMessage.should.be.true;
+        memberActions.calls.length.should.equal(3);
+        memberActions.calls[0].method.should.equal('lookup');
+        memberActions.calls[1].method.should.equal('dm');
+        memberActions.calls[2].method.should.equal('ban');
         ModerationLog.entries(serverId, { userId: targetId, type: ModActions.BAN }).length.should.equal(0);
     });
 });

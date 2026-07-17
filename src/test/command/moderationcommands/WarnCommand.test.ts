@@ -40,7 +40,7 @@ describe('WarnCommand test suite', (): void => {
     const baseArgs = (): ReturnType<typeof baseCommandArgs> => baseCommandArgs(server, memberActions);
 
     it('Plain warn looks the user up and records the action, no escalation', async (): Promise<void> => {
-        memberActions.nextResult = { ok: true, tag: 'Target#0001' };
+        memberActions.nextLookupResult = { ok: true, tag: 'Target#0001' };
         const command = new WarnCommand([targetId, 'first', 'offence']);
         const checkEmbed = (msg: MessageReplyOptions): void => {
             const embed = (msg!.embeds![0] as EmbedBuilder).data;
@@ -56,7 +56,7 @@ describe('WarnCommand test suite', (): void => {
     });
 
     it('Unknown user is reported and nothing is recorded', async (): Promise<void> => {
-        memberActions.nextResult = { ok: false };
+        memberActions.nextLookupResult = { ok: false };
         const command = new WarnCommand([targetId]);
         const checkEmbed = (msg: MessageReplyOptions): void => {
             const embed = (msg!.embeds![0] as EmbedBuilder).data;
@@ -77,9 +77,9 @@ describe('WarnCommand test suite', (): void => {
         commandResult.shouldCheckMessage.should.be.true;
         memberActions.calls.length.should.equal(3);
         memberActions.calls[0].method.should.equal('lookup');
-        memberActions.calls[1].method.should.equal('ban');
+        memberActions.calls[1].method.should.equal('dm');
         memberActions.calls[1].userId.should.equal(targetId);
-        memberActions.calls[2].method.should.equal('dm');
+        memberActions.calls[2].method.should.equal('ban');
         ModerationLog.entries(serverId, { userId: targetId, type: ModActions.BAN }).length.should.equal(1);
     });
 
@@ -93,7 +93,8 @@ describe('WarnCommand test suite', (): void => {
         const commandResult = await command.execute({ ...baseArgs(), members, messageReply: noopMessageReply });
 
         commandResult.shouldCheckMessage.should.be.true;
-        memberActions.calls[1].method.should.equal('ban');
+        memberActions.calls[1].method.should.equal('dm');
+        memberActions.calls[2].method.should.equal('ban');
         const logs = ModerationLog.entries(serverId, { userId: targetId, type: ModActions.BAN });
         logs.length.should.equal(1);
         logs[0].timeout!.should.equal(3600);

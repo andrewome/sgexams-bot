@@ -56,9 +56,10 @@ export class ModUtils {
     }
 
     /**
-     * Builds the "Action notice" DM embed sent to a user after a mute/kick/ban (see
-     * CONTEXT.md, ADR-0004) - not on Command, since Command is the generic base every
-     * command family uses (Starboard, MsgChecker, Birthday too), not just moderation.
+     * Builds the "Action notice" DM embed sent to a user for a mute/kick/ban (see
+     * CONTEXT.md, ADR-0004 for the embed's design; mute sends it after the action, kick/ban
+     * send it before - see ADR-0005) - not on Command, since Command is the generic base
+     * every command family uses (Starboard, MsgChecker, Birthday too), not just moderation.
      *
      * Pass duration to show it (formatted if a number, "Permanent" if null); omit it
      * entirely for actions with no duration concept, eg. kick.

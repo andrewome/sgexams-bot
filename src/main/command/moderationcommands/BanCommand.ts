@@ -77,6 +77,21 @@ export class BanCommand extends Command {
         if (reason.length > 512)
             reason = reason.substr(0, 512);
 
+        // Resolve the target before DMing them - an invalid/non-member id still gets today's
+        // error with no DM sent. See ADR-0005.
+        const lookupResult = await memberActions!.lookup(targetId);
+        if (!lookupResult.ok) {
+            await messageReply({ embeds: [this.generateUserIdErrorEmbed()] });
+            return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
+        }
+
+        // Sent before the ban, while the target and bot still share this server - Discord
+        // requires a mutual server (or an existing DM channel) to open a DM, and a ban
+        // severs that. Best-effort: if the ban below then fails, the user will have
+        // already received this DM - an accepted, narrower tradeoff. See ADR-0005.
+        const noticeEmbed = ModUtils.buildActionNoticeEmbed('banned', serverName!, reason, userId!, duration);
+        const dmResult = await memberActions!.dm(targetId, { embeds: [noticeEmbed] });
+
         // Handle ban
         const result = await memberActions!.ban(
             targetId, { reason, deleteMessageSeconds: this.removeMsgs ? 86400 : 0 },
@@ -100,11 +115,6 @@ export class BanCommand extends Command {
                 duration, curTime, endTime, targetId, server.serverId, botId!, members!, emit!,
             );
         }
-
-        // Best-effort, sent only after the ban is confirmed - never claim it happened if it
-        // didn't. See ADR-0004.
-        const noticeEmbed = ModUtils.buildActionNoticeEmbed('banned', serverName!, reason, userId!, duration);
-        const dmResult = await memberActions!.dm(targetId, { embeds: [noticeEmbed] });
 
         await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason, duration, dmResult.ok)] });
 
