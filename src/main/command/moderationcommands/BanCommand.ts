@@ -6,7 +6,7 @@ import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 import { ModUtils } from '../../modules/moderation/ModUtil';
 import { ModActions } from '../../modules/moderation/classes/ModActions';
-import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../modules/moderation/ModerationLog';
 
 export class BanCommand extends Command {
     public static readonly NAME = 'Ban';
@@ -87,8 +87,8 @@ export class BanCommand extends Command {
         }
 
         const curTime = ModUtils.getUnixTime();
-        ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
-                                       this.type, curTime, emit!, reason, duration);
+        ModerationLog.record(server.serverId, userId!, targetId,
+                             this.type, curTime, emit!, reason, duration);
 
         // Remove any existing timeout if any
         ModUtils.handleUnbanTimeout(targetId, server.serverId);

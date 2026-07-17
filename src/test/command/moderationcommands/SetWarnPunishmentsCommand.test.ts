@@ -11,7 +11,7 @@ import { CommandArgs } from '../../../main/command/classes/CommandArgs';
 import { deleteDbFile, TEST_STORAGE_PATH } from '../../TestsHelper';
 import { DatabaseConnection } from '../../../main/DatabaseConnection';
 import { Storage } from '../../../main/storage/Storage';
-import { ModDbUtils } from '../../../main/modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../../main/modules/moderation/ModerationLog';
 import { ModActions } from '../../../main/modules/moderation/classes/ModActions';
 
 should();
@@ -47,7 +47,7 @@ describe('SetWarnPunishmentsCommand test suite', (): void => {
         const commandResult = await command.execute(commandArgs);
 
         commandResult.shouldCheckMessage.should.be.true;
-        const settings = ModDbUtils.getWarnSettings(serverId);
+        const settings = ModerationLog.warnRules(serverId);
         settings.length.should.equal(1);
         settings[0].type.should.equal(ModActions.MUTE);
         settings[0].duration!.should.be.greaterThan(0);
@@ -63,7 +63,7 @@ describe('SetWarnPunishmentsCommand test suite', (): void => {
         const commandResult = await command.execute(commandArgs);
 
         commandResult.shouldCheckMessage.should.be.true;
-        ModDbUtils.getWarnSettings(serverId).length.should.equal(0);
+        ModerationLog.warnRules(serverId).length.should.equal(0);
     });
 
     it('Mute with a duration over 21 days is rejected', async (): Promise<void> => {
@@ -76,7 +76,7 @@ describe('SetWarnPunishmentsCommand test suite', (): void => {
         const commandResult = await command.execute(commandArgs);
 
         commandResult.shouldCheckMessage.should.be.true;
-        ModDbUtils.getWarnSettings(serverId).length.should.equal(0);
+        ModerationLog.warnRules(serverId).length.should.equal(0);
     });
 
     it('Mute with a duration of exactly 21 days is accepted', async (): Promise<void> => {
@@ -89,7 +89,7 @@ describe('SetWarnPunishmentsCommand test suite', (): void => {
         const commandResult = await command.execute(commandArgs);
 
         commandResult.shouldCheckMessage.should.be.true;
-        ModDbUtils.getWarnSettings(serverId).length.should.equal(1);
+        ModerationLog.warnRules(serverId).length.should.equal(1);
     });
 
     it('Ban with no duration (permanent) is still accepted', async (): Promise<void> => {
@@ -102,7 +102,7 @@ describe('SetWarnPunishmentsCommand test suite', (): void => {
         const commandResult = await command.execute(commandArgs);
 
         commandResult.shouldCheckMessage.should.be.true;
-        const settings = ModDbUtils.getWarnSettings(serverId);
+        const settings = ModerationLog.warnRules(serverId);
         settings.length.should.equal(1);
         settings[0].type.should.equal(ModActions.BAN);
         (settings[0].duration === null).should.be.true;
@@ -118,7 +118,7 @@ describe('SetWarnPunishmentsCommand test suite', (): void => {
         const commandResult = await command.execute(commandArgs);
 
         commandResult.shouldCheckMessage.should.be.true;
-        ModDbUtils.getWarnSettings(serverId).length.should.equal(0);
+        ModerationLog.warnRules(serverId).length.should.equal(0);
     });
 
     it('Ban with a duration of exactly 21 days is accepted', async (): Promise<void> => {
@@ -131,7 +131,7 @@ describe('SetWarnPunishmentsCommand test suite', (): void => {
         const commandResult = await command.execute(commandArgs);
 
         commandResult.shouldCheckMessage.should.be.true;
-        const settings = ModDbUtils.getWarnSettings(serverId);
+        const settings = ModerationLog.warnRules(serverId);
         settings.length.should.equal(1);
         settings[0].type.should.equal(ModActions.BAN);
         settings[0].duration!.should.be.greaterThan(0);

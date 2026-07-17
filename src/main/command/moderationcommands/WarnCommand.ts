@@ -6,7 +6,7 @@ import { Command } from '../Command';
 import { CommandResult } from '../classes/CommandResult';
 import { CommandArgs } from '../classes/CommandArgs';
 import { ModActions } from '../../modules/moderation/classes/ModActions';
-import { ModDbUtils } from '../../modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../modules/moderation/ModerationLog';
 import { ModUtils } from '../../modules/moderation/ModUtil';
 import { DiscordMemberPort } from '../../modules/moderation/DiscordMemberPort';
 
@@ -67,8 +67,8 @@ export class WarnCommand extends Command {
             return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
         }
         const curTime = ModUtils.getUnixTime();
-        ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
-                                       this.type, curTime, emit!, reason);
+        ModerationLog.record(server.serverId, userId!, targetId,
+                             this.type, curTime, emit!, reason);
         await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason)] });
 
         // Handle if this warning hit server warn action threshold
@@ -97,10 +97,10 @@ export class WarnCommand extends Command {
                                       memberActions: DiscordMemberPort, members: GuildMemberManager | undefined,
                                       emit: Function): Promise<void> {
         // Check if warn threshold has been met
-        const numWarns = ModDbUtils.fetchNumberOfWarns(serverId, targetId);
+        const numWarns = ModerationLog.warnCount(serverId, targetId);
 
         // Check if the number corresponds to an action
-        const res = ModDbUtils.fetchWarnAction(serverId, numWarns);
+        const res = ModerationLog.warnRuleFor(serverId, numWarns);
 
         // If there's a warn action, handle it
         if (res) {
@@ -114,7 +114,7 @@ export class WarnCommand extends Command {
                         log.warn(`[WarnCommand]: Unable to auto-ban ${targetId} in ${serverId} - unknown user!`);
                         return;
                     }
-                    ModDbUtils.addModerationAction(
+                    ModerationLog.record(
                         serverId, botId, targetId, ModActions.BAN, curTime, emit, reason, duration,
                     );
                     if (duration) {
@@ -147,8 +147,8 @@ export class WarnCommand extends Command {
                         log.warn(`[WarnCommand]: Unable to auto-mute ${targetId} in ${serverId} - unknown user!`);
                         return;
                     }
-                    ModDbUtils.addModerationAction(serverId, botId, targetId, ModActions.MUTE,
-                                                   curTime, emit!, reason, duration);
+                    ModerationLog.record(serverId, botId, targetId, ModActions.MUTE,
+                                         curTime, emit!, reason, duration);
                     const endTime = curTime + duration;
                     ModUtils.addMuteTimeout(
                         duration, curTime, endTime, targetId, serverId, botId!, emit!,

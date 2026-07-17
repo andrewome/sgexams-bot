@@ -7,7 +7,7 @@ import { Command } from '../../../main/command/Command';
 import { deleteDbFile, TEST_STORAGE_PATH } from '../../TestsHelper';
 import { DatabaseConnection } from '../../../main/DatabaseConnection';
 import { Storage } from '../../../main/storage/Storage';
-import { ModDbUtils } from '../../../main/modules/moderation/ModDbUtils';
+import { ModerationLog } from '../../../main/modules/moderation/ModerationLog';
 import { ModActions } from '../../../main/modules/moderation/classes/ModActions';
 import { FakeMemberAdapter } from '../../modules/moderation/FakeMemberAdapter';
 import { baseCommandArgs } from './ModCommandTestHelper';
@@ -79,7 +79,7 @@ describe('MuteCommand test suite', (): void => {
         (memberActions.calls[0].args[0] as number).should.equal(60 * 60 * 1000);
         memberActions.calls[1].method.should.equal('dm');
         memberActions.calls[1].userId.should.equal(targetId);
-        const logs = ModDbUtils.getModLogs(serverId, targetId, ModActions.MUTE);
+        const logs = ModerationLog.entries(serverId, { userId: targetId, type: ModActions.MUTE });
         logs.length.should.equal(1);
         logs[0].timeout!.should.equal(60 * 60);
     });
@@ -95,7 +95,7 @@ describe('MuteCommand test suite', (): void => {
         const commandResult = await command.execute({ ...baseArgs(), messageReply: checkEmbed });
 
         commandResult.shouldCheckMessage.should.be.true;
-        ModDbUtils.getModLogs(serverId, targetId, ModActions.MUTE).length.should.equal(1);
+        ModerationLog.entries(serverId, { userId: targetId, type: ModActions.MUTE }).length.should.equal(1);
     });
 
     it('Unknown user is reported and nothing is recorded', async (): Promise<void> => {
@@ -108,6 +108,6 @@ describe('MuteCommand test suite', (): void => {
         const commandResult = await command.execute({ ...baseArgs(), messageReply: checkEmbed });
 
         commandResult.shouldCheckMessage.should.be.true;
-        ModDbUtils.getModLogs(serverId, targetId, ModActions.MUTE).length.should.equal(0);
+        ModerationLog.entries(serverId, { userId: targetId, type: ModActions.MUTE }).length.should.equal(0);
     });
 });
