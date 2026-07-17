@@ -45,7 +45,7 @@ export class BanCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            memberActions, members, server, userId, memberPerms, messageReply, emit, botId,
+            memberActions, members, server, serverName, userId, memberPerms, messageReply, emit, botId,
         } = commandArgs;
 
         // Check for permissions first
@@ -100,7 +100,13 @@ export class BanCommand extends Command {
                 duration, curTime, endTime, targetId, server.serverId, botId!, members!, emit!,
             );
         }
-        await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason, duration)] });
+
+        // Best-effort, sent only after the ban is confirmed - never claim it happened if it
+        // didn't. See ADR-0004.
+        const noticeEmbed = ModUtils.buildActionNoticeEmbed('banned', serverName!, reason, userId!, duration);
+        const dmResult = await memberActions!.dm(targetId, { embeds: [noticeEmbed] });
+
+        await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason, duration, dmResult.ok)] });
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -121,7 +127,8 @@ export class BanCommand extends Command {
         );
     }
 
-    private generateValidEmbed(tag: string, reason: string, duration: number|null): EmbedBuilder {
+    private generateValidEmbed(tag: string, reason: string, duration: number|null,
+                               notified: boolean): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             BanCommand.EMBED_TITLE,
             `${tag} was banned.`,
@@ -132,6 +139,7 @@ export class BanCommand extends Command {
         embed.addFields({
             name: 'Length', value: duration ? ModUtils.formatDuration(duration) : 'Permanent', inline: true,
         });
+        ModUtils.addDmFailureNotice(embed, notified);
 
         return embed;
     }

@@ -15,6 +15,8 @@ interface IMessageReply {
 export interface CommandArgs {
     server: Server;
 
+    serverName?: string;
+
     memberPerms: Readonly<PermissionsBitField>;
 
     messageReply: Function; // IMessageReply

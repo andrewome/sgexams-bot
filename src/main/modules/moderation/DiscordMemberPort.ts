@@ -1,3 +1,5 @@
+import { EmbedBuilder } from 'discord.js';
+
 /** Result of a DiscordMemberPort action. On success, carries the target's display tag. */
 export type MemberActionResult =
     | { ok: true; tag: string }
@@ -6,6 +8,10 @@ export type MemberActionResult =
 export interface BanOptions {
     reason?: string;
     deleteMessageSeconds?: number;
+}
+
+export interface DmOptions {
+    embeds: EmbedBuilder[];
 }
 
 /**
@@ -27,4 +33,7 @@ export interface DiscordMemberPort {
 
     /** Pass durationMs: null to clear an existing timeout. */
     timeout(userId: string, durationMs: number | null, reason?: string): Promise<MemberActionResult>;
+
+    /** Best-effort - a DM failure (DMs closed, bot blocked, user left) is a normal outcome. */
+    dm(userId: string, options: DmOptions): Promise<MemberActionResult>;
 }

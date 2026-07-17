@@ -80,13 +80,29 @@ describe('BanCommand test suite', (): void => {
         const commandResult = await command.execute({ ...baseArgs(), messageReply: checkEmbed });
 
         commandResult.shouldCheckMessage.should.be.true;
-        memberActions.calls.length.should.equal(1);
+        memberActions.calls.length.should.equal(2);
         memberActions.calls[0].method.should.equal('ban');
         memberActions.calls[0].userId.should.equal(targetId);
+        memberActions.calls[1].method.should.equal('dm');
+        memberActions.calls[1].userId.should.equal(targetId);
         const logs = ModDbUtils.getModLogs(serverId, targetId, ModActions.BAN);
         logs.length.should.equal(1);
         logs[0].reason!.should.equal('being bad');
         (logs[0].timeout === null).should.be.true;
+    });
+
+    it('DM failure does not block the ban, and is noted on the confirmation embed', async (): Promise<void> => {
+        memberActions.nextResult = { ok: true, tag: 'Target#0001' };
+        memberActions.nextDmResult = { ok: false };
+        const command = new BanCommand([targetId, 'being', 'bad']);
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
+            embed.fields![3].name.should.equal('Notified');
+        };
+        const commandResult = await command.execute({ ...baseArgs(), messageReply: checkEmbed });
+
+        commandResult.shouldCheckMessage.should.be.true;
+        ModDbUtils.getModLogs(serverId, targetId, ModActions.BAN).length.should.equal(1);
     });
 
     it('Ban with a duration records the timeout', async (): Promise<void> => {

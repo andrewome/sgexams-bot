@@ -97,7 +97,7 @@ export class OnMessageEventHandler extends MessageEventHandler {
             const { emit, botId } = this;
             const memberActions = new DiscordMemberAdapter(members);
             const commandArgs: CommandArgs = {
-                server, memberPerms, messageReply,
+                server, serverName: name, memberPerms, messageReply,
                 deleteFunction, uptime, channels,
                 emojis, members, memberActions, channel, userId,
                 messageId, emit, botId, roles,

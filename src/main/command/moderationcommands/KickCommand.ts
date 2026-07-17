@@ -40,7 +40,7 @@ export class KickCommand extends Command {
      */
     public async execute(commandArgs: CommandArgs): Promise<CommandResult> {
         const {
-            memberActions, server, userId, memberPerms, messageReply, emit,
+            memberActions, server, serverName, userId, memberPerms, messageReply, emit,
         } = commandArgs;
 
         // Check for permissions first
@@ -67,7 +67,13 @@ export class KickCommand extends Command {
         }
         ModDbUtils.addModerationAction(server.serverId, userId!, targetId,
                                        this.type, ModUtils.getUnixTime(), emit!, reason);
-        await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason)] });
+
+        // Best-effort, sent only after the kick is confirmed - never claim it happened if it
+        // didn't. See ADR-0004.
+        const noticeEmbed = ModUtils.buildActionNoticeEmbed('kicked', serverName!, reason, userId!);
+        const dmResult = await memberActions!.dm(targetId, { embeds: [noticeEmbed] });
+
+        await messageReply({ embeds: [this.generateValidEmbed(result.tag, reason, dmResult.ok)] });
 
         return this.COMMAND_SUCCESSFUL_COMMANDRESULT;
     }
@@ -88,12 +94,14 @@ export class KickCommand extends Command {
         );
     }
 
-    private generateValidEmbed(tag: string, reason: string): EmbedBuilder {
+    private generateValidEmbed(tag: string, reason: string, notified: boolean): EmbedBuilder {
         const embed = this.generateGenericEmbed(
             KickCommand.EMBED_TITLE,
             `${tag} was kicked.`,
             KickCommand.EMBED_DEFAULT_COLOUR,
         );
-        return embed.addFields({ name: 'Reason', value: reason || '-' });
+        embed.addFields({ name: 'Reason', value: reason || '-' });
+        ModUtils.addDmFailureNotice(embed, notified);
+        return embed;
     }
 }

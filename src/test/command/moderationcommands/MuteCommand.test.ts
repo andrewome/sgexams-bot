@@ -73,13 +73,29 @@ describe('MuteCommand test suite', (): void => {
         const commandResult = await command.execute({ ...baseArgs(), messageReply: checkEmbed });
 
         commandResult.shouldCheckMessage.should.be.true;
-        memberActions.calls.length.should.equal(1);
+        memberActions.calls.length.should.equal(2);
         memberActions.calls[0].method.should.equal('timeout');
         memberActions.calls[0].userId.should.equal(targetId);
         (memberActions.calls[0].args[0] as number).should.equal(60 * 60 * 1000);
+        memberActions.calls[1].method.should.equal('dm');
+        memberActions.calls[1].userId.should.equal(targetId);
         const logs = ModDbUtils.getModLogs(serverId, targetId, ModActions.MUTE);
         logs.length.should.equal(1);
         logs[0].timeout!.should.equal(60 * 60);
+    });
+
+    it('DM failure does not block the mute, and is noted on the confirmation embed', async (): Promise<void> => {
+        memberActions.nextResult = { ok: true, tag: 'Target#0001' };
+        memberActions.nextDmResult = { ok: false };
+        const command = new MuteCommand([targetId, 'being', 'loud', '1h']);
+        const checkEmbed = (msg: MessageReplyOptions): void => {
+            const embed = (msg!.embeds![0] as EmbedBuilder).data;
+            embed.fields![3].name.should.equal('Notified');
+        };
+        const commandResult = await command.execute({ ...baseArgs(), messageReply: checkEmbed });
+
+        commandResult.shouldCheckMessage.should.be.true;
+        ModDbUtils.getModLogs(serverId, targetId, ModActions.MUTE).length.should.equal(1);
     });
 
     it('Unknown user is reported and nothing is recorded', async (): Promise<void> => {

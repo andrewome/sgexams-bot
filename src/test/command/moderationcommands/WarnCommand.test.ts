@@ -75,10 +75,11 @@ describe('WarnCommand test suite', (): void => {
         const commandResult = await command.execute({ ...baseArgs(), messageReply: noopMessageReply });
 
         commandResult.shouldCheckMessage.should.be.true;
-        memberActions.calls.length.should.equal(2);
+        memberActions.calls.length.should.equal(3);
         memberActions.calls[0].method.should.equal('lookup');
         memberActions.calls[1].method.should.equal('ban');
         memberActions.calls[1].userId.should.equal(targetId);
+        memberActions.calls[2].method.should.equal('dm');
         ModDbUtils.getModLogs(serverId, targetId, ModActions.BAN).length.should.equal(1);
     });
 
@@ -105,9 +106,10 @@ describe('WarnCommand test suite', (): void => {
         const commandResult = await command.execute({ ...baseArgs(), messageReply: noopMessageReply });
 
         commandResult.shouldCheckMessage.should.be.true;
-        memberActions.calls.length.should.equal(2);
+        memberActions.calls.length.should.equal(3);
         memberActions.calls[1].method.should.equal('timeout');
         (memberActions.calls[1].args[0] as number).should.equal(3600 * 1000);
+        memberActions.calls[2].method.should.equal('dm');
         ModDbUtils.getModLogs(serverId, targetId, ModActions.MUTE).length.should.equal(1);
     });
 });
