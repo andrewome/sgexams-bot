@@ -10,7 +10,8 @@
     "dev": "docker-compose -f docker-compose.yml up --build",
     "docker-dev": "ts-node-dev --transpile-only --poll src/main/App.ts",
     "build": "rimraf -rf build/ && tsc -p .",
-    "lint": "eslint \"./src/**\""
+    "lint": "eslint \"./src/**\"",
+    "rimraf": "./node_modules/rimraf/bin.js"
   },
   "repository": {
     "type": "git",
