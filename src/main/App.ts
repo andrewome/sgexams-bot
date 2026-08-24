@@ -37,7 +37,7 @@ export class App {
         // set rest offset to 0ms, original 500ms.
         this.bot = new Client({
             intents: [
-                GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildModeration,
+                GatewayIntentBits.Guilds, GatewayIntentBits.GuildModeration,
                 GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions,
                 GatewayIntentBits.GuildMessageTyping, GatewayIntentBits.MessageContent,
             ],
@@ -54,9 +54,10 @@ export class App {
     public async initialise(): Promise<App> {
         log.info('Logging the bot in...');
         await this.bot.login(process.env.BOT_TOKEN)
-            .catch(() => {
+            .catch((e) => {
                 log.error('Unable to login. Shutting down.');
-                process.exit();
+                log.error(e);
+                process.exit(1);
             });
         try {
             this.storage = new Storage().loadServers();
@@ -65,7 +66,7 @@ export class App {
             log.warn(err.stack);
             if (err instanceof SqliteError) {
                 log.error('Sqlite Error detected. Shutting down.');
-                process.exit();
+                process.exit(1);
             }
         }
         return this;
